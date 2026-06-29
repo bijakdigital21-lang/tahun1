@@ -1,4 +1,4 @@
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
@@ -402,6 +402,7 @@ html_content = """<!DOCTYPE html>
 <body>
 
 <div class="container">
+    <!-- DASHBOARD -->
     <div id="screen-dashboard">
         <h1 class="text-center">✨ Bijak Matematik Tahun 1 ✨</h1>
         <p class="text-center" style="color: #666; margin-bottom: 20px;">Silibus Matematik KSSR Malaysia</p>
@@ -435,15 +436,18 @@ html_content = """<!DOCTYPE html>
         <button class="btn btn-accent" style="margin-top: 25px;" onclick="resetProgress()">Sifar (Reset) Semua Kemajuan 🔄</button>
     </div>
 
+    <!-- NOTES SCREEN -->
     <div id="screen-notes" class="hidden">
         <h1 id="notes-topic-title">Nota Ringkas</h1>
         <div class="notes-content" id="notes-body">
-            </div>
+            <!-- Dynamic Content -->
+        </div>
         <button class="btn btn-suara" onclick="ulangSuaraNota()">🔊 Dengar Nota</button>
         <button class="btn btn-secondary" onclick="startQuiz()">Mula Latihan 📝</button>
         <button class="btn btn-accent" onclick="showDashboard()">Kembali ke Dashboard 🏠</button>
     </div>
 
+    <!-- QUIZ SCREEN -->
     <div id="screen-quiz" class="hidden">
         <div class="quiz-header">
             <span id="quiz-topic-name">Topik</span>
@@ -457,16 +461,19 @@ html_content = """<!DOCTYPE html>
         </div>
 
         <div id="quiz-visual-area">
-            </div>
+            <!-- Dynamic Graphics/Tables/Matrix here -->
+        </div>
 
         <div id="quiz-interaction-area">
-            </div>
+            <!-- Options buttons or fill-in box -->
+        </div>
 
         <div style="margin-top: 20px;">
             <button class="btn btn-accent" onclick="showDashboard()">Keluar Semasa 🏠</button>
         </div>
     </div>
 
+    <!-- REWARD SCREEN -->
     <div id="screen-reward" class="hidden">
         <h1 class="text-center">🎉 Tahniah! 🎉</h1>
         <p class="text-center" style="font-size: 18px; margin-top: 10px;">Anda telah menyelesaikan sesi latihan ini!</p>
@@ -1042,8 +1049,3 @@ html_content = """<!DOCTYPE html>
 
 </body>
 </html>
-"""
-
-with open("BijakMatematikTahun1.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
-print("File created successfully.")
