@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Bijak Matematik Tahun 1</title>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --yellow: #FFE66D;
+            --dark: #2F3E46;
+            --light: #F7FFF7;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Bubbles', sans-serif;
+            background-color: #E8F1F5;
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            border: 5px solid var(--secondary);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px #FFD2D2;
+        }
+
+        h2 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        .menu-btn {
+            background-color: var(--yellow);
+            color: var(--dark);
+            border: 3px solid var(--dark);
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 80%;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.05);
+            background-color: #ffd814;
+        }
+
+        .quiz-box {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .visual-box {
+            border: 3px dashed #ccc;
+            padding: 15px;
+            border-radius: 15px;
+            background: #f9f9f9;
+            min-width: 100px;
+            cursor: pointer;
+        }
+
+        .visual-box.selected {
+            border-color: var(--primary);
+            background-color: #FFEAEB;
+        }
+
+        .item-icon {
+            font-size: 2rem;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option-btn {
+            background-color: white;
+            border: 3px solid var(--secondary);
+            padding: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .number-bond {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .bond-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 4px solid var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background-color: white;
+        }
+
+        .bond-top {
+            background-color: var(--yellow);
+        }
+
+        .bond-bottom-container {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .back-btn {
+            background-color: #A2A2A2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .score-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .feedback {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 15px;
+            height: 35px;
+        }
+
+        .correct { color: #2ecc71; }
+        .wrong { color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="main-menu" class="quiz-box active">
+        <h1>🎒 Jom Main Matematik!</h1>
+        <p>Sila pilih latihan yang kamu mahu buat:</p>
+        <button class="menu-btn" onclick="startQuiz('intuitif')">1. Banyak atau Sedikit? 🍎</button>
+        <button class="menu-btn" onclick="startQuiz('pasangan')">2. Pasangan Nombor 🧩</button>
+        <button class="menu-btn" onclick="startQuiz('tambah_tolak')">3. Tambah & Tolak 🔢</button>
+        <button class="menu-btn" onclick="startQuiz('masa')">4. Kenali Masa & Waktu ⏰</button>
+    </div>
+
+    <div id="quiz-container" class="quiz-box">
+        <div class="score-text">Soalan: <span id="current-question">1</span>/5 | Markah: <span id="score">0</span></div>
+        <h2 id="question-text">Soalan di sini</h2>
+        
+        <div id="visual-area"></div>
+
+        <div class="options-container" id="options-area"></div>
+
+        <div class="feedback" id="feedback-text"></div>
+        <button class="back-btn" onclick="goMenu()">Kembali ke Menu</button>
+    </div>
+
+    <div id="result-screen" class="quiz-box">
+        <h1>🎉 Syabas! Selesai! 🎉</h1>
+        <p style="font-size: 1.5rem;">Kamu berjaya menjawab dengan betul:</p>
+        <h2 style="font-size: 3rem; color: var(--primary);" id="final-score">0 / 5</h2>
+        <div id="result-message" style="font-size: 1.2rem; margin-bottom: 20px; font-weight: bold;"></div>
+        <button class="menu-btn" onclick="goMenu()">Main Lagi</button>
+    </div>
+</div>
+
+<script>
+    // Bank Data Soalan mengikut format dokumen latihan asal
+    const quizData = {
+        intuitif: [
+            {
+                type: 'visual_select',
+                question: 'Pilih kumpulan objek yang BANYAK:',
+                options: ['Kumpulan A', 'Kumpulan B'],
+                answer: 'Kumpulan A',
+                boxA: ['✏️','✏️','✏️','✏️','✏️','✏️'], // 6 pensel
+                boxB: ['✏️','✏️','✏️'] // 3 pensel
+            },
+            {
+                type: 'visual_select',
+                question: 'Pilih kumpulan objek yang SEDIKIT:',
+                options: ['Kumpulan A', 'Kumpulan B'],
+                answer: 'Kumpulan B',
+                boxA: ['🎁','🎁','🎁','🎁','🎁'],
+                boxB: ['🎁','🎁']
+            },
+            {
+                type: 'visual_select',
+                question: 'Pilih kumpulan objek yang BANYAK:',
+                options: ['Kumpulan A', 'Kumpulan B'],
+                answer: 'Kumpulan B',
+                boxA: ['🍎','🍎'],
+                boxB: ['🍎','🍎','🍎','🍎','🍎','🍎','🍎']
+            },
+            {
+                type: 'visual_select',
+                question: 'Pilih kumpulan objek yang SEDIKIT:',
+                options: ['Kumpulan A', 'Kumpulan B'],
+                answer: 'Kumpulan A',
+                boxA: ['🎈','🎈','🎈'],
+                boxB: ['🎈','🎈','🎈','🎈','🎈']
+            },
+            {
+                type: 'visual_select',
+                question: 'Pilih kumpulan objek yang BANYAK:',
+                options: ['Kumpulan A', 'Kumpulan B'],
+                answer: 'Kumpulan A',
+                boxA: ['🚗','🚗','🚗','🚗'],
+                boxB: ['🚗']
+            }
+        ],
+        pasangan: [
+            {
+                type: 'bond',
+                question: 'Lengkapkan pasangan nombor yang membentuk 9:',
+                top: 9, left: 6, right: '?',
+                options: ['2', '3', '4', '5'],
+                answer: '3'
+            },
+            {
+                type: 'bond',
+                question: 'Apakah nombor yang tertinggal untuk membentuk 10:',
+                top: 10, left: 6, right: '?',
+                options: ['3', '4', '5', '6'],
+                answer: '4'
+            },
+            {
+                type: 'bond',
+                question: 'Lengkapkan pasangan nombor berikut:',
+                top: 7, left: 4, right: '?',
+                options: ['2', '3', '4', '1'],
+                answer: '3'
+            },
+            {
+                type: 'bond',
+                question: 'Apakah nombor di atas yang membentuk pasangan ini?',
+                top: '?', left: 5, right: 3,
+                options: ['6', '7', '8', '9'],
+                answer: '8'
+            },
+            {
+                type: 'bond',
+                question: 'Lengkapkan pasangan nombor yang membentuk 5:',
+                top: 5, left: '?', right: 3,
+                options: ['1', '2', '3', '4'],
+                answer: '2'
+            }
+        ],
+        tambah_tolak: [
+            {
+                type: 'normal',
+                question: 'Berapakah 5 + 3 = ?',
+                options: ['6', '7', '8', '9'],
+                answer: '8'
+            },
+            {
+                type: 'normal',
+                question: 'Berapakah 10 - 4 = ?',
+                options: ['4', '5', '6', '7'],
+                answer: '6'
+            },
+            {
+                type: 'normal',
+                question: 'Cari hasil tambah: 12 + 3 = ?',
+                options: ['13', '14', '15', '16'],
+                answer: '15'
+            },
+            {
+                type: 'normal',
+                question: 'Selesaikan ayat matematik: 16 - 5 = ?',
+                options: ['10', '11', '12', '13'],
+                answer: '11'
+            },
+            {
+                type: 'normal',
+                question: 'Kira operasi berikut: 55 + 21 = ?',
+                options: ['74', '75', '76', '77'],
+                answer: '76'
+            }
+        ],
+        masa: [
+            {
+                type: 'normal',
+                question: 'Bilakah kita bangun daripada tidur untuk bersiap ke sekolah?',
+                options: ['Pagi', 'Tengah hari', 'Petang', 'Malam'],
+                answer: 'Pagi'
+            },
+            {
+                type: 'normal',
+                question: 'Waktu yang sesuai untuk makan malam bersama keluarga ialah...',
+                options: ['Pagi', 'Tengah hari', 'Petang', 'Malam'],
+                answer: 'Malam'
+            },
+            {
+                type: 'normal',
+                question: 'Matahari berada tegak di atas kepala semasa waktu...',
+                options: ['Pagi', 'Tengah hari', 'Malam', 'Subuh'],
+                answer: 'Tengah hari'
+            },
+            {
+                type: 'normal',
+                question: 'Waktu yang sesuai untuk kita bermain bola di padang ialah pada waktu...',
+                options: ['Pagi', 'Tengah hari', 'Petang', 'Malam'],
+                answer: 'Petang'
+            },
+            {
+                type: 'normal',
+                question: 'Selepas waktu petang, hari akan bertukar menjadi waktu...',
+                options: ['Pagi', 'Tengah hari', 'Malam', 'Subuh'],
+                answer: 'Malam'
+            }
+        ]
+    };
+
+    let currentCategory = '';
+    let currentQIdx = 0;
+    let score = 0;
+    let canAnswer = true;
+
+    function startQuiz(category) {
+        currentCategory = category;
+        currentQIdx = 0;
+        score = 0;
+        canAnswer = true;
+        
+        document.getElementById('main-menu').classList.remove('active');
+        document.getElementById('quiz-container').classList.add('active');
+        document.getElementById('result-screen').classList.remove('active');
+        
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        canAnswer = true;
+        document.getElementById('feedback-text').innerHTML = '';
+        
+        let qList = quizData[currentCategory];
+        let q = qList[currentQIdx];
+
+        document.getElementById('current-question').innerText = currentQIdx + 1;
+        document.getElementById('score').innerText = score;
+        document.getElementById('question-text').innerText = q.question;
+
+        let visualArea = document.getElementById('visual-area');
+        let optionsArea = document.getElementById('options-area');
+        
+        visualArea.innerHTML = '';
+        optionsArea.innerHTML = '';
+
+        // Render mengikut jenis soalan
+        if (q.type === 'visual_select') {
+            let itemIconsA = q.boxA.map(icon => `<span class="item-icon">${icon}</span>`).join('');
+            let itemIconsB = q.boxB.map(icon => `<span class="item-icon">${icon}</span>`).join('');
+            
+            visualArea.innerHTML = `
+                <div class="visual-container">
+                    <div class="visual-box" onclick="checkAnswer('Kumpulan A')">
+                        <strong>Kumpulan A</strong><br>${itemIconsA}
+                    </div>
+                    <div class="visual-box" onclick="checkAnswer('Kumpulan B')">
+                        <strong>Kumpulan B</strong><br>${itemIconsB}
+                    </div>
+                </div>
+            `;
+        } else if (q.type === 'bond') {
+            visualArea.innerHTML = `
+                <div class="number-bond">
+                    <div class="bond-circle bond-top">${q.top}</div>
+                    <div class="bond-bottom-container">
+                        <div class="bond-circle">${q.left}</div>
+                        <div class="bond-circle">${q.right}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render butang jawapan (jika bukan jenis visual_select klik kotak terus)
+        if (q.type !== 'visual_select') {
+            q.options.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt);
+                optionsArea.appendChild(btn);
+            });
+        }
+    }
+
+    function checkAnswer(selected) {
+        if (!canAnswer) return;
+        canAnswer = false;
+
+        let qList = quizData[currentCategory];
+        let q = qList[currentQIdx];
+        let feedback = document.getElementById('feedback-text');
+
+        if (selected === q.answer) {
+            score++;
+            feedback.innerHTML = '<span class="correct">🎉 Betul! Bijak!</span>';
+        } else {
+            feedback.innerHTML = `<span class="wrong">❌ Alahai, Cuba Lagi! (Jawapan: ${q.answer})</span>`;
+        }
+
+        document.getElementById('score').innerText = score;
+
+        setTimeout(() => {
+            currentQIdx++;
+            if (currentQIdx < qList.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }, 2000);
+    }
+
+    function showResult() {
+        document.getElementById('quiz-container').classList.remove('active');
+        document.getElementById('result-screen').classList.add('active');
+        document.getElementById('final-score').innerText = `${score} / 5`;
+        
+        let msg = document.getElementById('result-message');
+        if(score === 5) {
+            msg.innerText = "🏆 Hebat! Kamu dapat Semua Betul! Mumtaz!";
+            msg.style.color = "#2ecc71";
+        } else if(score >= 3) {
+            msg.innerText = "👍 Bagus! Teruskan usaha untuk dapat markah penuh!";
+            msg.style.color = "#3498db";
+        } else {
+            msg.innerText = "💪 Jangan putus asa, mari cuba lagi sekali!";
+            msg.style.color = "#e67e22";
+        }
+    }
+
+    function goMenu() {
+        document.getElementById('main-menu').classList.add('active');
+        document.getElementById('quiz-container').classList.remove('active');
+        document.getElementById('result-screen').classList.remove('active');
+    }
+</script>
+
+</body>
+</html>
