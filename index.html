@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bijak Matematik</title>
-    <!-- Google Fonts & FontAwesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -359,6 +358,13 @@
             transition: width 0.3s ease;
         }
 
+        .status-pill {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
         /* 5. Question/Quiz Screen */
         .quiz-header {
             display: flex;
@@ -378,7 +384,6 @@
             text-align: center;
             margin-bottom: 20px;
             box-shadow: inset 0 -4px 0 #FFF59D;
-            white-space: pre-line;
         }
 
         .options-list {
@@ -513,7 +518,6 @@
 
     <div class="app-container">
 
-        <!-- 1. SPLASH SCREEN -->
         <div id="splash-screen" class="screen active">
             <div class="logo-box">
                 <i class="fa-solid fa-graduation-cap"></i>
@@ -523,7 +527,6 @@
             <button class="btn btn-secondary" onclick="navigateTo('login-screen')">Mula Belajar <i class="fa-solid fa-arrow-right"></i></button>
         </div>
 
-        <!-- 2. LOGIN / DAFTAR SCREEN -->
         <div id="login-screen" class="screen">
             <h2 style="font-family:'Fredoka One'; text-align:center;">Daftar Akaun</h2>
             <div class="welcome-img">
@@ -550,7 +553,6 @@
             <button class="btn btn-secondary" onclick="submitLogin('email')"><i class="fa-solid fa-envelope"></i> Daftar dengan E-mel</button>
         </div>
 
-        <!-- 3. DASHBOARD / HALAMAN UTAMA -->
         <div id="dashboard-screen" class="screen">
             <div class="user-summary-card">
                 <div class="user-avatar-large" id="dash-avatar">🐱</div>
@@ -586,7 +588,6 @@
             </div>
         </div>
 
-        <!-- 4. PILIH TAHUN SCREEN -->
         <div id="year-screen" class="screen">
             <div class="app-header">
                 <button class="back-btn" onclick="navigateTo('dashboard-screen')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -594,31 +595,28 @@
                 <div></div>
             </div>
             <div class="grid-list">
-                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Sila pilih Tahun 4 untuk melihat soalan baharu!')">Tahun 1 (Tutup)</button>
-                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Sila pilih Tahun 4 untuk melihat soalan baharu!')">Tahun 2 (Tutup)</button>
-                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Sila pilih Tahun 4 untuk melihat soalan baharu!')">Tahun 3 (Tutup)</button>
-                <button class="btn btn-blue" onclick="selectYear(4)">✨ Tahun 4 (Kini Aktif!)</button>
-                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Topik Tahun 5 & 6 akan datang dalam kemas kini silibus baharu!')">Tahun 5 (Segera)</button>
-                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Topik Tahun 5 & 6 akan datang dalam kemas kini silibus baharu!')">Tahun 6 (Segera)</button>
+                <button class="btn btn-blue" onclick="selectYear(1)">Tahun 1</button>
+                <button class="btn btn-blue" onclick="selectYear(2)">Tahun 2</button>
+                <button class="btn btn-blue" onclick="selectYear(3)">Tahun 3</button>
+                <button class="btn btn-blue" onclick="selectYear(4)">Tahun 4</button>
+                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Topik Tahun 5 akan datang dalam kemas kini silibus baharu!')">Tahun 5 (Segera)</button>
+                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Topik Tahun 6 akan datang dalam kemas kini silibus baharu!')">Tahun 6 (Segera)</button>
             </div>
         </div>
 
-        <!-- 5. PILIH TOPIK SCREEN -->
         <div id="topic-screen" class="screen">
             <div class="app-header">
                 <button class="back-btn" onclick="navigateTo('year-screen')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h3 style="font-family:'Fredoka One';" id="topic-screen-title">Silibus KSSR</h3>
+                <h3 id="topic-screen-title" style="font-family:'Fredoka One';">Topik Tahun</h3>
                 <div></div>
             </div>
-            <div class="grid-list" id="topics-list-container">
-                <!-- Dijana Dinamik oleh JavaScript -->
-            </div>
+            <div class="grid-list" id="topics-container">
+                </div>
         </div>
 
-        <!-- 6. JAWAB SOALAN (QUIZ) SCREEN -->
         <div id="quiz-screen" class="screen">
             <div class="quiz-header">
-                <span id="quiz-topic-name" style="color:var(--accent-purple);">Topik</span>
+                <span id="quiz-topic-title" style="color:var(--primary);">Topik</span>
                 <span id="quiz-question-number" style="background: #ECEFF1; padding: 4px 12px; border-radius: 12px;">Soalan 1/20</span>
             </div>
             <div class="progress-bar-container" style="margin-bottom: 15px; height: 12px;">
@@ -628,14 +626,12 @@
                 Mengira soalan...
             </div>
             <div class="options-list" id="quiz-options-container">
-                <!-- 4 Pilihan Butang Jawapan -->
-            </div>
+                </div>
             <button class="btn" style="background:#ECEFF1; color:#2C3E50; box-shadow:0 6px 0 #CFD8DC; margin-top:25px;" onclick="if(confirm('Adakah anda pasti mahu keluar? Kemajuan latihan ini tidak akan disimpan.')) navigateTo('dashboard-screen')">
                 <i class="fa-solid fa-house"></i> Kembali ke Menu
             </button>
         </div>
 
-        <!-- 7. KEPUTUSAN SCREEN -->
         <div id="result-screen" class="screen">
             <h2 style="font-family:'Fredoka One'; text-align:center; color: var(--secondary);">Latihan Selesai!</h2>
             <div class="result-score-circle">
@@ -643,103 +639,218 @@
                 <span style="font-size:0.9rem; font-family:'Nunito'; font-weight:800;">SKOR</span>
             </div>
             <div class="result-reward-info">
-                <p style="color:var(--accent-purple);"><i class="fa-solid fa-bolt"></i> +<span id="reward-xp">0</span> XP diperoleh!</p>
-                <p style="color:var(--accent-yellow); margin-top:5px;"><i class="fa-solid fa-star"></i> +<span id="reward-stars">0</span> Bintang diperoleh!</p>
+                <p style="color:var(--primary); font-size:1.1rem;"><i class="fa-solid fa-bolt"></i> +<span id="reward-xp">0</span> XP</p>
+                <p style="color:var(--accent-yellow); font-size:1.1rem; margin-top:5px;"><i class="fa-solid fa-star"></i> +<span id="reward-stars">0</span> Bintang</p>
             </div>
-            <button class="btn" onclick="navigateTo('dashboard-screen')"><i class="fa-solid fa-house"></i> Kembali ke Menu</button>
-            <button class="btn btn-secondary" onclick="navigateTo('kemajuan-screen')"><i class="fa-solid fa-chart-line"></i> Lihat Kemajuan</button>
+            <button class="btn btn-secondary" style="width:100%;" onclick="navigateTo('topic-screen')"><i class="fa-solid fa-rotate-left"></i> Selesai & Kembali</button>
         </div>
 
-        <!-- 8. LEADERBOARD SCREEN -->
         <div id="leaderboard-screen" class="screen">
             <div class="app-header">
                 <button class="back-btn" onclick="navigateTo('dashboard-screen')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h3 style="font-family:'Fredoka One';">Carta Juara</h3>
+                <h3 style="font-family:'Fredoka One';">Carta Juara (Mingguan)</h3>
                 <div></div>
             </div>
-            <div style="background:#FFF9C4; padding:10px; border-radius:12px; text-align:center; font-weight:700; margin-bottom:15px;">
-                🏆 Kedudukan Teratas Sekolah Rendah Malaysia
+            <div style="text-align:center; margin-bottom:15px; font-weight:700; color:var(--accent-purple);">
+                <i class="fa-solid fa-trophy" style="font-size:2rem;"></i> Kedudukan Semasa Anda
             </div>
-            <div class="grid-list" id="leaderboard-container">
-                <!-- Dijana Dinamik -->
-            </div>
+            <div class="grid-list" id="leaderboard-container" style="gap:8px;">
+                </div>
         </div>
 
-        <!-- 9. PENCAPAIAN / LENCANA SCREEN -->
         <div id="pencapaian-screen" class="screen">
             <div class="app-header">
                 <button class="back-btn" onclick="navigateTo('dashboard-screen')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h3 style="font-family:'Fredoka One';">Lencana Saya</h3>
+                <h3 style="font-family:'Fredoka One';">Koleksi Lencana Anda</h3>
                 <div></div>
             </div>
             <div class="badge-grid" id="badges-container">
-                <!-- Lencana status penguasaan -->
-            </div>
+                </div>
         </div>
 
-        <!-- 10. KEMAJUAN SCREEN -->
         <div id="kemajuan-screen" class="screen">
             <div class="app-header">
                 <button class="back-btn" onclick="navigateTo('dashboard-screen')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h3 style="font-family:'Fredoka One';">Analisis Kemajuan</h3>
+                <h3 style="font-family:'Fredoka One';">Rekod Kemajuan</h3>
                 <div></div>
             </div>
-            <div class="p-stat" style="background:#E3F2FD; margin-bottom:15px;">
-                Peratus Selesai Keseluruhan
-                <span id="progress-total-percent">0%</span>
-            </div>
-            <div class="grid-list" id="progress-details-container">
-                <!-- Senarai topik bersama status -->
-            </div>
+            <div class="grid-list" id="progress-list-container">
+                </div>
         </div>
 
-        <!-- 11. PROFIL SCREEN -->
         <div id="profil-screen" class="screen">
             <div class="app-header">
                 <button class="back-btn" onclick="navigateTo('dashboard-screen')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h3 style="font-family:'Fredoka One';">Profil Pelajar</h3>
+                <h3 style="font-family:'Fredoka One';">Profil Pengguna</h3>
                 <div></div>
             </div>
             <div style="text-align:center; margin-bottom:15px;">
-                <div class="user-avatar-large" style="margin: 0 auto 10px auto; width:90px; height:90px; font-size:4rem;" id="prof-avatar">🐱</div>
-                <h2 id="prof-name" style="font-family:'Fredoka One';">Nama Pengguna</h2>
-                <p id="prof-level-tag" style="background:var(--accent-purple); color:white; display:inline-block; padding:2px 12px; border-radius:10px; font-weight:700; font-size:0.9rem; margin-top:5px;">Tahap 1</p>
+                <div class="user-avatar-large" style="margin: 0 auto 10px auto;" id="profile-avatar-view">🐱</div>
+                <h2 id="profile-name-view" style="font-family:'Fredoka One';">Nama Pengguna</h2>
             </div>
             <div class="profile-stat-box">
-                <div class="p-stat">Markah XP<span id="prof-xp">0</span></div>
-                <div class="p-stat">Bintang<span id="prof-stars">0</span></div>
-                <div class="p-stat">Lencana<span id="prof-badges">0</span></div>
-                <div class="p-stat">Latihan Selesai<span id="prof-done">0</span></div>
+                <div class="p-stat">Jumlah XP <span id="p-xp">0</span></div>
+                <div class="p-stat">Bintang <span id="p-stars">0</span></div>
+                <div class="p-stat">Streak <span id="p-streak">1</span></div>
+                <div class="p-stat">Selesai Latihan <span id="p-completed">0</span></div>
             </div>
-            <button class="btn" style="background:#E53935; box-shadow:0 6px 0 #B71C1C; margin-top:20px;" onclick="resetData()"><i class="fa-solid fa-trash-can"></i> Set Semula Semua Data</button>
+            <button class="btn btn-secondary" style="margin-top:20px; background:#D32F2F; box-shadow: 0 6px 0 #9A0007;" onclick="resetData()">
+                <i class="fa-solid fa-trash-can"></i> Set Semula Semua Rekod
+            </button>
         </div>
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC & SOALAN BANK TAHUN 4 -->
     <script>
-        // --- DATA BANK SOALAN TAHUN 4 KSSR ---
+        // DATA UTAMA SOALAN APLIKASI BIJAK MATEMATIK
         const questionBank = {
+            1: {
+                "Nombor Bulat": [
+                    { q: "Apakah nombor selepas 27?", o: ["26","28","29","30"], a: "B" },
+                    { q: "Apakah nombor sebelum 45?", o: ["44","46","43","47"], a: "A" },
+                    { q: "Yang manakah nombor terbesar?", o: ["58","85","68","78"], a: "B" },
+                    { q: "Yang manakah nombor terkecil?", o: ["31","13","23","32"], a: "B" },
+                    { q: "Apakah nilai digit puluh bagi nombor 64?", o: ["4","6","10","64"], a: "B" },
+                    { q: "Apakah nilai digit sa bagi nombor 92?", o: ["9","2","20","90"], a: "B" },
+                    { q: "Pilih nombor yang ditulis dengan perkataan betul: 15", o: ["Lima","Lima belas","Sepuluh lima","Sebelas"], a: "B" },
+                    { q: "Tuliskan 'tiga puluh lapan' dalam angka.", o: ["308","83","38","380"], a: "C" },
+                    { q: "Lengkapkan pola nombor: 2, 4, 6, ___, 10", o: ["7","8","9","12"], a: "B" },
+                    { q: "Bundarkan 18 kepada puluh yang terdekat.", o: ["10","15","20","30"], a: "C" }
+                ],
+                "Tambah": [
+                    { q: "Berapakah 5 + 3?", o: ["7","8","9","10"], a: "B" },
+                    { q: "Berapakah 12 + 4?", o: ["14","15","16","17"], a: "C" },
+                    { q: "Berapakah 20 + 15?", o: ["30","35","40","45"], a: "B" },
+                    { q: "Berapakah 8 + 7?", o: ["13","14","15","16"], a: "C" },
+                    { q: "Berapakah 15 + 7?", o: ["21","22","23","24"], a: "B" },
+                    { q: "Berapakah 18 + 6?", o: ["22","23","24","25"], a: "C" },
+                    { q: "Berapakah 20 + 9?", o: ["28","29","30","31"], a: "B" },
+                    { q: "Berapakah 13 + 12?", o: ["24","25","26","27"], a: "B" },
+                    { q: "Berapakah 21 + 15?", o: ["34","35","36","37"], a: "C" },
+                    { q: "Berapakah 30 + 14?", o: ["42","43","44","45"], a: "C" }
+                ],
+                "Tolak": [
+                    { q: "Berapakah 10 − 4?", o: ["5","6","7","8"], a: "B" },
+                    { q: "Berapakah 18 − 5?", o: ["12","13","14","15"], a: "B" },
+                    { q: "Berapakah 25 − 10?", o: ["10","15","20","25"], a: "B" }
+                ],
+                "Pecahan": [
+                    { q: "Apakah nama pecahan ½?", o: ["Satu per empat","Satu per dua","Tiga per empat","Dua per dua"], a: "B" },
+                    { q: "Apakah nama pecahan ¼?", o: ["Satu per dua","Dua per empat","Satu per empat","Tiga per empat"], a: "C" },
+                    { q: "Apakah nama pecahan ¾?", o: ["Tiga per dua","Tiga per empat","Empat per tiga","Satu per empat"], a: "B" }
+                ],
+                "Wang": [
+                    { q: "Apakah mata wang negara Malaysia?", o: ["Dolar","Rupiah","Ringgit","Baht"], a: "C" },
+                    { q: "Berapakah jumlah wang RM5 + RM2?", o: ["RM6","RM7","RM8","RM9"], a: "B" }
+                ],
+                "Masa & Waktu": [
+                    { q: "Satu minggu ada berapa hari?", o: ["5 hari","6 hari","7 hari","8 hari"], a: "C" },
+                    { q: "Selepas hari Isnin ialah hari...", o: ["Rabu","Selasa","Khamis","Jumaat"], a: "B" }
+                ],
+                "Ukuran & Sukatan": [
+                    { q: "Unit manakah digunakan untuk mengukur panjang pembaris?", o: ["Kilogram","Sentimeter","Liter","Jam"], a: "B" }
+                ],
+                "Bentuk & Ruang": [
+                    { q: "Berapakah bilangan sisi bagi sebuah segi tiga?", o: ["2","3","4","5"], a: "B" },
+                    { q: "Berapakah bilangan bucu pada segi empat tepat?", o: ["3","4","5","6"], a: "B" },
+                    { q: "Yang manakah berbentuk bulatan?", o: ["Bola","Buku","Pintu","Kotak"], a: "A" },
+                    { q: "Yang manakah berbentuk segi empat tepat?", o: ["Syiling","Tingkap","Pinggan","Bola"], a: "B" }
+                ]
+            },
+            2: {
+                "Nombor Bulat": [
+                    { q: "Apakah nilai tempat bagi digit 7 dalam nombor 742?", o: ["Sa","Puluh","Ratus","Ribu"], a: "C" },
+                    { q: "Cerakinkan nombor 539 mengikut nilai digit.", o: ["50+30+9","500+30+9","500+300+9","5+3+9"], a: "B" },
+                    { q: "Susunan nombor secara menaik yang betul ialah", o: ["482, 428, 824, 248","248, 428, 482, 824","824, 482, 428, 248","428, 248, 482, 824"], a: "B" },
+                    { q: "Susunan nombor secara menurun yang betul ialah", o: ["309, 390, 903, 930","930, 903, 390, 309","903, 930, 390, 309","390, 309, 930, 903"], a: "B" },
+                    { q: "Bundarkan 468 kepada ratus terdekat.", o: ["400","450","500","600"], a: "C" }
+                ],
+                "Tambah": [
+                    { q: "245 + 132 =", o: ["367","377","387","397"], a: "B" },
+                    { q: "368 + 145 =", o: ["503","513","523","533"], a: "B" },
+                    { q: "___ + 156 = 400", o: ["234","244","254","264"], a: "B" },
+                    { q: "125 + 175 + 100 =", o: ["390","400","410","420"], a: "B" },
+                    { q: "218 + 142 + 40 =", o: ["390","400","410","420"], a: "B" },
+                    { q: "Berapakah hasil tambah 364 dan 235?", o: ["589","599","609","619"], a: "B" },
+                    { q: "Siti mengumpul 128 pelekat pada bulan Januari dan 245 pelekat pada bulan Februari. Berapakah jumlah pelekat Siti?", o: ["363","373","383","393"], a: "B" }
+                ],
+                "Tolak": [
+                    { q: "456 − 123 =", o: ["323","333","343","353"], a: "B" },
+                    { q: "612 − 245 =", o: ["357","367","377","387"], a: "B" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["542 − 152 = 390","542 − 152 = 490","542 − 152 = 542","684 − 152 = 552"], a: "A" },
+                    { q: "700 − 399 =", o: ["291","301","311","321"], a: "B" },
+                    { q: "456 − 156 =", o: ["290","300","310","320"], a: "B" },
+                    { q: "Farid mempunyai RM950. Dia membeli sebuah basikal berharga RM468. Berapakah baki wang Farid?", o: ["RM472","RM482","RM492","RM502"], a: "B" }
+                ],
+                "Darab": [
+                    { q: "2 × 7 =", o: ["12","14","16","18"], a: "B" },
+                    { q: "5 × 6 =", o: ["25","30","35","40"], a: "B" }
+                ],
+                "Bahagi": [
+                    { q: "12 ÷ 2 =", o: ["5","6","7","8"], a: "B" },
+                    { q: "18 ÷ 3 =", o: ["5","6","7","8"], a: "B" },
+                    { q: "20 ÷ 5 =", o: ["3","4","5","6"], a: "B" },
+                    { q: "24 ÷ 4 =", o: ["5","6","7","8"], a: "B" }
+                ],
+                "Wang": [
+                    { q: "Berapakah jumlah wang RM50 + RM20?", o: ["RM60","RM70","RM80","RM90"], a: "B" },
+                    { q: "Ali mempunyai RM35. Dia menerima lagi RM25. Berapakah jumlah wang Ali?", o: ["RM50","RM55","RM60","RM65"], a: "C" },
+                    { q: "Siti mempunyai RM80. Dia membeli sebuah beg berharga RM35. Berapakah baki wang Siti?", o: ["RM35","RM40","RM45","RM50"], a: "C" }
+                ],
+                "Perpuluhan": [
+                    { q: "Apakah nombor perpuluhan bagi tujuh perpuluhan lima?", o: ["7.05","7.5","75.0","0.75"], a: "B" },
+                    { q: "Bagaimanakah nombor 3.8 ditulis dalam perkataan?", o: ["Tiga lapan","Tiga perpuluhan lapan","Tiga puluh lapan","Tiga ratus lapan"], a: "B" },
+                    { q: "Manakah nombor perpuluhan yang paling besar?", o: ["0.5","0.8","0.9","0.7"], a: "C" },
+                    { q: "Manakah nombor perpuluhan yang paling kecil?", o: ["0.6","0.4","0.2","0.8"], a: "C" },
+                    { q: "0.4 + 0.3 =", o: ["0.5","0.6","0.7","0.8"], a: "C" },
+                    { q: "0.9 − 0.4 =", o: ["0.3","0.4","0.5","0.6"], a: "C" },
+                    { q: "0.25 + 0.35 =", o: ["0.50","0.60","0.70","0.80"], a: "B" },
+                    { q: "0.80 − 0.20 =", o: ["0.40","0.50","0.60","0.70"], a: "C" }
+                ],
+                "Bentuk & Ruang": [
+                    { q: "Yang manakah berbentuk segi empat sama?", o: ["Jubin lantai","Jam dinding bulat","Bola","Pinggan"], a: "A" },
+                    { q: "Yang manakah berbentuk segi tiga?", o: ["Kon trafik","Bola","Buku","Syiling"], a: "A" },
+                    { q: "Bentuk manakah mempunyai sisi lurus sahaja?", o: ["Bulatan","Segi tiga","Bujur","Oval"], a: "B" },
+                    { q: "Bentuk manakah mempunyai garisan melengkung?", o: ["Segi tiga","Segi empat sama","Bulatan","Segi empat tepat"], a: "C" }
+                ]
+            },
+            3: {
+                "Nombor Bulat": [
+                    { q: "Apakah nilai tempat bagi digit 6 dalam nombor 8 615?", o: ["Sa","Puluh","Ratus","Ribu"], a: "C" },
+                    { q: "Apakah nombor yang betul?\n3 000 + 600 + 40 + 8 =", o: ["3 468","3 648","3 684","3 846"], a: "B" },
+                    { q: "Susun nombor berikut secara menurun.\n7 820, 7 208, 7 802, 7 280", o: ["7 820, 7 802, 7 280, 7 208","7 802, 7 820, 7 208, 7 280","7 208, 7 280, 7 802, 7 820","7 820, 7 280, 7 802, 7 208"], a: "A" }
+                ],
+                "Tambah": [
+                    { q: "Sebuah perpustakaan mempunyai 3 210 buah buku Bahasa Melayu dan 2 345 buah buku Bahasa Inggeris. Berapakah jumlah buku semuanya?", o: ["5 445","5 545","5 555","5 655"], a: "C" },
+                    { q: "Sebuah kedai menjual 1 230 botol air pada hari Isnin dan 2 450 botol air pada hari Selasa. Berapakah jumlah botol air yang dijual?", o: ["3 580","3 680","3 780","3 880"], a: "B" },
+                    { q: "4 567 + 1 111 =", o: ["5 668","5 678","5 688","5 698"], a: "B" },
+                    { q: "2 345 + 3 456 =", o: ["5 791","5 801","5 811","5 821"], a: "B" }
+                ],
+                "Tolak": [
+                    { q: "Ali mempunyai 5 430 biji guli. Dia memberikan 1 245 biji guli kepada kawannya. Berapakah baki guli Ali?", o: ["4 085","4 185","4 285","4 385"], a: "B" },
+                    { q: "Perpustakaan mempunyai 8 500 buah buku. Sebanyak 2 375 buah dipinjam. Berapakah buku yang masih ada?", o: ["6 025","6 125","6 225","6 325"], a: "B" }
+                ]
+            },
             4: {
                 "Nombor Bulat": [
                     { q: "Apakah nilai tempat bagi digit 6 dalam nombor 568 214?", o: ["Sa", "Puluh", "Puluh ribu", "Ratus ribu"], a: "C" },
                     { q: "Apakah nilai digit 8 dalam nombor 483 721?", o: ["8", "80", "800", "80 000"], a: "D" },
                     { q: "Enam ratus tujuh puluh lapan ribu tiga ratus sembilan belas ditulis dalam angka ialah", o: ["678 391", "678 319", "687 319", "768 319"], a: "B" },
-                    { q: "904 215 ditulis dalam perkataan ialah", o: ["Sembilan ratus empat ribu dua ratus lima belas", "Sembilan ratus empat ribu dua ribu lima belas", "Sembilan ratus empat ribu dua ratus lima belas", "Sembilan ratus empat ribu dua ratus lima belas"], a: "A" },
+                    { q: "904 215 ditulis dalam perkataan ialah", o: ["Sembilan ratus empat ribu dua ratus lima belas", "Sembilan ratus empat ribu dua ribu lima belas", "Sembilan ratus empat ribu dua ratus lima belas", "Sembilan ratus empat ribu dua ratus lima belas"], a: "D" },
                     { q: "Cerakinkan nombor 705 482.", o: ["700 000 + 5 000 + 400 + 80 + 2", "700 000 + 500 + 400 + 80 + 2", "70 000 + 5 000 + 400 + 80 + 2", "700 000 + 5 000 + 40 + 80 + 2"], a: "A" },
                     { q: "Antara berikut, yang manakah nombor paling besar?", o: ["598 421", "598 241", "599 124", "589 421"], a: "C" },
                     { q: "Susunan menaik yang betul ialah", o: ["214 356, 214 365, 214 536, 215 346", "215 346, 214 536, 214 365, 214 356", "214 365, 214 356, 214 536, 215 346", "214 536, 214 356, 214 365, 215 346"], a: "A" },
                     { q: "Susunan menurun yang betul ialah", o: ["731 520, 731 250, 713 520, 703 521", "703 521, 713 520, 731 250, 731 520", "731 250, 731 520, 703 521, 713 520", "713 520, 731 520, 731 250, 703 521"], a: "A" },
                     { q: "Bundarkan 248 735 kepada puluh ribu yang terdekat.", o: ["240 000", "250 000", "248 000", "249 000"], a: "B" },
                     { q: "Bundarkan 683 249 kepada ratus ribu yang terdekat.", o: ["600 000", "650 000", "700 000", "680 000"], a: "C" },
-                    { q: "Lengkapkan pola nombor berikut.\n125 000, 130 000, 135 000, _____, 145 000", o: ["138 000", "139 000", "140 000", "141 000"], a: "C" },
+                    { q: "Lengkapkan pola nombor berikut:\n125 000, 130 000, 135 000, _____, 145 000", o: ["138 000", "139 000", "140 000", "141 000"], a: "C" },
                     { q: "Antara berikut, yang manakah lebih kecil daripada 560 000?", o: ["560 010", "559 999", "560 100", "561 000"], a: "B" },
                     { q: "Berapakah nombor selepas 899 999?", o: ["900 000", "899 998", "900 001", "999 999"], a: "A" },
                     { q: "Berapakah nombor sebelum 500 000?", o: ["499 000", "499 998", "499 999", "500 001"], a: "C" },
-                    { q: "Pilih simbol yang betul.\n456 789 ___ 456 879", o: [">", "<", "=", "≠"], a: "B" },
+                    { q: "Pilih simbol yang betul:\n456 789 ___ 456 879", o: [">", "<", "=", "≠"], a: "B" },
                     { q: "Nombor yang terdiri daripada 4 ratus ribu, 2 puluh ribu, 8 ratus, 5 puluh dan 6 sa ialah", o: ["420 856", "428 056", "402 856", "420 586"], a: "A" },
                     { q: "Apakah digit pada tempat ribu dalam nombor 918 364?", o: ["1", "8", "3", "6"], a: "B" },
-                    { q: "Berapakah beza antara nombor terbesar dan nombor terkecil?\n654 321 dan 123 456", o: ["530 865", "531 865", "520 865", "540 865"], a: "A" },
+                    { q: "Berapakah beza antara nombor terbesar dan nombor terkecil daripada 654 321 dan 123 456?", o: ["530 865", "531 865", "520 865", "540 865"], a: "A" },
                     { q: "Pilih pernyataan yang betul.", o: ["345 678 > 354 678", "498 765 < 489 765", "800 001 > 799 999", "654 321 = 654 312"], a: "C" },
                     { q: "Apakah nombor yang berada di antara 345 999 dan 346 001?", o: ["345 998", "346 000", "346 002", "345 990"], a: "B" }
                 ],
@@ -800,9 +911,9 @@
                     { q: "318 × 15 =", o: ["4 670", "4 770", "4 870", "4 970"], a: "B" },
                     { q: "425 × 32 =", o: ["13 500", "13 600", "13 700", "13 800"], a: "B" },
                     { q: "1 208 × 25 =", o: ["29 200", "30 200", "31 200", "32 200"], a: "B" },
-                    { q: " sebuah kotak mengandungi 24 batang pensel. Sebanyak 125 kotak dihantar ke sebuah sekolah. Berapakah jumlah pensel semuanya?", o: ["2 900", "3 000", "3 100", "3 200"], a: "B" },
+                    { q: "Sebuah kotak mengandungi 24 batang pensel. Sebanyak 125 kotak dihantar ke sebuah sekolah. Berapakah jumlah pensel semuanya?", o: ["2 900", "3 000", "3 100", "3 200"], a: "B" },
                     { q: "Sebuah bas membawa 48 orang penumpang. Jika terdapat 35 buah bas, berapakah jumlah penumpang?", o: ["1 580", "1 680", "1 780", "1 880"], a: "B" },
-                    { q: "Sebuah ladang mempunyai 215 pokok mangga dalam setiap baris. Terdapat 18 baris pokok. Berapakah jumlah pokok mangga?", o: ["3 770", "3 870", "3 970", "4 070"], a: "B" },
+                    { q: "Sebuah ladang mempunyai 215 pokok mangga dalam setiap baris. Terdapat 18 baris pokok. Berapakah jumlah pokok mangga?", o: ["3 770", "3 870", "3 970", "4 070"], a: "C" },
                     { q: "Hasil darab bagi 640 × 50 ialah", o: ["31 000", "32 000", "33 000", "34 000"], a: "B" },
                     { q: "Pilih ayat matematik yang betul.", o: ["326 × 14 = 4 464", "326 × 14 = 4 564", "326 × 14 = 4 664", "326 × 14 = 4 764"], a: "B" },
                     { q: "1 500 × 20 =", o: ["25 000", "30 000", "35 000", "40 000"], a: "B" },
@@ -871,20 +982,20 @@
                     { q: "Amir membeli 2.5 kg epal dan 1.8 kg oren. Berapakah jumlah jisim buah-buahan itu?", o: ["4.1 kg", "4.2 kg", "4.3 kg", "4.4 kg"], a: "C" },
                     { q: "Sebotol jus mengandungi 1.5 L. Ali minum 0.7 L. Berapakah isipadu jus yang masih tinggal?", o: ["0.6 L", "0.7 L", "0.8 L", "0.9 L"], a: "C" },
                     { q: "Pilih ayat matematik yang betul.", o: ["7.25 + 1.35 = 8.50", "7.25 + 1.35 = 8.60", "7.25 + 1.35 = 8.70", "7.25 + 1.35 = 8.80"], a: "B" },
-                    { q: "Lengkapkan pola nombor berikut.\n2.5, 3.0, 3.5, _____, 4.5", o: ["3.8", "4.0", "4.2", "4.4"], a: "B" },
+                    { q: "Lengkapkan pola nombor berikut:\n2.5, 3.0, 3.5, _____, 4.5", o: ["3.8", "4.0", "4.2", "4.4"], a: "B" },
                     { q: "Yang manakah bersamaan dengan 0.75?", o: ["75", "7.5", "75/100", "75/10"], a: "C" },
                     { q: "Antara berikut, yang manakah lebih besar daripada 6.49 tetapi lebih kecil daripada 6.51?", o: ["6.48", "6.50", "6.52", "6.60"], a: "B" }
                 ],
                 "Wang": [
                     { q: "Harga sebuah buku ialah RM28.50. Amir membayar dengan RM50.00. Berapakah baki wang yang diterima?", o: ["RM20.50", "RM21.50", "RM22.50", "RM23.50"], a: "B" },
                     { q: "Berapakah jumlah wang RM45.80 + RM32.40?", o: ["RM77.20", "RM78.20", "RM79.20", "RM80.20"], a: "B" },
-                    { q: "Ibu membeli beras berharga RM42.90 dan minyak masak berharga RM35.60. Berapakah jumlah yang perlu dibayar?", o: ["RM77.50", "RM78.50", "RM79.50", "RM80.50"], a: "C" },
+                    { q: "Ibu membeli beras berharga RM42.90 and minyak masak berharga RM35.60. Berapakah jumlah yang perlu dibayar?", o: ["RM77.50", "RM78.50", "RM79.50", "RM80.50"], a: "B" },
                     { q: "Ali mempunyai RM120.00. Dia membeli kasut berharga RM68.90. Berapakah baki wang Ali?", o: ["RM50.10", "RM51.10", "RM52.10", "RM53.10"], a: "B" },
                     { q: "Sebatang pensel berharga RM2.50. Berapakah harga 8 batang pensel?", o: ["RM18.00", "RM19.00", "RM20.00", "RM21.00"], a: "C" },
-                    { q: "Harga setiap buku ialah RM15.00. Berapakah jumlah harga untuk 12 buku?", o: ["RM160", "RM170", "RM180", "RM190"], a: "C" },
+                    { q: "Commercial box mengandungi 12 buku. Harga setiap buku ialah RM15.00. Berapakah jumlah harga semua buku?", o: ["RM160", "RM170", "RM180", "RM190"], a: "C" },
                     { q: "Berapakah jumlah wang RM125.40 + RM234.60?", o: ["RM350.00", "RM360.00", "RM370.00", "RM380.00"], a: "B" },
                     { q: "RM540.00 ÷ 9 =", o: ["RM50", "RM55", "RM60", "RM65"], a: "C" },
-                    { q: "Harga sebuah basikal ialah RM850.00 dan topi keledar berharga RM125.00. Berapakah jumlah harga kedua-dua barang itu?", o: ["RM965.00", "RM975.00", "RM985.00", "RM995.00"], a: "B" },
+                    { q: "Sebuah basikal berharga RM850.00. Sebuah topi keledar berharga RM125.00. Berapakah jumlah harga kedua-dua barang itu?", o: ["RM965.00", "RM975.00", "RM985.00", "RM995.00"], a: "B" },
                     { q: "Siti mempunyai RM95.00. Dia membeli beg sekolah berharga RM48.70 dan botol air berharga RM15.30. Berapakah baki wang Siti?", o: ["RM30.00", "RM31.00", "RM32.00", "RM33.00"], a: "B" },
                     { q: "Berapakah jumlah wang RM215.80 + RM184.20?", o: ["RM390.00", "RM395.00", "RM400.00", "RM405.00"], a: "C" },
                     { q: "Sebuah kedai memperoleh RM2 350.00 pada hari Isnin dan RM1 875.00 pada hari Selasa. Berapakah jumlah jualan bagi dua hari itu?", o: ["RM4 125.00", "RM4 225.00", "RM4 325.00", "RM4 425.00"], a: "B" },
@@ -930,7 +1041,7 @@
                     { q: "Jisim sekarung beras ialah 25 kg. Dua karung beras mempunyai jumlah jisim", o: ["45 kg", "50 kg", "55 kg", "60 kg"], a: "B" },
                     { q: "Sebungkus gula berjisim 2 kg. Ali membeli 4 bungkus. Berapakah jumlah jisim gula?", o: ["6 kg", "7 kg", "8 kg", "9 kg"], a: "C" },
                     { q: "Tukarkan 7 500 mℓ kepada liter.", o: ["0.75 L", "7.05 L", "7.5 L", "75 L"], a: "C" },
-                    { q: "Bakinya apabila baldi yang mengandungi 12 L air dikeluarkan sebanyak 5 L?", o: ["6 L", "7 L", "8 L", "9 L"], a: "B" },
+                    { q: "Sebuah baldi mengandungi 12 L air. Sebanyak 5 L digunakan. Berapakah isipadu air yang tinggal?", o: ["6 L", "7 L", "8 L", "9 L"], a: "B" },
                     { q: "Sebotol jus mengandungi 2 L. Berapakah isipadunya dalam mililiter?", o: ["20 mℓ", "200 mℓ", "2 000 mℓ", "20 000 mℓ"], a: "C" },
                     { q: "Sebuah tangki mengandungi 18 L air. Kemudian ditambah lagi 7 L air. Berapakah jumlah isipadu air?", o: ["24 L", "25 L", "26 L", "27 L"], a: "B" },
                     { q: "Yang manakah paling berat?", o: ["800 g", "900 g", "1 kg", "950 g"], a: "C" },
@@ -939,9 +1050,9 @@
                     { q: "Sebiji tembikai berjisim 4 kg 500 g. Sebiji lagi berjisim 2 kg 750 g. Berapakah jumlah jisim kedua-duanya?", o: ["7 kg 150 g", "7 kg 250 g", "7 kg 350 g", "7 kg 450 g"], a: "B" },
                     { q: "Pilih ayat matematik yang betul.", o: ["1 km = 100 m", "1 kg = 100 g", "1 L = 1 000 mℓ", "1 m = 10 cm"], a: "C" },
                     { q: "Sebuah kolam mengandungi 35 L air. Sebanyak 12 L air dikeluarkan. Berapakah isipadu air yang tinggal?", o: ["21 L", "22 L", "23 L", "24 L"], a: "C" },
-                    { q: "Seorang pelari berlari sejauh 2 km pada waktu pagi dan 3 km pada waktu petang. Berapakah jumlah jarak yang dilalui?", o: ["4 km", "5 km", "6 km", "7 km"], a: "B" }
+                    { q: " Seorang pelari berlari sejauh 2 km pada waktu pagi dan 3 km pada waktu petang. Berapakah jumlah jarak yang dilalui?", o: ["4 km", "5 km", "6 km", "7 km"], a: "B" }
                 ],
-                "Bentuk dan ruang": [
+                "Bentuk & Ruang": [
                     { q: "Berapakah bilangan sisi bagi sebuah segi tiga?", o: ["2", "3", "4", "5"], a: "B" },
                     { q: "Berapakah bilangan bucu bagi sebuah segi empat sama?", o: ["2", "3", "4", "5"], a: "C" },
                     { q: "Antara berikut, yang manakah mempunyai 4 sisi yang sama panjang?", o: ["Segi empat tepat", "Segi tiga", "Segi empat sama", "Trapezium"], a: "C" },
@@ -961,388 +1072,368 @@
                     { q: "Bentuk manakah mempunyai tiada bucu?", o: ["Kon", "Kubus", "Kuboid", "Sfera"], a: "D" },
                     { q: "Pilih pasangan yang betul.", o: ["Bola – Kuboid", "Tin susu – Silinder", "Dadu – Kon", "Buku – Sfera"], a: "B" },
                     { q: "Antara berikut, yang manakah mempunyai permukaan rata dan permukaan melengkung?", o: ["Kubus", "Kuboid", "Silinder", "Segi empat sama"], a: "C" },
-                    { q: "Pilih pernyataan yang betul.", o: ["Bulatan ialah bentuk 2D bukan 3D.", "Kubus mempunyai 8 bucu dan 12 rusuk.", "Sfera mempunyai 6 permukaan rata.", "Kon tidak mempunyai bucu."], a: "B" }
+                    { q: "Pilih pernyataan yang betul.", o: ["Bulatan ialah bentuk 3D.", "Kubus mempunyai 8 bucu dan 12 rusuk.", "Sfera mempunyai 6 permukaan rata.", "Kon tidak mempunyai bucu."], a: "B" }
                 ]
             }
         };
 
         const topicIcons = {
-            "Nombor Bulat": { icon: "fa-hashtag", color: "#FF5722" },
-            "Tambah": { icon: "fa-plus", color: "#4CAF50" },
-            "Tolak": { icon: "fa-minus", color: "#2196F3" },
-            "Darab": { icon: "fa-xmark", color: "#FFC107" },
-            "Bahagi": { icon: "fa-divide", color: "#9C27B0" },
-            "Pecahan": { icon: "fa-pie-chart", color: "#E91E63" },
-            "Perpuluhan": { icon: "fa-circle-dot", color: "#00BCD4" },
-            "Wang": { icon: "fa-money-bill-wave", color: "#8BC34A" },
-            "Masa & Waktu": { icon: "fa-clock", color: "#3F51B5" },
-            "Ukuran & Sukatan": { icon: "fa-ruler-combined", color: "#FF9800" },
-            "Bentuk dan ruang": { icon: "fa-shapes", color: "#795548" }
+            "Nombor Bulat": { icon: "fa-arrow-1-9", bg: "var(--accent-purple)" },
+            "Tambah": { icon: "fa-plus", bg: "var(--secondary)" },
+            "Tolak": { icon: "fa-minus", bg: "var(--primary)" },
+            "Darab": { icon: "fa-xmark", bg: "var(--accent-yellow)" },
+            "Bahagi": { icon: "fa-divide", bg: "var(--accent-blue)" },
+            "Pecahan": { icon: "fa-pie-chart", bg: "var(--accent-pink)" },
+            "Perpuluhan": { icon: "fa-circle-dot", bg: "#9E9E9E" },
+            "Wang": { icon: "fa-money-bill-wave", bg: "#4CAF50" },
+            "Masa & Waktu": { icon: "fa-clock", bg: "#FF9800" },
+            "Ukuran & Sukatan": { icon: "fa-ruler-combined", bg: "#00BCD4" },
+            "Bentuk & Ruang": { icon: "fa-shapes", bg: "#673AB7" }
         };
 
-        // --- GAME SYSTEM LOGIC STATE ---
-        let userState = {
-            username: "Pengguna",
+        // USER STATE (Local Storage & Default Data)
+        let userData = {
+            name: "Pengguna",
             avatar: "🐱",
             xp: 0,
             stars: 0,
             streak: 1,
-            selectedYear: 4,
-            completedQuizzes: {} // Format: {"4_Nombor Bulat": score}
+            completedExercises: 0,
+            progress: {} // format -> "T1_Tambah": markah per topik
         };
 
-        let currentQuiz = {
-            topic: "",
-            questions: [],
-            index: 0,
-            score: 0,
-            answered: false
-        };
+        let selectedYear = 1;
+        let selectedTopic = "";
+        let currentQuizQuestions = [];
+        let activeQuestionIndex = 0;
+        let activeQuizScore = 0;
 
-        // Initialize App Setup
-        window.addEventListener('DOMContentLoaded', () => {
-            loadLocalData();
-            updateUIState();
-        });
-
+        // Fungsi Tukar Skrin
         function navigateTo(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-            
-            // Scroll wrapper back to top on entry
-            document.querySelector('.app-container').scrollTop = 0;
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            const activeScreen = document.getElementById(screenId);
+            if(activeScreen) {
+                activeScreen.classList.add('active');
+            }
 
-            if(screenId === 'dashboard-screen') updateUIState();
-            if(screenId === 'leaderboard-screen') renderLeaderboard();
-            if(screenId === 'pencapaian-screen') renderBadges();
-            if(screenId === 'kemajuan-screen') renderProgressDetails();
+            if(screenId === 'dashboard-screen') updateDashboardDOM();
+            if(screenId === 'profil-screen') updateProfileDOM();
+            if(screenId === 'kemajuan-screen') renderProgressDOM();
+            if(screenId === 'pencapaian-screen') renderBadgesDOM();
+            if(screenId === 'leaderboard-screen') renderLeaderboardDOM();
         }
 
-        // 1. LOGIN SCREEN OPERATIONS
-        function selectAvatar(emoji, element) {
-            document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+        // Pilih Avatar Log Masuk
+        function selectAvatar(avatarEmoji, element) {
+            document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
             element.classList.add('selected');
-            userState.avatar = emoji;
+            userData.avatar = avatarEmoji;
         }
 
-        function submitLogin(method) {
+        // Hantar Login
+        function submitLogin(type) {
             const nameInput = document.getElementById('username-input').value.trim();
-            userState.username = nameInput ? nameInput : "Pelajar Bijak";
-            saveLocalData();
+            if(nameInput) {
+                userData.name = nameInput;
+            } else {
+                userData.name = "Pelajar Bijak";
+            }
+            saveToLocalStorage();
             navigateTo('dashboard-screen');
         }
 
+        // Kemaskini Data Dashboard
+        function updateDashboardDOM() {
+            document.getElementById('dash-avatar').innerText = userData.avatar;
+            document.getElementById('dash-username').innerText = userData.name;
+            document.getElementById('dash-xp').innerText = userData.xp;
+            document.getElementById('dash-stars').innerText = userData.stars;
+            document.getElementById('dash-streak').innerText = userData.streak;
+        }
+
+        // Mula Skrin Tahun
         function startYearSelection() {
             navigateTo('year-screen');
         }
 
-        // 2. TOPICS SELECTION OPERATIONS
+        // Pilih Tahun & Papar Senarai Topik
         function selectYear(yearNum) {
-            userState.selectedYear = yearNum;
-            const container = document.getElementById('topics-list-container');
-            document.getElementById('topic-screen-title').innerText = `Tahun ${yearNum} - Pilih Topik`;
+            selectedYear = yearNum;
+            document.getElementById('topic-screen-title').innerText = `Topik Tahun ${yearNum}`;
+            
+            const container = document.getElementById('topics-container');
             container.innerHTML = "";
 
-            const topics = Object.keys(questionBank[yearNum]);
-            topics.forEach(topic => {
-                const config = topicIcons[topic] || { icon: "fa-star", color: "#795548" };
-                const key = `${yearNum}_${topic}`;
-                const savedScore = userState.completedQuizzes[key];
-                
-                let progressPercent = 0;
-                let statusBadge = `<span class="status-pill" style="background:#ECEFF1; color:#757575;">Belum Selesai</span>`;
-                
-                if (savedScore !== undefined) {
-                    progressPercent = Math.round((savedScore / 20) * 100);
-                    statusBadge = savedScore >= 16 
-                        ? `<span class="status-pill" style="background:#E8F5E9; color:#2E7D32;">🔥 Menguasai</span>`
-                        : `<span class="status-pill" style="background:#FFF9C4; color:#F57F17;">Ulang Kaji</span>`;
-                }
+            const topics = Object.keys(questionBank[selectedYear] || {});
 
-                const topicCardHtml = `
-                    <div class="topic-card" onclick="initiateQuiz('${topic}')">
-                        <div class="topic-icon" style="background:${config.color};">
-                            <i class="fa-solid ${config.icon}"></i>
+            if(topics.length === 0) {
+                container.innerHTML = "<p style='text-align:center; font-weight:700; color:#757575; margin-top:20px;'>Topik sedang dikemaskini!</p>";
+            } else {
+                topics.forEach(topic => {
+                    const key = `T${selectedYear}_${topic}`;
+                    const score = userData.progress[key] || 0;
+                    const totalQ = questionBank[selectedYear][topic].length;
+                    const pct = totalQ > 0 ? Math.round((score / totalQ) * 100) : 0;
+
+                    const design = topicIcons[topic] || { icon: "fa-book", bg: "var(--accent-blue)" };
+
+                    const card = document.createElement('div');
+                    card.className = "topic-card";
+                    card.onclick = () => selectTopicQuiz(topic);
+
+                    card.innerHTML = `
+                        <div class="topic-icon" style="background:${design.bg}">
+                            <i class="fa-solid ${design.icon}"></i>
                         </div>
                         <div class="topic-info">
                             <div class="topic-title">${topic}</div>
                             <div class="topic-meta">
-                                <span>20 Soalan</span>
-                                ${statusBadge}
+                                <span>${totalQ} Soalan</span>
+                                <span class="status-pill" style="background:${pct===100 ? '#C8E6C9': '#E0E0E0'}; color:${pct===100 ? '#2E7D32': '#757575'}">
+                                    ${pct === 100 ? 'Selesai' : pct + '%'}
+                                </span>
                             </div>
                             <div class="progress-bar-container">
-                                <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
+                                <div class="progress-bar-fill" style="width: ${pct}%"></div>
                             </div>
                         </div>
-                    </div>
-                `;
-                container.innerHTML += topicCardHtml;
-            });
-
+                    `;
+                    container.appendChild(card);
+                });
+            }
             navigateTo('topic-screen');
         }
 
-        // 3. QUIZ PLAY SYSTEM
-        function initiateQuiz(topicName) {
-            const rawQuestions = questionBank[userState.selectedYear][topicName];
-            if (!rawQuestions || rawQuestions.length === 0) {
-                alert("Ralat memuatkan bank data soalan silibus!");
-                return;
-            }
+        // Memulakan Kuiz bagi Topik Dipilih
+        function selectTopicQuiz(topicName) {
+            selectedTopic = topicName;
+            currentQuizQuestions = [...questionBank[selectedYear][topicName]];
+            
+            // Rawakkan susunan soalan untuk kepelbagaian mainan kid-friendly
+            currentQuizQuestions.sort(() => Math.random() - 0.5);
 
-            currentQuiz.topic = topicName;
-            currentQuiz.questions = [...rawQuestions]; 
-            currentQuiz.index = 0;
-            currentQuiz.score = 0;
-            currentQuiz.answered = false;
+            activeQuestionIndex = 0;
+            activeQuizScore = 0;
 
-            document.getElementById('quiz-topic-name').innerText = topicName;
-            loadQuestion();
+            document.getElementById('quiz-topic-title').innerText = topicName;
+            showQuestion();
             navigateTo('quiz-screen');
         }
 
-        function loadQuestion() {
-            currentQuiz.answered = false;
-            const currentQ = currentQuiz.questions[currentQuiz.index];
+        // Papar Soalan Semasa
+        function showQuestion() {
+            const currentQ = currentQuizQuestions[activeQuestionIndex];
+            const total = currentQuizQuestions.length;
+
+            document.getElementById('quiz-question-number').innerText = `Soalan ${activeQuestionIndex + 1}/${total}`;
             
-            // Render text indices
-            document.getElementById('quiz-question-number').innerText = `Soalan ${currentQuiz.index + 1}/20`;
-            const progressFillPercent = ((currentQuiz.index) / 20) * 100;
-            document.getElementById('quiz-progress-fill').style.width = `${progressFillPercent}%`;
-            
-            // Fill Question box text content
+            const pct = Math.round(((activeQuestionIndex) / total) * 100);
+            document.getElementById('quiz-progress-fill').style.width = `${pct}%`;
+
             document.getElementById('quiz-question-text').innerText = currentQ.q;
 
-            // Fill Choices Container dynamically
             const optionsContainer = document.getElementById('quiz-options-container');
             optionsContainer.innerHTML = "";
 
-            const indexMap = ["A", "B", "C", "D"];
-            currentQ.o.forEach((optText, idx) => {
-                const choiceKey = indexMap[idx];
-                const optBtn = document.createElement('button');
-                optBtn.className = "option-btn";
-                optBtn.innerHTML = `<strong>${choiceKey}.</strong> ${optText}`;
-                optBtn.onclick = () => verifyAnswer(choiceKey, optBtn);
-                optionsContainer.appendChild(optBtn);
+            const labels = ['A', 'B', 'C', 'D'];
+            currentQ.o.forEach((optionText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn";
+                btn.innerHTML = `<strong>${labels[idx]}.</strong> ${optionText}`;
+                btn.onclick = () => checkAnswer(labels[idx], btn);
+                optionsContainer.appendChild(btn);
             });
         }
 
-        function verifyAnswer(chosenKey, element) {
-            if (currentQuiz.answered) return;
-            currentQuiz.answered = true;
+        // Semak Jawapan Betul/Salah
+        function checkAnswer(selectedLetter, clickedBtn) {
+            const currentQ = currentQuizQuestions[activeQuestionIndex];
+            const allButtons = document.querySelectorAll('.option-btn');
 
-            const correctKey = currentQuiz.questions[currentQuiz.index].a;
-            const optionsButtons = document.getElementById('quiz-options-container').children;
-            const indexMap = ["A", "B", "C", "D"];
+            // Tutup klik pada butang lain sementara jawapan diproses
+            allButtons.forEach(b => b.removeAttribute('onclick'));
 
-            if (chosenKey === correctKey) {
-                element.classList.add('correct');
-                currentQuiz.score++;
-                // Play internal sound hint if necessary
+            const correctLetter = currentQ.a;
+            const labelMap = {'A':0, 'B':1, 'C':2, 'D':3};
+
+            if (selectedLetter === correctLetter) {
+                clickedBtn.classList.add('correct');
+                activeQuizScore++;
             } else {
-                element.classList.add('wrong');
-                // Highlight real key
-                const realIdx = indexMap.indexOf(correctKey);
-                if (realIdx > -1) {
-                    optionsButtons[realIdx].classList.add('correct');
-                }
+                clickedBtn.classList.add('wrong');
+                // Tunjukkan jawapan yang betul
+                const correctIdx = labelMap[correctLetter];
+                if(allButtons[correctIdx]) allButtons[correctIdx].classList.add('correct');
             }
 
-            // Post-Timeout transition forward logic
+            // Tunggu 1.5 saat sebelum ke soalan seterusnya
             setTimeout(() => {
-                currentQuiz.index++;
-                if (currentQuiz.index < 20) {
-                    loadQuestion();
+                activeQuestionIndex++;
+                if (activeQuestionIndex < currentQuizQuestions.length) {
+                    showQuestion();
                 } else {
-                    finalizeQuizScore();
+                    finishQuiz();
                 }
-            }, 1400);
+            }, 1500);
         }
 
-        function finalizeQuizScore() {
-            const key = `${userState.selectedYear}_${currentQuiz.topic}`;
-            const previousScore = userState.completedQuizzes[key] || 0;
-            
-            // Only update if score is better than before
-            if(currentQuiz.score > previousScore) {
-                userState.completedQuizzes[key] = currentQuiz.score;
+        // Selesai Latihan & Papar Keputusan
+        function finishQuiz() {
+            const finalScoreStr = `${activeQuizScore}/${currentQuizQuestions.length}`;
+            document.getElementById('result-score-text').innerText = finalScoreStr;
+
+            // Kira Ganjaran XP & Bintang
+            const earnedXp = activeQuizScore * 10; 
+            const earnedStars = Math.floor(activeQuizScore / 2);
+
+            userData.xp += earnedXp;
+            userData.stars += earnedStars;
+            userData.completedExercises += 1;
+
+            // Simpan Rekod Terbaik Topik
+            const key = `T${selectedYear}_${selectedTopic}`;
+            if (!userData.progress[key] || userData.progress[key] < activeQuizScore) {
+                userData.progress[key] = activeQuizScore;
             }
 
-            // Calculate gains rewards
-            const calculatedXp = currentQuiz.score * 15;
-            const calculatedStars = Math.floor(currentQuiz.score / 4);
+            document.getElementById('reward-xp').innerText = earnedXp;
+            document.getElementById('reward-stars').innerText = earnedStars;
 
-            userState.xp += calculatedXp;
-            userState.stars += calculatedStars;
-
-            // Render result metrics text properties
-            document.getElementById('result-score-text').innerText = `${currentQuiz.score}/20`;
-            document.getElementById('reward-xp').innerText = calculatedXp;
-            document.getElementById('reward-stars').innerText = calculatedStars;
-
-            saveLocalData();
+            saveToLocalStorage();
             navigateTo('result-screen');
         }
 
-        // 4. STATISTICAL SUB-DASHBOARDS GENERATOR LAYERS
-        function updateUIState() {
-            document.getElementById('dash-avatar').innerText = userState.avatar;
-            document.getElementById('dash-username').innerText = userState.username;
-            document.getElementById('dash-xp').innerText = userState.xp;
-            document.getElementById('dash-stars').innerText = userState.stars;
-            document.getElementById('dash-streak').innerText = userState.streak;
-
-            // Sync user settings profile tabs concurrently
-            document.getElementById('prof-avatar').innerText = userState.avatar;
-            document.getElementById('prof-name').innerText = userState.username;
-            document.getElementById('prof-xp').innerText = userState.xp;
-            document.getElementById('prof-stars').innerText = userState.stars;
-
-            const exercisesDone = Object.keys(userState.completedQuizzes).length;
-            document.getElementById('prof-done').innerText = exercisesDone;
-            
-            const lvl = Math.floor(userState.xp / 300) + 1;
-            document.getElementById('prof-level-tag').innerText = `Tahap ${lvl}`;
-        }
-
-        function renderLeaderboard() {
-            const container = document.getElementById('leaderboard-container');
+        // Render Senarai Kemajuan Skrin Kemajuan
+        function renderProgressDOM() {
+            const container = document.getElementById('progress-list-container');
             container.innerHTML = "";
 
-            const mockLeaders = [
-                { name: "Muhammad Aqil", avatar: "🦁", xp: 2450 },
-                { name: "Siti Nurhaliza", avatar: "🐰", xp: 2100 },
-                { name: "Chong Wei", avatar: "🦊", xp: 1980 },
-                { name: userState.username + " (Anda)", avatar: userState.avatar, xp: userState.xp, isUser: true },
-                { name: "Arissa Putri", avatar: "🦄", xp: 1200 },
-                { name: "Kavitha", avatar: "🐱", xp: 950 }
-            ];
+            if(Object.keys(userData.progress).length === 0) {
+                container.innerHTML = "<p style='text-align:center; padding:20px; font-weight:700; color:#757575;'>Belum ada rekod latihan. Jom jawab kuiz!</p>";
+                return;
+            }
 
-            // Sort logic
-            mockLeaders.sort((a, b) => b.xp - a.xp);
+            for(let key in userData.progress) {
+                const parts = key.split('_');
+                const yr = parts[0].replace('T', 'Tahun ');
+                const top = parts[1];
+                const score = userData.progress[key];
 
-            mockLeaders.forEach((leader, idx) => {
-                const isUserStyle = leader.isUser ? "border: 3px solid var(--primary); background: #FFF3E0;" : "";
-                const trophyMedal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`;
-                
-                container.innerHTML += `
-                    <div class="topic-card" style="${isUserStyle}">
-                        <div style="font-family:'Fredoka One'; font-size:1.2rem; width:30px;">${trophyMedal}</div>
-                        <div class="user-avatar-large" style="width:40px; height:40px; font-size:1.8rem; border:1px solid #CCC;">${leader.avatar}</div>
-                        <div class="topic-info">
-                            <div class="topic-title" style="font-size:1rem;">${leader.name}</div>
-                        </div>
-                        <div style="font-weight:800; color:var(--primary);">${leader.xp} XP</div>
+                const row = document.createElement('div');
+                row.className = "topic-card";
+                row.style.padding = "12px 15px";
+                row.innerHTML = `
+                    <div class="topic-info">
+                        <div class="topic-title" style="font-size:1rem;">${yr} - ${top}</div>
+                        <div style="font-size:0.85rem; color:var(--primary); font-weight:800; margin-top:3px;">Skor Tertinggi: ${score} Markah</div>
                     </div>
                 `;
-            });
+                container.appendChild(row);
+            }
         }
 
-        function renderBadges() {
+        // Rekod Badges Sistem Pencapaian
+        const badgesConfig = [
+            { name: "Permulaan Bijak", icon: "fa-rocket", desc: "Selesaikan latihan pertama anda", check: () => userData.completedExercises >= 1 },
+            { name: "Pengumpul Bintang", icon: "fa-star", desc: "Kumpul sekurang-kurangnya 10 Bintang", check: () => userData.stars >= 10 },
+            { name: "Pakar Tahun 1", icon: "fa-award", desc: "Skor penuh mana-mana topik T1", check: () => Object.keys(userData.progress).some(k => k.startsWith('T1_') && userData.progress[k] === 10) },
+            { name: "Wira Kilat", icon: "fa-bolt", desc: "Kumpul 500 XP", check: () => userData.xp >= 500 },
+            { name: "Cendekiawan T4", icon: "fa-brain", desc: "Selesaikan sekurang-kurangnya satu topik Tahun 4", check: () => Object.keys(userData.progress).some(k => k.startsWith('T4_')) }
+        ];
+
+        function renderBadgesDOM() {
             const container = document.getElementById('badges-container');
             container.innerHTML = "";
 
-            const systemBadges = [
-                { name: "Mula Belajar", desc: "Daftar Akaun", icon: "fa-user-astronaut", req: 0 },
-                { name: "Pencari Bintang", desc: "Kumpul 5 Bintang", icon: "fa-star", req: 5, type: 'stars' },
-                { name: "Juara Kuiz", desc: "Selesai 1 Latihan", icon: "fa-trophy", req: 1, type: 'exercises' },
-                { name: "Pakar Nombor", desc: "Kuasai Sifir/Nombor", icon: "fa-hashtag", req: 300, type: 'xp' },
-                { name: "Kuda Pintar", desc: "Mencapai 500 XP", icon: "fa-bolt", req: 500, type: 'xp' },
-                { name: "Sifu Matematik", desc: "Mencapai 1000 XP", icon: "fa-graduation-cap", req: 1000, type: 'xp' }
-            ];
-
-            let unlockedCount = 0;
-            systemBadges.forEach(badge => {
-                let statusUnlocked = false;
-                if(badge.req === 0) statusUnlocked = true;
-                else if(badge.type === 'stars' && userState.stars >= badge.req) statusUnlocked = true;
-                else if(badge.type === 'xp' && userState.xp >= badge.req) statusUnlocked = true;
-                else if(badge.type === 'exercises' && Object.keys(userState.completedQuizzes).length >= badge.req) statusUnlocked = true;
-
-                if(statusUnlocked) unlockedCount++;
-
-                container.innerHTML += `
-                    <div class="badge-item ${statusUnlocked ? 'unlocked' : ''}">
-                        <i class="fa-solid ${badge.icon}"></i>
-                        <strong>${badge.name}</strong>
-                        <p style="font-size:0.7rem; color:#555; margin-top:2px;">${badge.desc}</p>
-                    </div>
+            badgesConfig.forEach(badge => {
+                const isUnlocked = badge.check();
+                const box = document.createElement('div');
+                box.className = `badge-item ${isUnlocked ? 'unlocked' : ''}`;
+                box.innerHTML = `
+                    <i class="fa-solid ${badge.icon}" style="${!isUnlocked ? 'color:#90A4AE':''}"></i>
+                    <div style="font-size:0.85rem; font-weight:800;">${badge.name}</div>
+                    <div style="font-size:0.65rem; color:#757575; font-weight:600; margin-top:2px;">${badge.desc}</div>
                 `;
+                container.appendChild(box);
             });
-
-            document.getElementById('prof-badges').innerText = unlockedCount;
         }
 
-        function renderProgressDetails() {
-            const container = document.getElementById('progress-details-container');
+        // Render Mock Leaderboard
+        function renderLeaderboardDOM() {
+            const container = document.getElementById('leaderboard-container');
             container.innerHTML = "";
 
-            const topics = Object.keys(questionBank[4]);
-            let totalPossibleScore = topics.length * 20; 
-            let totalUserScore = 0;
+            const mockUsers = [
+                { name: "Ahmad_Math", avatar: "🦊", xp: 450, isMe: false },
+                { name: "SitiComel", avatar: "🐰", xp: 620, isMe: false },
+                { name: "Arif_Bijak", avatar: "🦖", xp: 310, isMe: false },
+                { name: "ZaraCute", avatar: "🦄", xp: 520, isMe: false },
+                { name: userData.name, avatar: userData.avatar, xp: userData.xp, isMe: true }
+            ];
 
-            topics.forEach(topic => {
-                const key = `4_${topic}`;
-                const score = userState.completedQuizzes[key] || 0;
-                totalUserScore += score;
+            // Susun mengikut susunan XP tertinggi
+            mockUsers.sort((a, b) => b.xp - a.xp);
 
-                const percent = Math.round((score / 20) * 100);
-
-                container.innerHTML += `
-                    <div class="topic-card">
-                        <div class="topic-info">
-                            <div style="display:flex; justify-content:between; width:100%; font-weight:800;">
-                                <span style="flex-grow:1;">${topic}</span>
-                                <span>${score}/20 (${percent}%)</span>
-                            </div>
-                            <div class="progress-bar-container" style="height:10px;">
-                                <div class="progress-bar-fill" style="width: ${percent}%;"></div>
-                            </div>
-                        </div>
+            mockUsers.forEach((user, index) => {
+                const row = document.createElement('div');
+                row.className = "topic-card";
+                if(user.isMe) row.style.borderColor = "var(--primary)";
+                row.style.padding = "10px 15px";
+                row.innerHTML = `
+                    <div style="font-weight:800; font-size:1.2rem; width:25px;">${index + 1}</div>
+                    <div class="user-avatar-large" style="width:40px; height:40px; font-size:1.8rem; border-color:#DDD">${user.avatar}</div>
+                    <div class="topic-info" style="margin-left:10px;">
+                        <div class="topic-title" style="font-size:1rem;">${user.name} ${user.isMe ? '(Kamu)' : ''}</div>
                     </div>
+                    <div style="font-weight:800; color:var(--primary);">${user.xp} XP</div>
                 `;
+                container.appendChild(row);
             });
-
-            const totalCompletionPercent = Math.round((totalUserScore / totalPossibleScore) * 100) || 0;
-            document.getElementById('progress-total-percent').innerText = `${totalCompletionPercent}%`;
         }
 
-        // 5. LOCALSTORAGE PERSISTENCE CONTROL ENGINE
-        function saveLocalData() {
-            localStorage.setItem('bijak_matematik_state', JSON.stringify(userState));
+        // Kemaskini Profil DOM View
+        function updateProfileDOM() {
+            document.getElementById('profile-avatar-view').innerText = userData.avatar;
+            document.getElementById('profile-name-view').innerText = userData.name;
+            document.getElementById('p-xp').innerText = userData.xp;
+            document.getElementById('p-stars').innerText = userData.stars;
+            document.getElementById('p-streak').innerText = userData.streak;
+            document.getElementById('p-completed').innerText = userData.completedExercises;
         }
 
-        function loadLocalData() {
-            const rawData = localStorage.getItem('bijak_matematik_state');
-            if (rawData) {
+        // Set Semula Data
+        function resetData() {
+            if (confirm("Adakah anda pasti mahu pemadamkan semua rekod skor, bintang, dan nama akaun anda?")) {
+                userData = { name: "Pengguna", avatar: "🐱", xp: 0, stars: 0, streak: 1, completedExercises: 0, progress: {} };
+                saveToLocalStorage();
+                navigateTo('login-screen');
+            }
+        }
+
+        // Ambil dan Simpan ke Local Storage Browser
+        function saveToLocalStorage() {
+            localStorage.setItem('bijak_matematik_data', JSON.stringify(userData));
+        }
+
+        function loadFromLocalStorage() {
+            const dataStr = localStorage.getItem('bijak_matematik_data');
+            if(dataStr) {
                 try {
-                    userState = JSON.parse(rawData);
-                    // Force selected year to 4 upon database reload
-                    userState.selectedYear = 4;
+                    userData = JSON.parse(dataStr);
                 } catch(e) {
-                    console.error("Local storage sync error. Fallback applied.");
+                    console.error("Gagal membaca data tempatan", e);
                 }
             }
         }
 
-        function resetData() {
-            if(confirm("Adakah anda pasti mahu memadamkan semua rekod skor, XP, bintang dan maklumat nama untuk mula semula dari awal?")) {
-                localStorage.removeItem('bijak_matematik_state');
-                userState = {
-                    username: "Pengguna",
-                    avatar: "🐱",
-                    xp: 0,
-                    stars: 0,
-                    streak: 1,
-                    selectedYear: 4,
-                    completedQuizzes: {}
-                };
-                updateUIState();
-                navigateTo('login-screen');
+        // Memulakan Sistem Aplikasi Utama sewaktu halaman dibuka
+        window.onload = function() {
+            loadFromLocalStorage();
+            // Jika sudah ada nama tersimpan, terus bawa pengguna ke dashboard menu
+            if(userData && userData.name !== "Pengguna" && userData.xp > 0) {
+                navigateTo('dashboard-screen');
             }
         }
     </script>
-
 </body>
 </html>
