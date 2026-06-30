@@ -127,7 +127,7 @@
             justify-content: space-between;
             margin-bottom: 20px;
             padding-bottom: 10px;
-            border-bottom: 3px cubic-bezier(0.1, 1, 0.1, 1) #F0F0F0;
+            border-bottom: 3px solid #F0F0F0;
         }
 
         .back-btn {
@@ -359,13 +359,6 @@
             transition: width 0.3s ease;
         }
 
-        .status-pill {
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: 700;
-        }
-
         /* 5. Question/Quiz Screen */
         .quiz-header {
             display: flex;
@@ -385,6 +378,7 @@
             text-align: center;
             margin-bottom: 20px;
             box-shadow: inset 0 -4px 0 #FFF59D;
+            white-space: pre-line;
         }
 
         .options-list {
@@ -600,12 +594,12 @@
                 <div></div>
             </div>
             <div class="grid-list">
-                <button class="btn btn-blue" onclick="selectYear(1)">Tahun 1</button>
-                <button class="btn btn-blue" onclick="selectYear(2)">Tahun 2</button>
-                <button class="btn btn-blue" onclick="selectYear(3)">Tahun 3</button>
-                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Topik Tahun 4-6 akan datang dalam kemas kini silibus baharu!')">Tahun 4 (Segera)</button>
-                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Topik Tahun 4-6 akan datang dalam kemas kini silibus baharu!')">Tahun 5 (Segera)</button>
-                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Topik Tahun 4-6 akan datang dalam kemas kini silibus baharu!')">Tahun 6 (Segera)</button>
+                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Sila pilih Tahun 4 untuk melihat soalan baharu!')">Tahun 1 (Tutup)</button>
+                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Sila pilih Tahun 4 untuk melihat soalan baharu!')">Tahun 2 (Tutup)</button>
+                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Sila pilih Tahun 4 untuk melihat soalan baharu!')">Tahun 3 (Tutup)</button>
+                <button class="btn btn-blue" onclick="selectYear(4)">✨ Tahun 4 (Kini Aktif!)</button>
+                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Topik Tahun 5 & 6 akan datang dalam kemas kini silibus baharu!')">Tahun 5 (Segera)</button>
+                <button class="btn btn-blue" style="opacity:0.6;" onclick="alert('Topik Tahun 5 & 6 akan datang dalam kemas kini silibus baharu!')">Tahun 6 (Segera)</button>
             </div>
         </div>
 
@@ -636,7 +630,6 @@
             <div class="options-list" id="quiz-options-container">
                 <!-- 4 Pilihan Butang Jawapan -->
             </div>
-            <!-- BUTANG KEMBALI KE MENU YANG BARU DITAMBAH -->
             <button class="btn" style="background:#ECEFF1; color:#2C3E50; box-shadow:0 6px 0 #CFD8DC; margin-top:25px;" onclick="if(confirm('Adakah anda pasti mahu keluar? Kemajuan latihan ini tidak akan disimpan.')) navigateTo('dashboard-screen')">
                 <i class="fa-solid fa-house"></i> Kembali ke Menu
             </button>
@@ -723,887 +716,633 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC & SOALAN BANK -->
+    <!-- JAVASCRIPT LOGIC & SOALAN BANK TAHUN 4 -->
     <script>
-        // --- DATA BANK SOALAN ---
+        // --- DATA BANK SOALAN TAHUN 4 KSSR ---
         const questionBank = {
-            1: { // Tahun 1
+            4: {
                 "Nombor Bulat": [
-                    { q: "Apakah nombor selepas 27?", o: ["26","28","29","30"], a: "B" },
-                    { q: "Apakah nombor sebelum 45?", o: ["44","46","43","47"], a: "A" },
-                    { q: "Yang manakah nombor terbesar?", o: ["58","85","68","78"], a: "B" },
-                    { q: "Yang manakah nombor terkecil?", o: ["31","13","23","32"], a: "B" },
-                    { q: "Apakah nilai digit puluh bagi nombor 64?", o: ["4","6","10","64"], a: "B" },
-                    { q: "Apakah nilai digit sa bagi nombor 92?", o: ["9","2","20","90"], a: "B" },
-                    { q: "Pilih nombor yang lebih besar daripada 71.", o: ["69","70","72","68"], a: "C" },
-                    { q: "Pilih nombor yang lebih kecil daripada 39.", o: ["40","41","38","42"], a: "C" },
-                    { q: "Antara berikut, nombor manakah berada di antara 55 dan 57?", o: ["54","56","58","59"], a: "B" },
-                    { q: "Susunan yang betul secara menaik ialah…", o: ["24, 22, 23","22, 23, 24","23, 24, 22","24, 23, 22"], a: "B" },
-                    { q: "Susunan yang betul secara menurun ialah…", o: ["17, 18, 19","18, 17, 19","19, 18, 17","17, 19, 18"], a: "C" },
-                    { q: "Apakah nombor yang mewakili “lapan puluh tiga”?", o: ["38","83","80","73"], a: "B" },
-                    { q: "Pilih nombor genap.", o: ["51","67","74","89"], a: "C" },
-                    { q: "Pilih nombor ganjil.", o: ["20","36","49","82"], a: "C" },
-                    { q: "Apakah nombor sebelum 100?", o: ["98","97","99","101"], a: "C" },
-                    { q: "Apakah nombor selepas 89?", o: ["88","90","91","87"], a: "B" },
-                    { q: "Yang manakah lebih besar?", o: ["46","64","Sama besar","Tiada jawapan"], a: "B" },
-                    { q: "Yang manakah lebih kecil?", o: ["95","59","Sama besar","Tiada jawapan"], a: "B" },
-                    { q: "Berapakah bilangan puluh dalam nombor 70?", o: ["0","7","70","10"], a: "B" },
-                    { q: "Apakah nombor yang hilang?\n61, 62, __, 64, 65", o: ["60","63","66","67"], a: "B" }
+                    { q: "Apakah nilai tempat bagi digit 6 dalam nombor 568 214?", o: ["Sa", "Puluh", "Puluh ribu", "Ratus ribu"], a: "C" },
+                    { q: "Apakah nilai digit 8 dalam nombor 483 721?", o: ["8", "80", "800", "80 000"], a: "D" },
+                    { q: "Enam ratus tujuh puluh lapan ribu tiga ratus sembilan belas ditulis dalam angka ialah", o: ["678 391", "678 319", "687 319", "768 319"], a: "B" },
+                    { q: "904 215 ditulis dalam perkataan ialah", o: ["Sembilan ratus empat ribu dua ratus lima belas", "Sembilan ratus empat ribu dua ribu lima belas", "Sembilan ratus empat ribu dua ratus lima belas", "Sembilan ratus empat ribu dua ratus lima belas"], a: "A" },
+                    { q: "Cerakinkan nombor 705 482.", o: ["700 000 + 5 000 + 400 + 80 + 2", "700 000 + 500 + 400 + 80 + 2", "70 000 + 5 000 + 400 + 80 + 2", "700 000 + 5 000 + 40 + 80 + 2"], a: "A" },
+                    { q: "Antara berikut, yang manakah nombor paling besar?", o: ["598 421", "598 241", "599 124", "589 421"], a: "C" },
+                    { q: "Susunan menaik yang betul ialah", o: ["214 356, 214 365, 214 536, 215 346", "215 346, 214 536, 214 365, 214 356", "214 365, 214 356, 214 536, 215 346", "214 536, 214 356, 214 365, 215 346"], a: "A" },
+                    { q: "Susunan menurun yang betul ialah", o: ["731 520, 731 250, 713 520, 703 521", "703 521, 713 520, 731 250, 731 520", "731 250, 731 520, 703 521, 713 520", "713 520, 731 520, 731 250, 703 521"], a: "A" },
+                    { q: "Bundarkan 248 735 kepada puluh ribu yang terdekat.", o: ["240 000", "250 000", "248 000", "249 000"], a: "B" },
+                    { q: "Bundarkan 683 249 kepada ratus ribu yang terdekat.", o: ["600 000", "650 000", "700 000", "680 000"], a: "C" },
+                    { q: "Lengkapkan pola nombor berikut.\n125 000, 130 000, 135 000, _____, 145 000", o: ["138 000", "139 000", "140 000", "141 000"], a: "C" },
+                    { q: "Antara berikut, yang manakah lebih kecil daripada 560 000?", o: ["560 010", "559 999", "560 100", "561 000"], a: "B" },
+                    { q: "Berapakah nombor selepas 899 999?", o: ["900 000", "899 998", "900 001", "999 999"], a: "A" },
+                    { q: "Berapakah nombor sebelum 500 000?", o: ["499 000", "499 998", "499 999", "500 001"], a: "C" },
+                    { q: "Pilih simbol yang betul.\n456 789 ___ 456 879", o: [">", "<", "=", "≠"], a: "B" },
+                    { q: "Nombor yang terdiri daripada 4 ratus ribu, 2 puluh ribu, 8 ratus, 5 puluh dan 6 sa ialah", o: ["420 856", "428 056", "402 856", "420 586"], a: "A" },
+                    { q: "Apakah digit pada tempat ribu dalam nombor 918 364?", o: ["1", "8", "3", "6"], a: "B" },
+                    { q: "Berapakah beza antara nombor terbesar dan nombor terkecil?\n654 321 dan 123 456", o: ["530 865", "531 865", "520 865", "540 865"], a: "A" },
+                    { q: "Pilih pernyataan yang betul.", o: ["345 678 > 354 678", "498 765 < 489 765", "800 001 > 799 999", "654 321 = 654 312"], a: "C" },
+                    { q: "Apakah nombor yang berada di antara 345 999 dan 346 001?", o: ["345 998", "346 000", "346 002", "345 990"], a: "B" }
                 ],
                 "Tambah": [
-                    { q: "Berapakah 3 + 5?", o: ["7","8","9","10"], a: "B" },
-                    { q: "Berapakah 6 + 2?", o: ["6","7","8","9"], a: "C" },
-                    { q: "Berapakah 9 + 4?", o: ["11","12","13","14"], a: "C" },
-                    { q: "Berapakah 7 + 8?", o: ["14","15","16","17"], a: "B" },
-                    { q: "Berapakah 10 + 6?", o: ["15","16","17","18"], a: "B" },
-                    { q: "Berapakah 12 + 5?", o: ["15","16","17","18"], a: "C" },
-                    { q: "Berapakah 14 + 3?", o: ["16","17","18","19"], a: "B" },
-                    { q: "Berapakah 11 + 9?", o: ["18","19","20","21"], a: "C" },
-                    { q: "Berapakah 15 + 7?", o: ["21","22","23","24"], a: "B" },
-                    { q: "Berapakah 18 + 6?", o: ["22","23","24","25"], a: "C" },
-                    { q: "Berapakah 20 + 9?", o: ["28","29","30","31"], a: "B" },
-                    { q: "Berapakah 13 + 12?", o: ["24","25","26","27"], a: "B" },
-                    { q: "Berapakah 21 + 15?", o: ["34","35","36","37"], a: "C" },
-                    { q: "Berapakah 30 + 14?", o: ["42","43","44","45"], a: "C" },
-                    { q: "Berapakah 25 + 18?", o: ["42","43","44","45"], a: "B" },
-                    { q: "Berapakah 40 + 27?", o: ["65","66","67","68"], a: "C" },
-                    { q: "Berapakah 33 + 16?", o: ["47","48","49","50"], a: "C" },
-                    { q: "Berapakah 41 + 22?", o: ["62","63","64","65"], a: "B" },
-                    { q: "Berapakah 50 + 19?", o: ["68","69","70","71"], a: "B" },
-                    { q: "Berapakah 36 + 24?", o: ["58","59","60","61"], a: "C" }
+                    { q: "245 678 + 123 456 =", o: ["359 124", "369 134", "368 124", "379 134"], a: "B" },
+                    { q: "468 215 + 231 684 =", o: ["689 899", "699 899", "700 899", "698 899"], a: "B" },
+                    { q: "725 410 + 154 389 =", o: ["879 799", "869 799", "889 799", "879 899"], a: "A" },
+                    { q: "356 742 + 241 258 =", o: ["597 900", "598 000", "599 000", "600 000"], a: "B" },
+                    { q: "809 125 + 90 875 =", o: ["890 000", "899 000", "900 000", "901 000"], a: "C" },
+                    { q: "638 429 + 215 360 =", o: ["853 689", "853 789", "854 789", "852 789"], a: "B" },
+                    { q: "432 567 + 198 765 =", o: ["631 232", "631 332", "632 332", "630 332"], a: "B" },
+                    { q: "157 843 + 542 156 =", o: ["699 899", "699 999", "700 999", "698 999"], a: "B" },
+                    { q: "623 154 + 176 846 =", o: ["799 900", "800 000", "801 000", "799 000"], a: "B" },
+                    { q: "385 249 + 204 751 =", o: ["580 000", "589 900", "590 000", "591 000"], a: "C" },
+                    { q: "245 000 + 186 000 + 79 000 =", o: ["500 000", "510 000", "520 000", "530 000"], a: "B" },
+                    { q: "128 456 + 237 891 + 132 109 =", o: ["497 456", "498 456", "499 456", "500 456"], a: "B" },
+                    { q: "368 745 + ____ = 700 000", o: ["321 255", "331 255", "332 255", "333 255"], a: "B" },
+                    { q: "____ + 245 680 = 600 000", o: ["354 220", "355 220", "356 220", "357 220"], a: "A" },
+                    { q: "Sebuah perpustakaan mempunyai 235 468 buah buku. Sebanyak 124 375 buah buku baharu diterima. Berapakah jumlah buku sekarang?", o: ["349 743", "359 743", "360 743", "369 743"], a: "B" },
+                    { q: "Kilang A menghasilkan 425 630 botol minuman manakala Kilang B menghasilkan 214 290 botol. Berapakah jumlah botol yang dihasilkan?", o: ["638 920", "639 920", "640 920", "641 920"], a: "B" },
+                    { q: "Amir menyimpan 185 450 keping setem. Dia menerima lagi 214 875 keping setem daripada rakannya. Berapakah jumlah setem Amir?", o: ["399 325", "400 325", "401 325", "402 325"], a: "B" },
+                    { q: "Berapakah hasil tambah 560 128, 128 452 dan 211 420?", o: ["899 900", "900 000", "900 100", "901 000"], a: "B" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["456 789 + 123 111 = 579 800", "456 789 + 123 111 = 579 900", "456 789 + 123 111 = 580 900", "456 789 + 123 111 = 578 900"], a: "B" },
+                    { q: "Sebuah sekolah mempunyai 1 245 murid lelaki dan 1 368 murid perempuan. Sebanyak 387 orang murid baharu mendaftar. Berapakah jumlah murid sekarang?", o: ["2 990", "3 000", "3 010", "3 020"], a: "B" }
                 ],
                 "Tolak": [
-                    { q: "Berapakah 8 − 3?", o: ["4","5","6","7"], a: "B" },
-                    { q: "Berapakah 10 − 4?", o: ["5","6","7","8"], a: "B" },
-                    { q: "Berapakah 15 − 7?", o: ["7","8","9","10"], a: "B" },
-                    { q: "Berapakah 12 − 5?", o: ["6","7","8","9"], a: "B" },
-                    { q: "Berapakah 18 − 9?", o: ["8","9","10","11"], a: "B" },
-                    { q: "Berapakah 20 − 6?", o: ["13","14","15","16"], a: "B" },
-                    { q: "Berapakah 17 − 8?", o: ["8","9","10","11"], a: "B" },
-                    { q: "Berapakah 25 − 10?", o: ["14","15","16","17"], a: "B" },
-                    { q: "Berapakah 30 − 12?", o: ["17","18","19","20"], a: "B" },
-                    { q: "Berapakah 27 − 9?", o: ["16","17","18","19"], a: "C" },
-                    { q: "Berapakah 35 − 14?", o: ["20","21","22","23"], a: "B" },
-                    { q: "Berapakah 42 − 15?", o: ["26","27","28","29"], a: "B" },
-                    { q: "Berapakah 50 − 18?", o: ["31","32","33","34"], a: "B" },
-                    { q: "Berapakah 63 − 21?", o: ["41","42","43","44"], a: "B" },
-                    { q: "Berapakah 70 − 25?", o: ["44","45","46","47"], a: "B" },
-                    { q: "Berapakah 81 − 30?", o: ["50","51","52","53"], a: "B" },
-                    { q: "Berapakah 94 − 42?", o: ["51","52","53","54"], a: "B" },
-                    { q: "Berapakah 100 − 36?", o: ["62","63","64","65"], a: "C" },
-                    { q: "Berapakah 76 − 24?", o: ["50","51","52","53"], a: "C" },
-                    { q: "Berapakah 59 − 17?", o: ["40","41","42","43"], a: "C" }
-                ],
-                "Pecahan": [
-                    { q: "Apakah nama pecahan ½?", o: ["Satu per empat","Satu per dua","Tiga per empat","Dua per dua"], a: "B" },
-                    { q: "Apakah nama pecahan ¼?", o: ["Satu per dua","Dua per empat","Satu per empat","Tiga per empat"], a: "C" },
-                    { q: "Apakah nama pecahan ¾?", o: ["Tiga per dua","Tiga per empat","Empat per tiga","Satu per empat"], a: "B" },
-                    { q: "Jika sebiji epal dibahagi kepada 2 bahagian sama besar, satu bahagian ialah…", o: ["¼","½","¾","2"], a: "B" },
-                    { q: "Jika sekeping roti dibahagi kepada 4 bahagian sama besar, satu bahagian ialah…", o: ["½","¼","¾","4"], a: "B" },
-                    { q: "Antara berikut, yang manakah lebih besar?", o: ["¼","½","Kedua-duanya sama","Tiada jawapan"], a: "B" },
-                    { q: "Antara berikut, yang manakah lebih kecil?", o: ["½","¼","Kedua-duanya sama","¾"], a: "B" },
-                    { q: "Dua bahagian daripada empat bahagian sama besar ditulis sebagai…", o: ["¼","2/4","¾","4/2"], a: "B" },
-                    { q: "Tiga bahagian daripada empat bahagian sama besar ditulis sebagai…", o: ["¼","½","¾","4/3"], a: "C" },
-                    { q: "Satu kek dipotong kepada 4 bahagian sama besar. Ali makan 1 bahagian. Ali makan…", o: ["½","¼","¾","4"], a: "B" },
-                    { q: "Sebiji tembikai dibahagi kepada 2 bahagian sama besar. Amin mengambil satu bahagian. Amin mendapat…", o: ["¼","½","¾","2"], a: "B" },
-                    { q: "Jika 3 daripada 4 bahagian pizza dimakan, pecahannya ialah…", o: ["¼","½","¾","4/4"], a: "C" },
-                    { q: "Pecahan manakah menunjukkan separuh?", o: ["¼","½","¾","3/2"], a: "B" },
-                    { q: "Pecahan manakah menunjukkan satu suku?", o: ["¼","½","¾","2/2"], a: "A" },
-                    { q: "Berapakah bilangan bahagian sama besar bagi pecahan ¼?", o: ["2","3","4","5"], a: "C" },
-                    { q: "Berapakah bilangan bahagian sama besar bagi pecahan ½?", o: ["2","3","4","5"], a: "A" },
-                    { q: "Antara berikut, yang manakah menunjukkan tiga suku?", o: ["¼","½","¾","1/3"], a: "C" },
-                    { q: "Pecahan yang mewakili satu daripada dua bahagian sama besar ialah…", o: ["¼","½","¾","2/4"], a: "B" },
-                    { q: "Pecahan yang mewakili satu daripada empat bahagian sama besar ialah…", o: ["½","¼","¾","4/1"], a: "B" },
-                    { q: "Antara berikut, pecahan manakah paling besar?", o: ["¼","½","¾","Semua sama besar"], a: "C" }
-                ],
-                "Wang": [
-                    { q: "Berapakah nilai syiling 50 sen?", o: ["RM0.20","RM0.50","RM1.00","RM0.05"], a: "B" },
-                    { q: "Berapakah nilai syiling 20 sen?", o: ["RM0.10","RM0.20","RM0.50","RM2.00"], a: "B" },
-                    { q: "Berapakah nilai wang kertas RM5?", o: ["Lima ringgit","Dua ringgit","Sepuluh ringgit","Satu ringgit"], a: "A" },
-                    { q: "Ali mempunyai syiling 50 sen dan 20 sen. Berapakah jumlah wang Ali?", o: ["60 sen","70 sen","80 sen","90 sen"], a: "B" },
-                    { q: "Siti mempunyai syiling 10 sen dan 5 sen. Berapakah jumlah wang Siti?", o: ["10 sen","15 sen","20 sen","25 sen"], a: "B" },
-                    { q: "Berapakah jumlah bagi RM1 dan RM2?", o: ["RM2","RM3","RM4","RM5"], a: "B" },
-                    { q: "Ahmad mempunyai wang RM10. Dia membeli pensel berharga RM4. Berapakah baki wang Ahmad?", o: ["RM4","RM5","RM6","RM7"], a: "C" },
-                    { q: "Sebatang pemadam berharga RM2. Berapakah wang yang perlu dibayar?", o: ["RM1","RM2","RM3","RM4"], a: "B" },
-                    { q: "Berapakah jumlah bagi syiling 20 sen + 20 sen?", o: ["30 sen","40 sen","50 sen","60 sen"], a: "B" },
-                    { q: "Berapakah jumlah bagi syiling 50 sen + 50 sen?", o: ["50 sen","80 sen","RM1.00","RM2.00"], a: "C" },
-                    { q: "Ibu memberi RM8 kepada Amir. Amir membelanjakan RM3. Berapakah baki wang Amir?", o: ["RM4","RM5","RM6","RM7"], a: "B" },
-                    { q: "Berapakah jumlah bagi RM5 dan RM5?", o: ["RM8","RM9","RM10","RM11"], a: "C" },
-                    { q: "Sebuku roti berharga RM4. Jika Ali membayar RM5, berapakah baki yang diterima?", o: ["RM0.50","RM1","RM2","RM3"], a: "B" },
-                    { q: "Berapakah jumlah bagi syiling 10 sen + 20 sen + 50 sen?", o: ["70 sen","80 sen","90 sen","RM1.00"], a: "B" },
-                    { q: "Berapakah jumlah bagi RM2 dan RM6?", o: ["RM6","RM7","RM8","RM9"], a: "C" },
-                    { q: "Sarah mempunyai RM9. Dia membeli buku berharga RM5. Berapakah baki wang Sarah?", o: ["RM3","RM4","RM5","RM6"], a: "B" },
-                    { q: "Berapakah jumlah bagi syiling 5 sen + 5 sen + 10 sen?", o: ["15 sen","20 sen","25 sen","30 sen"], a: "B" },
-                    { q: "Berapakah jumlah bagi RM10 dan RM2?", o: ["RM10","RM11","RM12","RM13"], a: "C" },
-                    { q: "Harga sebatang pensel ialah RM3. Jika Amin membeli 1 batang pensel, dia perlu membayar…", o: ["RM2","RM3","RM4","RM5"], a: "B" },
-                    { q: "Farah mempunyai RM7. Dia membeli gula-gula berharga RM2. Berapakah baki wang Farah?", o: ["RM4","RM5","RM6","RM7"], a: "B" }
-                ],
-                "Masa & Waktu": [
-                    { q: "Terdapat berapa hari dalam seminggu?", o: ["5 hari","6 hari","7 hari","8 hari"], a: "C" },
-                    { q: "Apakah hari selepas hari Isnin?", o: ["Ahad","Selasa","Rabu","Khamis"], a: "B" },
-                    { q: "Apakah hari sebelum hari Jumaat?", o: ["Selasa","Rabu","Khamis","Sabtu"], a: "C" },
-                    { q: "Terdapat berapa bulan dalam setahun?", o: ["10 bulan","11 bulan","12 bulan","13 bulan"], a: "C" },
-                    { q: "Bulan apakah yang datang selepas bulan Mac?", o: ["Februari","April","Mei","Jun"], a: "B" },
-                    { q: "Bulan apakah yang datang sebelum bulan Oktober?", o: ["Ogos","September","November","Disember"], a: "B" },
-                    { q: "Pukul 3:00 dibaca sebagai…", o: ["Pukul dua","Pukul tiga","Pukul empat","Pukul lima"], a: "B" },
-                    { q: "Pukul 8:00 dibaca sebagai…", o: ["Pukul tujuh","Pukul lapan","Pukul sembilan","Pukul sepuluh"], a: "B" },
-                    { q: "Jika jam menunjukkan pukul 12:00, apakah bacaannya?", o: ["Pukul sebelas","Pukul dua belas","Pukul satu","Pukul sepuluh"], a: "B" },
-                    { q: "Antara berikut, yang manakah ialah hari pertama dalam seminggu?", o: ["Isnin","Ahad","Sabtu","Jumaat"], a: "B" },
-                    { q: "Hari apakah selepas hari Rabu?", o: ["Selasa","Khamis","Jumaat","Sabtu"], a: "B" },
-                    { q: "Hari apakah sebelum hari Ahad?", o: ["Jumaat","Sabtu","Isnin","Khamis"], a: "B" },
-                    { q: "Bulan apakah yang pertama dalam setahun?", o: ["Februari","Januari","Mac","Disember"], a: "B" },
-                    { q: "Bulan apakah yang terakhir dalam setahun?", o: ["Oktober","November","Disember","Januari"], a: "C" },
-                    { q: "Jika hari ini hari Selasa, apakah hari esok?", o: ["Isnin","Rabu","Khamis","Jumaat"], a: "B" },
-                    { q: "Jika hari ini hari Sabtu, apakah hari semalam?", o: ["Khamis","Jumaat","Ahad","Isnin"], a: "B" },
-                    { q: "Antara berikut, yang manakah merupakan waktu pagi?", o: ["Pukul 8:00 pagi","Pukul 8:00 malam","Pukul 10:00 malam","Pukul 9:00 malam"], a: "A" },
-                    { q: "Antara berikut, yang manakah merupakan waktu malam?", o: ["Pukul 7:00 pagi","Pukul 9:00 pagi","Pukul 8:00 malam","Pukul 11:00 pagi"], a: "C" },
-                    { q: "Berapakah bilangan jam dalam satu hari?", o: ["12 jam","20 jam","24 jam","30 jam"], a: "C" },
-                    { q: "Jika sekarang pukul 6:00, sejam kemudian ialah pukul…", o: ["5:00","6:30","7:00","8:00"], a: "C" }
-                ],
-                "Ukuran & Sukatan": [
-                    { q: "Yang manakah lebih panjang?", o: ["Pensel 15 cm","Pensel 10 cm","Kedua-duanya sama","Tidak pasti"], a: "A" },
-                    { q: "Yang manakah lebih pendek?", o: ["Tali 20 cm","Tali 8 cm","Tali 15 cm","Tali 12 cm"], a: "B" },
-                    { q: "Antara berikut, yang manakah lebih berat?", o: ["Batu","Bulu","Kertas","Daun"], a: "A" },
-                    { q: "Antara berikut, yang manakah lebih ringan?", o: ["Meja","Kerusi","Bulu","Almari"], a: "C" },
-                    { q: "Bekas yang mengandungi lebih banyak air mempunyai…", o: ["Isi padu lebih besar","Isi padu lebih kecil","Berat lebih ringan","Tinggi lebih rendah"], a: "A" },
-                    { q: "Yang manakah boleh mengisi lebih banyak air?", o: ["Baldi","Cawan","Sudu","Penutup botol"], a: "A" },
-                    { q: "Yang manakah lebih tinggi?", o: ["Pokok","Pensel","Pemadam","Buku"], a: "A" },
-                    { q: "Yang manakah lebih rendah?", o: ["Bangunan","Kerusi","Tiang lampu","Pokok kelapa"], a: "B" },
-                    { q: "Antara berikut, yang manakah paling panjang?", o: ["Reben 25 cm","Reben 20 cm","Reben 15 cm","Reben 10 cm"], a: "A" },
-                    { q: "Antara berikut, yang manakah paling pendek?", o: ["Pensel 18 cm","Pensel 9 cm","Pensel 12 cm","Pensel 15 cm"], a: "B" },
-                    { q: "Yang manakahmempunyai kapasitas paling besar?", o: ["Tangki air","Cawan","Gelas","Mangkuk kecil"], a: "A" },
-                    { q: "Yang manakah mempunyai kapasitas paling kecil?", o: ["Baldi","Botol","Sudu","Jag"], a: "C" },
-                    { q: "Antara berikut, yang manakah paling berat?", o: ["Gajah","Kucing","Ayam","Arnab"], a: "A" },
-                    { q: "Antara berikut, yang manakah paling ringan?", o: ["Bola besi","Batu bata","Belon","Meja"], a: "C" },
-                    { q: "Pembaris digunakan untuk mengukur…", o: ["Panjang","Berat","Isi padu","Masa"], a: "A" },
-                    { q: "Penimbang digunakan untuk mengukur…", o: ["Panjang","Berat","Masa","Isi padu"], a: "B" },
-                    { q: "Yang manakah lebih panjang daripada 30 cm?", o: ["25 cm","35 cm","20 cm","28 cm"], a: "B" },
-                    { q: "Yang manakah lebih ringan daripada beg sekolah?", o: ["Buku","Pemadam","Meja","Almari"], a: "B" },
-                    { q: "Sebotol air mengandungi lebih banyak air daripada secawan air. Ini bermaksud…", o: ["Botol mempunyai kapasitas lebih besar","Cawan lebih berat","Cawan lebih tinggi","Botol lebih pendek"], a: "A" },
-                    { q: "Yang manakah paling sesuai digunakan untuk membawa banyak air?", o: ["Sudu","Cawan","Baldi","Penutup botol"], a: "C" }
-                ],
-                "Bentuk": [
-                    { q: "Bentuk manakah mempunyai 3 sisi?", o: ["Segi empat sama","Bulatan","Segi tiga","Segi empat tepat"], a: "C" },
-                    { q: "Bentuk manakah tidak mempunyai sisi?", o: ["Segi tiga","Bulatan","Segi empat sama","Segi empat tepat"], a: "B" },
-                    { q: "Bentuk manakah mempunyai 4 sisi yang sama panjang?", o: ["Segi empat tepat","Segi tiga","Bulatan","Segi empat sama"], a: "D" },
-                    { q: "Bentuk manakah mempunyai 2 sisi panjang dan 2 sisi pendek?", o: ["Bulatan","Segi tiga","Segi empat tepat","Segi empat sama"], a: "C" },
-                    { q: "Berapakah bilangan sisi bagi segi tiga?", o: ["2","3","4","5"], a: "B" },
-                    { q: "Berapakah bilangan sisi bagi segi empat sama?", o: ["3","4","5","6"], a: "B" },
-                    { q: "Berapakah bilangan bucu pada segi tiga?", o: ["2","3","4","5"], a: "B" },
-                    { q: "Berapakah bilangan bucu pada segi empat tepat?", o: ["3","4","5","6"], a: "B" },
-                    { q: "Yang manakah berbentuk bulatan?", o: ["Bola","Buku","Pintu","Kotak"], a: "A" },
-                    { q: "Yang manakah berbentuk segi empat tepat?", o: ["Syiling","Tingkap","Pinggan","Bola"], a: "B" },
-                    { q: "Yang manakah berbentuk segi empat sama?", o: ["Jubin lantai","Jam dinding bulat","Bola","Pinggan"], a: "A" },
-                    { q: "Yang manakah berbentuk segi tiga?", o: ["Kon trafik","Bola","Buku","Syiling"], a: "A" },
-                    { q: "Bentuk manakah mempunyai sisi lurus sahaja?", o: ["Bulatan","Segi tiga","Bujur","Oval"], a: "B" },
-                    { q: "Bentuk manakah mempunyai garisan melengkung?", o: ["Segi empat sama","Segi tiga","Bulatan","Segi empat tepat"], a: "C" },
-                    { q: "Antara berikut, yang manakah mempunyai 4 bucu?", o: ["Bulatan","Segi empat sama","Segi tiga","Bujur"], a: "B" },
-                    { q: "Segi empat sama mempunyai berapa sisi?", o: ["3","4","5","6"], a: "B" },
-                    { q: "Bentuk manakah mempunyai sisi paling sedikit?", o: ["Segi empat tepat","Segi empat sama","Segi tiga","Segi lima"], a: "C" },
-                    { q: "Yang manakah bukan bentuk 2 dimensi?", o: ["Segi tiga","Bulatan","Segi empat sama","Kubus"], a: "D" },
-                    { q: "Bentuk apakah yang sesuai untuk roda basikal?", o: ["Segi tiga","Bulatan","Segi empat tepat","Segi empat Sama"], a: "B" },
-                    { q: "Bentuk apakah yang mempunyai 4 sisi and semua sisinya sama panjang?", o: ["Segi tiga","Segi empat tepat","Segi empat sama","Bulatan"], a: "C" }
-                ]
-            },
-            2: { // Tahun 2
-                "Nombor Bulat": [
-                    { q: "Apakah nombor selepas 398?", o: ["397","399","400","401"], a: "B" },
-                    { q: "Apakah nombor sebelum 620?", o: ["618","619","621","622"], a: "B" },
-                    { q: "Tujuh ratus empat puluh lima ditulis dalam angka ialah", o: ["754","745","705","475"], a: "B" },
-                    { q: "908 ditulis dalam perkataan ialah", o: ["Sembilan ratus lapan","Sembilan ratus lapan puluh","Lapan ratus sembilan","Sembilan puluh lapan"], a: "A" },
-                    { q: "Apakah nilai tempat bagi digit 5 dalam nombor 652?", o: ["Sa","Puluh","Ratus","Ribu"], a: "B" },
-                    { q: "Apakah nilai digit bagi digit 7 dalam nombor 731?", o: ["7","70","700","701"], a: "C" },
-                    { q: "Cerakinan nilai digit yang betul bagi 483 ialah", o: ["400 + 80 + 3","40 + 80 + 3","400 + 8 + 3","4 + 80 + 3"], a: "A" },
-                    { q: "Yang manakah nombor paling besar?", o: ["567","576","657","675"], a: "C" },
-                    { q: "Susunan nombor secara menaik yang betul ialah", o: ["482, 428, 824, 248","248, 428, 482, 824","824, 482, 428, 248","428, 248, 482, 824"], a: "B" },
-                    { q: "Susunan nombor secara menurun yang betul ialah", o: ["309, 390, 903, 930","930, 903, 390, 309","903, 930, 390, 309","390, 309, 930, 903"], a: "B" },
-                    { q: "Bundarkan 468 kepada ratus terdekat.", o: ["400","450","500","470"], a: "C" },
-                    { q: "Bundarkan 823 kepada ratus terdekat.", o: ["800","820","900","830"], a: "A" },
-                    { q: "Apakah nombor yang hilang?\n250, 260, 270, ___, 290", o: ["275","280","285","300"], a: "B" },
-                    { q: "Lengkapkan pola nombor.\n615, 620, 625, ___, 635", o: ["626","628","630","640"], a: "C" },
-                    { q: "Yang manakah lebih kecil?", o: ["719","791","697","769"], a: "C" },
-                    { q: "Antara berikut, yang manakah mempunyai 8 ratus?", o: ["689","798","845","782"], a: "C" },
-                    { q: "Berapakah bilangan ratus dalam nombor 936?", o: ["3","6","9","36"], a: "C" },
-                    { q: "Pilih pernyataan yang betul.", o: ["582 > 625","746 < 674","908 > 890","399 > 493"], a: "C" },
-                    { q: "Apakah nombor yang terbentuk daripada 5 ratus, 2 puluh dan 8 sa?", o: ["258","528","582","852"], a: "B" },
-                    { q: "Pilih nombor yang berada di antara 699 dan 701.", o: ["698","700","702","710"], a: "B" }
-                ],
-                "Tambah": [
-                    { q: "245 + 123 =", o: ["358","368","378","388"], a: "B" },
-                    { q: "317 + 82 =", o: ["389","399","409","419"], a: "B" },
-                    { q: "156 + 204 =", o: ["350","360","370","380"], a: "B" },
-                    { q: "428 + 171 =", o: ["589","599","609","619"], a: "B" },
-                    { q: "503 + 96 =", o: ["589","599","609","699"], a: "B" },
-                    { q: "390 + 210 =", o: ["500","590","600","610"], a: "C" },
-                    { q: "468 + 231 =", o: ["689","699","709","719"], a: "B" },
-                    { q: "145 + 345 =", o: ["480","490","500","510"], a: "B" },
-                    { q: "299 + 201 =", o: ["490","500","510","520"], a: "B" },
-                    { q: "134 + 265 =", o: ["389","399","409","419"], a: "B" },
-                    { q: "Amir mempunyai 235 biji guli. Ayah membeli lagi 124 biji guli. Berapakah jumlah guli Amir?", o: ["349","359","369","379"], a: "B" },
-                    { q: "Sebuah perpustakaan mempunyai 412 buah buku cerita. Sebanyak 187 buah buku baharu diterima. Berapakah jumlah buku cerita sekarang?", o: ["589","599","609","619"], a: "C" },
-                    { q: "273 + ___ = 500", o: ["217","227","237","247"], a: "B" },
-                    { q: "___ + 156 = 400", o: ["234","244","254","264"], a: "B" },
-                    { q: "125 + 175 + 100 =", o: ["390","400","410","420"], a: "B" },
-                    { q: "218 + 142 + 40 =", o: ["390","400","410","420"], a: "B" },
-                    { q: "Berapakah hasil tambah 364 dan 235?", o: ["589","599","609","619"], a: "B" },
-                    { q: "Siti mengumpul 128 pelekat pada bulan Januari dan 236 pelekat pada bulan Februari. Berapakah jumlah pelekat yang dikumpul?", o: ["354","364","374","384"], a: "B" },
-                    { q: "Pilih ayat matematik yang betul.", o: ["256 + 143 = 389","256 + 143 = 399","256 + 143 = 409","256 + 143 = 419"], a: "B" },
-                    { q: "Jumlah bagi 187 dan 313 ialah", o: ["490","495","500","510"], a: "C" }
-                ],
-                "Tolak": [
-                    { q: "568 − 234 =", o: ["324","334","344","354"], a: "B" },
-                    { q: "745 − 123 =", o: ["612","622","632","642"], a: "B" },
-                    { q: "900 − 275 =", o: ["615","625","635","645"], a: "B" },
-                    { q: "681 − 250 =", o: ["421","431","441","451"], a: "A" },
-                    { q: "500 − 189 =", o: ["301","311","321","331"], a: "B" },
-                    { q: "437 − 126 =", o: ["301","311","321","331"], a: "B" },
-                    { q: "852 − 341 =", o: ["501","511","521","531"], a: "B" },
-                    { q: "760 − 420 =", o: ["330","340","350","360"], a: "B" },
-                    { q: "999 − 456 =", o: ["533","543","553","563"], a: "B" },
-                    { q: "615 − 208 =", o: ["397","407","417","427"], a: "B" },
-                    { q: "824 − ____ = 501", o: ["313","323","333","343"], a: "B" },
-                    { q: "____ − 148 = 352", o: ["490","500","510","520"], a: "B" },
-                    { q: "Sofia mempunyai 685 pelekat. Dia memberikan 243 pelekat kepada adiknya. Berapakah baki pelekat Sofia?", o: ["432","442","452","462"], a: "B" },
-                    { q: "Bagaimanakah kedai mempunyai 800 biji telur. Sebanyak 275 biji telur telah dijual. Berapakah baki telur?", o: ["515","525","535","545"], a: "B" },
-                    { q: "Seorang murid membaca 356 muka surat daripada sebuah buku yang mempunyai 500 muka surat. Berapakah muka surat yang belum dibaca?", o: ["134","144","154","164"], a: "B" },
-                    { q: "Berapakah beza antara 742 dan 318?", o: ["414","424","434","444"], a: "B" },
-                    { q: "Pilih ayat matematik yang betul.", o: ["684 − 152 = 532","684 − 152 = 522","684 − 152 = 542","684 − 152 = 552"], a: "A" },
-                    { q: "700 − 399 =", o: ["291","301","311","321"], a: "B" },
-                    { q: "456 − 156 =", o: ["290","300","310","320"], a: "B" },
-                    { q: "Farid mempunyai RM950. Dia membeli sebuah basikal berharga RM468. Berapakah baki wang Farid?", o: ["RM472","RM482","RM492","RM502"], a: "B" }
+                    { q: "685 432 − 243 218 =", o: ["441 214", "442 214", "443 214", "444 214"], a: "A" },
+                    { q: "900 000 − 356 789 =", o: ["543 111", "543 211", "544 211", "545 211"], a: "B" },
+                    { q: "742 865 − 218 347 =", o: ["523 518", "524 518", "525 518", "526 518"], a: "A" },
+                    { q: "561 240 − 185 630 =", o: ["374 610", "375 610", "376 610", "377 610"], a: "B" },
+                    { q: "804 562 − 294 158 =", o: ["509 404", "510 404", "511 404", "512 404"], a: "B" },
+                    { q: "700 000 − 258 429 =", o: ["440 571", "441 571", "442 571", "443 571"], a: "B" },
+                    { q: "536 781 − 124 693 =", o: ["411 088", "412 088", "413 088", "414 088"], a: "B" },
+                    { q: "630 250 − 218 945 =", o: ["410 305", "411 305", "412 305", "413 305"], a: "B" },
+                    { q: "999 999 − 456 789 =", o: ["542 210", "543 210", "544 210", "545 210"], a: "B" },
+                    { q: "850 430 − 349 215 =", o: ["500 215", "501 215", "502 215", "503 215"], a: "B" },
+                    { q: "623 785 − ____ = 412 560", o: ["210 225", "211 225", "212 225", "213 225"], a: "B" },
+                    { q: "____ − 235 680 = 412 320", o: ["648 000", "649 000", "650 000", "651 000"], a: "A" },
+                    { q: "Sebuah perpustakaan mempunyai 685 420 buah buku. Sebanyak 243 175 buah buku dipinjam. Berapakah bilangan buku yang masih ada?", o: ["441 245", "442 245", "443 245", "444 245"], a: "A" },
+                    { q: "Sebuah kilang menghasilkan 950 000 botol minuman. Sebanyak 428 650 botol telah dihantar ke kedai. Berapakah botol yang masih tinggal?", o: ["520 350", "521 350", "522 350", "523 350"], a: "B" },
+                    { q: "Seorang peniaga mempunyai 735 680 biji gula-gula. Dia menjual 218 945 biji. Berapakah baki gula-gula?", o: ["515 735", "516 735", "517 735", "518 735"], a: "B" },
+                    { q: "Berapakah beza antara 845 620 dan 328 475?", o: ["516 145", "517 145", "518 145", "519 145"], a: "B" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["724 815 − 213 604 = 511 211", "724 815 − 213 604 = 512 211", "724 815 − 213 604 = 513 211", "724 815 − 213 604 = 514 211"], a: "A" },
+                    { q: "Sebuah sekolah mempunyai 2 860 orang murid. Seramai 485 orang murid menyertai lawatan. Berapakah murid yang tidak menyertai lawatan?", o: ["2 365", "2 375", "2 385", "2 395"], a: "B" },
+                    { q: "Seorang petani menuai 8 250 biji durian. Dia telah menjual 3 685 biji. Berapakah baki durian?", o: ["4 465", "4 565", "4 665", "4 765"], a: "B" },
+                    { q: "Faris mempunyai RM9 850. Dia membeli sebuah komputer berharga RM4 675. Berapakah baki wang Faris?", o: ["RM5 075", "RM5 175", "RM5 275", "RM5 375"], a: "B" }
                 ],
                 "Darab": [
-                    { q: "2 × 7 =", o: ["12","14","16","18"], a: "B" },
-                    { q: "3 × 8 =", o: ["21","22","24","27"], a: "C" },
-                    { q: "4 × 9 =", o: ["32","34","36","38"], a: "C" },
-                    { q: "5 × 6 =", o: ["25","28","30","35"], a: "C" },
-                    { q: "7 × 7 =", o: ["42","48","49","56"], a: "C" },
-                    { q: "8 × 4 =", o: ["28","30","32","36"], a: "C" },
-                    { q: "9 × 5 =", o: ["40","45","50","55"], a: "B" },
-                    { q: "10 × 8 =", o: ["70","75","80","90"], a: "C" },
-                    { q: "6 × 3 =", o: ["16","18","20","24"], a: "B" },
-                    { q: "9 × 9 =", o: ["72","79","81","90"], a: "C" },
-                    { q: "Seorang petani mempunyai 4 bakul. Setiap bakul mengandungi 8 biji epal. Berapakah jumlah epal semuanya?", o: ["28","30","32","36"], a: "C" },
-                    { q: "Ada 6 pasu bunga. Setiap pasu mempunyai 5 kuntum bunga. Berapakah jumlah bunga semuanya?", o: ["25","30","35","40"], a: "B" },
-                    { q: "Seorang guru menyusun 9 baris kerusi. Setiap baris mempunyai 4 kerusi. Berapakah jumlah kerusi?", o: ["32","34","36","38"], a: "C" },
-                    { q: "Dalam sebuah kotak terdapat 7 bungkus pensel. Setiap bungkus mengandungi 6 batang pensel. Berapakah jumlah pensel?", o: ["40","42","44","48"], a: "B" },
-                    { q: "Pilih ayat matematik yang betul.", o: ["8 × 7 = 54","8 × 7 = 56","8 × 7 = 58","8 × 7 = 64"], a: "B" },
-                    { q: "5 × ___ = 45", o: ["7","8","9","10"], a: "C" },
-                    { q: "___ × 6 = 24", o: ["2","3","4","5"], a: "C" },
-                    { q: "Hasil darab bagi 3 dan 10 ialah", o: ["20","25","30","33"], a: "C" },
-                    { q: "Siti mempunyai 8 paket gula-gula. Setiap paket mengandungi 9 biji gula-gula. Berapakah jumlah gula-gula Siti?", o: ["64","70","72","81"], a: "C" },
-                    { q: "Sebuah bas membawa 5 baris penumpang. Setiap baris mempunyai 7 orang penumpang. Berapakah jumlah penumpang?", o: ["30","35","40","42"], a: "B" }
+                    { q: "245 × 6 =", o: ["1 450", "1 470", "1 480", "1 490"], a: "B" },
+                    { q: "328 × 7 =", o: ["2 286", "2 296", "2 306", "2 316"], a: "B" },
+                    { q: "456 × 8 =", o: ["3 548", "3 648", "3 748", "3 848"], a: "B" },
+                    { q: "629 × 5 =", o: ["3 045", "3 145", "3 245", "3 345"], a: "B" },
+                    { q: "842 × 9 =", o: ["7 478", "7 578", "7 678", "7 778"], a: "B" },
+                    { q: "1 245 × 4 =", o: ["4 880", "4 980", "5 080", "5 180"], a: "B" },
+                    { q: "2 136 × 3 =", o: ["6 208", "6 308", "6 408", "6 508"], a: "C" },
+                    { q: "1 425 × 12 =", o: ["16 900", "17 000", "17 100", "17 200"], a: "C" },
+                    { q: "235 × 24 =", o: ["5 540", "5 640", "5 740", "5 840"], a: "B" },
+                    { q: "318 × 15 =", o: ["4 670", "4 770", "4 870", "4 970"], a: "B" },
+                    { q: "425 × 32 =", o: ["13 500", "13 600", "13 700", "13 800"], a: "B" },
+                    { q: "1 208 × 25 =", o: ["29 200", "30 200", "31 200", "32 200"], a: "B" },
+                    { q: " sebuah kotak mengandungi 24 batang pensel. Sebanyak 125 kotak dihantar ke sebuah sekolah. Berapakah jumlah pensel semuanya?", o: ["2 900", "3 000", "3 100", "3 200"], a: "B" },
+                    { q: "Sebuah bas membawa 48 orang penumpang. Jika terdapat 35 buah bas, berapakah jumlah penumpang?", o: ["1 580", "1 680", "1 780", "1 880"], a: "B" },
+                    { q: "Sebuah ladang mempunyai 215 pokok mangga dalam setiap baris. Terdapat 18 baris pokok. Berapakah jumlah pokok mangga?", o: ["3 770", "3 870", "3 970", "4 070"], a: "B" },
+                    { q: "Hasil darab bagi 640 × 50 ialah", o: ["31 000", "32 000", "33 000", "34 000"], a: "B" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["326 × 14 = 4 464", "326 × 14 = 4 564", "326 × 14 = 4 664", "326 × 14 = 4 764"], a: "B" },
+                    { q: "1 500 × 20 =", o: ["25 000", "30 000", "35 000", "40 000"], a: "B" },
+                    { q: "Seorang peniaga menjual 175 botol air setiap hari. Berapakah jumlah botol air yang dijual dalam 30 hari?", o: ["5 050", "5 150", "5 250", "5 350"], a: "C" },
+                    { q: "Sebuah kilang menghasilkan 325 biskut dalam satu dulang. Jika terdapat 40 dulang, berapakah jumlah biskut yang dihasilkan?", o: ["12 000", "12 500", "13 000", "13 500"], a: "C" }
                 ],
                 "Bahagi": [
-                    { q: "12 ÷ 2 =", o: ["5","6","7","8"], a: "B" },
-                    { q: "18 ÷ 3 =", o: ["5","6","7","8"], a: "B" },
-                    { q: "20 ÷ 5 =", o: ["3","4","5","6"], a: "B" },
-                    { q: "24 ÷ 4 =", o: ["5","6","7","8"], a: "B" },
-                    { q: "35 ÷ 7 =", o: ["4","5","6","7"], a: "B" },
-                    { q: "40 ÷ 8 =", o: ["4","5","6","8"], a: "B" },
-                    { q: "54 ÷ 6 =", o: ["8","9","10","11"], a: "B" },
-                    { q: "63 ÷ 9 =", o: ["6","7","8","9"], a: "B" },
-                    { q: "56 ÷ 7 =", o: ["6","7","8","9"], a: "C" },
-                    { q: "90 ÷ 10 =", o: ["8","9","10","11"], a: "B" },
-                    { q: "48 ÷ ___ = 6", o: ["6","7","8","9"], a: "C" },
-                    { q: "___ ÷ 5 = 7", o: ["30","35","40","45"], a: "B" },
-                    { q: "Ibu mempunyai 36 biji oren. Oren itu dibahagikan sama rata kepada 6 orang anak. Berapakah bilangan oren yang diterima oleh setiap anak?", o: ["5","6","7","8"], a: "B" },
-                    { q: "Seorang guru mempunyai 45 batang pensel. Pensel itu dimasukkan sama banyak ke dalam 9 bekas. Berapakah bilangan pensel dalam setiap bekas?", o: ["4","5","6","7"], a: "B" },
-                    { q: "Sebuah kedai mempunyai 32 biji bola. Bola itu disusun sama banyak ke dalam 4 kotak. Berapakah bilangan bola dalam setiap kotak?", o: ["6","7","8","9"], a: "C" },
-                    { q: "Ahmad mempunyai 28 keping kad. Dia memberikan kad itu sama banyak kepada 7 orang kawannya. Berapakah keping kad yang diterima oleh setiap kawan?", o: ["3","4","5","6"], a: "B" },
-                    { q: "Pilih ayat matematik yang betul.", o: ["42 ÷ 6 = 6","42 ÷ 6 = 7","42 ÷ 6 = 8","42 ÷ 6 = 9"], a: "B" },
-                    { q: "Berapakah hasil bahagi bagi 72 ÷ 8?", o: ["7","8","9","10"], a: "C" },
-                    { q: "64 biji gula-gula dibahagikan sama rata kepada 8 orang murid. Setiap murid mendapat", o: ["6 biji","7 biji","8 biji","9 biji"], a: "C" },
-                    { q: "Seorang petani memetik 49 biji mangga. Dia memasukkan 7 biji mangga ke dalam setiap bakul. Berapakah bilangan bakul yang diperlukan?", o: ["5","6","7","8"], a: "C" }
+                    { q: "648 ÷ 8 =", o: ["79", "80", "81", "82"], a: "C" },
+                    { q: "936 ÷ 9 =", o: ["102", "103", "104", "105"], a: "C" },
+                    { q: "1 224 ÷ 6 =", o: ["202", "203", "204", "205"], a: "C" },
+                    { q: "1 680 ÷ 7 =", o: ["230", "240", "250", "260"], a: "B" },
+                    { q: "2 496 ÷ 8 =", o: ["310", "311", "312", "313"], a: "C" },
+                    { q: "3 780 ÷ 9 =", o: ["410", "420", "430", "440"], a: "B" },
+                    { q: "5 040 ÷ 7 =", o: ["710", "720", "730", "740"], a: "B" },
+                    { q: "8 400 ÷ 40 =", o: ["200", "210", "220", "230"], a: "B" },
+                    { q: "9 600 ÷ 30 =", o: ["300", "310", "320", "330"], a: "C" },
+                    { q: "7 200 ÷ 80 =", o: ["80", "85", "90", "95"], a: "C" },
+                    { q: "5 184 ÷ ____ = 72", o: ["70", "71", "72", "74"], a: "C" },
+                    { q: "____ ÷ 25 = 320", o: ["7 500", "8 000", "8 500", "9 000"], a: "B" },
+                    { q: "Sebuah perpustakaan mempunyai 3 840 buah buku. Buku-buku itu disusun sama banyak di 16 rak. Berapakah bilangan buku pada setiap rak?", o: ["220", "230", "240", "250"], a: "C" },
+                    { q: "Seorang peniaga mempunyai 5 760 biji gula-gula. Dia memasukkan gula-gula itu sama banyak ke dalam 24 balang. Berapakah bilangan gula-gula dalam setiap balang?", o: ["220", "230", "240", "250"], a: "C" },
+                    { q: "Sebuah lori membawa 9 450 kotak minuman. Minuman itu diagihkan sama rata kepada 45 buah kedai. Berapakah bilangan kotak yang diterima oleh setiap kedai?", o: ["200", "210", "220", "230"], a: "B" },
+                    { q: "Hasil bahagi bagi 12 600 ÷ 60 ialah", o: ["200", "210", "220", "230"], a: "B" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["7 224 ÷ 8 = 902", "7 224 ÷ 8 = 903", "7 224 ÷ 8 = 904", "7 224 ÷ 8 = 905"], a: "B" },
+                    { q: "Sebuah kilang menghasilkan 14 400 botol air dalam 30 hari. Jika pengeluaran adalah sama setiap hari, berapakah botol yang dihasilkan sehari?", o: ["460", "470", "480", "490"], a: "C" },
+                    { q: "Seorang guru mempunyai 2 160 keping kad latihan. Kad-kad itu dibahagikan sama rata kepada 9 kelas. Berapakah bilangan kad bagi setiap kelas?", o: ["220", "230", "240", "250"], a: "C" },
+                    { q: "Sebuah syarikat menghasilkan 18 000 biskut dan membungkusnya ke dalam paket yang mengandungi 50 biskut setiap satu. Berapakah jumlah paket yang dihasilkan?", o: ["340", "350", "360", "370"], a: "C" }
                 ],
                 "Pecahan": [
-                    { q: "Apakah nama bagi pecahan 1/2?", o: ["Satu per tiga","Satu per dua","Dua per satu","Satu per empat"], a: "B" },
-                    { q: "Apakah nama bagi pecahan 1/4?", o: ["Satu per lima","Dua per empat","Satu per empat","Empat per satu"], a: "C" },
-                    { q: "Apakah nama bagi pecahan 1/3?", o: ["Satu per tiga","Tiga per satu","Satu per enam","Tiga per tiga"], a: "A" },
-                    { q: "Rajah dibahagikan kepada 5 bahagian yang sama besar. Sebanyak 2 bahagian diwarnakan. Apakah pecahan bahagian yang diwarnakan?", o: ["2/3","2/4","2/5","5/2"], a: "C" },
-                    { q: "Sebiji pizza dipotong kepada 8 bahagian sama besar. Amir makan 3 bahagian. Apakah pecahan pizza yang dimakan Amir?", o: ["3/6","3/7","3/8","8/3"], a: "C" },
-                    { q: "Antara berikut, yang manakah menunjukkan satu per enam?", o: ["1/5","1/6","6/1","2/6"], a: "B" },
-                    { q: "Pecahan manakah yang lebih besar?", o: ["1/5","1/4","1/3","1/2"], a: "D" },
-                    { q: "Pecahan manakah yang lebih kecil?", o: ["1/2","1/3","1/4","1/5"], a: "D" },
-                    { q: "3/6 ialah ______ daripada 5/6.", o: ["lebih besar","sama dengan","lebih kecil","dua kali ganda"], a: "C" },
-                    { q: "4/4 mewakili", o: ["Separuh","Satu per empat","Satu penuh","Empat penuh"], a: "C" },
-                    { q: "Siti membahagikan sebatang coklat kepada 4 bahagian sama besar. Dia makan 1 bahagian. Berapakah pecahan coklat yang dimakan?", o: ["1/2","1/3","1/4","2/4"], a: "C" },
-                    { q: "Sebiji tembikai dipotong kepada 6 bahagian sama besar. Ali makan 2 bahagian. Apakah pecahan tembikai yang dimakan?", o: ["2/4","2/5","2/6","6/2"], a: "C" },
-                    { q: "Pilih pecahan yang betul bagi lima per lapan.", o: ["5/6","5/7","5/8","8/5"], a: "C" },
-                    { q: "Pilih pecahan yang betul bagi dua per tujuh.", o: ["2/5","2/6","2/7","7/2"], a: "C" },
-                    { q: "Apakah pengangka bagi pecahan 4/9?", o: ["4","9","13","5"], a: "A" },
-                    { q: "Apakah penyebut bagi pecahan 3/8?", o: ["3","5","8","11"], a: "C" },
-                    { q: "Antara berikut, yang manakah ialah tiga per lima?", o: ["3/4","3/5","5/3","5/5"], a: "B" },
-                    { q: "Kuih dipotong kepada 10 bahagian sama besar. 7 bahagian masih tinggal. Apakah pecahan kuih yang masih tinggal?", o: ["3/10","7/10","10/7","7/7"], a: "B" },
-                    { q: "Pilih pernyataan yang betul.", o: ["1/4 lebih besar daripada 1/2","1/3 lebih besar daripada 1/2","1/2 lebih besar daripada 1/4","1/5 lebih besar daripada 1/3"], a: "C" },
-                    { q: " sebuah kek dipotong kepada 9 bahagian sama besar. Nina mengambil 5 bahagian. Apakah pecahan kek yang diambil oleh Nina?", o: ["5/7","5/8","5/9","9/5"], a: "C" }
+                    { q: "Apakah pecahan bagi kawasan yang mempunyai 3 daripada 8 bahagian yang diwarnakan?", o: ["3/6", "3/7", "3/8", "8/3"], a: "C" },
+                    { q: "Yang manakah pecahan wajar?", o: ["7/5", "9/8", "4/5", "6/4"], a: "C" },
+                    { q: "Yang manakah pecahan tak wajar?", o: ["2/5", "5/6", "7/4", "3/8"], a: "C" },
+                    { q: "Tukarkan 8/4 kepada nombor bulat.", o: ["1", "2", "3", "4"], a: "B" },
+                    { q: "Apakah nombor bercampur bagi 7/3?", o: ["1 ¹⁄₃", "2 ¹⁄₃", "2 ²⁄₃", "3 ¹⁄₃"], a: "B" },
+                    { q: "Tukarkan 3 ¹⁄₅ kepada pecahan tak wajar.", o: ["13/5", "14/5", "15/5", "16/5"], a: "D" },
+                    { q: "Pecahan yang setara dengan 1/2 ialah", o: ["2/3", "2/4", "3/5", "4/5"], a: "B" },
+                    { q: "Pecahan yang setara dengan 3/5 ialah", o: ["6/10", "5/8", "9/20", "4/10"], a: "A" },
+                    { q: "Yang manakah lebih besar?", o: ["2/5", "3/5", "Kedua-duanya sama", "Tidak boleh ditentukan"], a: "B" },
+                    { q: "Yang manakah lebih kecil?", o: ["5/8", "7/8", "3/8", "6/8"], a: "C" },
+                    { q: "Susunan menaik yang betul ialah", o: ["1/2, 1/4, 3/4, 1", "1/4, 1/2, 3/4, 1", "3/4, 1/2, 1/4, 1", "1, 3/4, 1/2, 1/4"], a: "B" },
+                    { q: "2/7 + 3/7 =", o: ["4/7", "5/7", "6/7", "7/7"], a: "B" },
+                    { q: "5/9 − 2/9 =", o: ["2/9", "3/9", "4/9", "5/9"], a: "B" },
+                    { q: "Ibu membahagikan sebiji kek kepada 8 bahagian yang sama. Ali makan 3 bahagian. Apakah pecahan kek yang masih tinggal?", o: ["3/8", "4/8", "5/8", "6/8"], a: "C" },
+                    { q: "Sebuah pizza dipotong kepada 10 bahagian yang sama. Siti makan 4 bahagian. Apakah pecahan pizza yang dimakan?", o: ["2/10", "3/10", "4/10", "6/10"], a: "C" },
+                    { q: "Berapakah hasil tambah 1/6 + 4/6?", o: ["3/6", "4/6", "5/6", "6/6"], a: "C" },
+                    { q: "Berapakah hasil tolak 7/8 − 5/8?", o: ["1/8", "2/8", "3/8", "4/8"], a: "B" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["2/5 + 1/5 = 4/5", "2/5 + 1/5 = 3/5", "2/5 + 1/5 = 2/10", "2/5 + 1/5 = 1"], a: "B" },
+                    { q: "Apakah penyebut bagi pecahan 9/12?", o: ["9", "10", "11", "12"], a: "D" },
+                    { q: "Antara berikut, yang manakah mewakili satu penuh?", o: ["2/3", "3/4", "5/5", "4/5"], a: "C" }
                 ],
                 "Perpuluhan": [
-                    { q: "Apakah nama bagi nombor perpuluhan 0.1?", o: ["Sifar perpuluhan satu","Satu perpuluhan sifar","Satu per sepuluh","Sifar satu"], a: "A" },
-                    { q: "Tukarkan 3/10 kepada perpuluhan.", o: ["0.2","0.3","0.4","3.0"], a: "B" },
-                    { q: "Tukarkan 7/10 kepada perpuluhan.", o: ["0.5","0.6","0.7","0.8"], a: "C" },
-                    { q: "Apakah nombor perpuluhan selepas 0.4?", o: ["0.3","0.5","0.6","0.7"], a: "B" },
-                    { q: "Apakah nombor perpuluhan sebelum 0.8?", o: ["0.6","0.7","0.9","1.0"], a: "B" },
-                    { q: "Antara berikut, yang manakah paling kecil?", o: ["0.5","0.2","0.7","0.9"], a: "B" },
-                    { q: "Antara berikut, yang manakah paling besar?", o: ["0.3","0.6","0.8","0.9"], a: "D" },
-                    { q: "Pilih nombor perpuluhan yang berada di antara 0.4 dan 0.6.", o: ["0.3","0.5","0.7","0.8"], a: "B" },
-                    { q: "Manakah yang sama dengan 5/10?", o: ["0.4","0.5","0.6","0.7"], a: "B" },
-                    { q: "Manakah yang sama dengan 9/10?", o: ["0.7","0.8","0.9","1.0"], a: "C" },
-                    { q: "Lengkapkan pola nombor berikut:\n0.2, 0.3, 0.4, _____, 0.6", o: ["0.1","0.5","0.7","0.8"], a: "B" },
-                    { q: "Pilih pernyataan yang betul.", o: ["0.8 lebih kecil daripada 0.6","0.5 lebih besar daripada 0.9","0.7 lebih besar daripada 0.4","0.2 lebih besar daripada 0.3"], a: "C" },
-                    { q: "Antara berikut, yang manakah lebih kecil daripada 0.5?", o: ["0.6","0.7","0.4","0.8"], a: "C" },
-                    { q: "Antara berikut, yang manakah lebih besar daripada 0.7?", o: ["0.5","0.6","0.8","0.4"], a: "C" },
-                    { q: "Tukarkan 1/10 kepada perpuluhan.", o: ["0.0","0.1","1.0","0.2"], a: "B" },
-                    { q: "Tukarkan 8/10 kepada perpuluhan.", o: ["0.6","0.7","0.8","0.9"], a: "C" },
-                    { q: "Pilih nombor perpuluhan yang betul bagi enam per sepuluh.", o: ["0.5","0.6","0.7","0.8"], a: "B" },
-                    { q: "Lengkapkan nombor berikut:\n0.9, _____, 0.7", o: ["0.5","0.6","0.8","1.0"], a: "C" },
-                    { q: "Apakah nombor perpuluhan yang berada di antara 0.1 dan 0.3?", o: ["0.0","0.2","0.4","0.5"], a: "B" },
-                    { q: "Susunan nombor secara menaik yang betul ialah", o: ["0.8, 0.5, 0.2, 0.1","0.1, 0.2, 0.5, 0.8","0.5, 0.1, 0.8, 0.2","0.2, 0.8, 0.1, 0.5"], a: "B" }
+                    { q: "Apakah nilai tempat bagi digit 7 dalam nombor 45.78?", o: ["Sa", "Persepuluh", "Perseratus", "Puluh"], a: "B" },
+                    { q: "Apakah nilai digit 5 dalam nombor 23.54?", o: ["5", "0.5", "0.05", "50"], a: "B" },
+                    { q: "Yang manakah ditulis dalam perkataan dengan betul?", o: ["6.4 = Enam perpuluhan empat", "6.4 = Enam puluh empat", "6.4 = Enam per empat", "6.4 = Enam empat"], a: "A" },
+                    { q: "Tukarkan 3 + 0.8 kepada nombor perpuluhan.", o: ["3.08", "3.8", "38.0", "0.38"], a: "B" },
+                    { q: "Yang manakah paling besar?", o: ["5.32", "5.23", "5.42", "5.24"], a: "C" },
+                    { q: "Yang manakah paling kecil?", o: ["7.08", "7.80", "7.18", "7.03"], a: "D" },
+                    { q: "Susunan menaik yang betul ialah", o: ["2.34, 2.43, 2.54, 2.64", "2.64, 2.54, 2.43, 2.34", "2.43, 2.34, 2.64, 2.54", "2.54, 2.34, 2.43, 2.64"], a: "A" },
+                    { q: "Bundarkan 8.46 kepada 1 tempat perpuluhan.", o: ["8.4", "8.5", "8.6", "9.0"], a: "B" },
+                    { q: "Bundarkan 12.84 kepada nombor bulat terdekat.", o: ["12", "13", "14", "15"], a: "B" },
+                    { q: "4.25 + 2.34 =", o: ["6.49", "6.59", "6.69", "6.79"], a: "B" },
+                    { q: "9.80 − 4.25 =", o: ["5.45", "5.55", "5.65", "5.75"], a: "B" },
+                    { q: "3.6 × 4 =", o: ["12.4", "13.4", "14.4", "15.4"], a: "C" },
+                    { q: "8.4 ÷ 2 =", o: ["3.2", "4.2", "5.2", "6.2"], a: "B" },
+                    { q: "Sebatang reben berukuran 5.8 m. Lina memotong 2.3 m daripadanya. Berapakah baki panjang reben?", o: ["3.3 m", "3.4 m", "3.5 m", "3.6 m"], a: "C" },
+                    { q: "Amir membeli 2.5 kg epal dan 1.8 kg oren. Berapakah jumlah jisim buah-buahan itu?", o: ["4.1 kg", "4.2 kg", "4.3 kg", "4.4 kg"], a: "C" },
+                    { q: "Sebotol jus mengandungi 1.5 L. Ali minum 0.7 L. Berapakah isipadu jus yang masih tinggal?", o: ["0.6 L", "0.7 L", "0.8 L", "0.9 L"], a: "C" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["7.25 + 1.35 = 8.50", "7.25 + 1.35 = 8.60", "7.25 + 1.35 = 8.70", "7.25 + 1.35 = 8.80"], a: "B" },
+                    { q: "Lengkapkan pola nombor berikut.\n2.5, 3.0, 3.5, _____, 4.5", o: ["3.8", "4.0", "4.2", "4.4"], a: "B" },
+                    { q: "Yang manakah bersamaan dengan 0.75?", o: ["75", "7.5", "75/100", "75/10"], a: "C" },
+                    { q: "Antara berikut, yang manakah lebih besar daripada 6.49 tetapi lebih kecil daripada 6.51?", o: ["6.48", "6.50", "6.52", "6.60"], a: "B" }
                 ],
                 "Wang": [
-                    { q: "Wang kertas manakah bernilai RM1?", o: ["RM1","RM5","RM10","RM20"], a: "A" },
-                    { q: "Wang kertas manakah bernilai paling tinggi?", o: ["RM5","RM10","RM20","RM50"], a: "D" },
-                    { q: "Berapakah nilai wang bagi RM10 + RM5?", o: ["RM10","RM15","RM20","RM25"], a: "B" },
-                    { q: "Berapakah jumlah wang RM20 + RM10 + RM5?", o: ["RM30","RM35","RM40","RM45"], a: "B" },
-                    { q: "Berapakah jumlah wang RM50 + RM20?", o: ["RM60","RM70","RM80","RM90"], a: "B" },
-                    { q: "Ali mempunyai RM35. Dia menerima lagi RM25. Berapakah jumlah wang Ali?", o: ["RM50","RM55","RM60","RM65"], a: "C" },
-                    { q: "Siti mempunyai RM80. Dia membeli sebuah beg berharga RM35. Berapakah baki wang Siti?", o: ["RM35","RM40","RM45","RM50"], a: "C" },
-                    { q: "Berapakah jumlah wang RM15 + RM18?", o: ["RM31","RM32","RM33","RM34"], a: "C" },
-                    { q: "Harga sebuah buku ialah RM24. Ahmad membayar dengan RM50. Berapakah baki wang yang diterima?", o: ["RM24","RM25","RM26","RM27"], a: "C" },
-                    { q: "Ibu membeli susu berharga RM12 dan roti berharga RM8. Berapakah jumlah yang perlu dibayar?", o: ["RM18","RM19","RM20","RM21"], a: "C" },
-                    { q: "Berapakah jumlah wang RM30 + RM45?", o: ["RM65","RM70","RM75","RM80"], a: "C" },
-                    { q: "Farah mempunyai RM90. Dia membelanjakan RM28. Berapakah baki wang Farah?", o: ["RM60","RM61","RM62","RM63"], a: "C" },
-                    { q: "Berapakah jumlah wang RM25 + RM25?", o: ["RM45","RM50","RM55","RM60"], a: "B" },
-                    { q: "Seorang peniaga memperoleh RM48. Dia memperoleh lagi RM27 pada waktu petang. Berapakah jumlah wang yang diperoleh?", o: ["RM65","RM70","RM75","RM80"], a: "C" },
-                    { q: "Harga sebatang pensel ialah RM4. Berapakah harga bagi 5 batang pensel?", o: ["RM16","RM18","RM20","RM22"], a: "C" },
-                    { q: "RM36 dibahagikan sama rata kepada 6 orang murid. Setiap murid mendapat", o: ["RM5","RM6","RM7","RM8"], a: "B" },
-                    { q: "Amir mempunyai RM100. Dia membeli kasut berharga RM65. Berapakah baki wang Amir?", o: ["RM25","RM30","RM35","RM40"], a: "C" },
-                    { q: "Berapakah jumlah wang RM40 + RM35 + RM15?", o: ["RM80","RM85","RM90","RM95"], a: "C" },
-                    { q: "Kakak membeli sehelai baju berharga RM45 dan sepasang stokin berharga RM12. Berapakah jumlah yang dibayar?", o: ["RM55","RM56","RM57","RM58"], a: "C" },
-                    { q: "Seorang murid mempunyai RM60. Dia membeli sebuah buku berharga RM18 dan sebuah kotak pensel berharga RM22. Berapakah baki wangnya?", o: ["RM18","RM20","RM22","RM24"], a: "B" }
+                    { q: "Harga sebuah buku ialah RM28.50. Amir membayar dengan RM50.00. Berapakah baki wang yang diterima?", o: ["RM20.50", "RM21.50", "RM22.50", "RM23.50"], a: "B" },
+                    { q: "Berapakah jumlah wang RM45.80 + RM32.40?", o: ["RM77.20", "RM78.20", "RM79.20", "RM80.20"], a: "B" },
+                    { q: "Ibu membeli beras berharga RM42.90 dan minyak masak berharga RM35.60. Berapakah jumlah yang perlu dibayar?", o: ["RM77.50", "RM78.50", "RM79.50", "RM80.50"], a: "C" },
+                    { q: "Ali mempunyai RM120.00. Dia membeli kasut berharga RM68.90. Berapakah baki wang Ali?", o: ["RM50.10", "RM51.10", "RM52.10", "RM53.10"], a: "B" },
+                    { q: "Sebatang pensel berharga RM2.50. Berapakah harga 8 batang pensel?", o: ["RM18.00", "RM19.00", "RM20.00", "RM21.00"], a: "C" },
+                    { q: "Harga setiap buku ialah RM15.00. Berapakah jumlah harga untuk 12 buku?", o: ["RM160", "RM170", "RM180", "RM190"], a: "C" },
+                    { q: "Berapakah jumlah wang RM125.40 + RM234.60?", o: ["RM350.00", "RM360.00", "RM370.00", "RM380.00"], a: "B" },
+                    { q: "RM540.00 ÷ 9 =", o: ["RM50", "RM55", "RM60", "RM65"], a: "C" },
+                    { q: "Harga sebuah basikal ialah RM850.00 dan topi keledar berharga RM125.00. Berapakah jumlah harga kedua-dua barang itu?", o: ["RM965.00", "RM975.00", "RM985.00", "RM995.00"], a: "B" },
+                    { q: "Siti mempunyai RM95.00. Dia membeli beg sekolah berharga RM48.70 dan botol air berharga RM15.30. Berapakah baki wang Siti?", o: ["RM30.00", "RM31.00", "RM32.00", "RM33.00"], a: "B" },
+                    { q: "Berapakah jumlah wang RM215.80 + RM184.20?", o: ["RM390.00", "RM395.00", "RM400.00", "RM405.00"], a: "C" },
+                    { q: "Sebuah kedai memperoleh RM2 350.00 pada hari Isnin dan RM1 875.00 pada hari Selasa. Berapakah jumlah jualan bagi dua hari itu?", o: ["RM4 125.00", "RM4 225.00", "RM4 325.00", "RM4 425.00"], a: "B" },
+                    { q: "Ahmad mempunyai RM500.00. Dia membeli sebuah meja belajar berharga RM285.50. Berapakah baki wang Ahmad?", o: ["RM213.50", "RM214.50", "RM215.50", "RM216.50"], a: "B" },
+                    { q: "Sebuah keluarga membelanjakan RM135.60 untuk membeli barang dapur dan RM78.40 untuk membeli buah-buahan. Berapakah jumlah perbelanjaan mereka?", o: ["RM212.00", "RM213.00", "RM214.00", "RM215.00"], a: "C" },
+                    { q: "Harga satu tiket ialah RM18.00. Berapakah jumlah harga 25 keping tiket?", o: ["RM430", "RM440", "RM450", "RM460"], a: "C" },
+                    { q: "RM960.00 dibahagikan sama rata kepada 12 orang murid. Setiap murid menerima", o: ["RM70", "RM75", "RM80", "RM85"], a: "C" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["RM45.60 + RM24.40 = RM69.00", "RM45.60 + RM24.40 = RM70.00", "RM45.60 + RM24.40 = RM71.00", "RM45.60 + RM24.40 = RM72.00"], a: "B" },
+                    { q: "Seorang peniaga menjual 35 helai baju. Harga setiap helai ialah RM48.00. Berapakah jumlah jualannya?", o: ["RM1 580", "RM1 680", "RM1 780", "RM1 880"], a: "B" },
+                    { q: "Sebuah komputer berharga RM2 450.00. Sebuah pencetak berharga RM650.00. Berapakah jumlah harga kedua-dua barang tersebut?", o: ["RM3 000.00", "RM3 100.00", "RM3 200.00", "RM3 300.00"], a: "B" },
+                    { q: "Farah mempunyai RM1 000.00. Dia membeli sebuah telefon berharga RM725.00 dan sarung telefon berharga RM55.00. Berapakah baki wang Farah?", o: ["RM210.00", "RM220.00", "RM230.00", "RM240.00"], a: "B" }
                 ],
                 "Masa & Waktu": [
-                    { q: "1 jam bersamaan dengan", o: ["30 minit","45 minit","60 minit","100 minit"], a: "C" },
-                    { q: "30 minit bersamaan dengan", o: ["Setengah jam","Satu jam","Suku jam","Dua jam"], a: "A" },
-                    { q: "15 minit bersamaan dengan", o: ["Setengah jam","Suku jam","Satu jam","Dua jam"], a: "B" },
-                    { q: "Jika sekarang pukul 3:00 petang, 1 jam kemudian ialah", o: ["2:00 petang","3:30 petang","4:00 petang","5:00 petang"], a: "C" },
-                    { q: "Jika sekarang pukul 8:00 pagi, 30 minit kemudian ialah", o: ["8:15 pagi","8:30 pagi","8:45 pagi","9:00 pagi"], a: "B" },
-                    { q: "Jika sekarang pukul 5:45 petang, 15 minit kemudian ialah", o: ["5:50 petang","6:00 petang","6:15 petang","6:30 petang"], a: "B" },
-                    { q: "Jika sekarang pukul 10:20 pagi, 20 minit kemudian ialah", o: ["10:30 pagi","10:35 pagi","10:40 pagi","10:50 pagi"], a: "C" },
-                    { q: "Jika sekarang pukul 7:30 malam, 30 minit kemudian ialah", o: ["7:45 malam","8:00 malam","8:15 malam","8:30 malam"], a: "B" },
-                    { q: "Jam menunjukkan pukul 9:00 malam. Apakah waktu itu dalam angka?", o: ["9:00","9:30","10:00","8:00"], a: "A" },
-                    { q: "Sekolah bermula pada pukul 7:30 pagi. Ali tiba 10 minit lebih awal. Pukul berapakah Ali tiba?", o: ["7:10 pagi","7:15 pagi","7:20 pagi","7:40 pagi"], a: "C" },
-                    { q: "Kelas Matematik bermula pada pukul 10:00 pagi dan tamat 1 jam kemudian. Pukul berapakah kelas tamat?", o: ["10:30 pagi","11:00 pagi","11:30 pagi","12:00 tengah hari"], a: "B" },
-                    { q: "Ibu mula memasak pada pukul 6:15 petang. Masakan siap selepas 30 minit. Pukul berapakah masakan siap?", o: ["6:30 petang","6:40 petang","6:45 petang","7:00 malam"], a: "C" },
-                    { q: "Permainan bermula pada pukul 4:20 petang dan tamat 20 minit kemudian. Pukul berapakah permainan tamat?", o: ["4:30 petang","4:40 petang","4:50 petang","5:00 petang"], a: "B" },
-                    { q: "Berapakah bilangan minit dalam 2 jam?", o: ["60 minit","90 minit","120 minit","180 minit"], a: "C" },
-                    { q: "Berapakah bilangan minit dalam 1 jam 30 minit?", o: ["80 minit","90 minit","100 minit","120 minit"], a: "B" },
-                    { q: "Jika sekarang pukul 11:50 pagi, 10 minit kemudian ialah", o: ["11:55 pagi","12:00 tengah hari","12:10 tengah hari","12:20 tengah hari"], a: "B" },
-                    { q: "Jika sekarang pukul 2:45 petang, 15 minit kemudian ialah", o: ["2:50 petang","3:00 petang","3:15 petang","3:30 petang"], a: "B" },
-                    { q: "Satu rancangan televisi bermula pada pukul 8:30 malam dan berlangsung selama 1 jam. Pukul berapakah rancangan itu tamat?", o: ["9:00 malam","9:15 malam","9:30 malam","10:00 malam"], a: "C" },
-                    { q: "Ayah bertolak ke tempat kerja pada pukul 7:15 pagi. Perjalanan mengambil masa 45 minit. Pukul berapakah ayah tiba?", o: ["7:45 pagi","8:00 pagi","8:15 pagi","8:30 pagi"], a: "B" },
-                    { q: "Berapakah bilangan minit dalam 3 jam?", o: ["120 minit","150 minit","180 minit","240 minit"], a: "C" }
+                    { q: "3 jam 25 minit bersamaan dengan", o: ["185 minit", "195 minit", "205 minit", "215 minit"], a: "C" },
+                    { q: "240 minit bersamaan dengan", o: ["2 jam", "3 jam", "4 jam", "5 jam"], a: "C" },
+                    { q: "Jika sekarang pukul 8:35 pagi, 45 minit kemudian ialah", o: ["9:10 pagi", "9:20 pagi", "9:25 pagi", "9:30 pagi"], a: "B" },
+                    { q: "Jika sekarang pukul 4:50 petang, 30 minit kemudian ialah", o: ["5:10 petang", "5:20 petang", "5:30 petang", "5:40 petang"], a: "B" },
+                    { q: "Jika sekarang pukul 11:45 pagi, 25 minit kemudian ialah", o: ["12:00 tengah hari", "12:05 tengah hari", "12:10 tengah hari", "12:15 tengah hari"], a: "C" },
+                    { q: "Sebuah kelas bermula pada pukul 7:40 pagi dan tamat pada pukul 9:10 pagi. Berapakah tempoh kelas tersebut?", o: ["1 jam 20 minit", "1 jam 30 minit", "1 jam 40 minit", "2 jam"], a: "B" },
+                    { q: "Sebuah filem bermula pada pukul 2:15 petang dan tamat pada pukul 4:05 petang. Berapakah tempoh filem itu?", o: ["1 jam 40 minit", "1 jam 45 minit", "1 jam 50 minit", "2 jam"], a: "C" },
+                    { q: "Jam menunjukkan pukul 9:30 malam. Dalam sistem 24 jam, waktu itu ialah", o: ["19:30", "20:30", "21:30", "22:30"], a: "C" },
+                    { q: "Jam menunjukkan pukul 6:45 pagi. Dalam sistem 24 jam, waktu itu ialah", o: ["05:45", "06:45", "16:45", "18:45"], a: "B" },
+                    { q: "Pukul 15:20 dalam sistem 24 jam ialah", o: ["3:20 pagi", "3:20 petang", "5:20 petang", "1:20 petang"], a: "B" },
+                    { q: "Pukul 23:15 dalam sistem 24 jam ialah", o: ["11:15 pagi", "11:15 malam", "10:15 malam", "12:15 tengah malam"], a: "B" },
+                    { q: "Sebuah kereta bertolak pada pukul 8:25 pagi dan tiba pada pukul 10:55 pagi. Berapakah tempoh perjalanan?", o: ["2 jam 10 minit", "2 jam 20 minit", "2 jam 30 minit", "2 jam 40 minit"], a: "C" },
+                    { q: "Latihan bola sepak bermula pada pukul 5:15 petang dan berlangsung selama 1 jam 45 minit. Pukul berapakah latihan tamat?", o: ["6:45 petang", "7:00 malam", "7:15 malam", "7:30 malam"], a: "B" },
+                    { q: "Berapakah bilangan minit dalam 5 jam?", o: ["250 minit", "280 minit", "300 minit", "350 minit"], a: "C" },
+                    { q: "Berapakah bilangan saat dalam 2 minit?", o: ["60 saat", "100 saat", "120 saat", "180 saat"], a: "C" },
+                    { q: "Ali mula menyiapkan kerja rumah pada pukul 7:10 malam. Dia siap selepas 1 jam 35 minit. Pukul berapakah Ali siap?", o: ["8:35 malam", "8:40 malam", "8:45 malam", "8:50 malam"], a: "C" },
+                    { q: "Sebuah peperiksaan bermula pada pukul 9:00 pagi dan berakhir pada pukul 11:30 pagi. Tempoh peperiksaan ialah", o: ["2 jam", "2 jam 15 minit", "2 jam 30 minit", "3 jam"], a: "C" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["2 jam = 100 minit", "2 jam = 110 minit", "2 jam = 120 minit", "2 jam = 130 minit"], a: "C" },
+                    { q: "Sebuah bas bertolak pada pukul 1:50 petang. Perjalanan mengambil masa 2 jam 25 minit. Pukul berapakah bas itu tiba?", o: ["4:05 petang", "4:10 petang", "4:15 petang", "4:20 petang"], a: "C" },
+                    { q: "Seorang murid tidur pada pukul 9:30 malam dan bangun pada pukul 6:00 pagi keesokan harinya. Berapakah tempoh tidurnya?", o: ["8 jam", "8 jam 15 minit", "8 jam 30 minit", "9 jam"], a: "C" }
                 ],
                 "Ukuran & Sukatan": [
-                    { q: "Apakah unit yang sesuai untuk mengukur panjang sebatang pensel?", o: ["kg","cm","mℓ","g"], a: "B" },
-                    { q: "Apakah unit yang sesuai untuk mengukur panjang sebuah padang?", o: ["cm","g","m","mℓ"], a: "C" },
-                    { q: "Sebatang pembaris mempunyai panjang 30 ____.", o: ["kg","mℓ","cm","g"], a: "C" },
-                    { q: "Yang manakah lebih panjang?", o: ["50 cm","1 m","80 cm","90 cm"], a: "B" },
-                    { q: "Apakah unit yang sesuai untuk mengukur jisim sebiji epal?", o: ["g","kg","cm","mℓ"], a: "A" },
-                    { q: "Apakah unit yang sesuai untuk mengukur jisim seorang murid?", o: ["g","kg","cm","mℓ"], a: "B" },
-                    { q: "Jisim sekampit beras biasanya diukur dalam", o: ["cm","m","g","kg"], a: "D" },
-                    { q: "Yang manakah lebih berat?", o: ["500 g","1 kg","200 g","750 g"], a: "B" },
-                    { q: "Apakah unit yang sesuai untuk mengukur isipadu air di dalam botol minuman?", o: ["cm","kg","mℓ","g"], a: "C" },
-                    { q: "Apakah unit yang sesuai untuk mengukur air di dalam tangki besar?", o: ["mℓ","ℓ","g","cm"], a: "B" },
-                    { q: "Sebotol air mineral mengandungi 600 ____.", o: ["kg","cm","mℓ","g"], a: "C" },
-                    { q: "Sebaldi air biasanya diukur dalam unit", o: ["cm","g","ℓ","kg"], a: "C" },
-                    { q: "Pilih pasangan unit yang betul.", o: ["Panjang – kg","Jisim – cm","Isipadu – ℓ","Jisim – mℓ"], a: "C" },
-                    { q: "Yang manakah sesuai diukur menggunakan sentimeter (cm)?", o: ["Panjang meja","Jisim beg sekolah","Air dalam baldi","Berat sebiji tembikai"], a: "A" },
-                    { q: "Yang manakah sesuai diukur menggunakan gram (g)?", o: ["Jisim sebatang pensel","Panjang tali","Air di dalam kolam","Tinggi pokok"], a: "A" },
-                    { q: "Yang manakah sesuai diukur menggunakan kilogram (kg)?", o: ["Jisim seekor kucing","Panjang pembaris","Air di dalam gelas","Panjang buku"], a: "A" },
-                    { q: "Yang manakah sesuai diukur menggunakan liter (ℓ)?", o: ["Air di dalam akuarium","Panjang pensel","Jisim epal","Tinggi murid"], a: "A" },
-                    { q: "Pilih pernyataan yang betul.", o: ["Jisim diukur dalam cm.","Panjang diukur dalam kg.","Isipadu cecair diukur dalam mℓ atau ℓ.","Panjang diukur dalam g."], a: "C" },
-                    { q: "Antara berikut, yang manakah mempunyai jisim paling ringan?", o: ["Sebiji guli","Sebuah meja","Double pintu peti sejuk","Sebuah motosikal"], a: "A" },
-                    { q: "Antara berikut, yang manakah mempunyai isipadu paling banyak?", o: ["Secawan air","Sebotol air","Sebaldi air","Sesudu air"], a: "C" }
-                ]
-            },
-            3: { // Tahun 3
-                "Nombor Bulat": [
-                    { q: "Apakah nombor selepas 4 599?", o: ["4 598","4 600","4 601","4 610"], a: "B" },
-                    { q: "Apakah nombor sebelum 7 201?", o: ["7 199","7 200","7 202","7 210"], a: "B" },
-                    { q: "Digit 8 dalam nombor 8 463 berada pada nilai tempat…", o: ["Ratus","Puluh","Ribu","Sa"], a: "C" },
-                    { q: "Apakah nilai digit 5 dalam nombor 3 582?", o: ["5","50","500","5 000"], a: "C" },
-                    { q: "Manakah nombor yang paling besar?", o: ["6 215","6 251","6 521","6 125"], a: "C" },
-                    { q: "Susun nombor berikut secara menaik.\n4 012, 3 998, 4 120, 4 001", o: ["3 998, 4 001, 4 012, 4 120","4 001, 3 998, 4 012, 4 120","4 120, 4 012, 4 001, 3 998","3 998, 4 120, 4 012, 4 001"], a: "A" },
-                    { q: "Apakah nombor dalam perkataan bagi 5 307?", o: ["Lima ribu tiga puluh tujuh","Lima ribu tiga ratus tujuh","Lima ribu tiga ratus kosong tujuh","Lima ribu tiga ratus tujuh (Sempurna)"], a: "D" },
-                    { q: "Apakah nombor bagi “Enam ribu lapan puluh dua”?", o: ["6 082","6 802","6 820","6 028"], a: "A" },
-                    { q: "Cerakinkan nombor 7 426.", o: ["7 000 + 400 + 20 + 6","700 + 400 + 20 + 6","7 000 + 420 + 6","7 400 + 26"], a: "A" },
-                    { q: "Antara berikut, yang manakah nombor genap?", o: ["4 325","5 811","6 478","7 223"], a: "C" },
-                    { q: "Apakah pola nombor berikut?\n2 500, 2 600, 2 700, _____", o: ["2 750","2 800","2 900","2 650"], a: "B" },
-                    { q: "Bundarkan 6 274 kepada puluh yang terdekat.", o: ["6 270","6 280","6 200","6 300"], a: "A" },
-                    { q: "Bundarkan 5 651 kepada ratus yang terdekat.", o: ["5 600","5 700","5 650","5 500"], a: "B" },
-                    { q: "Bundarkan 8 499 kepada ribu yang terdekat.", o: ["8 000","8 500","9 000","7 000"], a: "A" },
-                    { q: "Manakah nombor yang paling kecil?", o: ["9 102","9 012","8 999","9 120"], a: "C" },
-                    { q: "Lengkapkan pola berikut.\n1 350, 1 450, 1 550, _____", o: ["1 560","1 600","1 650","1 700"], a: "C" },
-                    { q: "Apakah nilai tempat bagi digit 2 dalam nombor 4 291?", o: ["Sa","Puluh","Ratus","Ribu"], a: "C" },
-                    { q: "Apakah nombor yang betul?\n3 000 + 600 + 40 + 8 =", o: ["3 468","3 648","3 684","3 846"], a: "B" },
-                    { q: "Susun nombor berikut secara menurun.\n7 820, 7 208, 7 802, 7 280", o: ["7 820, 7 802, 7 280, 7 208","7 802, 7 820, 7 208, 7 280","7 280, 7 208, 7 820, 7 802","7 208, 7 280, 7 802, 7 820"], a: "A" },
-                    { q: "Apakah nombor yang berada di antara 5 899 dan 5 901?", o: ["5 898","5 900","5 902","5 910"], a: "B" }
+                    { q: "Apakah unit yang paling sesuai untuk mengukur panjang sebuah jalan raya?", o: ["cm", "m", "km", "mm"], a: "C" },
+                    { q: "Tukarkan 4 km kepada meter.", o: ["40 m", "400 m", "4 000 m", "40 000 m"], a: "C" },
+                    { q: "Tukarkan 3 m 25 cm kepada sentimeter.", o: ["305 cm", "315 cm", "325 cm", "335 cm"], a: "C" },
+                    { q: "Sebatang tali berukuran 8 m dipotong sepanjang 2 m 75 cm. Berapakah baki panjang tali itu?", o: ["5 m 15 cm", "5 m 25 cm", "5 m 35 cm", "5 m 45 cm"], a: "B" },
+                    { q: "Antara berikut, yang manakah paling panjang?", o: ["950 m", "980 m", "1 km", "990 m"], a: "C" },
+                    { q: "Apakah unit yang paling sesuai untuk mengukur jisim sebuah lori?", o: ["g", "kg", "tan", "mg"], a: "C" },
+                    { q: "Tukarkan 5 kg kepada gram.", o: ["500 g", "5 000 g", "50 000 g", "500 000 g"], a: "B" },
+                    { q: "Jisim sekarung beras ialah 25 kg. Dua karung beras mempunyai jumlah jisim", o: ["45 kg", "50 kg", "55 kg", "60 kg"], a: "B" },
+                    { q: "Sebungkus gula berjisim 2 kg. Ali membeli 4 bungkus. Berapakah jumlah jisim gula?", o: ["6 kg", "7 kg", "8 kg", "9 kg"], a: "C" },
+                    { q: "Tukarkan 7 500 mℓ kepada liter.", o: ["0.75 L", "7.05 L", "7.5 L", "75 L"], a: "C" },
+                    { q: "Bakinya apabila baldi yang mengandungi 12 L air dikeluarkan sebanyak 5 L?", o: ["6 L", "7 L", "8 L", "9 L"], a: "B" },
+                    { q: "Sebotol jus mengandungi 2 L. Berapakah isipadunya dalam mililiter?", o: ["20 mℓ", "200 mℓ", "2 000 mℓ", "20 000 mℓ"], a: "C" },
+                    { q: "Sebuah tangki mengandungi 18 L air. Kemudian ditambah lagi 7 L air. Berapakah jumlah isipadu air?", o: ["24 L", "25 L", "26 L", "27 L"], a: "B" },
+                    { q: "Yang manakah paling berat?", o: ["800 g", "900 g", "1 kg", "950 g"], a: "C" },
+                    { q: "Yang manakah paling ringan?", o: ["250 g", "500 g", "750 g", "1 kg"], a: "A" },
+                    { q: "Sebatang kayu berukuran 6 m 40 cm. Sebatang lagi berukuran 3 m 55 cm. Berapakah jumlah panjang kedua-dua batang kayu itu?", o: ["9 m 85 cm", "9 m 95 cm", "10 m 5 cm", "10 m 15 cm"], a: "B" },
+                    { q: "Sebiji tembikai berjisim 4 kg 500 g. Sebiji lagi berjisim 2 kg 750 g. Berapakah jumlah jisim kedua-duanya?", o: ["7 kg 150 g", "7 kg 250 g", "7 kg 350 g", "7 kg 450 g"], a: "B" },
+                    { q: "Pilih ayat matematik yang betul.", o: ["1 km = 100 m", "1 kg = 100 g", "1 L = 1 000 mℓ", "1 m = 10 cm"], a: "C" },
+                    { q: "Sebuah kolam mengandungi 35 L air. Sebanyak 12 L air dikeluarkan. Berapakah isipadu air yang tinggal?", o: ["21 L", "22 L", "23 L", "24 L"], a: "C" },
+                    { q: "Seorang pelari berlari sejauh 2 km pada waktu pagi dan 3 km pada waktu petang. Berapakah jumlah jarak yang dilalui?", o: ["4 km", "5 km", "6 km", "7 km"], a: "B" }
                 ],
-                "Tambah": [
-                    { q: "Berapakah hasil bagi 2 345 + 1 432?", o: ["3 677","3 777","3 877","3 977"], a: "B" },
-                    { q: "4 216 + 2 103 =", o: ["6 219","6 309","6 319","6 329"], a: "C" },
-                    { q: "5 678 + 321 =", o: ["5 899","5 999","6 009","6 099"], a: "B" },
-                    { q: "1 258 + 2 741 =", o: ["3 899","3 999","4 009","4 099"], a: "B" },
-                    { q: "3 620 + 1 280 =", o: ["4 800","4 890","4 900","5 000"], a: "C" },
-                    { q: "6 105 + 2 224 =", o: ["8 229","8 319","8 329","8 339"], a: "C" },
-                    { q: "2 431 + 3 568 =", o: ["5 899","5 999","6 009","6 099"], a: "B" },
-                    { q: "7 015 + 845 =", o: ["7 750","7 850","7 860","7 960"], a: "C" },
-                    { q: "4 700 + 1 235 =", o: ["5 835","5 925","5 935","6 035"], a: "C" },
-                    { q: "2 506 + 2 394 =", o: ["4 800","4 900","5 000","5 100"], a: "C" },
-                    { q: "1 324 + 245 + 31 =", o: ["1 590","1 600","1 610","1 620"], a: "B" },
-                    { q: "3 142 + 506 + 52 =", o: ["3 600","3 690","3 700","3 710"], a: "C" },
-                    { q: "5 111 + 888 =", o: ["5 899","5 999","6 009","6 099"], a: "B" },
-                    { q: "Ali mempunyai 2 345 biji guli. Ayah membeli lagi 1 245 biji guli. Berapakah jumlah guli Ali sekarang?", o: ["3 490","3 580","3 590","3 690"], a: "C" },
-                    { q: "Perpustakaan mempunyai 3 210 buah buku Bahasa Melayu dan 2 345 buah buku Bahasa Inggeris. Berapakah jumlah buku semuanya?", o: ["5 445","5 545","5 555","5 655"], a: "C" },
-                    { q: "Sebuah kedai menjual 1 230 botol air pada hari Isnin dan 2 450 botol air pada hari Selasa. Berapakah jumlah botol air yang dijual?", o: ["3 580","3 680","3 780","3 880"], a: "B" },
-                    { q: "4 567 + 1 111 =", o: ["5 668","5 678","5 688","5 698"], a: "B" },
-                    { q: "2 908 + 1 092 =", o: ["3 900","4 000","4 100","4 200"], a: "B" },
-                    { q: "5 430 + 2 260 =", o: ["7 580","7 680","7 690","7 790"], a: "C" },
-                    { q: "Siti mengumpul 1 875 keping setem. Abangnya memberikan lagi 925 keping setem. Berapakah jumlah setem Siti sekarang?", o: ["2 700","2 750","2 800","2 900"], a: "C" }
-                ],
-                "Tolak": [
-                    { q: "Berapakah hasil bagi 6 542 − 2 131?", o: ["4 311","4 411","4 511","4 611"], a: "B" },
-                    { q: "7 850 − 2 340 =", o: ["5 410","5 510","5 610","5 710"], a: "B" },
-                    { q: "9 000 − 2 345 =", o: ["6 555","6 655","6 755","6 855"], a: "B" },
-                    { q: "5 678 − 1 234 =", o: ["4 344","4 444","4 544","4 644"], a: "B" },
-                    { q: "8 123 − 3 101 =", o: ["5 012","5 022","5 032","5 122"], a: "B" },
-                    { q: "6 450 − 2 250 =", o: ["4 100","4 200","4 300","4 400"], a: "B" },
-                    { q: "7 500 − 1 875 =", o: ["5 525","5 625","5 725","5 825"], a: "B" },
-                    { q: "4 320 − 1 208 =", o: ["3 012","3 112","3 212","3 312"], a: "B" },
-                    { q: "9 876 − 4 321 =", o: ["5 455","5 555","5 655","5 755"], a: "B" },
-                    { q: "5 432 − 2 432 =", o: ["2 900","3 000","3 100","3 200"], a: "B" },
-                    { q: "6 840 − 520 − 20 =", o: ["6 200","6 300","6 320","6 340"], a: "B" },
-                    { q: "7 250 − 250 − 1 000 =", o: ["5 900","6 000","6 100","6 200"], a: "B" },
-                    { q: "Ali mempunyai 5 430 biji guli. Dia memberikan 1 245 biji kepada kawannya. Berapakah baki guli Ali?", o: ["4 085","4 185","4 285","4 385"], a: "B" },
-                    { q: "Perpustakaan mempunyai 8 500 buah buku. Sebanyak 2 375 buah dipinjam. Berapakah buku yang masih ada?", o: ["6 025","6 125","6 225","6 325"], a: "C" },
-                    { q: "Seorang peniaga mempunyai 7 000 biji oren. Dia menjual 3 456 biji. Berapakah baki oren?", o: ["3 444","3 544","3 644","3 744"], a: "B" },
-                    { q: "8 642 − 4 210 =", o: ["4 332","4 432","4 532","4 632"], a: "B" },
-                    { q: "9 999 − 999 =", o: ["8 900","9 000","9 100","9 200"], a: "B" },
-                    { q: "6 001 − 2 999 =", o: ["2 902","3 002","3 102","3 202"], a: "B" },
-                    { q: "Sebuah tangki mengandungi 4 800 liter air. Sebanyak 1 650 liter digunakan. Berapakah baki air?", o: ["3 050","3 150","3 250","3 350"], a: "B" },
-                    { q: "Siti mempunyai RM95. Dia membeli sebuah beg berharga RM48. Berapakah baki wang Siti?", o: ["RM45","RM46","RM47","RM48"], a: "C" }
-                ],
-                "Darab": [
-                    { q: "Berapakah hasil bagi 234 × 2?", o: ["448","458","468","478"], a: "C" },
-                    { q: "125 × 4 =", o: ["400","500","520","540"], a: "B" },
-                    { q: "312 × 3 =", o: ["836","926","936","946"], a: "C" },
-                    { q: "405 × 5 =", o: ["2 005","2 015","2 025","2 035"], a: "C" },
-                    { q: "142 × 6 =", o: ["742","842","852","862"], a: "C" },
-                    { q: "213 × 4 =", o: ["742","842","852","862"], a: "C" },
-                    { q: "250 × 8 =", o: ["1 800","1 900","2 000","2 100"], a: "C" },
-                    { q: "321 × 2 =", o: ["622","632","642","652"], a: "C" },
-                    { q: "120 × 7 =", o: ["740","840","940","1 040"], a: "B" },
-                    { q: "430 × 3 =", o: ["1 190","1 290","1 390","1 490"], a: "B" },
-                    { q: "215 × 10 =", o: ["2 050","2 100","2 150","2 250"], a: "C" },
-                    { q: "132 × 5 =", o: ["650","660","670","680"], a: "B" },
-                    { q: "Sebuah kotak mengandungi 8 batang pensel. Berapakah jumlah pensel dalam 125 kotak?", o: ["900","1 000","1 100","1 200"], a: "B" },
-                    { q: "Seorang peniaga menjual 215 biji roti setiap hari. Berapakah jumlah roti yang dijual dalam 4 hari?", o: ["760","860","960","1 060"], a: "B" },
-                    { q: "Setiap bakul mengandungi 36 biji oren. Berapakah jumlah oren dalam 12 bakul?", o: ["422","432","442","452"], a: "B" },
-                    { q: "104 × 9 =", o: ["916","926","936","946"], a: "C" },
-                    { q: "231 × 3 =", o: ["683","693","703","713"], a: "B" },
-                    { q: "145 × 6 =", o: ["760","770","870","970"], a: "C" },
-                    { q: "Seorang guru menyediakan 24 buku latihan untuk setiap kelas. Jika terdapat 15 kelas, berapakah jumlah buku latihan?", o: ["340","350","360","370"], a: "C" },
-                    { q: "Sebuah kilang menghasilkan 320 botol air sehari. Berapakah jumlah botol air yang dihasilkan dalam 5 hari?", o: ["1 500","1 550","1 600","1 650"], a: "C" }
-                ],
-                "Bahagi": [
-                    { q: "Berapakah hasil bagi 24 ÷ 6?", o: ["3","4","5","6"], a: "B" },
-                    { q: "36 ÷ 4 =", o: ["8","9","10","12"], a: "B" },
-                    { q: "48 ÷ 8 =", o: ["5","6","7","8"], a: "B" },
-                    { q: "72 ÷ 9 =", o: ["6","7","8","9"], a: "C" },
-                    { q: "96 ÷ 3 =", o: ["22","28","32","36"], a: "C" },
-                    { q: "120 ÷ 6 =", o: ["18","20","22","24"], a: "B" },
-                    { q: "144 ÷ 12 =", o: ["10","11","12","13"], a: "C" },
-                    { q: "180 ÷ 9 =", o: ["18","20","22","24"], a: "B" },
-                    { q: "240 ÷ 8 =", o: ["28","30","32","34"], a: "B" },
-                    { q: "360 ÷ 6 =", o: ["50","60","70","80"], a: "B" },
-                    { q: "560 ÷ 7 =", o: ["70","80","90","100"], a: "B" },
-                    { q: "840 ÷ 4 =", o: ["190","200","210","220"], a: "C" },
-                    { q: "Seorang guru mempunyai 84 batang pensel and membahagikannya sama rata kepada 7 orang murid. Berapakah batang pensel yang diterima oleh setiap murid?", o: ["10","11","12","13"], a: "C" },
-                    { q: "Sebuah kedai mempunyai 96 biji epal. Epal itu dimasukkan sama banyak ke dalam 8 bakul. Berapakah bilangan epal dalam setiap bakul?", o: ["10","11","12","13"], a: "C" },
-                    { q: "Ali mempunyai 150 biji gula-gula and membahagikannya sama rata kepada 5 orang kawannya. Berapakah gula-gula yang diterima oleh setiap kawan?", o: ["25","30","35","40"], a: "B" },
-                    { q: "Sebuah kilang menghasilkan 480 botol air and menyusunnya sama banyak ke dalam 6 kotak. Berapakah botol air dalam setiap kotak?", o: ["70","75","80","85"], a: "C" },
-                    { q: "324 ÷ 3 =", o: ["98","108","118","128"], a: "B" },
-                    { q: "630 ÷ 9 =", o: ["60","65","70","75"], a: "C" },
-                    { q: "Seorang petani memetik 240 biji mangga and mengisi sama banyak ke dalam 12 bakul. Berapakah bilangan mangga dalam setiap bakul?", o: ["18","20","22","24"], a: "B" },
-                    { q: "Sebuah perpustakaan mempunyai 360 buah buku yang hendak disusun sama banyak pada 9 rak. Berapakah bilangan buku pada setiap rak?", o: ["30","35","40","45"], a: "C" }
-                ],
-                "Pecahan": [
-                    { q: "Manakah yang menunjukkan satu per dua?", o: ["1/3","1/2","2/3","2/4"], a: "B" },
-                    { q: "Apakah pengangka bagi pecahan 3/5?", o: ["3","5","8","2"], a: "A" },
-                    { q: "Apakah penyebut bagi pecahan 4/8?", o: ["4","8","12","16"], a: "B" },
-                    { q: "Manakah pecahan yang mewakili satu per empat?", o: ["1/2","1/3","1/4","2/4"], a: "C" },
-                    { q: "Pecahan manakah yang paling besar?", o: ["1/4","1/3","1/2","1/5"], a: "C" },
-                    { q: "Pecahan manakah yang paling kecil?", o: ["1/8","1/6","1/4","1/2"], a: "A" },
-                    { q: "2/5 + 1/5 =", o: ["2/5","3/5","4/5","5/5"], a: "B" },
-                    { q: "3/8 + 2/8 =", o: ["4/8","5/8","6/8","7/8"], a: "B" },
-                    { q: "5/6 − 2/6 =", o: ["2/6","3/6","4/6","5/6"], a: "B" },
-                    { q: "7/10 − 4/10 =", o: ["2/10","3/10","4/10","5/10"], a: "B" },
-                    { q: "Manakah pasangan pecahan yang sama nilai?", o: ["1/2 dan 2/4","1/2 dan 1/3","2/3 dan 3/4","1/4 dan 2/3"], a: "A" },
-                    { q: "1/4 + 2/4 =", o: ["2/4","3/4","4/4","5/4"], a: "B" },
-                    { q: "Seorang ibu memotong sebiji kek kepada 8 bahagian sama besar. Amin makan 3 bahagian. Apakah pecahan kek yang dimakan Amin?", o: ["2/8","3/8","4/8","5/8"], a: "B" },
-                    { q: "Sebiji tembikai dibahagikan kepada 6 bahagian sama besar. Siti makan 2 bahagian. Apakah pecahan tembikai yang dimakan Siti?", o: ["1/6","2/6","3/6","4/6"], a: "B" },
-                    { q: "4/9 + 3/9 =", o: ["6/9","7/9","8/9","9/9"], a: "B" },
-                    { q: "8/10 − 5/10 =", o: ["2/10","3/10","4/10","5/10"], a: "B" },
-                    { q: "Pecahan manakah yang menunjukkan satu bahagian daripada tiga bahagian yang sama besar?", o: ["1/2","1/3","2/3","3/3"], a: "B" },
-                    { q: "1/7 + 3/7 =", o: ["3/7","4/7","5/7","6/7"], a: "B" },
-                    { q: "6/8 − 1/8 =", o: ["4/8","5/8","6/8","7/8"], a: "B" },
-                    { q: "Ahmad makan 2 daripada 5 keping biskut yang disediakan. Apakah pecahan biskut yang dimakan Ahmad?", o: ["1/5","2/5","3/5","4/5"], a: "B" }
-                ],
-                "Perpuluhan": [
-                    { q: "Apakah nombor perpuluhan bagi tujuh perpuluhan lima?", o: ["7.05","7.5","75.0","0.75"], a: "B" },
-                    { q: "Bagaimanakah nombor 3.8 ditulis dalam perkataan?", o: ["Tiga lapan","Tiga perpuluhan lapan","Tiga puluh lapan","Tiga ratus lapan"], a: "B" },
-                    { q: "Manakah nombor perpuluhan yang paling besar?", o: ["0.5","0.8","0.9","0.7"], a: "C" },
-                    { q: "Manakah nombor perpuluhan yang paling kecil?", o: ["0.6","0.4","0.2","0.8"], a: "C" },
-                    { q: "0.4 + 0.3 =", o: ["0.5","0.6","0.7","0.8"], a: "C" },
-                    { q: "0.9 − 0.4 =", o: ["0.3","0.4","0.5","0.6"], a: "C" },
-                    { q: "0.25 + 0.35 =", o: ["0.50","0.60","0.70","0.80"], a: "B" },
-                    { q: "0.80 − 0.20 =", o: ["0.40","0.50","0.60","0.70"], a: "C" },
-                    { q: "Apakah nilai digit 6 dalam nombor 4.67?", o: ["6","0.6","0.06","60"], a: "B" },
-                    { q: "Apakah nilai digit 5 dalam nombor 2.54?", o: ["5","0.5","0.05","50"], a: "B" },
-                    { q: "Manakah yang betul?", o: ["0.6 > 0.8","0.7 < 0.5","0.9 > 0.4","0.3 > 0.5"], a: "C" },
-                    { q: "Susun nombor berikut secara menaik.\n0.4, 0.9, 0.2, 0.7", o: ["0.2, 0.4, 0.7, 0.9","0.9, 0.7, 0.4, 0.2","0.4, 0.2, 0.7, 0.9","0.2, 0.7, 0.4, 0.9"], a: "A" },
-                    { q: "0.15 + 0.24 =", o: ["0.37","0.38","0.39","0.40"], a: "C" },
-                    { q: "0.72 − 0.18 =", o: ["0.52","0.53","0.54","0.55"], a: "C" },
-                    { q: "Seutas reben berukuran 0.45 m. Seutas lagi berukuran 0.25 m. Berapakah jumlah panjang kedua-dua reben?", o: ["0.60 m","0.65 m","0.70 m","0.75 m"], a: "C" },
-                    { q: "Aina mempunyai 0.90 L jus. Dia minum 0.40 L. Berapakah baki jus?", o: ["0.40 L","0.50 L","0.60 L","0.70 L"], a: "B" },
-                    { q: "Manakah nombor yang sama dengan sifar perpuluhan kosong lima?", o: ["0.5","0.05","0.50","5.0"], a: "B" },
-                    { q: "0.36 + 0.14 =", o: ["0.40","0.45","0.50","0.55"], a: "C" },
-                    { q: "0.95 − 0.25 =", o: ["0.60","0.65","0.70","0.75"], a: "C" },
-                    { q: "Apakah nombor perpuluhan yang berada di antara 0.6 dan 0.8?", o: ["0.5","0.7","0.9","1.0"], a: "B" }
-                ],
-                "Peratus": [
-                    { q: "Apakah maksud 25%?", o: ["25 daripada 100","25 daripada 10","2.5 daripada 100","Semua salah"], a: "A" }
+                "Bentuk dan ruang": [
+                    { q: "Berapakah bilangan sisi bagi sebuah segi tiga?", o: ["2", "3", "4", "5"], a: "B" },
+                    { q: "Berapakah bilangan bucu bagi sebuah segi empat sama?", o: ["2", "3", "4", "5"], a: "C" },
+                    { q: "Antara berikut, yang manakah mempunyai 4 sisi yang sama panjang?", o: ["Segi empat tepat", "Segi tiga", "Segi empat sama", "Trapezium"], a: "C" },
+                    { q: "Bentuk manakah mempunyai 3 sisi dan 3 bucu?", o: ["Bulatan", "Segi tiga", "Segi empat tepat", "Pentagon"], a: "B" },
+                    { q: "Antara berikut, yang manakah bukan poligon?", o: ["Segi tiga", "Segi empat sama", "Bulatan", "Pentagon"], a: "C" },
+                    { q: "Bentuk 3D yang mempunyai 6 permukaan segi empat sama ialah", o: ["Kuboid", "Kubus", "Silinder", "Kon"], a: "B" },
+                    { q: "Bentuk 3D yang mempunyai 6 permukaan segi empat tepat ialah", o: ["Kubus", "Kuboid", "Sfera", "Kon"], a: "B" },
+                    { q: "Bentuk 3D yang mempunyai 1 permukaan melengkung dan 2 permukaan rata ialah", o: ["Kon", "Kubus", "Silinder", "Sfera"], a: "C" },
+                    { q: "Bentuk 3D yang mempunyai permukaan melengkung sahaja ialah", o: ["Kubus", "Silinder", "Sfera", "Kuboid"], a: "C" },
+                    { q: "Antara objek berikut, yang manakah berbentuk kuboid?", o: ["Bola sepak", "Kotak kasut", "Tin minuman", "Kon ais krim"], a: "B" },
+                    { q: "Antara objek berikut, yang manakah berbentuk silinder?", o: ["Dadu", "Tin minuman", "Buku", "Bola"], a: "B" },
+                    { q: "Antara objek berikut, yang manakah berbentuk kon?", o: ["Topi hari jadi", "Kotak hadiah", "Tembikai", "Dadu"], a: "A" },
+                    { q: "Sebuah kubus mempunyai", o: ["6 bucu dan 8 permukaan", "8 bucu dan 6 permukaan", "10 bucu dan 6 permukaan", "12 bucu dan 8 permukaan"], a: "B" },
+                    { q: "Sebuah kuboid mempunyai", o: ["6 permukaan, 8 bucu dan 12 rusuk", "6 permukaan, 6 bucu dan 8 rusuk", "8 permukaan, 12 bucu dan 6 rusuk", "5 permukaan, 8 bucu dan 12 rusuk"], a: "A" },
+                    { q: "Bentuk manakah yang boleh bergolek dan juga boleh berdiri tegak?", o: ["Kubus", "Kuboid", "Silinder", "Segi empat sama"], a: "C" },
+                    { q: "Bentuk manakah mempunyai 1 bucu?", o: ["Sfera", "Kon", "Silinder", "Kuboid"], a: "B" },
+                    { q: "Bentuk manakah mempunyai tiada bucu?", o: ["Kon", "Kubus", "Kuboid", "Sfera"], a: "D" },
+                    { q: "Pilih pasangan yang betul.", o: ["Bola – Kuboid", "Tin susu – Silinder", "Dadu – Kon", "Buku – Sfera"], a: "B" },
+                    { q: "Antara berikut, yang manakah mempunyai permukaan rata dan permukaan melengkung?", o: ["Kubus", "Kuboid", "Silinder", "Segi empat sama"], a: "C" },
+                    { q: "Pilih pernyataan yang betul.", o: ["Bulatan ialah bentuk 2D bukan 3D.", "Kubus mempunyai 8 bucu dan 12 rusuk.", "Sfera mempunyai 6 permukaan rata.", "Kon tidak mempunyai bucu."], a: "B" }
                 ]
             }
         };
 
-        // --- SISTEM PENGURUSAN STATUS APLIKASI (STATE MANAGEMENT) ---
-        let userData = {
-            name: "Pengguna",
+        const topicIcons = {
+            "Nombor Bulat": { icon: "fa-hashtag", color: "#FF5722" },
+            "Tambah": { icon: "fa-plus", color: "#4CAF50" },
+            "Tolak": { icon: "fa-minus", color: "#2196F3" },
+            "Darab": { icon: "fa-xmark", color: "#FFC107" },
+            "Bahagi": { icon: "fa-divide", color: "#9C27B0" },
+            "Pecahan": { icon: "fa-pie-chart", color: "#E91E63" },
+            "Perpuluhan": { icon: "fa-circle-dot", color: "#00BCD4" },
+            "Wang": { icon: "fa-money-bill-wave", color: "#8BC34A" },
+            "Masa & Waktu": { icon: "fa-clock", color: "#3F51B5" },
+            "Ukuran & Sukatan": { icon: "fa-ruler-combined", color: "#FF9800" },
+            "Bentuk dan ruang": { icon: "fa-shapes", color: "#795548" }
+        };
+
+        // --- GAME SYSTEM LOGIC STATE ---
+        let userState = {
+            username: "Pengguna",
             avatar: "🐱",
             xp: 0,
             stars: 0,
             streak: 1,
-            completedExercises: 0,
-            progress: {} // Menyimpan data markah per topik
+            selectedYear: 4,
+            completedQuizzes: {} // Format: {"4_Nombor Bulat": score}
         };
 
-        let selectedYear = 1;
-        let selectedTopic = "";
-        let currentQuizQuestions = [];
-        let activeQuestionIndex = 0;
-        let activeQuizScore = 0;
+        let currentQuiz = {
+            topic: "",
+            questions: [],
+            index: 0,
+            score: 0,
+            answered: false
+        };
 
-        // Fungsi Tukar Skrin
+        // Initialize App Setup
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLocalData();
+            updateUIState();
+        });
+
         function navigateTo(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-            const activeScreen = document.getElementById(screenId);
-            if(activeScreen) {
-                activeScreen.classList.add('active');
-            }
-            if(screenId === 'dashboard-screen') updateDashboardDOM();
-            if(screenId === 'profil-screen') updateProfileDOM();
-            if(screenId === 'kemajuan-screen') renderProgressDOM();
-            if(screenId === 'pencapaian-screen') renderBadgesDOM();
-            if(screenId === 'leaderboard-screen') renderLeaderboardDOM();
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            // Scroll wrapper back to top on entry
+            document.querySelector('.app-container').scrollTop = 0;
+
+            if(screenId === 'dashboard-screen') updateUIState();
+            if(screenId === 'leaderboard-screen') renderLeaderboard();
+            if(screenId === 'pencapaian-screen') renderBadges();
+            if(screenId === 'kemajuan-screen') renderProgressDetails();
         }
 
-        // Pilih Avatar Log Masuk
-        function selectAvatar(avatarEmoji, element) {
-            document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+        // 1. LOGIN SCREEN OPERATIONS
+        function selectAvatar(emoji, element) {
+            document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
             element.classList.add('selected');
-            userData.avatar = avatarEmoji;
+            userState.avatar = emoji;
         }
 
-        // Hantar Login
-        function submitLogin(type) {
+        function submitLogin(method) {
             const nameInput = document.getElementById('username-input').value.trim();
-            if(nameInput) {
-                userData.name = nameInput;
-            } else {
-                userData.name = "Pelajar Bijak";
-            }
+            userState.username = nameInput ? nameInput : "Pelajar Bijak";
+            saveLocalData();
             navigateTo('dashboard-screen');
         }
 
-        // Kemaskini Data Dashboard
-        function updateDashboardDOM() {
-            document.getElementById('dash-avatar').innerText = userData.avatar;
-            document.getElementById('dash-username').innerText = userData.name;
-            document.getElementById('dash-xp').innerText = userData.xp;
-            document.getElementById('dash-stars').innerText = userData.stars;
-            document.getElementById('dash-streak').innerText = userData.streak;
-        }
-
-        // Mula Skrin Tahun
         function startYearSelection() {
             navigateTo('year-screen');
         }
 
-        // Pilih Tahun & Papar Senarai Topik
+        // 2. TOPICS SELECTION OPERATIONS
         function selectYear(yearNum) {
-            selectedYear = yearNum;
-            document.getElementById('topic-screen-title').innerText = `Tahun ${yearNum} - Silibus KSSR`;
-            
+            userState.selectedYear = yearNum;
             const container = document.getElementById('topics-list-container');
+            document.getElementById('topic-screen-title').innerText = `Tahun ${yearNum} - Pilih Topik`;
             container.innerHTML = "";
 
-            const topics = Object.keys(questionBank[yearNum] || {});
-            
-            topics.forEach((topic, index) => {
-                const colors = ['var(--primary)', 'var(--secondary)', 'var(--accent-blue)', 'var(--accent-purple)', 'var(--accent-pink)', 'var(--accent-yellow)'];
-                const cardColor = colors[index % colors.length];
+            const topics = Object.keys(questionBank[yearNum]);
+            topics.forEach(topic => {
+                const config = topicIcons[topic] || { icon: "fa-star", color: "#795548" };
+                const key = `${yearNum}_${topic}`;
+                const savedScore = userState.completedQuizzes[key];
                 
-                // Kira peratus kemajuan topik sedia ada
-                const topScore = userData.progress[`T${selectedYear}_${topic}`] || 0;
-                const percent = Math.round((topScore / 20) * 100) || 0;
+                let progressPercent = 0;
+                let statusBadge = `<span class="status-pill" style="background:#ECEFF1; color:#757575;">Belum Selesai</span>`;
+                
+                if (savedScore !== undefined) {
+                    progressPercent = Math.round((savedScore / 20) * 100);
+                    statusBadge = savedScore >= 16 
+                        ? `<span class="status-pill" style="background:#E8F5E9; color:#2E7D32;">🔥 Menguasai</span>`
+                        : `<span class="status-pill" style="background:#FFF9C4; color:#F57F17;">Ulang Kaji</span>`;
+                }
 
-                const topicCard = document.createElement('div');
-                topicCard.className = "topic-card";
-                topicCard.onclick = () => startQuiz(topic);
-                topicCard.innerHTML = `
-                    <div class="topic-icon" style="background:${cardColor}">
-                        <i class="fa-solid fa-calculator"></i>
-                    </div>
-                    <div class="topic-info">
-                        <div class="topic-title">${topic}</div>
-                        <div class="topic-meta">
-                            <span>20 Soalan</span>
-                            <span class="status-pill" style="background:#E0E0E0;">Skor Tertinggi: ${topScore}/20</span>
+                const topicCardHtml = `
+                    <div class="topic-card" onclick="initiateQuiz('${topic}')">
+                        <div class="topic-icon" style="background:${config.color};">
+                            <i class="fa-solid ${config.icon}"></i>
                         </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+                        <div class="topic-info">
+                            <div class="topic-title">${topic}</div>
+                            <div class="topic-meta">
+                                <span>20 Soalan</span>
+                                ${statusBadge}
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
+                            </div>
                         </div>
                     </div>
                 `;
-                container.appendChild(topicCard);
+                container.innerHTML += topicCardHtml;
             });
 
             navigateTo('topic-screen');
         }
 
-        // Bermula Quiz Latihan
-        function startQuiz(topicName) {
-            selectedTopic = topicName;
-            const allQuestions = questionBank[selectedYear][topicName];
-            
-            // Rawak & ambil maksimum 20 soalan
-            currentQuizQuestions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 20);
-            activeQuestionIndex = 0;
-            activeQuizScore = 0;
+        // 3. QUIZ PLAY SYSTEM
+        function initiateQuiz(topicName) {
+            const rawQuestions = questionBank[userState.selectedYear][topicName];
+            if (!rawQuestions || rawQuestions.length === 0) {
+                alert("Ralat memuatkan bank data soalan silibus!");
+                return;
+            }
+
+            currentQuiz.topic = topicName;
+            currentQuiz.questions = [...rawQuestions]; 
+            currentQuiz.index = 0;
+            currentQuiz.score = 0;
+            currentQuiz.answered = false;
 
             document.getElementById('quiz-topic-name').innerText = topicName;
-            showQuestion();
+            loadQuestion();
             navigateTo('quiz-screen');
         }
 
-        // Papar Soalan Semasa
-        function showQuestion() {
-            const currentQ = currentQuizQuestions[activeQuestionIndex];
-            document.getElementById('quiz-question-number').innerText = `Soalan ${activeQuestionIndex + 1}/${currentQuizQuestions.length}`;
+        function loadQuestion() {
+            currentQuiz.answered = false;
+            const currentQ = currentQuiz.questions[currentQuiz.index];
             
-            const progressPercent = ((activeQuestionIndex) / currentQuizQuestions.length) * 100;
-            document.getElementById('quiz-progress-fill').style.width = `${progressPercent}%`;
-
+            // Render text indices
+            document.getElementById('quiz-question-number').innerText = `Soalan ${currentQuiz.index + 1}/20`;
+            const progressFillPercent = ((currentQuiz.index) / 20) * 100;
+            document.getElementById('quiz-progress-fill').style.width = `${progressFillPercent}%`;
+            
+            // Fill Question box text content
             document.getElementById('quiz-question-text').innerText = currentQ.q;
 
+            // Fill Choices Container dynamically
             const optionsContainer = document.getElementById('quiz-options-container');
             optionsContainer.innerHTML = "";
 
-            const labels = ['A', 'B', 'C', 'D'];
-            currentQ.o.forEach((optionText, idx) => {
-                const btn = document.createElement('button');
-                btn.className = "option-btn";
-                btn.innerHTML = `<strong>${labels[idx]}.</strong> ${optionText}`;
-                btn.onclick = () => checkAnswer(labels[idx], btn);
-                optionsContainer.appendChild(btn);
+            const indexMap = ["A", "B", "C", "D"];
+            currentQ.o.forEach((optText, idx) => {
+                const choiceKey = indexMap[idx];
+                const optBtn = document.createElement('button');
+                optBtn.className = "option-btn";
+                optBtn.innerHTML = `<strong>${choiceKey}.</strong> ${optText}`;
+                optBtn.onclick = () => verifyAnswer(choiceKey, optBtn);
+                optionsContainer.appendChild(optBtn);
             });
         }
 
-        // Semak Jawapan Betul/Salah
-        function checkAnswer(selectedLetter, clickedBtn) {
-            const currentQ = currentQuizQuestions[activeQuestionIndex];
-            const allButtons = document.querySelectorAll('.option-btn');
-            
-            // Tutup klik pada butang lain sementara jawapan diproses
-            allButtons.forEach(b => b.removeAttribute('onclick'));
+        function verifyAnswer(chosenKey, element) {
+            if (currentQuiz.answered) return;
+            currentQuiz.answered = true;
 
-            const correctLetter = currentQ.a;
-            const labelMap = {'A':0, 'B':1, 'C':2, 'D':3};
+            const correctKey = currentQuiz.questions[currentQuiz.index].a;
+            const optionsButtons = document.getElementById('quiz-options-container').children;
+            const indexMap = ["A", "B", "C", "D"];
 
-            if (selectedLetter === correctLetter) {
-                clickedBtn.classList.add('correct');
-                activeQuizScore++;
+            if (chosenKey === correctKey) {
+                element.classList.add('correct');
+                currentQuiz.score++;
+                // Play internal sound hint if necessary
             } else {
-                clickedBtn.classList.add('wrong');
-                // Tunjukkan jawapan yang betul
-                const correctIdx = labelMap[correctLetter];
-                if(allButtons[correctIdx]) allButtons[correctIdx].classList.add('correct');
+                element.classList.add('wrong');
+                // Highlight real key
+                const realIdx = indexMap.indexOf(correctKey);
+                if (realIdx > -1) {
+                    optionsButtons[realIdx].classList.add('correct');
+                }
             }
 
-            // Tunggu 1.5 saat sebelum ke soalan seterusnya
+            // Post-Timeout transition forward logic
             setTimeout(() => {
-                activeQuestionIndex++;
-                if (activeQuestionIndex < currentQuizQuestions.length) {
-                    showQuestion();
+                currentQuiz.index++;
+                if (currentQuiz.index < 20) {
+                    loadQuestion();
                 } else {
-                    finishQuiz();
+                    finalizeQuizScore();
                 }
-            }, 1500);
+            }, 1400);
         }
 
-        // Selesai Latihan & Papar Keputusan
-        function finishQuiz() {
-            const finalScoreStr = `${activeQuizScore}/${currentQuizQuestions.length}`;
-            document.getElementById('result-score-text').innerText = finalScoreStr;
-
-            // Kira Ganjaran XP & Bintang
-            const xpGained = activeQuizScore * 10;
-            const starsGained = Math.floor(activeQuizScore / 4);
-
-            document.getElementById('reward-xp').innerText = xpGained;
-            document.getElementById('reward-stars').innerText = starsGained;
-
-            // Simpan data rekod pencapaian
-            userData.xp += xpGained;
-            userData.stars += starsGained;
-            userData.completedExercises += 1;
-
-            const progressKey = `T${selectedYear}_${selectedTopic}`;
-            const previousBest = userData.progress[progressKey] || 0;
-            if (activeQuizScore > previousBest) {
-                userData.progress[progressKey] = activeQuizScore;
+        function finalizeQuizScore() {
+            const key = `${userState.selectedYear}_${currentQuiz.topic}`;
+            const previousScore = userState.completedQuizzes[key] || 0;
+            
+            // Only update if score is better than before
+            if(currentQuiz.score > previousScore) {
+                userState.completedQuizzes[key] = currentQuiz.score;
             }
 
+            // Calculate gains rewards
+            const calculatedXp = currentQuiz.score * 15;
+            const calculatedStars = Math.floor(currentQuiz.score / 4);
+
+            userState.xp += calculatedXp;
+            userState.stars += calculatedStars;
+
+            // Render result metrics text properties
+            document.getElementById('result-score-text').innerText = `${currentQuiz.score}/20`;
+            document.getElementById('reward-xp').innerText = calculatedXp;
+            document.getElementById('reward-stars').innerText = calculatedStars;
+
+            saveLocalData();
             navigateTo('result-screen');
         }
 
-        // Kemaskini Halaman Profil
-        function updateProfileDOM() {
-            document.getElementById('prof-avatar').innerText = userData.avatar;
-            document.getElementById('prof-name').innerText = userData.name;
-            document.getElementById('prof-xp').innerText = userData.xp;
-            document.getElementById('prof-stars').innerText = userData.stars;
-            document.getElementById('prof-done').innerText = userData.completedExercises;
-            
-            const badgeCount = Object.values(userData.progress).filter(score => score >= 15).length;
-            document.getElementById('prof-badges').innerText = badgeCount;
+        // 4. STATISTICAL SUB-DASHBOARDS GENERATOR LAYERS
+        function updateUIState() {
+            document.getElementById('dash-avatar').innerText = userState.avatar;
+            document.getElementById('dash-username').innerText = userState.username;
+            document.getElementById('dash-xp').innerText = userState.xp;
+            document.getElementById('dash-stars').innerText = userState.stars;
+            document.getElementById('dash-streak').innerText = userState.streak;
 
-            const lvl = Math.floor(userData.xp / 500) + 1;
+            // Sync user settings profile tabs concurrently
+            document.getElementById('prof-avatar').innerText = userState.avatar;
+            document.getElementById('prof-name').innerText = userState.username;
+            document.getElementById('prof-xp').innerText = userState.xp;
+            document.getElementById('prof-stars').innerText = userState.stars;
+
+            const exercisesDone = Object.keys(userState.completedQuizzes).length;
+            document.getElementById('prof-done').innerText = exercisesDone;
+            
+            const lvl = Math.floor(userState.xp / 300) + 1;
             document.getElementById('prof-level-tag').innerText = `Tahap ${lvl}`;
         }
 
-        // Render Analisis Kemajuan
-        function renderProgressDOM() {
-            let totalPossible = 0;
-            let totalScored = 0;
-            const container = document.getElementById('progress-details-container');
-            container.innerHTML = "";
-
-            [1, 2, 3].forEach(y => {
-                Object.keys(questionBank[y] || {}).forEach(topic => {
-                    totalPossible += 20;
-                    const topScore = userData.progress[`T${y}_${topic}`] || 0;
-                    totalScored += topScore;
-
-                    const row = document.createElement('div');
-                    row.className = "p-stat";
-                    row.style.textAlign = "left";
-                    row.style.background = "#FFF";
-                    row.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; font-weight:700;">
-                            <span>Tahun ${y} - ${topic}</span>
-                            <span style="color:var(--secondary)">${topScore}/20</span>
-                        </div>
-                    `;
-                    container.appendChild(row);
-                });
-            });
-
-            const totalPercent = totalPossible > 0 ? Math.round((totalScored / totalPossible) * 100) : 0;
-            document.getElementById('progress-total-percent').innerText = `${totalPercent}%`;
-        }
-
-        // Render Lencana Saya
-        function renderBadgesDOM() {
-            const container = document.getElementById('badges-container');
-            container.innerHTML = "";
-
-            const badgesList = [
-                { name: "Pula Mula", icon: "fa-baby", desc: "Selesaikan 1 latihan", check: () => userData.completedExercises >= 1 },
-                { name: "Bintang Sinar", icon: "fa-star", desc: "Kumpul 10 Bintang", check: () => userData.stars >= 10 },
-                { name: "Pakar Tahun 1", icon: "fa-award", desc: "Skor penuh mana-mana topik T1", check: () => Object.keys(userData.progress).some(k => k.startsWith('T1_') && userData.progress[k] === 20) },
-                { name: "Wira Kilat", icon: "fa-bolt", desc: "Kumpul 500 XP", check: () => userData.xp >= 500 },
-                { name: "Cendekiawan", icon: "fa-brain", desc: "Skor 15+ dalam 3 topik", check: () => Object.values(userData.progress).filter(s => s >= 15).length >= 3 },
-                { name: "Juara Math", icon: "fa-trophy", desc: "Kumpul 1500 XP", check: () => userData.xp >= 1500 }
-            ];
-
-            badgesList.forEach(badge => {
-                const isUnlocked = badge.check();
-                const div = document.createElement('div');
-                div.className = `badge-item ${isUnlocked ? 'unlocked' : ''}`;
-                div.innerHTML = `
-                    <i class="fa-solid ${badge.icon}"></i>
-                    <div style="font-size:0.9rem; margin-top:4px;">${badge.name}</div>
-                    <div style="font-size:0.7rem; font-weight:400; opacity:0.8;">${badge.desc}</div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // Render Leaderboard Rekaan
-        function renderLeaderboardDOM() {
+        function renderLeaderboard() {
             const container = document.getElementById('leaderboard-container');
             container.innerHTML = "";
 
-            const mockUsers = [
-                { name: "Muhammad Adam", avatar: "🦁", xp: 2450 },
-                { name: "Siti Nurhaliza", avatar: "🦄", xp: 1980 },
-                { name: "Ahmad Faiz", avatar: "🦖", xp: 1620 },
-                { name: userData.name, avatar: userData.avatar, xp: userData.xp, isMe: true },
-                { name: "Chong Wei", avatar: "🐼", xp: 820 },
-                { name: "Arumugam", avatar: "🐨", xp: 450 }
+            const mockLeaders = [
+                { name: "Muhammad Aqil", avatar: "🦁", xp: 2450 },
+                { name: "Siti Nurhaliza", avatar: "🐰", xp: 2100 },
+                { name: "Chong Wei", avatar: "🦊", xp: 1980 },
+                { name: userState.username + " (Anda)", avatar: userState.avatar, xp: userState.xp, isUser: true },
+                { name: "Arissa Putri", avatar: "🦄", xp: 1200 },
+                { name: "Kavitha", avatar: "🐱", xp: 950 }
             ];
 
-            // Susun mengikut susunan XP tertinggi
-            mockUsers.sort((a, b) => b.xp - a.xp);
+            // Sort logic
+            mockLeaders.sort((a, b) => b.xp - a.xp);
 
-            mockUsers.forEach((user, index) => {
-                const row = document.createElement('div');
-                row.className = "topic-card";
-                if(user.isMe) row.style.borderColor = "var(--primary)";
-                row.style.padding = "10px 15px";
-                row.innerHTML = `
-                    <div style="font-weight:800; font-size:1.2rem; width:25px;">${index + 1}</div>
-                    <div class="user-avatar-large" style="width:40px; height:40px; font-size:1.8rem; border-color:#DDD">${user.avatar}</div>
-                    <div class="topic-info" style="margin-left:10px;">
-                        <div class="topic-title" style="font-size:1rem;">${user.name} ${user.isMe ? '(Kamu)' : ''}</div>
+            mockLeaders.forEach((leader, idx) => {
+                const isUserStyle = leader.isUser ? "border: 3px solid var(--primary); background: #FFF3E0;" : "";
+                const trophyMedal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `#${idx + 1}`;
+                
+                container.innerHTML += `
+                    <div class="topic-card" style="${isUserStyle}">
+                        <div style="font-family:'Fredoka One'; font-size:1.2rem; width:30px;">${trophyMedal}</div>
+                        <div class="user-avatar-large" style="width:40px; height:40px; font-size:1.8rem; border:1px solid #CCC;">${leader.avatar}</div>
+                        <div class="topic-info">
+                            <div class="topic-title" style="font-size:1rem;">${leader.name}</div>
+                        </div>
+                        <div style="font-weight:800; color:var(--primary);">${leader.xp} XP</div>
                     </div>
-                    <div style="font-weight:800; color:var(--primary);">${user.xp} XP</div>
                 `;
-                container.appendChild(row);
             });
         }
 
-        // Set Semula Data
+        function renderBadges() {
+            const container = document.getElementById('badges-container');
+            container.innerHTML = "";
+
+            const systemBadges = [
+                { name: "Mula Belajar", desc: "Daftar Akaun", icon: "fa-user-astronaut", req: 0 },
+                { name: "Pencari Bintang", desc: "Kumpul 5 Bintang", icon: "fa-star", req: 5, type: 'stars' },
+                { name: "Juara Kuiz", desc: "Selesai 1 Latihan", icon: "fa-trophy", req: 1, type: 'exercises' },
+                { name: "Pakar Nombor", desc: "Kuasai Sifir/Nombor", icon: "fa-hashtag", req: 300, type: 'xp' },
+                { name: "Kuda Pintar", desc: "Mencapai 500 XP", icon: "fa-bolt", req: 500, type: 'xp' },
+                { name: "Sifu Matematik", desc: "Mencapai 1000 XP", icon: "fa-graduation-cap", req: 1000, type: 'xp' }
+            ];
+
+            let unlockedCount = 0;
+            systemBadges.forEach(badge => {
+                let statusUnlocked = false;
+                if(badge.req === 0) statusUnlocked = true;
+                else if(badge.type === 'stars' && userState.stars >= badge.req) statusUnlocked = true;
+                else if(badge.type === 'xp' && userState.xp >= badge.req) statusUnlocked = true;
+                else if(badge.type === 'exercises' && Object.keys(userState.completedQuizzes).length >= badge.req) statusUnlocked = true;
+
+                if(statusUnlocked) unlockedCount++;
+
+                container.innerHTML += `
+                    <div class="badge-item ${statusUnlocked ? 'unlocked' : ''}">
+                        <i class="fa-solid ${badge.icon}"></i>
+                        <strong>${badge.name}</strong>
+                        <p style="font-size:0.7rem; color:#555; margin-top:2px;">${badge.desc}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById('prof-badges').innerText = unlockedCount;
+        }
+
+        function renderProgressDetails() {
+            const container = document.getElementById('progress-details-container');
+            container.innerHTML = "";
+
+            const topics = Object.keys(questionBank[4]);
+            let totalPossibleScore = topics.length * 20; 
+            let totalUserScore = 0;
+
+            topics.forEach(topic => {
+                const key = `4_${topic}`;
+                const score = userState.completedQuizzes[key] || 0;
+                totalUserScore += score;
+
+                const percent = Math.round((score / 20) * 100);
+
+                container.innerHTML += `
+                    <div class="topic-card">
+                        <div class="topic-info">
+                            <div style="display:flex; justify-content:between; width:100%; font-weight:800;">
+                                <span style="flex-grow:1;">${topic}</span>
+                                <span>${score}/20 (${percent}%)</span>
+                            </div>
+                            <div class="progress-bar-container" style="height:10px;">
+                                <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const totalCompletionPercent = Math.round((totalUserScore / totalPossibleScore) * 100) || 0;
+            document.getElementById('progress-total-percent').innerText = `${totalCompletionPercent}%`;
+        }
+
+        // 5. LOCALSTORAGE PERSISTENCE CONTROL ENGINE
+        function saveLocalData() {
+            localStorage.setItem('bijak_matematik_state', JSON.stringify(userState));
+        }
+
+        function loadLocalData() {
+            const rawData = localStorage.getItem('bijak_matematik_state');
+            if (rawData) {
+                try {
+                    userState = JSON.parse(rawData);
+                    // Force selected year to 4 upon database reload
+                    userState.selectedYear = 4;
+                } catch(e) {
+                    console.error("Local storage sync error. Fallback applied.");
+                }
+            }
+        }
+
         function resetData() {
-            if (confirm("Adakah anda pasti mahu memadamkan semua rekod skor, bintang, dan nama akaun anda?")) {
-                userData = { name: "Pengguna", avatar: "🐱", xp: 0, stars: 0, streak: 1, completedExercises: 0, progress: {} };
+            if(confirm("Adakah anda pasti mahu memadamkan semua rekod skor, XP, bintang dan maklumat nama untuk mula semula dari awal?")) {
+                localStorage.removeItem('bijak_matematik_state');
+                userState = {
+                    username: "Pengguna",
+                    avatar: "🐱",
+                    xp: 0,
+                    stars: 0,
+                    streak: 1,
+                    selectedYear: 4,
+                    completedQuizzes: {}
+                };
+                updateUIState();
                 navigateTo('login-screen');
-                document.getElementById('username-input').value = "";
             }
         }
     </script>
+
 </body>
 </html>
