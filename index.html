@@ -82,7 +82,7 @@
                     <button onclick="openSettings()" class="btn-bounce text-xl p-1 focus:outline-none cursor-pointer" title="Tetapan">
                         ⚙️
                     </button>
-                    <button onclick="deleteProfile()" class="btn-bounce text-xl p-1 focus:outline-none cursor-pointer" title="Log Keluar">
+                    <button onclick="logoutProfile()" class="btn-bounce text-xl p-1 focus:outline-none cursor-pointer" title="Log Keluar">
                         🚪
                     </button>
                 </div>
@@ -122,6 +122,12 @@
                 <button onclick="saveProfile()" class="btn-bounce w-full bg-green-500 hover:bg-green-600 text-white font-black text-xl py-4 rounded-2xl shadow-xl shadow-green-200 border-b-4 border-green-700 cursor-pointer" id="btnSaveProfile">
                     Simpan Profil
                 </button>
+                
+                <!-- Senarai Profil Sedia Ada -->
+                <div id="existingProfilesSection" class="hidden space-y-2 mt-4">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider" id="existingProfilesTitle">Atau Pilih Profil Sedia Ada:</h3>
+                    <div id="existingProfilesContainer" class="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto pr-1"></div>
+                </div>
             </section>
 
             <!-- 3. PAPARAN UTAMA (MENU TOPIK) -->
@@ -262,8 +268,8 @@
                         <span id="settingsReset">🔄 Set Semula Kemajuan Kuiz</span>
                         <span>➔</span>
                     </button>
-                    <button onclick="deleteProfile()" class="w-full text-left bg-red-50 hover:bg-red-100 text-red-700 font-bold p-3 rounded-xl text-sm flex items-center justify-between btn-bounce cursor-pointer">
-                        <span id="settingsDelete">🗑️ Padam Profil Akaun</span>
+                    <button onclick="logoutProfile()" class="w-full text-left bg-red-50 hover:bg-red-100 text-red-700 font-bold p-3 rounded-xl text-sm flex items-center justify-between btn-bounce cursor-pointer">
+                        <span id="settingsDelete">🚪 Log Keluar Akaun</span>
                         <span>➔</span>
                     </button>
                 </div>
@@ -295,6 +301,7 @@
                 profileLabel: "Nama Murid :",
                 usernameInputPlaceholder: "Tulis nama di sini...",
                 btnSaveProfile: "Simpan Profil",
+                existingProfilesTitle: "Atau Pilih Profil Sedia Ada:",
                 mainMenuTitle: "Pilih Topik Belajar 🚀",
                 mainMenuDesc: "Kumpul bintang untuk buka lencana hebat!",
                 btnPerformanceRecords: "📊 Rekod Prestasi",
@@ -327,14 +334,14 @@
                 settingsSoundOn: "HIDUP",
                 settingsSoundOff: "MATI",
                 settingsReset: "🔄 Set Semula Kemajuan Kuiz",
-                settingsDelete: "🗑️ Padam Profil Akaun",
+                settingsDelete: "🚪 Log Keluar Akaun",
                 settingsBranding: "<span class='font-bold text-slate-500'>Bijak Math / Smart Math v1.0</span><br>Silibus KSSR Kementerian Pendidikan Malaysia.<br>100% Fungsi Offline & Selamat Tanpa Iklan.",
                 footerText: "Bijak Math Tahun 1 • KSSR Malaysia",
                 alertNameEmpty: "Sila masukkan namamu terlebih dahulu! 😊",
                 alertExitQuiz: "Adakah anda pasti mahu berhenti menjawab dan kembali ke Menu Utama?",
                 alertClearRecords: "Adakah anda pasti mahu memadam semua sejarah rekod prestasi ini?",
                 alertResetProgress: "Adakah anda pasti mahu mengosongkan semua kutipan lencana, bintang dan rekod prestasi kembali ke 0?",
-                alertDeleteProfile: "Log keluar dan padam akaun profil ini? Semua rekod nama, markah murid dan lencana akan dipadam sepenuhnya."
+                alertLogoutProfile: "Adakah anda pasti mahu log keluar? Profil anda tidak akan dipadam dan anda boleh log masuk semula pada bila-bila masa."
             },
             en: {
                 welcomeTitle: "Smart Math<br><span class='text-emerald-500 text-3xl'>Year 1</span>",
@@ -345,6 +352,7 @@
                 profileLabel: "Student Name :",
                 usernameInputPlaceholder: "Write your name here...",
                 btnSaveProfile: "Save Profile",
+                existingProfilesTitle: "Or Select Existing Profile:",
                 mainMenuTitle: "Choose a Topic 🚀",
                 mainMenuDesc: "Collect stars to unlock awesome badges!",
                 btnPerformanceRecords: "📊 Performance",
@@ -377,14 +385,14 @@
                 settingsSoundOn: "ON",
                 settingsSoundOff: "OFF",
                 settingsReset: "🔄 Reset Quiz Progress",
-                settingsDelete: "🗑️ Delete Account Profile",
+                settingsDelete: "🚪 Log Out Account",
                 settingsBranding: "<span class='font-bold text-slate-500'>Bijak Math / Smart Math v1.0</span><br>Malaysia Ministry of Education KSSR Syllabus.<br>100% Offline & Ad-Free.",
                 footerText: "Smart Math Year 1 • KSSR Malaysia",
                 alertNameEmpty: "Please enter your name first! 😊",
                 alertExitQuiz: "Are you sure you want to stop and return to the Main Menu?",
                 alertClearRecords: "Are you sure you want to delete all performance history?",
                 alertResetProgress: "Are you sure you want to clear all collected badges, stars, and records back to 0?",
-                alertDeleteProfile: "Log out and delete this profile account? All student names, scores, and badges will be completely removed."
+                alertLogoutProfile: "Are you sure you want to log out? Your profile data will be safely saved and you can switch back later."
             }
         };
 
@@ -628,8 +636,9 @@
         };
 
         // --- STATE APLIKASI ---
-        let currentLang = "ms"; // Bahasa lalai: Bahasa Melayu
+        let currentLang = "ms";
         let userProfile = { name: "", stars: 0, badges: [] };
+        let allProfiles = {}; // Menyimpan senarai semua profil pengguna
         let performanceRecords = []; 
 
         let quizState = {
@@ -664,12 +673,14 @@
             if(!document.getElementById('viewQuiz').classList.contains('hidden')) {
                 updateQuestionLangUI();
             }
+            if(!document.getElementById('viewProfile').classList.contains('hidden')) {
+                renderExistingProfilesList();
+            }
         }
 
         function applyLanguagePack() {
             const pack = I18N[currentLang];
             
-            // Kemas kini elemen teks statik UI
             document.getElementById('btnLangToggle').innerText = (currentLang === "ms") ? "🌐 EN" : "🌐 MY";
             document.getElementById('welcomeTitle').innerHTML = pack.welcomeTitle;
             document.getElementById('welcomeMascot').innerText = pack.welcomeMascot;
@@ -679,6 +690,7 @@
             document.getElementById('profileLabel').innerText = pack.profileLabel;
             document.getElementById('usernameInput').placeholder = pack.usernameInputPlaceholder;
             document.getElementById('btnSaveProfile').innerText = pack.btnSaveProfile;
+            document.getElementById('existingProfilesTitle').innerText = pack.existingProfilesTitle;
             document.getElementById('mainMenuTitle').innerText = pack.mainMenuTitle;
             document.getElementById('mainMenuDesc').innerText = pack.mainMenuDesc;
             document.getElementById('btnPerformanceRecords').innerText = pack.btnPerformanceRecords;
@@ -715,6 +727,7 @@
             const header = document.getElementById('appHeader');
             if (viewId === 'viewWelcome' || viewId === 'viewProfile') {
                 header.classList.add('hidden');
+                if(viewId === 'viewProfile') { renderExistingProfilesList(); }
             } else {
                 header.classList.remove('hidden');
                 updateHeaderUI();
@@ -722,25 +735,27 @@
         }
 
         function loadLocalData() {
-            const savedProfile = localStorage.getItem('bijak_math_profile');
+            const savedActiveName = localStorage.getItem('bijak_math_active_profile');
+            const savedProfilesList = localStorage.getItem('bijak_math_profiles_list');
             const savedSound = localStorage.getItem('bijak_math_sound');
-            const savedRecords = localStorage.getItem('bijak_math_records');
             const savedLang = localStorage.getItem('bijak_math_lang');
 
-            if (savedLang !== null) {
-                currentLang = savedLang;
-            }
+            if (savedLang !== null) { currentLang = savedLang; }
             applyLanguagePack();
 
             if (savedSound !== null) {
                 AudioFX.enabled = (savedSound === 'true');
                 updateSoundButtonUI();
             }
-            if (savedRecords) {
-                performanceRecords = JSON.parse(savedRecords);
+
+            if (savedProfilesList) {
+                allProfiles = JSON.parse(savedProfilesList);
             }
-            if (savedProfile) {
-                userProfile = JSON.parse(savedProfile);
+
+            // Jika ada profil yang sedang aktif, terus masuk ke menu utama
+            if (savedActiveName && allProfiles[savedActiveName]) {
+                userProfile = allProfiles[savedActiveName];
+                performanceRecords = userProfile.records || [];
                 buildMainMenuTopics();
                 renderBadges();
                 navigateTo('viewMainMenu');
@@ -749,15 +764,59 @@
             }
         }
 
+        function renderExistingProfilesList() {
+            const container = document.getElementById('existingProfilesContainer');
+            const section = document.getElementById('existingProfilesSection');
+            container.innerHTML = '';
+            
+            const keys = Object.keys(allProfiles);
+            if(keys.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+            
+            section.classList.remove('hidden');
+            keys.forEach(name => {
+                const p = allProfiles[name];
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-slate-50 border-2 border-slate-200/80 p-3 rounded-xl font-bold flex justify-between items-center hover:bg-blue-50 hover:border-blue-300 transition-colors cursor-pointer text-sm btn-bounce";
+                btn.onclick = () => switchProfile(name);
+                btn.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">👤</span>
+                        <span class="text-slate-700 font-black truncate max-w-[150px]">${name}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-amber-500 bg-white px-2 py-1 rounded-lg border border-slate-100 shadow-sm">
+                        <span>⭐ <span class="font-black text-slate-700">${p.stars}</span></span>
+                        <span class="text-slate-300">|</span>
+                        <span>🏆 <span class="font-black text-slate-700">${p.badges.length}</span></span>
+                    </div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
         function saveProfile() {
             const pack = I18N[currentLang];
             const input = document.getElementById('usernameInput');
             const name = input.value.trim().toUpperCase();
             if (!name) { alert(pack.alertNameEmpty); return; }
-            userProfile = { name: name, stars: 0, badges: [] };
-            performanceRecords = [];
-            localStorage.setItem('bijak_math_profile', JSON.stringify(userProfile));
-            localStorage.setItem('bijak_math_records', JSON.stringify(performanceRecords));
+            
+            // Jika profil belum ada, cipta baru. Jika dah ada, gunakan data lama.
+            if (!allProfiles[name]) {
+                allProfiles[name] = { name: name, stars: 0, badges: [], records: [] };
+            }
+            
+            localStorage.setItem('bijak_math_profiles_list', JSON.stringify(allProfiles));
+            switchProfile(name);
+            input.value = '';
+        }
+
+        function switchProfile(name) {
+            userProfile = allProfiles[name];
+            performanceRecords = userProfile.records || [];
+            localStorage.setItem('bijak_math_active_profile', name);
+            
             buildMainMenuTopics();
             renderBadges();
             navigateTo('viewMainMenu');
@@ -803,10 +862,8 @@
                 container.innerHTML = `<span class="text-xs text-slate-400 italic">${pack.badgeEmpty}</span>`;
                 return;
             }
-            // Bersihkan paparan dwi-bahasa lencana mengikut tetapan semasa
             userProfile.badges.forEach(badgeText => {
                 let textToDisplay = badgeText;
-                // Tukar penanda lencana secara dinamik mengikut mod bahasa semasa
                 Object.keys(BANK_SOALAN).forEach(key => {
                     if(badgeText === BANK_SOALAN[key].badge_ms || badgeText === BANK_SOALAN[key].badge_en) {
                         textToDisplay = (currentLang === "ms") ? BANK_SOALAN[key].badge_ms : BANK_SOALAN[key].badge_en;
@@ -870,7 +927,6 @@
             });
         }
 
-        // Fungsi khas mengemas kini teks bahasa soalan secara serentak
         function updateQuestionLangUI() {
             const topic = BANK_SOALAN[quizState.currentTopicId];
             const totalQuestions = topic.questions.length;
@@ -883,7 +939,6 @@
             const progressPercent = ((quizState.currentQuestionIndex + 1) / totalQuestions) * 100;
             document.getElementById('quizProgressBar').style.width = `${progressPercent}%`;
             
-            // Set kedua-dua bahasa bertingkat (Utama & Sekunder)
             if(currentLang === "ms") {
                 document.getElementById('questionTextPrimary').innerHTML = currentQuestion.q_ms;
                 document.getElementById('questionTextSecondary').innerHTML = currentQuestion.q_en;
@@ -933,7 +988,9 @@
                 setTimeout(() => { quizState.currentQuestionIndex++; showQuestion(); }, 2200);
             }
 
-            localStorage.setItem('bijak_math_profile', JSON.stringify(userProfile));
+            // Kemas kini pangkalan data utama profil
+            allProfiles[userProfile.name] = userProfile;
+            localStorage.setItem('bijak_math_profiles_list', JSON.stringify(allProfiles));
             updateHeaderUI();
         }
 
@@ -952,10 +1009,8 @@
                 document.getElementById('resultTitle').innerText = pack.resultTitleSuccess;
                 AudioFX.play('victory'); triggerFullConfetti();
                 
-                // Simpan lencana (Gunakan lencana Melayu sebagai ID asas unik)
                 if (!userProfile.badges.includes(topic.badge_ms)) {
                     userProfile.badges.push(topic.badge_ms);
-                    localStorage.setItem('bijak_math_profile', JSON.stringify(userProfile));
                     renderBadges();
                 }
             } else {
@@ -969,7 +1024,6 @@
             document.getElementById('resultWrong').innerText = quizState.wrongCount;
             document.getElementById('resultStars').innerText = `+${quizState.starsEarned}`;
 
-            // --- SIMPAN REKOD PRESTASI BARU (ID TOPIK DIKEKALKAN) ---
             const currentFormattedDate = new Date().toLocaleDateString('ms-MY', {
                 day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
             });
@@ -984,11 +1038,14 @@
             };
 
             performanceRecords.unshift(newRecord);
-            localStorage.setItem('bijak_math_records', JSON.stringify(performanceRecords));
+            userProfile.records = performanceRecords;
+            
+            // Simpan perubahan ke pangkalan data global pelayar
+            allProfiles[userProfile.name] = userProfile;
+            localStorage.setItem('bijak_math_profiles_list', JSON.stringify(allProfiles));
             navigateTo('viewResult');
         }
 
-        // --- PAPARAN REKOD PRESTASI DWI-BAHASA ---
         function openPerformanceRecords() {
             const container = document.getElementById('recordsListContainer');
             container.innerHTML = '';
@@ -1035,7 +1092,9 @@
         function clearPerformanceRecords() {
             if (confirm(I18N[currentLang].alertClearRecords)) {
                 performanceRecords = [];
-                localStorage.setItem('bijak_math_records', JSON.stringify(performanceRecords));
+                userProfile.records = [];
+                allProfiles[userProfile.name] = userProfile;
+                localStorage.setItem('bijak_math_profiles_list', JSON.stringify(allProfiles));
                 openPerformanceRecords();
             }
         }
@@ -1070,24 +1129,28 @@
             }
         }
 
-        // --- PEMBETULAN RESET SINKRONISASI REKOD ---
         function resetProgress() {
             if (confirm(I18N[currentLang].alertResetProgress)) {
-                userProfile.stars = 0; userProfile.badges = []; performanceRecords = [];
-                localStorage.setItem('bijak_math_profile', JSON.stringify(userProfile));
-                localStorage.setItem('bijak_math_records', JSON.stringify(performanceRecords));
+                userProfile.stars = 0; userProfile.badges = []; userProfile.records = [];
+                performanceRecords = [];
+                allProfiles[userProfile.name] = userProfile;
+                localStorage.setItem('bijak_math_profiles_list', JSON.stringify(allProfiles));
                 updateHeaderUI(); renderBadges(); closeSettings(); navigateTo('viewMainMenu');
             }
         }
 
-        function deleteProfile() {
-            if (confirm(I18N[currentLang].alertDeleteProfile)) {
-                localStorage.removeItem('bijak_math_profile'); localStorage.removeItem('bijak_math_records');
-                performanceRecords = []; document.getElementById('usernameInput').value = '';
+        // --- SISTEM LOG KELUAR SELAMAT (DATA KEKAL) ---
+        function logoutProfile() {
+            if (confirm(I18N[currentLang].alertLogoutProfile)) {
+                // Buang penanda akaun aktif sahaja, data kekal selamat di 'bijak_math_profiles_list'
+                localStorage.removeItem('bijak_math_active_profile');
+                userProfile = { name: "", stars: 0, badges: [] };
+                performanceRecords = [];
+                
                 if(!document.getElementById('modalSettings').classList.contains('hidden')) {
                     closeSettings();
                 }
-                navigateTo('viewWelcome');
+                navigateTo('viewProfile'); // Balik ke halaman pendaftaran/pemilihan profil
             }
         }
     </script>
