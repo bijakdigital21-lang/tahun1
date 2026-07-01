@@ -119,9 +119,15 @@
 
             <!-- 3. PAPARAN UTAMA (MENU TOPIK) -->
             <section id="viewMainMenu" class="hidden space-y-6">
-                <div>
-                    <h2 class="text-2xl font-black text-slate-700 flex items-center gap-2">Pilih Topik Belajar 🚀</h2>
-                    <p class="text-slate-500 text-xs">Kumpul bintang untuk buka lencana hebat!</p>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-700 flex items-center gap-2">Pilih Topik Belajar 🚀</h2>
+                        <p class="text-slate-500 text-xs">Kumpul bintang untuk buka lencana hebat!</p>
+                    </div>
+                    <!-- TAMBAHAN: Butang Rekod Prestasi -->
+                    <button onclick="openPerformanceRecords()" class="btn-bounce bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 px-3.5 rounded-xl shadow-md flex items-center gap-1 cursor-pointer">
+                        📊 Rekod Prestasi
+                    </button>
                 </div>
                 
                 <!-- Grid Kad Topik -->
@@ -222,6 +228,28 @@
                 </div>
             </section>
 
+            <!-- 7. TAMBAHAN: PAPARAN REKOD PRESTASI -->
+            <section id="viewRecords" class="hidden flex flex-col space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-700">📊 Rekod Prestasi</h2>
+                        <p class="text-slate-500 text-xs">Senarai markah kuiz yang telah dijawab</p>
+                    </div>
+                    <button onclick="clearPerformanceRecords()" class="btn-bounce text-xs bg-red-50 text-red-600 font-bold py-1.5 px-2.5 rounded-lg border border-red-200 cursor-pointer">
+                        🗑️ Padam Rekod
+                    </button>
+                </div>
+
+                <!-- Senarai Rekod (Scrollable) -->
+                <div id="recordsListContainer" class="bg-white rounded-2xl p-4 shadow-inner border border-slate-100 max-h-[380px] overflow-y-auto space-y-3">
+                    <!-- Ditjana secara dinamik -->
+                </div>
+
+                <button onclick="navigateTo('viewMainMenu')" class="btn-bounce w-full bg-slate-200 text-slate-700 font-bold py-3.5 rounded-xl border-b-4 border-slate-400 cursor-pointer mt-2 text-center">
+                    🏠 Kembali ke Menu Utama
+                </button>
+            </section>
+
         </main>
 
         <!-- KOTAK MODAL TETAPAN -->
@@ -309,7 +337,7 @@
                     { q: "Berapakah 30 + 14?", a: ["42", "43", "44", "45"], c: "44" },
                     { q: "Berapakah 25 + 18?", a: ["42", "43", "44", "45"], c: "43" },
                     { q: "Berapakah 40 + 27?", a: ["65", "66", "67", "68"], c: "67" },
-                    { q: "Berapakah 33 + 16?", a: ["47", "48", "49", "50"], c: "49" },
+                    { q: "Berapakah 33 + 16?", a: ["47", "48", "49", "50"], text: "49", c: "49" },
                     { q: "Berapakah 41 + 22?", a: ["62", "63", "64", "65"], c: "63" },
                     { q: "Berapakah 50 + 19?", a: ["68", "69", "70", "71"], c: "69" },
                     { q: "Berapakah 36 + 24?", a: ["58", "59", "60", "61"], c: "60" }
@@ -533,6 +561,9 @@
 
         // --- STATE APLIKASI ---
         let userProfile = { name: "", stars: 0, badges: [] };
+        // Ditambah nod rekod prestasi dalam struktur data profil
+        let performanceRecords = []; 
+
         let quizState = {
             currentTopicId: "", currentQuestionIndex: 0, score: 0,
             correctCount: 0, wrongCount: 0, starsEarned: 0, lives: 3, isAnswering: false
@@ -553,7 +584,7 @@
         };
 
         function navigateTo(viewId) {
-            ['viewWelcome', 'viewProfile', 'viewMainMenu', 'viewTopicIntro', 'viewQuiz', 'viewResult'].forEach(id => {
+            ['viewWelcome', 'viewProfile', 'viewMainMenu', 'viewTopicIntro', 'viewQuiz', 'viewResult', 'viewRecords'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
             document.getElementById(viewId).classList.remove('hidden');
@@ -570,9 +601,14 @@
         function loadLocalData() {
             const savedProfile = localStorage.getItem('bijak_math_profile');
             const savedSound = localStorage.getItem('bijak_math_sound');
+            const savedRecords = localStorage.getItem('bijak_math_records');
+
             if (savedSound !== null) {
                 AudioFX.enabled = (savedSound === 'true');
                 updateSoundButtonUI();
+            }
+            if (savedRecords) {
+                performanceRecords = JSON.parse(savedRecords);
             }
             if (savedProfile) {
                 userProfile = JSON.parse(savedProfile);
@@ -589,7 +625,9 @@
             const name = input.value.trim().toUpperCase();
             if (!name) { alert("Sila masukkan namamu terlebih dahulu! 😊"); return; }
             userProfile = { name: name, stars: 0, badges: [] };
+            performanceRecords = [];
             localStorage.setItem('bijak_math_profile', JSON.stringify(userProfile));
+            localStorage.setItem('bijak_math_records', JSON.stringify(performanceRecords));
             buildMainMenuTopics();
             renderBadges();
             navigateTo('viewMainMenu');
@@ -662,7 +700,6 @@
             showQuestion();
         }
 
-        // FUNGSI TAMBAHAN: Pengesahan keluar kuiz ke menu utama
         function confirmExitQuiz() {
             if (confirm("Adakah anda pasti mahu berhenti menjawab dan kembali ke Menu Utama?")) {
                 navigateTo('viewMainMenu');
@@ -784,7 +821,74 @@
             document.getElementById('resultWrong').innerText = quizState.wrongCount;
             document.getElementById('resultStars').innerText = `+${quizState.starsEarned}`;
 
+            // --- TAMBAHAN: SIMPAN REKOD PRESTASI BARU ---
+            const currentFormattedDate = new Date().toLocaleDateString('ms-MY', {
+                day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+            });
+
+            const newRecord = {
+                date: currentFormattedDate,
+                topicTitle: topic.title,
+                topicIcon: topic.icon,
+                percentage: finalPercent,
+                correct: quizState.correctCount,
+                total: maxQuestions,
+                passed: quizState.lives > 0
+            };
+
+            performanceRecords.unshift(newRecord); // Letak rekod terbaru di atas sekali
+            localStorage.setItem('bijak_math_records', JSON.stringify(performanceRecords));
+
             navigateTo('viewResult');
+        }
+
+        // --- TAMBAHAN: FUNGSI URUS REKOD PRESTASI ---
+        function openPerformanceRecords() {
+            const container = document.getElementById('recordsListContainer');
+            container.innerHTML = '';
+
+            if (performanceRecords.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400">
+                        <div class="text-4xl mb-2">📊</div>
+                        <p class="text-sm font-bold">Belum ada rekod jawapan.</p>
+                        <p class="text-xs">Sila pilih topik dan selesaikan kuiz dahulu!</p>
+                    </div>`;
+            } else {
+                performanceRecords.forEach(rec => {
+                    const statusColor = rec.passed ? 'bg-green-100 text-green-700 border-green-200' : 'bg-red-100 text-red-700 border-red-200';
+                    const statusLabel = rec.passed ? 'TAMAT' : 'GAGAL';
+                    const scoreColor = rec.percentage >= 80 ? 'text-green-600' : (rec.percentage >= 50 ? 'text-amber-500' : 'text-red-500');
+
+                    const recordRow = document.createElement('div');
+                    recordRow.className = "flex justify-between items-center bg-slate-50 border border-slate-200/60 p-3 rounded-xl shadow-sm text-xs font-bold";
+                    recordRow.innerHTML = `
+                        <div class="space-y-0.5">
+                            <div class="text-[10px] text-slate-400 font-normal">${rec.date}</div>
+                            <div class="text-slate-700 flex items-center gap-1 text-sm font-black">
+                                <span>${rec.topicIcon}</span> <span>${rec.topicTitle}</span>
+                            </div>
+                            <div class="text-[11px] text-slate-500">
+                                Betul: <span class="text-green-600">${rec.correct}</span> / ${rec.total} Soalan
+                            </div>
+                        </div>
+                        <div class="text-right flex flex-col items-end space-y-1">
+                            <span class="text-lg font-black ${scoreColor}">${rec.percentage}%</span>
+                            <span class="text-[9px] font-black border px-1.5 py-0.5 rounded-md ${statusColor}">${statusLabel}</span>
+                        </div>
+                    `;
+                    container.appendChild(recordRow);
+                });
+            }
+            navigateTo('viewRecords');
+        }
+
+        function clearPerformanceRecords() {
+            if (confirm("Adakah anda pasti mahu memadam semua sejarah rekod prestasi ini?")) {
+                performanceRecords = [];
+                localStorage.setItem('bijak_math_records', JSON.stringify(performanceRecords));
+                openPerformanceRecords();
+            }
         }
 
         function triggerFullConfetti() {
@@ -818,10 +922,12 @@
         }
 
         function resetProgress() {
-            if (confirm("Adakah anda pasti mahu mengosongkan semua kutipan lencana dan bintang kembali ke 0?")) {
+            if (confirm("Adakah anda pasti mahu mengosongkan semua kutipan lencana, bintang dan rekod prestasi kembali ke 0?")) {
                 userProfile.stars = 0;
                 userProfile.badges = [];
+                performanceRecords = [];
                 localStorage.setItem('bijak_math_profile', JSON.stringify(userProfile));
+                localStorage.setItem('bijak_math_records', JSON.stringify(performanceRecords));
                 updateHeaderUI();
                 renderBadges();
                 closeSettings();
@@ -830,8 +936,10 @@
         }
 
         function deleteProfile() {
-            if (confirm("Padam akaun profil ini? Semua rekod nama dan markah murid akan dipadam sepenuhnya.")) {
+            if (confirm("Padam akaun profil ini? Semua rekod nama, markah murid dan rekod prestasi akan dipadam sepenuhnya.")) {
                 localStorage.removeItem('bijak_math_profile');
+                localStorage.removeItem('bijak_math_records');
+                performanceRecords = [];
                 document.getElementById('usernameInput').value = '';
                 closeSettings();
                 navigateTo('viewWelcome');
