@@ -55,14 +55,14 @@
     <!-- APP CONTAINER -->
     <div class="max-w-md w-full mx-auto bg-white/80 backdrop-blur-md min-h-screen shadow-2xl flex flex-col relative pb-6 border-x border-white/40">
         
-        <!-- HEADER / STATUS BAR (Hanya muncul selepas daftar) -->
+        <!-- HEADER / STATUS BAR -->
         <header id="appHeader" class="hidden bg-gradient-to-r from-blue-500 to-cyan-500 text-white p-4 rounded-b-3xl shadow-lg sticky top-0 z-40">
             <div class="flex justify-between items-center">
                 <!-- Profil Info -->
                 <div class="flex items-center space-x-2">
                     <span class="text-2xl">👤</span>
                     <div>
-                        <div id="headerName" class="font-black text-base truncate max-w-[120px]">Adwya</div>
+                        <div id="headerName" class="font-black text-base truncate max-w-[120px]">Nama</div>
                         <div class="flex items-center text-xs text-yellow-200">
                             <span class="mr-1">⭐</span> <span id="headerStars" class="font-bold">0</span>
                         </div>
@@ -126,7 +126,7 @@
                 
                 <!-- Grid Kad Topik -->
                 <div id="topicsGrid" class="grid grid-cols-2 gap-4">
-                    <!-- Ditjana secara dinamik oleh JavaScript -->
+                    <!-- Ditjana secara dinamik -->
                 </div>
 
                 <!-- Bahagian Pencapaian / Lencana -->
@@ -179,6 +179,13 @@
                 <div id="optionsContainer" class="flex flex-col space-y-3 pt-2">
                     <!-- Butang jawapan ditjana secara dinamik -->
                 </div>
+
+                <!-- TAMBAHAN: Butang Kembali Ke Menu Utama Semasa Menjawab -->
+                <div class="pt-4 border-t border-slate-200/60 mt-2">
+                    <button onclick="confirmExitQuiz()" class="btn-bounce w-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold py-3 px-4 rounded-xl text-xs uppercase tracking-wider border border-slate-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer">
+                        🏠 Keluar ke Menu Utama
+                    </button>
+                </div>
             </section>
 
             <!-- 6. TAMAT TOPIK (HASIL KUIZ) -->
@@ -226,24 +233,20 @@
                 </div>
 
                 <div class="space-y-4">
-                    <!-- Kawalan Bunyi -->
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl">
                         <span class="font-bold text-slate-600">🔔 Kesan Bunyi</span>
                         <button id="btnSoundToggle" onclick="toggleSound()" class="px-4 py-2 bg-green-500 text-white font-bold rounded-lg text-xs tracking-wide uppercase shadow btn-bounce cursor-pointer">HIDUP</button>
                     </div>
-                    <!-- Set Semula Kemajuan -->
                     <button onclick="resetProgress()" class="w-full text-left bg-orange-50 hover:bg-orange-100 text-orange-700 font-bold p-3 rounded-xl text-sm flex items-center justify-between btn-bounce cursor-pointer">
                         <span>🔄 Set Semula Kemajuan Kuiz</span>
                         <span>➔</span>
                     </button>
-                    <!-- Padam Profil -->
                     <button onclick="deleteProfile()" class="w-full text-left bg-red-50 hover:bg-red-100 text-red-700 font-bold p-3 rounded-xl text-sm flex items-center justify-between btn-bounce cursor-pointer">
                         <span>🗑️ Padam Profil Akaun</span>
                         <span>➔</span>
                     </button>
                 </div>
 
-                <!-- Maklumat Aplikasi -->
                 <div class="bg-slate-100 p-3 rounded-xl text-center text-xs text-slate-400 leading-relaxed">
                     <span class="font-bold text-slate-500">Bijak Math Tahun 1 v1.0</span><br>
                     Silibus KSSR Kementerian Pendidikan Malaysia.<br>
@@ -465,7 +468,6 @@
         };
 
         // --- SISTEM AUDIO SINTETIK (WEB AUDIO API) ---
-        // Menjana bunyi secara kod tanpa memerlukan internet / fail .mp3 luaran
         const AudioFX = {
             ctx: null,
             enabled: true,
@@ -477,8 +479,6 @@
             play(type) {
                 if (!this.enabled) return;
                 this.init();
-                
-                // Atasi isu 'autoplay policy' pelayar web
                 if (this.ctx.state === 'suspended') {
                     this.ctx.resume();
                 }
@@ -490,7 +490,6 @@
                 gain.connect(this.ctx.destination);
 
                 if (type === 'pop') {
-                    // Bunyi klik butang lembut
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(300, now);
                     osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
@@ -499,16 +498,14 @@
                     osc.start(now);
                     osc.stop(now + 0.1);
                 } else if (type === 'ding') {
-                    // Bunyi jawapan BETUL
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, now); // C5
-                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
                     gain.gain.setValueAtTime(0.4, now);
                     gain.gain.linearRampToValueAtTime(0, now + 0.25);
                     osc.start(now);
                     osc.stop(now + 0.25);
                 } else if (type === 'buzz') {
-                    // Bunyi jawapan SALAH
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(180, now);
                     osc.frequency.linearRampToValueAtTime(120, now + 0.25);
@@ -517,8 +514,7 @@
                     osc.start(now);
                     osc.stop(now + 0.25);
                 } else if (type === 'victory') {
-                    // Bunyi Kejayaan Tamat Kuiz
-                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
                     notes.forEach((freq, index) => {
                         const o = this.ctx.createOscillator();
                         const g = this.ctx.createGain();
@@ -535,57 +531,33 @@
             }
         };
 
-        // --- STATE APLIKASI (STATE MANAGEMENT) ---
-        let userProfile = {
-            name: "",
-            stars: 0,
-            badges: []
-        };
-        
+        // --- STATE APLIKASI ---
+        let userProfile = { name: "", stars: 0, badges: [] };
         let quizState = {
-            currentTopicId: "",
-            currentQuestionIndex: 0,
-            score: 0,
-            correctCount: 0,
-            wrongCount: 0,
-            starsEarned: 0,
-            lives: 3,
-            isAnswering: false
+            currentTopicId: "", currentQuestionIndex: 0, score: 0,
+            correctCount: 0, wrongCount: 0, starsEarned: 0, lives: 3, isAnswering: false
         };
 
-        // Warna-warna ceria mengikut spesifikasi reka bentuk
         const TOPIC_COLORS = [
-            'from-blue-400 to-blue-500 text-white',
-            'from-emerald-400 to-emerald-500 text-white',
-            'from-amber-400 to-amber-500 text-slate-800',
-            'from-cyan-400 to-cyan-500 text-white',
-            'from-purple-400 to-purple-500 text-white',
-            'from-rose-400 to-rose-500 text-white',
-            'from-indigo-400 to-indigo-500 text-white',
-            'from-teal-400 to-teal-500 text-white'
+            'from-blue-400 to-blue-500 text-white', 'from-emerald-400 to-emerald-500 text-white',
+            'from-amber-400 to-amber-500 text-slate-800', 'from-cyan-400 to-cyan-500 text-white',
+            'from-purple-400 to-purple-500 text-white', 'from-rose-400 to-rose-500 text-white',
+            'from-indigo-400 to-indigo-500 text-white', 'from-teal-400 to-teal-500 text-white'
         ];
 
-        // --- FUNGSI NAVIGASI & KAWALAN ---
         window.onload = function() {
-            // Pasang kesan bunyi global untuk semua elemen interaktif `.btn-bounce`
             document.addEventListener('click', function(e) {
-                if (e.target.closest('.btn-bounce')) {
-                    AudioFX.play('pop');
-                }
+                if (e.target.closest('.btn-bounce')) { AudioFX.play('pop'); }
             });
-            
             loadLocalData();
         };
 
         function navigateTo(viewId) {
-            // Sembunyikan semua skrin utama
             ['viewWelcome', 'viewProfile', 'viewMainMenu', 'viewTopicIntro', 'viewQuiz', 'viewResult'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
-            // Tunjukkan skrin sasaran
             document.getElementById(viewId).classList.remove('hidden');
 
-            // Pengurusan paparan header profil atas
             const header = document.getElementById('appHeader');
             if (viewId === 'viewWelcome' || viewId === 'viewProfile') {
                 header.classList.add('hidden');
@@ -595,16 +567,13 @@
             }
         }
 
-        // --- PENGURUSAN DATA LOCALSTORAGE ---
         function loadLocalData() {
             const savedProfile = localStorage.getItem('bijak_math_profile');
             const savedSound = localStorage.getItem('bijak_math_sound');
-            
             if (savedSound !== null) {
                 AudioFX.enabled = (savedSound === 'true');
                 updateSoundButtonUI();
             }
-
             if (savedProfile) {
                 userProfile = JSON.parse(savedProfile);
                 buildMainMenuTopics();
@@ -618,18 +587,8 @@
         function saveProfile() {
             const input = document.getElementById('usernameInput');
             const name = input.value.trim().toUpperCase();
-            
-            if (!name) {
-                alert("Sila masukkan namamu terlebih dahulu! 😊");
-                return;
-            }
-
-            userProfile = {
-                name: name,
-                stars: 0,
-                badges: []
-            };
-
+            if (!name) { alert("Sila masukkan namamu terlebih dahulu! 😊"); return; }
+            userProfile = { name: name, stars: 0, badges: [] };
             localStorage.setItem('bijak_math_profile', JSON.stringify(userProfile));
             buildMainMenuTopics();
             renderBadges();
@@ -653,26 +612,16 @@
             }
         }
 
-        // --- BINA PAPARAN MENU UTAMA ---
         function buildMainMenuTopics() {
             const grid = document.getElementById('topicsGrid');
             grid.innerHTML = '';
-
             Object.keys(BANK_SOALAN).forEach((key, index) => {
                 const topic = BANK_SOALAN[key];
                 const colorClass = TOPIC_COLORS[index % TOPIC_COLORS.length];
-                
                 const card = document.createElement('button');
-                card.className = `btn-bounce bg-gradient-to-br ${colorClass} p-5 rounded-2xl shadow-md text-left flex flex-col justify-between h-40 border-b-4 border-black/10 active:scale-95 cursor-pointer transform hover:scale-[1.02] transition-transform duration-200`;
+                card.className = `btn-bounce bg-gradient-to-br ${colorClass} p-5 rounded-2xl shadow-md text-left flex flex-col justify-between h-40 border-b-4 border-black/10 cursor-pointer transform hover:scale-[1.02] transition-transform`;
                 card.onclick = () => selectTopic(key);
-
-                card.innerHTML = `
-                    <div class="text-4xl">${topic.icon}</div>
-                    <div>
-                        <div class="font-black text-lg leading-tight uppercase">${topic.title}</div>
-                        <div class="text-[11px] opacity-90 font-bold mt-1">${topic.questions.length} Soalan</div>
-                    </div>
-                `;
+                card.innerHTML = `<div class="text-4xl">${topic.icon}</div><div><div class="font-black text-lg leading-tight uppercase">${topic.title}</div><div class="text-[11px] opacity-90 font-bold mt-1">${topic.questions.length} Soalan</div></div>`;
                 grid.appendChild(card);
             });
         }
@@ -680,12 +629,10 @@
         function renderBadges() {
             const container = document.getElementById('badgesContainer');
             container.innerHTML = '';
-
             if (userProfile.badges.length === 0) {
                 container.innerHTML = `<span class="text-xs text-slate-400 italic">Selesaikan topik dengan markah 100% untuk kumpul lencana!</span>`;
                 return;
             }
-
             userProfile.badges.forEach(badgeText => {
                 const badge = document.createElement('span');
                 badge.className = "bg-yellow-100 border border-yellow-300 text-yellow-800 font-black text-xs px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1 animate-pulse";
@@ -694,15 +641,12 @@
             });
         }
 
-        // --- ALIRAN PERMAINAN KUIZ ---
         function selectTopic(topicId) {
             quizState.currentTopicId = topicId;
             const topic = BANK_SOALAN[topicId];
-            
             document.getElementById('topicIntroIcon').innerText = topic.icon;
             document.getElementById('topicIntroTitle').innerText = `Topik: ${topic.title}`;
             document.getElementById('topicIntroDetails').innerText = `${topic.questions.length} Soalan Latih Tubi`;
-            
             navigateTo('viewTopicIntro');
         }
 
@@ -714,44 +658,41 @@
             quizState.starsEarned = 0;
             quizState.lives = 3;
             quizState.isAnswering = false;
-
             navigateTo('viewQuiz');
             showQuestion();
+        }
+
+        // FUNGSI TAMBAHAN: Pengesahan keluar kuiz ke menu utama
+        function confirmExitQuiz() {
+            if (confirm("Adakah anda pasti mahu berhenti menjawab dan kembali ke Menu Utama?")) {
+                navigateTo('viewMainMenu');
+            }
         }
 
         function showQuestion() {
             quizState.isAnswering = false;
             renderLives();
-            
             const topic = BANK_SOALAN[quizState.currentTopicId];
             const totalQuestions = topic.questions.length;
             
-            // Semak jika nyawa habis atau kuiz selesai
             if (quizState.lives <= 0 || quizState.currentQuestionIndex >= totalQuestions) {
                 endQuiz();
                 return;
             }
 
             const currentQuestion = topic.questions[quizState.currentQuestionIndex];
-
-            // Kemaskini status & progress bar
             document.getElementById('quizProgressText').innerText = `Soalan ${quizState.currentQuestionIndex + 1} / ${totalQuestions}`;
             document.getElementById('quizScoreText').innerText = `Markah: ${quizState.score}`;
             
             const progressPercent = ((quizState.currentQuestionIndex + 1) / totalQuestions) * 100;
             document.getElementById('quizProgressBar').style.width = `${progressPercent}%`;
-
-            // Papar Teks Soalan
             document.getElementById('questionText').innerHTML = currentQuestion.q;
 
-            // Bina Butang Pilihan Jawapan
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
-
             currentQuestion.a.forEach((option) => {
                 const btn = document.createElement('button');
-                // Formatkan teks butang dengan label ringkas A, B, C, D secara visual
-                btn.className = "w-full text-left bg-white active:bg-slate-100 text-slate-700 font-extrabold p-4 rounded-xl shadow border-2 border-slate-200 hover:border-slate-300 transition-all text-base flex items-center gap-3 cursor-pointer btn-bounce";
+                btn.className = "w-full text-left bg-white text-slate-700 font-extrabold p-4 rounded-xl shadow border-2 border-slate-200 hover:border-slate-300 transition-all flex items-center gap-3 cursor-pointer btn-bounce";
                 btn.innerHTML = `<span class="bg-blue-100 text-blue-700 rounded-lg w-8 h-8 flex items-center justify-center font-black text-sm shrink-0">✔</span> <span>${option}</span>`;
                 btn.onclick = () => selectAnswer(btn, option, currentQuestion.c);
                 optionsContainer.appendChild(btn);
@@ -759,7 +700,7 @@
         }
 
         function selectAnswer(selectedButton, chosenValue, correctValue) {
-            if (quizState.isAnswering) return; // Kunci input sementara proses
+            if (quizState.isAnswering) return;
             quizState.isAnswering = true;
 
             const isCorrect = (chosenValue === correctValue);
@@ -767,11 +708,9 @@
             const buttons = optionsContainer.getElementsByTagName('button');
 
             if (isCorrect) {
-                // Tindak balas BETUL
                 AudioFX.play('ding');
                 selectedButton.classList.remove('bg-white', 'border-slate-200');
                 selectedButton.classList.add('bg-green-500', 'text-white', 'border-green-600');
-                // Tukar warna ikon hiasan di dalam butang
                 selectedButton.querySelector('span').className = "bg-white text-green-600 rounded-lg w-8 h-8 flex items-center justify-center font-black text-sm shrink-0";
 
                 quizState.score += 10;
@@ -779,7 +718,6 @@
                 quizState.starsEarned++;
                 userProfile.stars++;
                 
-                // Animasi Bintang Kecil Confetti
                 confetti({ particleCount: 30, angle: 60, spread: 55, origin: { x: 0 } });
                 confetti({ particleCount: 30, angle: 120, spread: 55, origin: { x: 1 } });
 
@@ -787,11 +725,9 @@
                     quizState.currentQuestionIndex++;
                     showQuestion();
                 }, 1100);
-
             } else {
-                // Tindak balas SALAH
                 AudioFX.play('buzz');
-                if (navigator.vibrate) navigator.vibrate(200); // Getaran telefon peranti mudah alih
+                if (navigator.vibrate) navigator.vibrate(200);
 
                 selectedButton.classList.remove('bg-white', 'border-slate-200');
                 selectedButton.classList.add('bg-red-500', 'text-white', 'border-red-600', 'animate-shake');
@@ -801,7 +737,6 @@
                 quizState.lives--;
                 renderLives();
 
-                // Dedahkan jawapan betul kepada murid (Tukar warna butang sebenar ke hijau)
                 Array.from(buttons).forEach(btn => {
                     if (btn.innerText.includes(correctValue)) {
                         btn.classList.add('bg-green-100', 'border-green-400', 'text-green-800');
@@ -814,18 +749,15 @@
                 }, 2200);
             }
 
-            // Kemaskini Local Storage dengan jumlah bintang baru secara masa nyata
             localStorage.setItem('bijak_math_profile', JSON.stringify(userProfile));
             updateHeaderUI();
         }
 
-        // --- TAMAT KUIZ & PAPARAN PENUTUP ---
         function endQuiz() {
             const topic = BANK_SOALAN[quizState.currentTopicId];
             const maxQuestions = topic.questions.length;
             const finalPercent = Math.round((quizState.correctCount / maxQuestions) * 100);
 
-            // Set Emoji, Tajuk & Bunyi Kemenangan
             if (quizState.lives <= 0) {
                 document.getElementById('resultEmoji').innerText = "😢";
                 document.getElementById('resultTitle').innerText = "Cuba Lagi!";
@@ -836,7 +768,6 @@
                 AudioFX.play('victory');
                 triggerFullConfetti();
                 
-                // Berikan lencana (Achievement) jika belum ada
                 if (!userProfile.badges.includes(topic.badge)) {
                     userProfile.badges.push(topic.badge);
                     localStorage.setItem('bijak_math_profile', JSON.stringify(userProfile));
@@ -848,7 +779,6 @@
                 AudioFX.play('victory');
             }
 
-            // Count-up/Set Animasi Ringkas Teks Keputusan
             document.getElementById('resultScore').innerText = `${finalPercent}%`;
             document.getElementById('resultCorrect').innerText = quizState.correctCount;
             document.getElementById('resultWrong').innerText = quizState.wrongCount;
@@ -860,7 +790,6 @@
         function triggerFullConfetti() {
             var duration = 3 * 1000;
             var end = Date.now() + duration;
-
             (function frame() {
                 confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 } });
                 confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 } });
@@ -868,14 +797,8 @@
             }());
         }
 
-        // --- DIALOG SETTING / TETAPAN ---
-        function openSettings() {
-            document.getElementById('modalSettings').classList.remove('hidden');
-        }
-
-        function closeSettings() {
-            document.getElementById('modalSettings').classList.add('hidden');
-        }
+        function openSettings() { document.getElementById('modalSettings').classList.remove('hidden'); }
+        function closeSettings() { document.getElementById('modalSettings').classList.add('hidden'); }
 
         function toggleSound() {
             AudioFX.enabled = !AudioFX.enabled;
