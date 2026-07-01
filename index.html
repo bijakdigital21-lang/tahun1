@@ -74,13 +74,16 @@
                         <span>❤️</span><span>❤️</span><span>❤️</span>
                     </div>
                 </div>
-                <!-- Butang Kawalan (Bahasa & Tetapan) -->
+                <!-- Butang Kawalan (Bahasa, Tetapan & Log Keluar) -->
                 <div class="flex items-center space-x-2">
                     <button onclick="toggleLanguage()" class="btn-bounce bg-white/20 text-xs font-black px-2.5 py-1.5 rounded-xl border border-white/30 cursor-pointer" id="btnLangToggle">
                         🌐 EN
                     </button>
                     <button onclick="openSettings()" class="btn-bounce text-xl p-1 focus:outline-none cursor-pointer" title="Tetapan">
                         ⚙️
+                    </button>
+                    <button onclick="deleteProfile()" class="btn-bounce text-xl p-1 focus:outline-none cursor-pointer" title="Log Keluar">
+                        🚪
                     </button>
                 </div>
             </div>
@@ -331,7 +334,7 @@
                 alertExitQuiz: "Adakah anda pasti mahu berhenti menjawab dan kembali ke Menu Utama?",
                 alertClearRecords: "Adakah anda pasti mahu memadam semua sejarah rekod prestasi ini?",
                 alertResetProgress: "Adakah anda pasti mahu mengosongkan semua kutipan lencana, bintang dan rekod prestasi kembali ke 0?",
-                alertDeleteProfile: "Padam akaun profil ini? Semua rekod nama, markah murid dan rekod prestasi akan dipadam sepenuhnya."
+                alertDeleteProfile: "Log keluar dan padam akaun profil ini? Semua rekod nama, markah murid dan lencana akan dipadam sepenuhnya."
             },
             en: {
                 welcomeTitle: "Smart Math<br><span class='text-emerald-500 text-3xl'>Year 1</span>",
@@ -381,7 +384,7 @@
                 alertExitQuiz: "Are you sure you want to stop and return to the Main Menu?",
                 alertClearRecords: "Are you sure you want to delete all performance history?",
                 alertResetProgress: "Are you sure you want to clear all collected badges, stars, and records back to 0?",
-                alertDeleteProfile: "Delete this profile account? All names, student scores, and history records will be completely removed."
+                alertDeleteProfile: "Log out and delete this profile account? All student names, scores, and badges will be completely removed."
             }
         };
 
@@ -1081,7 +1084,10 @@
             if (confirm(I18N[currentLang].alertDeleteProfile)) {
                 localStorage.removeItem('bijak_math_profile'); localStorage.removeItem('bijak_math_records');
                 performanceRecords = []; document.getElementById('usernameInput').value = '';
-                closeSettings(); navigateTo('viewWelcome');
+                if(!document.getElementById('modalSettings').classList.contains('hidden')) {
+                    closeSettings();
+                }
+                navigateTo('viewWelcome');
             }
         }
     </script>
