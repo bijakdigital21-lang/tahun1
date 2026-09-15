@@ -4632,7 +4632,6 @@
                 <div class="suku-card">
                     <div class="suku-topbar"><span>Soalan <span id="suku-progress">1 / 10</span></span><span>⭐ <span id="suku-score">0</span></span></div>
                     <div class="suku-picture"><img id="suku-image" src="" alt=""></div>
-                    <button class="sound-btn" onclick="speakCurrentSukuWord()">🔊 Dengar</button>
                     <div id="suku-first" class="suku-first">BU + ?</div>
                     <div id="suku-options" class="suku-options"></div>
                     <div id="suku-message" style="min-height:28px;font-weight:800;margin-top:8px;"></div>
@@ -8983,7 +8982,6 @@ document.addEventListener('DOMContentLoaded', () => {
             sukuLocked=false; document.getElementById('suku-progress').textContent=`${sukuIndex+1} / ${sukuSession.length}`;document.getElementById('suku-score').textContent=sukuScore;document.getElementById('suku-first').textContent=`${item.first.split('').join(' ')} + ?`;document.getElementById('suku-message').textContent='';
             const img=document.getElementById('suku-image');img.src=item.image;img.alt=item.word;
             const opts=sukuShuffle([item.second,getSukuDistractor(item)]);const wrap=document.getElementById('suku-options');wrap.innerHTML='';opts.forEach(v=>{const b=document.createElement('button');b.className='suku-option';b.textContent=v;b.onclick=()=>chooseSukuAnswer(v,b);wrap.appendChild(b)});
-            setTimeout(speakCurrentSukuWord,250);
         }
         function speakMalayWord(word){
             if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(word);u.lang='ms-MY';u.rate=.78;u.pitch=1;const voices=window.speechSynthesis.getVoices();const v=voices.find(x=>/^ms(-|_)/i.test(x.lang))||voices.find(x=>/malay|melayu/i.test(x.name));if(v)u.voice=v;window.speechSynthesis.speak(u);
@@ -8993,7 +8991,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(sukuLocked)return;const item=sukuSession[sukuIndex];
             if(value!==item.second){btn.classList.add('wrong');document.getElementById('suku-message').textContent='Cuba lagi 😊';return;}
             sukuLocked=true;btn.classList.add('correct');sukuScore++;document.getElementById('suku-score').textContent=sukuScore;
-            const pop=document.getElementById('suku-pop'), inner=document.getElementById('suku-pop-inner');inner.innerHTML=`<strong>${item.word.toUpperCase()}</strong>`;pop.classList.add('show');speakMalayWord(item.word);
+            const pop=document.getElementById('suku-pop'), inner=document.getElementById('suku-pop-inner');inner.innerHTML=`<strong>${item.word.toUpperCase()}</strong>`;pop.classList.add('show');
             setTimeout(()=>{pop.classList.remove('show');if(sukuIndex<sukuSession.length-1){sukuIndex++;renderSukuQuestion()}else{finishSukuSession()}},2000);
         }
         function finishSukuSession(){
@@ -10001,6 +9999,102 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
     </script>
+
+
+<!-- UNIVERSAL ACTIVITY COMPLETION POPUP: uses the same theme as Bijak Suku Kata -->
+<div id="universal-completion-pop" class="suku-pop" aria-hidden="true">
+  <div class="suku-pop-inner" style="max-width:560px;width:calc(100% - 30px);">
+    <div id="universal-completion-title" style="font-size:clamp(2rem,7vw,3.6rem);margin-bottom:12px;">🎉 DONE! 🎉</div>
+    <div id="universal-completion-detail" style="font-family:'Quicksand',sans-serif;font-size:1.05rem;color:#2C3E50;margin-bottom:18px;font-weight:800;"></div>
+    <button id="universal-completion-close" class="action-btn home-btn" type="button" style="font-size:1rem;">Close ✖️</button>
+  </div>
+</div>
+<script>
+(function(){
+  // This layer standardises completion for every activity without changing game logic.
+  const moduleRoutes = {
+    abc: 'abc-menu-screen', number: 'num123-menu-screen', colour: 'colour-menu-screen',
+    body: 'body-part-menu-screen', animal: 'animal-menu-screen', shape: 'shape-menu-screen',
+    transport: 'transport-menu-screen'
+  };
+  const screenModule = {
+    'bijak-suku-kata-screen':'abc','complete-abc-screen':'abc','spell-it-right-screen':'abc','abc-tracing-screen':'abc',
+    'match-count-screen':'abc','match-game-screen':'abc','find-letter-screen':'abc','abc-flashcard-screen':'abc',
+    'lesson-screen':'abc','count-selection-screen':'abc','quiz-screen':'abc','result-screen':'abc',
+    'num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','find123-screen':'number',
+    'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','find-colour-screen':'colour',
+    'learn-body-screen':'body','choose-body-screen':'body','match-body-count-screen':'body','match-body-game-screen':'body','label-body-screen':'body',
+    'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
+    'learn-shape-screen':'shape','match-shape-screen':'shape','draw-shape-screen':'shape','match-me-screen':'shape',
+    'learn-transport-cat-screen':'transport','learn-transport-flash-screen':'transport','sort-transport-screen':'transport','guess-transport-screen':'transport'
+  };
+  let completionOpen=false, completionModule=null;
+  const originalAlert=window.alert.bind(window);
+  const originalShowScreen=(typeof window.showScreen==='function') ? window.showScreen.bind(window) : null;
+
+  function activeScreenId(){ const el=document.querySelector('.card.active'); return el ? el.id : ''; }
+  function inferModule(){ return screenModule[activeScreenId()] || completionModule || 'abc'; }
+  function isCompletionMessage(msg){
+    const t=String(msg||'').toLowerCase();
+    return /completed|complete all|completing|finished|finish!|quiz finished|quiz tamat|tamat!|tamat belajar|tahniah|syabas|selesai|lengkapkan|melengkapkan|habiskan|menghabiskan|hebat!|amazing!|great job/.test(t);
+  }
+  function extractDetail(msg){
+    const t=String(msg||'');
+    const score=t.match(/(?:score|skor)(?: anda)?\s*[:：]?\s*([^\n]+)/i);
+    return score ? ((currentGlobalLang==='ms'?'Skor: ':'Score: ')+score[1].replace(/^[:\s]+/,'')) : '';
+  }
+  function showCompletion(moduleKey, detail){
+    completionModule=moduleKey || inferModule(); completionOpen=true;
+    try{ window.speechSynthesis?.cancel(); }catch(e){}
+    const pop=document.getElementById('universal-completion-pop');
+    document.getElementById('universal-completion-title').textContent = currentGlobalLang==='ms' ? '🎉 DAH SELESAI! 🎉' : '🎉 ALL DONE! 🎉';
+    const d=document.getElementById('universal-completion-detail'); d.textContent=detail||''; d.style.display=detail?'block':'none';
+    document.getElementById('universal-completion-close').textContent='Close ✖️';
+    pop.style.pointerEvents='auto'; pop.classList.add('show'); pop.setAttribute('aria-hidden','false');
+  }
+  function closeCompletion(){
+    const pop=document.getElementById('universal-completion-pop'); pop.classList.remove('show'); pop.style.pointerEvents='none'; pop.setAttribute('aria-hidden','true');
+    const route=moduleRoutes[completionModule] || moduleRoutes.abc; completionOpen=false;
+    if(originalShowScreen) originalShowScreen(route); else if(typeof window.navigateTo==='function') window.navigateTo(route);
+    completionModule=null;
+  }
+  document.getElementById('universal-completion-close').addEventListener('click',function(){ if(typeof playClickSound==='function') playClickSound(); closeCompletion(); });
+
+  // Convert existing completion alerts to the themed popup. Ordinary account/error alerts remain unchanged.
+  window.alert=function(msg){
+    const sid=activeScreenId();
+    if(screenModule[sid] && isCompletionMessage(msg)){ showCompletion(screenModule[sid],extractDetail(msg)); return; }
+    return originalAlert(msg);
+  };
+
+  // Prevent legacy code from immediately navigating away after its old alert.
+  if(originalShowScreen){
+    window.showScreen=function(screenId){
+      if(completionOpen) return;
+      if(screenId==='result-screen'){
+        const current=activeScreenId();
+        if(screenModule[current]){ showCompletion(screenModule[current],''); return; }
+      }
+      return originalShowScreen(screenId);
+    };
+  }
+
+  // Bijak Suku Kata already has its own completion popup; keep its look/flow but bilingualise the title.
+  const oldFinishSuku=window.finishSukuSession;
+  if(typeof oldFinishSuku==='function'){
+    window.finishSukuSession=function(){
+      oldFinishSuku();
+      const inner=document.getElementById('suku-pop-inner');
+      if(inner){
+        const title=inner.querySelector('div');
+        if(title) title.textContent=currentGlobalLang==='ms'?'🎉 DAH SELESAI! 🎉':'🎉 ALL DONE! 🎉';
+        const close=inner.querySelector('button'); if(close) close.textContent='Close ✖️';
+      }
+    };
+  }
+})();
+</script>
+
 </body>
 </html>
                     
