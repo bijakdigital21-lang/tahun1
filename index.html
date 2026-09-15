@@ -8929,9 +8929,51 @@ document.addEventListener('DOMContentLoaded', () => {
         // =========================================================
         // BIJAK SUKU KATA - 10 random, non-repeating words per session
         // =========================================================
+        // EDIT GAMBAR BIJAK SUKU KATA DI SINI SAHAJA.
+        // Tukar nilai image: dengan direct link gambar anda (contoh Imgur).
+        // Contoh: image: 'https://i.imgur.com/xxxx.jpeg'
         const sukuWords = [
-            ['baju','BA','JU'],['batu','BA','TU'],['buku','BU','KU'],['bola','BO','LA'],['biru','BI','RU'],['baru','BA','RU'],['bayi','BA','YI'],['dada','DA','DA'],['dadu','DA','DU'],['gigi','GI','GI'],['gula','GU','LA'],['guru','GU','RU'],['jari','JA','RI'],['kaki','KA','KI'],['kayu','KA','YU'],['kuda','KU','DA'],['kuku','KU','KU'],['labu','LA','BU'],['lima','LI','MA'],['mata','MA','TA'],['meja','ME','JA'],['muka','MU','KA'],['nasi','NA','SI'],['nota','NO','TA'],['padi','PA','DI'],['pasu','PA','SU'],['paku','PA','KU'],['pipi','PI','PI'],['roda','RO','DA'],['roti','RO','TI'],['satu','SA','TU'],['siku','SI','KU'],['susu','SU','SU'],['tali','TA','LI'],['topi','TO','PI'],['ubi','U','BI'],['sawi','SA','WI'],['sate','SA','TE'],['rusa','RU','SA'],['singa','SI','NGA'],['kura','KU','RA'],['naga','NA','GA']
-        ].map(x=>({word:x[0],first:x[1],second:x[2],image:`https://loremflickr.com/600/600/${encodeURIComponent(x[0])}?lock=${x[0].split('').reduce((a,c)=>a+c.charCodeAt(0),0)}`}));
+            { word: 'baju', first: 'BA', second: 'JU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrNwCgNiy2MAuQ0g4qyoFZvSQXRvj1fcWKUy6HX52CDw&s=10' },
+            { word: 'batu', first: 'BA', second: 'TU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPsVSxyE2dPyRSGnYm9jjYRx8mcvW1x6AuCQKBpnmUaw&s=10' },
+            { word: 'buku', first: 'BU', second: 'KU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ79zYWvDaTVVUBJWI_R10UwyNh9gOxFzYgOksbVVBisw&s=10' },
+            { word: 'bola', first: 'BO', second: 'LA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVMc01fNm4zmVdnl_9dm4M7SGTl-dF82uprjmth_EDHA&s=10' },
+            { word: 'biru', first: 'BI', second: 'RU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRaP3p4Puj4eLJAivYLrc_JJH5Rd61jT2DAReDTopjEA&s=10' },
+            { word: 'bayi', first: 'BA', second: 'YI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCfdkNpGm2qmbCI2x_YTKd3-RaSTii5LYR6fNPEtcXzQ&s=10' },
+            { word: 'dada', first: 'DA', second: 'DA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWWoz6ciLbVaK92oFb8griYEFEPzXX7if0YozHk9bzVA&s=10' },
+            { word: 'dadu', first: 'DA', second: 'DU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmvV7YN_bS4zrlQa9_gJdJGAi_D-jsI1qESIyHrWsxUQ&s=10' },
+            { word: 'gigi', first: 'GI', second: 'GI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWdGHhNm6jESxOTXVwWuc5O10pD63oFbpu-1A2IW8T4w&s=10' },
+            { word: 'gula', first: 'GU', second: 'LA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS56Cj6fdn56Wj4otzQj_u5DxufSjxPCUdKZUtjfs3kSw&s=10' },
+            { word: 'guru', first: 'GU', second: 'RU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuieJpcRWfTiy1Oc_cCYTcfFLowFQdMyRuVKWctIA2hg&s=10' },
+            { word: 'jari', first: 'JA', second: 'RI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQho9CKccZG7TLCQk3TTTtMv9OufX_ITmuyOFS0ektOwQ&s=10' },
+            { word: 'kaki', first: 'KA', second: 'KI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlujYUM_-BGBIwkmRFLc0fOYXWTrMZNepLbWNe60_T2Q&s=10' },
+            { word: 'kayu', first: 'KA', second: 'YU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu7OWNNM-WrhINseCkROzJrYGGefAlKFFr-oM0GfNk5g&s=10' },
+            { word: 'kuda', first: 'KU', second: 'DA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCEYybFVM8Km4_f_rlj9pR45orPNdjeNiiBDbeh6WWkQ&s=10' },
+            { word: 'kuku', first: 'KU', second: 'KU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXAjIEgbjTXKHsXN429IyQo4Vb1-Y5k4wGUE1CM1byeA&s=10' },
+            { word: 'labu', first: 'LA', second: 'BU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwHaxeWFfFqxdjiU1L1pWReL-EmW54-3-mlwizSgP31w&s=10' },
+            { word: 'lima', first: 'LI', second: 'MA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStQCOYXBXDL_nNwww1uO33UA-DH-AdYr-CUQVH4bimNQ&s=10' },
+            { word: 'mata', first: 'MA', second: 'TA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYroqPxY0ajNrVDoMjydq3fOdgLeXMBFSp9eq_UrTysA&s=10' },
+            { word: 'meja', first: 'ME', second: 'JA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1MbOh7iuLZ5XsfNEZiCCa9aUFFFAQrRGijAc6knnRTA&s=10' },
+            { word: 'muka', first: 'MU', second: 'KA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhJUc4TllI1V0q6-RHrR1TM3d3kHxbuQum87-xrYBDXg&s=10' },
+            { word: 'nasi', first: 'NA', second: 'SI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3zWTi1SUYfREoAv_rSLwbE1Vhz6E1OFOe41RbyXJYTA&s=10' },
+            { word: 'nota', first: 'NO', second: 'TA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBthBsk_6ne4vSeEvAIgta_dlPDeNjAl39exKRexVylw&s=10' },
+            { word: 'padi', first: 'PA', second: 'DI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSic2KfFjRMV6ptmIfASV4fDBdcAQb39Xn7idhTxxNhmg&s=10' },
+            { word: 'pasu', first: 'PA', second: 'SU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMLslEwbJU1-sOfpCXG2iHKP8dhNq0mZu7YhLvgYfgPw&s=10' },
+            { word: 'paku', first: 'PA', second: 'KU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYKwE3TlFFEkpQy-Kd3D41c_U2k_HfOTvIheEn4Yh7IA&s=10' },
+            { word: 'pipi', first: 'PI', second: 'PI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWLloUxdjJI1yVesk1bxtrMnHBch6wY4I2zp1XMQbT3w&s=10' },
+            { word: 'roda', first: 'RO', second: 'DA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1m34YZJbJlx60o2TwyIjBQGH4uYDGneChM8mu0V56kw&s=10' },
+            { word: 'roti', first: 'RO', second: 'TI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsXtTsDb2h4ELY3RQXe4Ccz3_xFrHihREG2RIil3VGjQ&s=10' },
+            { word: 'satu', first: 'SA', second: 'TU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmva1IdMp3oAVvv1acwtKWdhNidXOT0O6cBDv0bs8Xeg&s=10' },
+            { word: 'siku', first: 'SI', second: 'KU', image: 'https://flexfreeclinic.com/uploads/artikel/2UZ4Q_Flexfree_Clinic_BERBAGAI-PENYEBAB-NYERI-SIKU-.jpg' },
+            { word: 'susu', first: 'SU', second: 'SU', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcq2ivnMvEcCgCSUcXWD7_iq5Emh9hqHP6yyc18zj4QQ&s=10' },
+            { word: 'tali', first: 'TA', second: 'LI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVpbUEi3tTOpoGAlX7phWEKqCrKi-BfbohHrKGVr6gpg&s=10' },
+            { word: 'topi', first: 'TO', second: 'PI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXtNwQugd1XcFERoEkenvuF7igZbgRn4PRFTW1SBaVuQ&s=10' },
+            { word: 'ubi', first: 'U', second: 'BI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZVkrf6No0g9qJu0_pso8LoLDwJejT2IWIhMliIKmkYw&s=10' },
+            { word: 'sawi', first: 'SA', second: 'WI', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTka5KLIGKkyM5-016kMSwcn9N1bHrjrjfIwYy6YVdHfg&s=10' },
+            { word: 'sate', first: 'SA', second: 'TE', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZpNeNzGvsDdRsyKcv7z34N6PdBbS_IbOL1nABgx_jzg&s' },
+            { word: 'rusa', first: 'RU', second: 'SA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMV3vSCSE2KTfts7-oe4Ua46zOM1zVZqM25J4M3dPk5Q&s=10' },
+            { word: 'singa', first: 'SI', second: 'NGA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlHhOteFzFpz9phePIrIvv8dPTFp8KgTSbkUtNlw6MWg&s=10' },
+            { word: 'naga', first: 'NA', second: 'GA', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo3R2q40-D_xDS9IejL_tWaKjnQbiZZ898Wrg67kS5BQ&s=10' }
+        ];
         let sukuSession=[], sukuIndex=0, sukuScore=0, sukuLocked=false;
         function sukuShuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
         function startBijakSukuKata(){ window.speechSynthesis?.cancel(); sukuSession=sukuShuffle(sukuWords).slice(0,10);sukuIndex=0;sukuScore=0;sukuLocked=false;showScreen('bijak-suku-kata-screen');renderSukuQuestion(); }
