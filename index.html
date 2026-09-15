@@ -8951,7 +8951,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(sukuLocked)return;const item=sukuSession[sukuIndex];
             if(value!==item.second){btn.classList.add('wrong');document.getElementById('suku-message').textContent='Cuba lagi 😊';return;}
             sukuLocked=true;btn.classList.add('correct');sukuScore++;document.getElementById('suku-score').textContent=sukuScore;
-            const pop=document.getElementById('suku-pop'), inner=document.getElementById('suku-pop-inner');inner.innerHTML=`${item.first} + ${item.second}<br><strong>${item.word.toUpperCase()}</strong>`;pop.classList.add('show');speakMalayWord(item.word);
+            const pop=document.getElementById('suku-pop'), inner=document.getElementById('suku-pop-inner');inner.innerHTML=`<strong>${item.word.toUpperCase()}</strong>`;pop.classList.add('show');speakMalayWord(item.word);
             setTimeout(()=>{pop.classList.remove('show');if(sukuIndex<sukuSession.length-1){sukuIndex++;renderSukuQuestion()}else{finishSukuSession()}},2000);
         }
         function finishSukuSession(){window.speechSynthesis?.cancel();document.getElementById('suku-picture').innerHTML='<div style="font-size:5rem;padding-top:45px">🎉</div>';document.getElementById('suku-first').textContent='TAHNIAH!';document.getElementById('suku-options').innerHTML='';document.getElementById('suku-message').textContent=`Selesai! Skor: ${sukuScore} / ${sukuSession.length}`;document.getElementById('suku-progress').textContent='10 / 10';}
