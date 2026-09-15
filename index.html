@@ -4415,25 +4415,22 @@
 
 
 
-        /* BIJAK SUKU KATA - isolated styles only */
-        #bijak-suku-kata-screen{width:min(96vw,820px);margin-left:50%;transform:translateX(-50%);}
-        .suku-card{background:#fff8dc;border:4px solid #ffcf4d;border-radius:26px;padding:18px;box-shadow:0 10px 24px rgba(0,0,0,.16);margin:14px auto;max-width:620px;}
-        .suku-photo-wrap{width:min(78vw,300px);aspect-ratio:1/1;margin:8px auto 14px;border-radius:24px;overflow:hidden;border:5px solid #fff;box-shadow:0 7px 18px rgba(0,0,0,.18);background:#eee;}
-        .suku-photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
-        .suku-first{font-family:'Fredoka One',cursive;font-size:clamp(2.2rem,8vw,4rem);letter-spacing:.18em;color:#5E17EB;margin:6px 0 14px;text-transform:uppercase;}
-        .suku-options{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:430px;margin:0 auto;}
-        .suku-option{border:4px solid #5CE1E6;background:#fff;border-radius:18px;padding:16px 10px;font-family:'Fredoka One',cursive;font-size:clamp(1.6rem,6vw,2.3rem);color:#263238;cursor:pointer;box-shadow:0 6px 0 #2fa9ae;transition:.15s;text-transform:uppercase;}
-        .suku-option:active{transform:translateY(4px);box-shadow:0 2px 0 #2fa9ae;}
-        .suku-option.wrong{background:#ff6b6b!important;border-color:#d93434!important;color:#fff!important;box-shadow:0 6px 0 #a61f1f!important;}
-        .suku-option.correct{background:#7ED957!important;border-color:#48a52a!important;color:#fff!important;box-shadow:0 6px 0 #31851b!important;}
-        .suku-progress{display:inline-block;background:#fff3b0;border:2px solid #e0a400;border-radius:12px;padding:6px 12px;font-weight:900;margin-top:8px;}
-        .suku-word-pop{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(20,30,50,.38);backdrop-filter:blur(3px);}
-        .suku-word-pop.show{display:flex;animation:sukuFade .18s ease;}
-        .suku-word-pop-inner{background:#fff;border:6px solid #FFDE59;border-radius:30px;padding:28px 38px;box-shadow:0 16px 45px rgba(0,0,0,.28);font-family:'Fredoka One',cursive;font-size:clamp(2.7rem,12vw,5.5rem);color:#5E17EB;text-transform:uppercase;animation:sukuPop .3s ease;letter-spacing:.04em;}
-        @keyframes sukuPop{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
-        @keyframes sukuFade{from{opacity:0}to{opacity:1}}
-        @media(max-width:600px){#bijak-suku-kata-screen{width:calc(100vw - 8px);padding-left:0;padding-right:0}.suku-card{padding:12px 9px}.suku-options{gap:10px}.suku-option{padding:14px 6px}}
-</style>
+        /* BIJAK SUKU KATA - ABC MODULE */
+        #bijak-suku-kata-screen { width:100%; }
+        .suku-card{background:rgba(255,249,220,.96);border:4px solid #FFDE59;border-radius:26px;padding:20px;margin:16px auto;max-width:620px;box-shadow:0 10px 25px rgba(0,0,0,.15)}
+        .suku-topbar{display:flex;justify-content:space-between;font-weight:900;margin-bottom:12px;color:#243b53}
+        .suku-picture{width:210px;height:210px;margin:0 auto 12px;border:4px solid #5CE1E6;border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 7px 16px rgba(0,0,0,.12)}
+        .suku-picture img{width:100%;height:100%;object-fit:cover;display:block}
+        .suku-first{font-family:'Fredoka One',cursive;font-size:2.7rem;letter-spacing:.16em;color:#5E17EB;margin:12px 0}
+        .suku-options{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:420px;margin:14px auto}
+        .suku-option{border:3px solid #CBD5E1;background:#fff;border-radius:18px;padding:15px;font-family:'Fredoka One',cursive;font-size:1.8rem;cursor:pointer;box-shadow:0 5px 0 #aab5c2;transition:.15s}
+        .suku-option:active{transform:translateY(3px);box-shadow:0 2px 0 #aab5c2}.suku-option.wrong{background:#ff6b6b!important;color:#fff;border-color:#d93434}.suku-option.correct{background:#7ED957!important;color:#fff;border-color:#4fa837}
+        .suku-pop{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.25);pointer-events:none}
+        .suku-pop.show{display:flex}.suku-pop-inner{background:#fff8c7;border:5px solid #FFDE59;border-radius:28px;padding:28px 34px;box-shadow:0 15px 45px rgba(0,0,0,.28);font-family:'Fredoka One',cursive;font-size:clamp(2rem,7vw,4rem);color:#5E17EB;text-align:center;animation:sukuPop .25s ease}
+        @keyframes sukuPop{from{transform:scale(.65);opacity:0}to{transform:scale(1);opacity:1}}
+        @media(max-width:600px){.suku-card{padding:14px 10px}.suku-picture{width:180px;height:180px}.suku-first{font-size:2.25rem}.suku-option{font-size:1.55rem}}
+
+    </style>
 </head>
 <body class="login-mode">
 
@@ -4631,17 +4628,18 @@
 
             <!-- BIJAK SUKU KATA SCREEN -->
             <div id="bijak-suku-kata-screen" class="card">
-                <h2 style="color:#ffff00;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #5E17EB;">Bijak Suku Kata 🌟</h2>
-                <p style="color:#111;font-weight:800;margin:6px 0;">Pilih suku kata yang betul untuk melengkapkan perkataan.</p>
-                <div id="suku-progress" class="suku-progress">Soalan 1 / 10</div>
+                <h2 style="color:#ffff00;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #5E17EB;">Bijak Suku Kata 📖</h2>
                 <div class="suku-card">
-                    <div class="suku-photo-wrap"><img id="suku-image" src="" alt="Gambar perkataan"></div>
-                    <div id="suku-first" class="suku-first">BU</div>
+                    <div class="suku-topbar"><span>Soalan <span id="suku-progress">1 / 10</span></span><span>⭐ <span id="suku-score">0</span></span></div>
+                    <div class="suku-picture"><img id="suku-image" src="" alt=""></div>
+                    <button class="sound-btn" onclick="speakCurrentSukuWord()">🔊 Dengar</button>
+                    <div id="suku-first" class="suku-first">BU + ?</div>
                     <div id="suku-options" class="suku-options"></div>
+                    <div id="suku-message" style="min-height:28px;font-weight:800;margin-top:8px;"></div>
                 </div>
-                <button class="action-btn home-btn" onclick="playClickSound(); openABCMenu()">Kembali ke ABC 🔤</button>
+                <button class="action-btn home-btn" onclick="playClickSound(); openABCMenu()">Back to ABC 🔤</button>
             </div>
-            <div id="suku-word-pop" class="suku-word-pop" aria-hidden="true"><div id="suku-word-pop-inner" class="suku-word-pop-inner"></div></div>
+            <div id="suku-pop" class="suku-pop"><div id="suku-pop-inner" class="suku-pop-inner"></div></div>
 
             <!-- COMPLETE THE ABC SCREEN -->
             <div id="complete-abc-screen" class="card">
@@ -8092,6 +8090,7 @@
                 'spell-it-right-screen',
                 'abc-tracing-screen',
                 'complete-abc-screen',
+                'bijak-suku-kata-screen',
                 'match123-screen',
                 'lets-count-screen',
                 'find123-screen',
@@ -8926,6 +8925,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+        // =========================================================
+        // BIJAK SUKU KATA - 10 random, non-repeating words per session
+        // =========================================================
+        const sukuWords = [
+            ['baju','BA','JU'],['batu','BA','TU'],['buku','BU','KU'],['bola','BO','LA'],['biru','BI','RU'],['baru','BA','RU'],['bayi','BA','YI'],['dada','DA','DA'],['dadu','DA','DU'],['gigi','GI','GI'],['gula','GU','LA'],['guru','GU','RU'],['jari','JA','RI'],['kaki','KA','KI'],['kayu','KA','YU'],['kuda','KU','DA'],['kuku','KU','KU'],['labu','LA','BU'],['lima','LI','MA'],['mata','MA','TA'],['meja','ME','JA'],['muka','MU','KA'],['nasi','NA','SI'],['nota','NO','TA'],['padi','PA','DI'],['pasu','PA','SU'],['paku','PA','KU'],['pipi','PI','PI'],['roda','RO','DA'],['roti','RO','TI'],['satu','SA','TU'],['siku','SI','KU'],['susu','SU','SU'],['tali','TA','LI'],['topi','TO','PI'],['ubi','U','BI'],['sawi','SA','WI'],['sate','SA','TE'],['rusa','RU','SA'],['singa','SI','NGA'],['kura','KU','RA'],['naga','NA','GA']
+        ].map(x=>({word:x[0],first:x[1],second:x[2],image:`https://loremflickr.com/600/600/${encodeURIComponent(x[0])}?lock=${x[0].split('').reduce((a,c)=>a+c.charCodeAt(0),0)}`}));
+        let sukuSession=[], sukuIndex=0, sukuScore=0, sukuLocked=false;
+        function sukuShuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+        function startBijakSukuKata(){ window.speechSynthesis?.cancel(); sukuSession=sukuShuffle(sukuWords).slice(0,10);sukuIndex=0;sukuScore=0;sukuLocked=false;showScreen('bijak-suku-kata-screen');renderSukuQuestion(); }
+        function getSukuDistractor(item){const pool=[...new Set(sukuWords.map(x=>x.second).filter(x=>x!==item.second))];return pool[Math.floor(Math.random()*pool.length)]}
+        function renderSukuQuestion(){
+            const item=sukuSession[sukuIndex]; if(!item)return;
+            sukuLocked=false; document.getElementById('suku-progress').textContent=`${sukuIndex+1} / ${sukuSession.length}`;document.getElementById('suku-score').textContent=sukuScore;document.getElementById('suku-first').textContent=`${item.first.split('').join(' ')} + ?`;document.getElementById('suku-message').textContent='';
+            const img=document.getElementById('suku-image');img.src=item.image;img.alt=item.word;
+            const opts=sukuShuffle([item.second,getSukuDistractor(item)]);const wrap=document.getElementById('suku-options');wrap.innerHTML='';opts.forEach(v=>{const b=document.createElement('button');b.className='suku-option';b.textContent=v;b.onclick=()=>chooseSukuAnswer(v,b);wrap.appendChild(b)});
+            setTimeout(speakCurrentSukuWord,250);
+        }
+        function speakMalayWord(word){
+            if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(word);u.lang='ms-MY';u.rate=.78;u.pitch=1;const voices=window.speechSynthesis.getVoices();const v=voices.find(x=>/^ms(-|_)/i.test(x.lang))||voices.find(x=>/malay|melayu/i.test(x.name));if(v)u.voice=v;window.speechSynthesis.speak(u);
+        }
+        function speakCurrentSukuWord(){const item=sukuSession[sukuIndex];if(item)speakMalayWord(item.word)}
+        function chooseSukuAnswer(value,btn){
+            if(sukuLocked)return;const item=sukuSession[sukuIndex];
+            if(value!==item.second){btn.classList.add('wrong');document.getElementById('suku-message').textContent='Cuba lagi 😊';return;}
+            sukuLocked=true;btn.classList.add('correct');sukuScore++;document.getElementById('suku-score').textContent=sukuScore;
+            const pop=document.getElementById('suku-pop'), inner=document.getElementById('suku-pop-inner');inner.innerHTML=`${item.first} + ${item.second}<br><strong>${item.word.toUpperCase()}</strong>`;pop.classList.add('show');speakMalayWord(item.word);
+            setTimeout(()=>{pop.classList.remove('show');if(sukuIndex<sukuSession.length-1){sukuIndex++;renderSukuQuestion()}else{finishSukuSession()}},2000);
+        }
+        function finishSukuSession(){window.speechSynthesis?.cancel();document.getElementById('suku-picture').innerHTML='<div style="font-size:5rem;padding-top:45px">🎉</div>';document.getElementById('suku-first').textContent='TAHNIAH!';document.getElementById('suku-options').innerHTML='';document.getElementById('suku-message').textContent=`Selesai! Skor: ${sukuScore} / ${sukuSession.length}`;document.getElementById('suku-progress').textContent='10 / 10';}
+
         // =========================================================
         // COMPLETE THE ABC - 5 randomized, non-repeating questions
         // =========================================================
@@ -8957,78 +8987,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return completeABCShuffle(sets);
         }
 
-        
-        /* =========================================================
-           BIJAK SUKU KATA - 10 random unique questions per session
-           ========================================================= */
-        const bijakSukuKataBank = [
-            {word:'baju', first:'BA', answer:'JU', wrong:'JI', img:'https://loremflickr.com/640/640/shirt?lock=201'},
-            {word:'batu', first:'BA', answer:'TU', wrong:'TI', img:'https://loremflickr.com/640/640/stone?lock=202'},
-            {word:'buku', first:'BU', answer:'KU', wrong:'KI', img:'https://loremflickr.com/640/640/book?lock=203'},
-            {word:'bola', first:'BO', answer:'LA', wrong:'LI', img:'https://loremflickr.com/640/640/ball?lock=204'},
-            {word:'bayi', first:'BA', answer:'YI', wrong:'YU', img:'https://loremflickr.com/640/640/baby?lock=205'},
-            {word:'dadu', first:'DA', answer:'DU', wrong:'DI', img:'https://loremflickr.com/640/640/dice?lock=206'},
-            {word:'gigi', first:'GI', answer:'GI', wrong:'GU', img:'https://loremflickr.com/640/640/teeth?lock=207'},
-            {word:'gula', first:'GU', answer:'LA', wrong:'LI', img:'https://loremflickr.com/640/640/sugar?lock=208'},
-            {word:'jari', first:'JA', answer:'RI', wrong:'RA', img:'https://loremflickr.com/640/640/finger?lock=209'},
-            {word:'kaki', first:'KA', answer:'KI', wrong:'KU', img:'https://loremflickr.com/640/640/foot?lock=210'},
-            {word:'kayu', first:'KA', answer:'YU', wrong:'YA', img:'https://loremflickr.com/640/640/wood?lock=211'},
-            {word:'kuda', first:'KU', answer:'DA', wrong:'DI', img:'https://loremflickr.com/640/640/horse?lock=212'},
-            {word:'kuku', first:'KU', answer:'KU', wrong:'KA', img:'https://loremflickr.com/640/640/fingernail?lock=213'},
-            {word:'labu', first:'LA', answer:'BU', wrong:'BI', img:'https://loremflickr.com/640/640/pumpkin?lock=214'},
-            {word:'mata', first:'MA', answer:'TA', wrong:'TI', img:'https://loremflickr.com/640/640/eye?lock=215'},
-            {word:'meja', first:'ME', answer:'JA', wrong:'JI', img:'https://loremflickr.com/640/640/table?lock=216'},
-            {word:'muka', first:'MU', answer:'KA', wrong:'KI', img:'https://loremflickr.com/640/640/face?lock=217'},
-            {word:'nasi', first:'NA', answer:'SI', wrong:'SU', img:'https://loremflickr.com/640/640/rice?lock=218'},
-            {word:'padi', first:'PA', answer:'DI', wrong:'DU', img:'https://loremflickr.com/640/640/ricefield?lock=219'},
-            {word:'pasu', first:'PA', answer:'SU', wrong:'SI', img:'https://loremflickr.com/640/640/flowerpot?lock=220'},
-            {word:'paku', first:'PA', answer:'KU', wrong:'KI', img:'https://loremflickr.com/640/640/nail?lock=221'},
-            {word:'roda', first:'RO', answer:'DA', wrong:'DI', img:'https://loremflickr.com/640/640/wheel?lock=222'},
-            {word:'roti', first:'RO', answer:'TI', wrong:'TA', img:'https://loremflickr.com/640/640/bread?lock=223'},
-            {word:'siku', first:'SI', answer:'KU', wrong:'KA', img:'https://loremflickr.com/640/640/elbow?lock=224'},
-            {word:'susu', first:'SU', answer:'SU', wrong:'SI', img:'https://loremflickr.com/640/640/milk?lock=225'},
-            {word:'tali', first:'TA', answer:'LI', wrong:'LA', img:'https://loremflickr.com/640/640/rope?lock=226'},
-            {word:'topi', first:'TO', answer:'PI', wrong:'PA', img:'https://loremflickr.com/640/640/hat?lock=227'},
-            {word:'ubi', first:'U', answer:'BI', wrong:'BU', img:'https://loremflickr.com/640/640/sweetpotato?lock=228'}
-        ];
-        let bijakSukuQuestions = [], bijakSukuIndex = 0, bijakSukuLocked = false;
-
-        function shuffleBijakSuku(arr){
-            const a=[...arr];
-            for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
-            return a;
-        }
-        function startBijakSukuKata(){
-            bijakSukuQuestions=shuffleBijakSuku(bijakSukuKataBank).slice(0,10);
-            bijakSukuIndex=0; bijakSukuLocked=false;
-            showScreen('bijak-suku-kata-screen');
-            renderBijakSukuKata();
-        }
-        function renderBijakSukuKata(){
-            const q=bijakSukuQuestions[bijakSukuIndex]; if(!q) return;
-            bijakSukuLocked=false;
-            document.getElementById('suku-progress').textContent=`Soalan ${bijakSukuIndex+1} / 10`;
-            document.getElementById('suku-first').textContent=q.first.split('').join(' ');
-            const img=document.getElementById('suku-image'); img.src=q.img; img.alt=`Gambar ${q.word}`;
-            const opts=shuffleBijakSuku([q.answer,q.wrong]);
-            const box=document.getElementById('suku-options'); box.innerHTML='';
-            opts.forEach(val=>{const b=document.createElement('button');b.className='suku-option';b.type='button';b.textContent=val;b.onclick=()=>checkBijakSukuKata(b,val);box.appendChild(b);});
-        }
-        function checkBijakSukuKata(btn,val){
-            if(bijakSukuLocked) return;
-            const q=bijakSukuQuestions[bijakSukuIndex];
-            if(val!==q.answer){btn.classList.add('wrong');playWrongSound?.();return;}
-            bijakSukuLocked=true; btn.classList.add('correct'); playCorrectSound?.();
-            const pop=document.getElementById('suku-word-pop');
-            document.getElementById('suku-word-pop-inner').textContent=q.word.toUpperCase();
-            pop.classList.add('show'); pop.setAttribute('aria-hidden','false');
-            setTimeout(()=>{pop.classList.remove('show');pop.setAttribute('aria-hidden','true');bijakSukuIndex++;
-                if(bijakSukuIndex>=10){alert('Tahniah! Anda telah selesai 10 soalan Bijak Suku Kata! 🎉');openABCMenu();}
-                else renderBijakSukuKata();
-            },2000);
-        }
-
-function startCompleteABC() {
+        function startCompleteABC() {
             completeABCQuestions = buildCompleteABCQuestions();
             completeABCIndex = 0;
             completeABCSelectedChip = null;
