@@ -8989,8 +8989,8 @@ document.addEventListener('DOMContentLoaded', () => {
         function speakCurrentSukuWord(){const item=sukuSession[sukuIndex];if(item)speakMalayWord(item.word)}
         function chooseSukuAnswer(value,btn){
             if(sukuLocked)return;const item=sukuSession[sukuIndex];
-            if(value!==item.second){btn.classList.add('wrong');document.getElementById('suku-message').textContent='Cuba lagi 😊';return;}
-            sukuLocked=true;btn.classList.add('correct');sukuScore++;document.getElementById('suku-score').textContent=sukuScore;
+            if(value!==item.second){playWrongSound();btn.classList.add('wrong');document.getElementById('suku-message').textContent='Cuba lagi 😊';return;}
+            playCorrectSound();sukuLocked=true;btn.classList.add('correct');sukuScore++;document.getElementById('suku-score').textContent=sukuScore;
             const pop=document.getElementById('suku-pop'), inner=document.getElementById('suku-pop-inner');inner.innerHTML=`<strong>${item.word.toUpperCase()}</strong>`;pop.classList.add('show');
             setTimeout(()=>{pop.classList.remove('show');if(sukuIndex<sukuSession.length-1){sukuIndex++;renderSukuQuestion()}else{finishSukuSession()}},2000);
         }
