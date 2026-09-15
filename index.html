@@ -8996,7 +8996,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const pop=document.getElementById('suku-pop'), inner=document.getElementById('suku-pop-inner');inner.innerHTML=`<strong>${item.word.toUpperCase()}</strong>`;pop.classList.add('show');speakMalayWord(item.word);
             setTimeout(()=>{pop.classList.remove('show');if(sukuIndex<sukuSession.length-1){sukuIndex++;renderSukuQuestion()}else{finishSukuSession()}},2000);
         }
-        function finishSukuSession(){window.speechSynthesis?.cancel();document.getElementById('suku-picture').innerHTML='<div style="font-size:5rem;padding-top:45px">🎉</div>';document.getElementById('suku-first').textContent='TAHNIAH!';document.getElementById('suku-options').innerHTML='';document.getElementById('suku-message').textContent=`Selesai! Skor: ${sukuScore} / ${sukuSession.length}`;document.getElementById('suku-progress').textContent='10 / 10';}
+        function finishSukuSession(){
+            window.speechSynthesis?.cancel();
+            document.getElementById('suku-progress').textContent=`${sukuSession.length} / ${sukuSession.length}`;
+            const pop=document.getElementById('suku-pop');
+            const inner=document.getElementById('suku-pop-inner');
+            inner.innerHTML=`
+                <div style="font-size:clamp(2rem,7vw,3.6rem);margin-bottom:12px;">🎉 DAH SELESAI! 🎉</div>
+                <div style="font-family:'Quicksand',sans-serif;font-size:1.05rem;color:#2C3E50;margin-bottom:18px;font-weight:800;">Skor: ${sukuScore} / ${sukuSession.length}</div>
+                <button class="action-btn home-btn" onclick="closeSukuCompletion()" style="font-size:1rem;">Close ✖️</button>`;
+            pop.style.pointerEvents='auto';
+            pop.classList.add('show');
+        }
+        function closeSukuCompletion(){
+            const pop=document.getElementById('suku-pop');
+            pop.classList.remove('show');
+            pop.style.pointerEvents='none';
+            openABCMenu();
+        }
 
         // =========================================================
         // COMPLETE THE ABC - 5 randomized, non-repeating questions
