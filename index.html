@@ -6453,10 +6453,7 @@
             const textToSpeak = currentGlobalLang === 'en' ? item.en : item.bm;
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
-                utterance.rate = 0.4;
-                window.speechSynthesis.speak(utterance);
+                speakNatural(textToSpeak, currentGlobalLang === 'en' ? 'en-US' : 'ms-MY', currentGlobalLang === 'en' ? 0.4 : 0.82, 1);
             }
         }
 
@@ -6601,10 +6598,7 @@
 
             const textToSpeak = currentGlobalLang === 'en' ? item.en : item.bm;
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
-            utterance.rate = 0.4;
-            window.speechSynthesis.speak(utterance);
+            speakNatural(textToSpeak, currentGlobalLang === 'en' ? 'en-US' : 'ms-MY', currentGlobalLang === 'en' ? 0.4 : 0.82, 1);
         }
 
         function handleAnimalPointerDown(e) {
@@ -6798,10 +6792,7 @@
             const textToSpeak = document.getElementById("find-animal-question-text").innerText;
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
-                utterance.rate = 0.4;
-                window.speechSynthesis.speak(utterance);
+                speakNatural(textToSpeak, currentGlobalLang === 'en' ? 'en-US' : 'ms-MY', currentGlobalLang === 'en' ? 0.4 : 0.82, 1);
             }
         }
 
@@ -7195,11 +7186,7 @@
             const textToSpeak = document.getElementById("find-instruction-text").innerText;
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
-                utterance.rate = 0.3;
-                utterance.pitch = 1.1;
-                window.speechSynthesis.speak(utterance);
+                speakNatural(textToSpeak, currentGlobalLang === 'en' ? 'en-US' : 'ms-MY', currentGlobalLang === 'en' ? 0.3 : 0.80, currentGlobalLang === 'en' ? 1.1 : 1);
             }
         }
 
@@ -7360,11 +7347,7 @@
             
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
-                utterance.rate = 0.3;
-                utterance.pitch = 1.1;
-                window.speechSynthesis.speak(utterance);
+                speakNatural(textToSpeak, currentGlobalLang === 'en' ? 'en-US' : 'ms-MY', currentGlobalLang === 'en' ? 0.3 : 0.80, currentGlobalLang === 'en' ? 1.1 : 1);
             }
         }
 
@@ -7438,7 +7421,7 @@
             document.getElementById('learn123-listen-btn').textContent=t.listen;
             document.getElementById('learn123-back-btn').textContent=t.back;
         }
-        function speakText123(text, rate=.65){ if(!('speechSynthesis' in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=getNum123Lang()==='ms'?'ms-MY':'en-US'; u.rate=rate; u.pitch=1.08; speechSynthesis.speak(u); }
+        function speakText123(text, rate=.65){ const ms=getNum123Lang()==='ms'; speakNatural(text, ms?'ms-MY':'en-US', ms?Math.max(rate,.80):rate, ms?1:1.08); }
         function speakLearn123(){ const words=getNum123Words(); speakText123(`${learn123Index}. ${words[learn123Index]}`,.55); }
         function nextLearn123(){ const t=getNum123Text(); if(learn123Index<20){learn123Index++;renderLearn123();speakLearn123();}else{alert(t.learnDone);open123Menu();} }
         function prevLearn123(){ if(learn123Index>1){learn123Index--;renderLearn123();speakLearn123();} }
@@ -7711,7 +7694,7 @@
         ];
         const colourShuffle = a => [...a].sort(()=>Math.random()-.5);
         const colourName = c => currentGlobalLang==='ms' ? c.ms : c.en;
-        function speakColourText(text){ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US'; u.rate=.75; speechSynthesis.speak(u); }
+        function speakColourText(text){ const ms=currentGlobalLang==='ms'; speakNatural(text,ms?'ms-MY':'en-US',ms?.82:.75,1); }
         function openColourMenu(){ showScreen('colour-menu-screen'); updateColourLanguage(); }
         function updateColourLanguage(){
             const ms=currentGlobalLang==='ms';
@@ -7869,7 +7852,7 @@
         ];
         const bodyShuffle=a=>[...a].sort(()=>Math.random()-.5);
         function bodyText(item){return currentGlobalLang==='ms'?item.ms:item.en}
-        function speakBody(text){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.72;speechSynthesis.speak(u)}
+        function speakBody(text){const ms=currentGlobalLang==='ms';speakNatural(text,ms?'ms-MY':'en-US',ms?.82:.72,1)}
         function updateBodyLanguage(){const ms=currentGlobalLang==='ms',set=(id,en,bm)=>{const e=document.getElementById(id);if(e)e.innerText=ms?bm:en};set('body-menu-title','Body Part Module 🧒','Modul Anggota Badan 🧒');set('body-menu-desc','Choose a body part activity!','Pilih aktiviti anggota badan!');set('body-learn-menu-text','Learn the Body Part','Belajar Anggota Badan');set('body-choose-menu-text','Choose the Body Part','Pilih Anggota Badan');set('body-label-menu-text','Label the Body Part','Label Anggota Badan');set('match-body-count-title','Match the Body Part 🧩','Padankan Anggota Badan 🧩');set('match-body-count-desc','Select how many pages/sets you want to play:','Pilih berapa halaman/set yang mahu dimainkan:');set('match-body-count-back','Back ↩️','Back ↩️');set('match-body-header-title','Match Body Part','Padankan Anggota Badan');set('match-body-page-label','Page','Halaman');set('match-body-score-label','Score','Skor');set('match-body-instruction','Drag a line from the body part name to the correct picture!','Tarik garis dari nama anggota badan ke gambar yang betul!');set('match-body-back','Back ↩️','Back ↩️');set('body-menu-back','Back to Home 🏠','Back to Home 🏠');set('learn-body-title','Learn the Body Part 🧒','Belajar Anggota Badan 🧒');set('body-learn-listen','🔊 Listen','🔊 Dengar');set('choose-body-title','Choose the Body Part 🔎','Pilih Anggota Badan 🔎');set('choose-body-listen','🔊 Listen','🔊 Dengar');set('label-body-title','Label the Body Part 🏷️','Label Anggota Badan 🏷️');set('label-body-desc','Drag each label into the correct box. You can also tap a label, then tap a box.','Seret setiap label ke kotak yang betul. Boleh juga tekan label, kemudian tekan kotak.');set('label-body-reset','Reset 🔄','Mula Semula 🔄');if(document.getElementById('learn-body-screen')?.classList.contains('active'))renderLearnBodyPart();if(document.getElementById('choose-body-screen')?.classList.contains('active')&&chooseBodyOrder.length)renderChooseBody();if(document.getElementById('label-body-screen')?.classList.contains('active'))renderBodyLabelBank(true);if(document.getElementById('match-body-game-screen')?.classList.contains('active')&&matchBodyGameData.length)loadMatchBodyPage()}
         function openBodyPartMenu(){window.speechSynthesis?.cancel();updateBodyLanguage();showScreen('body-part-menu-screen')}
 
@@ -8985,8 +8968,39 @@ document.addEventListener('DOMContentLoaded', () => {
             const opts=sukuShuffle([item.second,getSukuDistractor(item)]);const wrap=document.getElementById('suku-options');wrap.innerHTML='';opts.forEach(v=>{const b=document.createElement('button');b.className='suku-option';b.textContent=v;b.onclick=()=>chooseSukuAnswer(v,b);wrap.appendChild(b)});
             setTimeout(speakCurrentSukuWord,250);
         }
+        // =========================================================
+        // NATURAL MALAY TTS - pilih suara Melayu Malaysia jika tersedia
+        // =========================================================
+        function getNaturalVoice(lang) {
+            const voices = window.speechSynthesis?.getVoices?.() || [];
+            const isMalay = /^ms(?:-|_|$)/i.test(lang);
+            if (isMalay) {
+                return voices.find(v => /^ms-MY$/i.test(v.lang))
+                    || voices.find(v => /^ms(?:-|_|$)/i.test(v.lang))
+                    || voices.find(v => /malay|melayu/i.test(v.name))
+                    || null;
+            }
+            return voices.find(v => /^en-MY$/i.test(v.lang))
+                || voices.find(v => /^en-US$/i.test(v.lang))
+                || voices.find(v => /^en(?:-|_|$)/i.test(v.lang))
+                || null;
+        }
+
+        function speakNatural(text, lang, rate = 0.82, pitch = 1) {
+            if (!('speechSynthesis' in window) || !text) return;
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = lang;
+            u.rate = lang === 'ms-MY' ? Math.max(rate, 0.76) : rate;
+            u.pitch = lang === 'ms-MY' ? 1 : pitch;
+            u.volume = 1;
+            const voice = getNaturalVoice(lang);
+            if (voice) u.voice = voice;
+            window.speechSynthesis.speak(u);
+        }
+
         function speakMalayWord(word){
-            if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(word);u.lang='ms-MY';u.rate=.78;u.pitch=1;const voices=window.speechSynthesis.getVoices();const v=voices.find(x=>/^ms(-|_)/i.test(x.lang))||voices.find(x=>/malay|melayu/i.test(x.name));if(v)u.voice=v;window.speechSynthesis.speak(u);
+            speakNatural(word,'ms-MY',.82,1);
         }
         function speakCurrentSukuWord(){const item=sukuSession[sukuIndex];if(item)speakMalayWord(item.word)}
         function chooseSukuAnswer(value,btn){
@@ -9349,11 +9363,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         function speakShapeItem(item){
             if(!item || !('speechSynthesis' in window)) return;
-            speechSynthesis.cancel();
-            const u=new SpeechSynthesisUtterance(shapeText(item));
-            u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';
-            u.rate=.55;
-            speechSynthesis.speak(u);
+            const ms=currentGlobalLang==='ms';
+            speakNatural(shapeText(item),ms?'ms-MY':'en-US',ms?.82:.55,1);
         }
         function speakCurrentShape(){
             speakShapeItem(shapeDatabase[learnShapeIndex]);
@@ -9738,10 +9749,8 @@ document.addEventListener('DOMContentLoaded', () => {
         function playTransportFlashSound(){
             const item=currentLearnTransportList[currentLearnTransportIdx]; if(!item) return;
             if('speechSynthesis' in window){
-                window.speechSynthesis.cancel();
-                const u=new SpeechSynthesisUtterance(transportName(item));
-                u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.72;
-                window.speechSynthesis.speak(u);
+                const ms=currentGlobalLang==='ms';
+                speakNatural(transportName(item),ms?'ms-MY':'en-US',ms?.82:.72,1);
             }
         }
         function prevTransportFlash(){ if(currentLearnTransportIdx>0){currentLearnTransportIdx--;renderTransportFlashcard(true);} }
