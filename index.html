@@ -2,532 +2,982 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <title>Match the Character</title>
 
 <style>
+
 *{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:Arial,sans-serif;
-  background:#8bd8ff;
-  touch-action:none;
+html,
+body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial, sans-serif;
+    touch-action:none;
 }
+
+body{
+    background:#78c957;
+}
+
+/* ==============================
+   MAIN GAME
+============================== */
 
 #game{
-  position:relative;
-  width:100%;
-  height:100%;
-  min-height:560px;
-  overflow:hidden;
-  background:linear-gradient(
-    #75d7ff 0 38%,
-    #9bdc67 38% 52%,
-    #2ebce8 52% 100%
-  );
+    position:relative;
+    width:100%;
+    height:100%;
+    min-height:600px;
+    overflow:hidden;
+
+    background:
+    radial-gradient(circle at 10% 15%, #8adb63 0 4%, transparent 4.5%),
+    radial-gradient(circle at 90% 30%, #73c653 0 5%, transparent 5.5%),
+    linear-gradient(
+        90deg,
+        #78c957 0%,
+        #82d35e 25%,
+        #76c653 50%,
+        #82d35e 75%,
+        #78c957 100%
+    );
 }
 
-/* SKY */
+/* ==============================
+   GAME TITLE
+============================== */
 
-.sky{
-  position:absolute;
-  inset:0 0 48% 0;
-  background:linear-gradient(#6ed5ff,#c7f4ff);
+.game-title{
+    position:absolute;
+
+    z-index:100;
+
+    top:15px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    background:#fff;
+
+    padding:10px 20px;
+
+    border-radius:20px;
+
+    font-size:clamp(19px,5vw,28px);
+
+    font-weight:900;
+
+    color:#2473a6;
+
+    box-shadow:
+    0 5px 0 rgba(0,0,0,.13);
+
+    white-space:nowrap;
 }
 
-.sun{
-  position:absolute;
-  right:7%;
-  top:5%;
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  background:#ffd84d;
-  box-shadow:0 0 0 10px rgba(255,216,77,.2);
+/* ==============================
+   SCORE
+============================== */
+
+.score-box{
+    position:absolute;
+
+    z-index:100;
+
+    top:72px;
+    right:15px;
+
+    background:#fff;
+
+    padding:8px 13px;
+
+    border-radius:16px;
+
+    font-size:16px;
+
+    font-weight:900;
+
+    color:#29884b;
+
+    box-shadow:
+    0 4px 0 rgba(0,0,0,.12);
 }
 
-.cloud{
-  position:absolute;
-  width:110px;
-  height:35px;
-  background:white;
-  border-radius:40px;
-  opacity:.92;
-}
+/* ==============================
+   RIVER
 
-.cloud:before,
-.cloud:after{
-  content:"";
-  position:absolute;
-  background:white;
-  border-radius:50%;
-}
-
-.cloud:before{
-  width:48px;
-  height:48px;
-  left:18px;
-  top:-23px;
-}
-
-.cloud:after{
-  width:58px;
-  height:58px;
-  right:13px;
-  top:-31px;
-}
-
-.c1{
-  top:10%;
-  left:8%;
-}
-
-.c2{
-  top:18%;
-  right:20%;
-  transform:scale(.8);
-}
-
-/* BACKGROUND */
-
-.hill{
-  position:absolute;
-  left:-5%;
-  right:-5%;
-  top:30%;
-  height:28%;
-  background:#56b94f;
-  border-radius:50% 50% 0 0/55% 55% 0 0;
-}
-
-.hill:after{
-  content:"";
-  position:absolute;
-  right:-15%;
-  top:20%;
-  width:70%;
-  height:100%;
-  background:#3da947;
-  border-radius:50% 50% 0 0;
-}
-
-.bank{
-  position:absolute;
-  left:0;
-  right:0;
-  top:43%;
-  height:12%;
-  background:#e8bd6b;
-  border-bottom:9px solid #d99d50;
-}
-
-/* RIVER */
+   Sungai dibuat menggunakan
+   bentuk besar yang melengkung.
+============================== */
 
 .river{
-  position:absolute;
-  left:0;
-  right:0;
-  top:54%;
-  bottom:0;
-  background:linear-gradient(180deg,#37c8ee,#159fd8);
-}
+    position:absolute;
 
-.river:before,
-.river:after{
-  content:"";
-  position:absolute;
-  left:-10%;
-  width:120%;
-  height:18px;
-  border-radius:50%;
-  border-top:4px solid rgba(255,255,255,.55);
-}
+    z-index:2;
 
-.river:before{
-  top:22%;
-}
+    top:-10%;
 
-.river:after{
-  top:65%;
-}
+    left:24%;
 
-/* TITLE */
+    width:55%;
 
-.title{
-  position:absolute;
-  z-index:20;
-  top:15px;
-  left:50%;
-  transform:translateX(-50%);
-  padding:9px 18px;
-  border-radius:18px;
-  background:rgba(255,255,255,.92);
-  font-size:clamp(19px,4vw,28px);
-  font-weight:900;
-  color:#155a85;
-  box-shadow:0 5px 0 rgba(0,0,0,.12);
-  white-space:nowrap;
-}
+    height:125%;
 
-.score{
-  position:absolute;
-  z-index:20;
-  top:70px;
-  right:15px;
-  background:#fff;
-  padding:9px 12px;
-  border-radius:16px;
-  font-weight:900;
-  color:#21854e;
-  box-shadow:0 4px 0 rgba(0,0,0,.12);
-}
+    background:
+    linear-gradient(
+        90deg,
+        #25b4e4,
+        #55d5f2 35%,
+        #35c2ec 65%,
+        #169ed5
+    );
 
-/* BUCKETS */
-
-.buckets{
-  position:absolute;
-  z-index:10;
-  top:38%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:min(94%,680px);
-
-  display:flex;
-  justify-content:space-around;
-  gap:12px;
-}
-
-.bucket{
-  position:relative;
-
-  width:clamp(92px,25vw,155px);
-  height:clamp(105px,22vw,145px);
-
-  border-radius:14px 14px 32px 32px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:clamp(48px,11vw,78px);
-  font-weight:1000;
-
-  color:white;
-
-  text-shadow:0 4px 0 rgba(0,0,0,.18);
-
-  box-shadow:
-    inset 0 -12px 0 rgba(0,0,0,.13),
-    0 7px 0 rgba(0,0,0,.16);
-}
-
-.bucket:before{
-  content:"";
-  position:absolute;
-
-  left:-5%;
-  top:-9px;
-
-  width:110%;
-  height:22px;
-
-  border-radius:50%;
-
-  background:rgba(255,255,255,.35);
-
-  border:5px solid rgba(0,0,0,.12);
-}
-
-.bucket:nth-child(1){
-  background:#ef4d55;
-}
-
-.bucket:nth-child(2){
-  background:#3e83f1;
-}
-
-.bucket:nth-child(3){
-  background:#a64ee7;
-}
-
-/* DRAG LETTER */
-
-.char{
-  position:absolute;
-  z-index:30;
-
-  width:clamp(64px,15vw,88px);
-  height:clamp(64px,15vw,88px);
-
-  border-radius:22px;
-
-  background:#fff;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:clamp(38px,9vw,58px);
-  font-weight:1000;
-
-  color:#244b6b;
-
-  box-shadow:0 7px 0 rgba(0,0,0,.16);
-
-  border:4px solid #dff7ff;
-
-  cursor:grab;
-
-  user-select:none;
-
-  touch-action:none;
-
-  transition:
-    transform .12s,
-    opacity .25s;
-}
-
-.char.dragging{
-  cursor:grabbing;
-
-  transform:
-    scale(1.12)
+    transform:
     rotate(-4deg);
 
-  box-shadow:
-    0 13px 18px rgba(0,0,0,.2);
+    border-radius:
+    45% 55% 40% 60% /
+    10% 15% 12% 10%;
+
+    box-shadow:
+    inset 18px 0 25px rgba(255,255,255,.14),
+    inset -15px 0 20px rgba(0,96,160,.12);
 }
 
-.char.correct{
-  transform:scale(.2);
-  opacity:0;
+/* irregular left river bank */
+
+.river-left-bank{
+
+    position:absolute;
+
+    z-index:3;
+
+    top:-5%;
+
+    left:16%;
+
+    width:18%;
+
+    height:115%;
+
+    background:#d8b76e;
+
+    transform:rotate(-4deg);
+
+    border-radius:
+    30% 60% 40% 70% /
+    10% 20% 12% 15%;
 }
 
-.char.wrong{
-  animation:shake .28s;
+/* grass over left bank */
+
+.river-left-grass{
+
+    position:absolute;
+
+    z-index:4;
+
+    top:-5%;
+
+    left:10%;
+
+    width:17%;
+
+    height:115%;
+
+    background:
+    linear-gradient(
+        90deg,
+        #5eae3e,
+        #78c957
+    );
+
+    transform:rotate(-4deg);
+
+    border-radius:
+    30% 65% 35% 70% /
+    10% 15% 12% 15%;
 }
 
-@keyframes shake{
 
-  25%{
-    transform:translateX(-9px);
-  }
+/* right river bank */
 
-  50%{
-    transform:translateX(9px);
-  }
+.river-right-bank{
 
-  75%{
-    transform:translateX(-7px);
-  }
+    position:absolute;
+
+    z-index:3;
+
+    top:-5%;
+
+    right:13%;
+
+    width:19%;
+
+    height:115%;
+
+    background:#d8b76e;
+
+    transform:rotate(-4deg);
+
+    border-radius:
+    60% 30% 70% 35% /
+    15% 10% 15% 12%;
 }
 
-/* CORRECT MESSAGE */
 
-#message{
-  position:absolute;
+/* grass over right bank */
 
-  z-index:50;
+.river-right-grass{
 
-  left:50%;
-  top:57%;
+    position:absolute;
 
-  transform:
+    z-index:4;
+
+    top:-5%;
+
+    right:7%;
+
+    width:16%;
+
+    height:115%;
+
+    background:
+    linear-gradient(
+        90deg,
+        #78c957,
+        #5eae3e
+    );
+
+    transform:rotate(-4deg);
+
+    border-radius:
+    60% 35% 70% 40% /
+    15% 10% 15% 12%;
+}
+
+
+/* ==============================
+   WATER WAVES
+============================== */
+
+.wave{
+
+    position:absolute;
+
+    z-index:5;
+
+    width:55px;
+
+    height:12px;
+
+    border-radius:50%;
+
+    border-top:
+    4px solid rgba(255,255,255,.55);
+
+    pointer-events:none;
+}
+
+.wave1{
+    left:42%;
+    top:30%;
+}
+
+.wave2{
+    left:54%;
+    top:45%;
+}
+
+.wave3{
+    left:36%;
+    top:62%;
+}
+
+.wave4{
+    left:57%;
+    top:76%;
+}
+
+.wave5{
+    left:42%;
+    top:88%;
+}
+
+
+/* ==============================
+   ROCKS
+============================== */
+
+.rock{
+
+    position:absolute;
+
+    z-index:7;
+
+    width:42px;
+    height:30px;
+
+    background:#9b9b8c;
+
+    border-radius:
+    60% 40% 55% 45%;
+
+    box-shadow:
+    inset -7px -5px 0 rgba(0,0,0,.12);
+
+}
+
+.rock1{
+    left:16%;
+    top:27%;
+}
+
+.rock2{
+    right:11%;
+    top:52%;
+}
+
+.rock3{
+    left:15%;
+    top:78%;
+}
+
+.rock4{
+    right:13%;
+    top:86%;
+}
+
+
+/* ==============================
+   BUSH / TREE
+============================== */
+
+.bush{
+
+    position:absolute;
+
+    z-index:8;
+
+    width:75px;
+    height:55px;
+
+    background:#338c3d;
+
+    border-radius:50%;
+}
+
+.bush:before,
+.bush:after{
+
+    content:"";
+
+    position:absolute;
+
+    background:#42a84b;
+
+    border-radius:50%;
+}
+
+.bush:before{
+
+    width:55px;
+    height:55px;
+
+    left:-22px;
+    top:10px;
+}
+
+.bush:after{
+
+    width:55px;
+    height:55px;
+
+    right:-20px;
+    top:7px;
+}
+
+.bush1{
+    left:4%;
+    top:18%;
+}
+
+.bush2{
+    right:2%;
+    top:65%;
+}
+
+.bush3{
+    left:3%;
+    top:87%;
+}
+
+
+/* ==============================
+   FLOWERS
+============================== */
+
+.flower{
+
+    position:absolute;
+
+    z-index:9;
+
+    font-size:25px;
+
+    pointer-events:none;
+}
+
+.flower1{
+    left:7%;
+    top:45%;
+}
+
+.flower2{
+    right:6%;
+    top:35%;
+}
+
+.flower3{
+    right:9%;
+    top:80%;
+}
+
+
+/* ==============================
+   BUCKET AREA
+============================== */
+
+.bucket-area{
+
+    position:absolute;
+
+    z-index:30;
+
+    top:13%;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:95%;
+
+    max-width:620px;
+
+    display:flex;
+
+    justify-content:space-around;
+
+    align-items:flex-end;
+
+    gap:8px;
+}
+
+
+/* ==============================
+   REAL BUCKET SHAPE
+============================== */
+
+.bucket{
+
+    position:relative;
+
+    width:clamp(90px,27vw,145px);
+
+    height:clamp(90px,27vw,135px);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#fff;
+
+    font-size:clamp(45px,12vw,70px);
+
+    font-weight:1000;
+
+    text-shadow:
+    0 4px 0 rgba(0,0,0,.16);
+
+    /* bucket gets narrower at bottom */
+
+    clip-path:
+    polygon(
+        8% 8%,
+        92% 8%,
+        80% 100%,
+        20% 100%
+    );
+
+    border-radius:10px;
+
+    box-shadow:
+    inset 0 -13px 0 rgba(0,0,0,.12),
+    inset 8px 0 10px rgba(255,255,255,.15);
+
+}
+
+
+/* BUCKET TOP RIM */
+
+.bucket-rim{
+
+    position:absolute;
+
+    z-index:5;
+
+    top:-4px;
+
+    left:4%;
+
+    width:92%;
+
+    height:20px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.45);
+
+    border:4px solid rgba(0,0,0,.15);
+
+    pointer-events:none;
+}
+
+
+/* BUCKET HANDLE */
+
+.bucket-handle{
+
+    position:absolute;
+
+    z-index:-1;
+
+    width:80%;
+
+    height:65%;
+
+    top:-25%;
+
+    left:10%;
+
+    border:
+
+    6px solid #555;
+
+    border-bottom:0;
+
+    border-radius:
+
+    50% 50% 0 0;
+
+    pointer-events:none;
+}
+
+
+.bucket-red{
+    background:
+    linear-gradient(
+        90deg,
+        #df3f48,
+        #ff6268,
+        #d83540
+    );
+}
+
+
+.bucket-blue{
+    background:
+    linear-gradient(
+        90deg,
+        #2675db,
+        #4d9aff,
+        #236bc9
+    );
+}
+
+
+.bucket-purple{
+    background:
+    linear-gradient(
+        90deg,
+        #9144cf,
+        #bd66ef,
+        #8739c5
+    );
+}
+
+
+/* ==============================
+   LETTERS IN WATER
+
+   NO BOX
+============================== */
+
+.character{
+
+    position:absolute;
+
+    z-index:50;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:60px;
+    height:65px;
+
+    font-size:
+    clamp(42px,13vw,67px);
+
+    font-weight:1000;
+
+    color:#fff;
+
+    text-shadow:
+
+    0 4px 0 rgba(0,78,130,.35),
+
+    2px 2px 0 rgba(0,0,0,.12);
+
+    cursor:grab;
+
+    user-select:none;
+
+    touch-action:none;
+
+    transition:
+    transform .15s,
+    opacity .25s;
+
+    animation:
+    floatLetter 2.2s
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes floatLetter{
+
+    0%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-5px);
+    }
+
+    100%{
+        transform:translateY(0);
+    }
+
+}
+
+
+.character.dragging{
+
+    animation:none;
+
+    transform:
+    scale(1.25);
+
+    cursor:grabbing;
+
+    text-shadow:
+
+    0 8px 10px rgba(0,0,0,.22);
+}
+
+
+.character.correct{
+
+    animation:none;
+
+    transform:
+    scale(.1);
+
+    opacity:0;
+}
+
+
+.character.wrong{
+
+    animation:
+    wrongShake .3s;
+}
+
+
+@keyframes wrongShake{
+
+    25%{
+        transform:translateX(-10px);
+    }
+
+    50%{
+        transform:translateX(10px);
+    }
+
+    75%{
+        transform:translateX(-7px);
+    }
+
+}
+
+
+/* ==============================
+   CORRECT POPUP
+============================== */
+
+#correctMessage{
+
+    position:absolute;
+
+    z-index:200;
+
+    left:50%;
+
+    top:52%;
+
+    transform:
     translate(-50%,-50%)
     scale(0);
 
-  background:white;
+    background:#fff;
 
-  padding:16px 26px;
+    padding:
+    15px 27px;
 
-  border-radius:22px;
+    border-radius:25px;
 
-  font-size:clamp(25px,7vw,42px);
+    font-size:
+    clamp(26px,8vw,43px);
 
-  font-weight:1000;
+    font-weight:1000;
 
-  color:#1d9b55;
+    color:#28a65d;
 
-  box-shadow:
-    0 9px 25px rgba(0,0,0,.2);
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.2);
 
-  transition:.2s;
+    transition:.2s;
 
-  pointer-events:none;
+    pointer-events:none;
 }
 
-#message.show{
 
-  transform:
+#correctMessage.show{
+
+    transform:
     translate(-50%,-50%)
     scale(1);
 }
 
-/* FINISH */
+
+/* ==============================
+   FINISH POPUP
+============================== */
 
 #finish{
 
-  display:none;
-
-  position:absolute;
-
-  z-index:100;
-
-  inset:0;
-
-  background:
-    rgba(16,61,86,.38);
-
-  align-items:center;
-
-  justify-content:center;
-
-  padding:22px;
-}
-
-.card{
-
-  width:min(90%,420px);
-
-  background:#fff;
-
-  border-radius:30px;
-
-  padding:28px;
-
-  text-align:center;
-
-  box-shadow:
-    0 18px 40px rgba(0,0,0,.25);
-}
-
-.card h2{
-
-  margin:0 0 8px;
-
-  font-size:34px;
-
-  color:#2b79d0;
-}
-
-.card p{
-
-  font-size:20px;
-
-  color:#456;
-
-  margin:8px 0 22px;
-}
-
-.card button{
-
-  border:0;
-
-  border-radius:18px;
-
-  background:#42bd68;
-
-  color:#fff;
-
-  font-size:20px;
-
-  font-weight:900;
-
-  padding:14px 28px;
-
-  box-shadow:
-    0 6px 0 #278b48;
-
-  cursor:pointer;
-}
-
-.hint{
-
-  position:absolute;
-
-  z-index:15;
-
-  bottom:13px;
-
-  left:50%;
-
-  transform:translateX(-50%);
-
-  background:
-    rgba(255,255,255,.85);
-
-  padding:8px 14px;
-
-  border-radius:15px;
-
-  font-weight:700;
-
-  color:#176587;
-
-  font-size:14px;
-
-  white-space:nowrap;
-}
-
-@media(max-height:650px){
-
-  .title{
-    top:7px;
-  }
-
-  .score{
-    top:60px;
-  }
-
-  .buckets{
-    top:39%;
-  }
-
-  .bucket{
-    height:95px;
-  }
-
-  .hint{
     display:none;
-  }
+
+    position:absolute;
+
+    z-index:300;
+
+    inset:0;
+
+    background:
+    rgba(0,55,85,.45);
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
 }
+
+
+.finish-card{
+
+    width:min(90%,400px);
+
+    background:#fff;
+
+    padding:30px 22px;
+
+    border-radius:30px;
+
+    text-align:center;
+
+    box-shadow:
+    0 20px 45px rgba(0,0,0,.28);
+}
+
+
+.finish-card h2{
+
+    margin:
+    5px 0 10px;
+
+    color:#257bc2;
+
+    font-size:34px;
+}
+
+
+.finish-card p{
+
+    color:#526774;
+
+    font-size:18px;
+
+}
+
+
+.finish-card button{
+
+    border:0;
+
+    margin-top:12px;
+
+    padding:
+    14px 30px;
+
+    border-radius:18px;
+
+    background:#43bd69;
+
+    color:#fff;
+
+    font-size:19px;
+
+    font-weight:900;
+
+    box-shadow:
+    0 6px 0 #288b49;
+}
+
+
+/* ==============================
+   PHONE
+============================== */
+
+@media(max-width:600px){
+
+    .river{
+
+        left:22%;
+
+        width:59%;
+    }
+
+    .river-left-bank{
+
+        left:13%;
+        width:18%;
+    }
+
+    .river-left-grass{
+
+        left:6%;
+        width:18%;
+    }
+
+    .river-right-bank{
+
+        right:10%;
+        width:17%;
+    }
+
+    .river-right-grass{
+
+        right:3%;
+        width:16%;
+    }
+
+}
+
+
 </style>
 </head>
 
 
 <body>
 
+
 <div id="game">
 
-<div class="sky"></div>
 
-<div class="sun"></div>
+<!-- =========================
+     LAND / RIVER
+========================= -->
 
-<div class="cloud c1"></div>
+<div class="river-left-bank"></div>
 
-<div class="cloud c2"></div>
+<div class="river-right-bank"></div>
 
-<div class="hill"></div>
+<div class="river-left-grass"></div>
 
-<div class="bank"></div>
+<div class="river-right-grass"></div>
 
 <div class="river"></div>
 
 
-<div class="title">
+<!-- WATER WAVES -->
+
+<div class="wave wave1"></div>
+<div class="wave wave2"></div>
+<div class="wave wave3"></div>
+<div class="wave wave4"></div>
+<div class="wave wave5"></div>
+
+
+<!-- DECORATION -->
+
+<div class="rock rock1"></div>
+<div class="rock rock2"></div>
+<div class="rock rock3"></div>
+<div class="rock rock4"></div>
+
+
+<div class="bush bush1"></div>
+<div class="bush bush2"></div>
+<div class="bush bush3"></div>
+
+
+<div class="flower flower1">🌼</div>
+<div class="flower flower2">🌸</div>
+<div class="flower flower3">🌻</div>
+
+
+<!-- =========================
+     TITLE
+========================= -->
+
+<div class="game-title">
+
 🌟 Match the Character
+
 </div>
 
 
-<div class="score">
+<div class="score-box">
 
 ⭐
 
@@ -544,60 +994,76 @@ html,body{
 </div>
 
 
-<!-- BUCKETS -->
 
-<div class="buckets">
+<!-- =========================
+     BUCKETS
+========================= -->
+
+<div class="bucket-area">
+
 
 <div
-class="bucket"
+class="bucket bucket-red"
 data-letter="A">
+
+<div class="bucket-handle"></div>
+
+<div class="bucket-rim"></div>
 
 A
 
 </div>
 
 
+
 <div
-class="bucket"
+class="bucket bucket-blue"
 data-letter="B">
+
+<div class="bucket-handle"></div>
+
+<div class="bucket-rim"></div>
 
 B
 
 </div>
 
 
+
 <div
-class="bucket"
+class="bucket bucket-purple"
 data-letter="C">
+
+<div class="bucket-handle"></div>
+
+<div class="bucket-rim"></div>
 
 C
 
 </div>
 
+
 </div>
 
 
-<div id="message">
+
+<!-- CORRECT -->
+
+<div id="correctMessage">
 
 Great! 🎉
 
 </div>
 
 
-<div class="hint">
 
-Drag each letter into the matching bucket 👆
-
-</div>
-
-
-<!-- FINISH POPUP -->
+<!-- FINISH -->
 
 <div id="finish">
 
-<div class="card">
+<div class="finish-card">
 
-<div style="font-size:64px">
+<div style="font-size:70px">
 
 🏆
 
@@ -625,113 +1091,157 @@ Play Again
 
 </div>
 
+
 </div>
+
 
 
 <script>
 
+/* ==========================
+   SETTINGS
+========================== */
+
+const letters = [
+
+"A",
+"B",
+"C",
+
+"A",
+"B",
+"C",
+
+"A",
+"B",
+"C"
+
+];
+
+
 const game =
-document.getElementById('game');
+document.getElementById("game");
 
-const scoreEl =
-document.getElementById('score');
 
-const totalEl =
-document.getElementById('total');
+const scoreText =
+document.getElementById("score");
 
-const message =
-document.getElementById('message');
+
+const totalText =
+document.getElementById("total");
+
+
+const correctMessage =
+document.getElementById("correctMessage");
+
 
 const finish =
-document.getElementById('finish');
+document.getElementById("finish");
 
 
 let score = 0;
 
+
 let dragging = null;
+
 
 let offsetX = 0;
 
 let offsetY = 0;
 
-let startX = 0;
 
-let startY = 0;
+let oldX = 0;
 
-
-/* =========================
-   LETTERS USED IN GAME
-========================= */
-
-const letters = [
-
-'A',
-'B',
-'C',
-
-'A',
-'C',
-'B',
-
-'B',
-'A',
-'C'
-
-];
+let oldY = 0;
 
 
-/* =========================
+
+/* ==========================
    SOUND
-========================= */
+========================== */
 
-function beep(ok=true){
+function playSound(correct){
 
 try{
 
-const ac =
+const audio =
+
 new (
 window.AudioContext ||
 window.webkitAudioContext
 )();
 
-const o =
-ac.createOscillator();
 
-const g =
-ac.createGain();
+const oscillator =
+audio.createOscillator();
 
-o.connect(g);
 
-g.connect(ac.destination);
+const gain =
+audio.createGain();
 
-o.frequency.value =
-ok ? 660 : 180;
 
-g.gain.value = .08;
+oscillator.connect(gain);
 
-o.start();
+gain.connect(audio.destination);
 
-o.frequency
+
+oscillator.frequency.value =
+
+correct
+? 650
+: 170;
+
+
+gain.gain.value =
+0.08;
+
+
+oscillator.start();
+
+
+if(correct){
+
+oscillator.frequency
 .exponentialRampToValueAtTime(
 
-ok ? 880 : 130,
+900,
 
-ac.currentTime + .13
+audio.currentTime + .15
 
 );
 
-g.gain
+}
+
+else{
+
+oscillator.frequency
 .exponentialRampToValueAtTime(
 
-.001,
+120,
 
-ac.currentTime + .18
+audio.currentTime + .15
 
 );
 
-o.stop(
-ac.currentTime + .19
+}
+
+
+gain.gain
+.exponentialRampToValueAtTime(
+
+0.001,
+
+audio.currentTime + .2
+
 );
+
+
+oscillator.stop(
+
+audio.currentTime + .21
+
+);
+
 
 }
 
@@ -740,193 +1250,166 @@ catch(e){}
 }
 
 
-/* =========================
+
+/* ==========================
    START GAME
-========================= */
+========================== */
 
 function startGame(){
 
+
 document
-.querySelectorAll('.char')
-.forEach(x => x.remove());
+.querySelectorAll(".character")
+.forEach(
+
+item => item.remove()
+
+);
 
 
 finish.style.display =
-'none';
+"none";
 
 
 score = 0;
 
-scoreEl.textContent = 0;
 
-totalEl.textContent =
+scoreText.textContent =
+"0";
+
+
+totalText.textContent =
 letters.length;
 
 
-/* RANDOM LETTER ORDER */
 
-const shuffled =
+/* RANDOM ORDER */
+
+const randomLetters =
 
 [...letters]
 .sort(
+
 () => Math.random() - .5
-);
-
-
-const W =
-game.clientWidth;
-
-const H =
-game.clientHeight;
-
-
-const size =
-
-Math.min(
-
-88,
-
-Math.max(
-64,
-W * .15
-)
 
 );
 
 
-const riverTop =
-H * .56;
 
-const bottom =
-H - 95;
+/* ==========================
+   MANUAL RIVER POSITIONS
 
-
-const cols =
-
-Math.max(
-
-3,
-
-Math.floor(
-W / (size + 18)
-)
-
-);
+   This keeps letters
+   inside the river.
+========================== */
 
 
-shuffled.forEach(
+const positions = [
 
-(letter,i) => {
+[42,34],
 
-const el =
-document.createElement('div');
+[53,41],
+
+[38,48],
+
+[55,55],
+
+[43,62],
+
+[52,69],
+
+[37,76],
+
+[55,83],
+
+[44,90]
+
+];
 
 
-el.className =
-'char';
+randomLetters.forEach(
+
+(letter,index) => {
 
 
-el.textContent =
+const character =
+
+document.createElement("div");
+
+
+character.className =
+"character";
+
+
+character.textContent =
 letter;
 
 
-el.dataset.letter =
+character.dataset.letter =
 letter;
 
 
-const col =
-i % cols;
+
+let pos =
+
+positions[
+index %
+positions.length
+];
 
 
-const row =
-Math.floor(
-i / cols
-);
+
+/* little random movement */
+
+let randomX =
+
+(Math.random() * 5) - 2.5;
 
 
-const usableW =
-W - 30 - size;
+let randomY =
+
+(Math.random() * 2) - 1;
 
 
-const gap =
 
-usableW /
+character.style.left =
 
-Math.max(
-1,
-cols - 1
-);
+(pos[0] + randomX) + "%";
 
 
-let x =
+character.style.top =
 
-15 +
-
-col * gap +
-
-(
-Math.random() * 10 - 5
-);
+(pos[1] + randomY) + "%";
 
 
-let y =
+character.addEventListener(
 
-riverTop +
+"pointerdown",
 
-20 +
-
-row * (size + 18) +
-
-(
-Math.random() * 8 - 4
-);
-
-
-if(
-y > bottom - size
-){
-
-y =
-
-riverTop +
-
-20 +
-
-(i % 2) *
-(size + 14);
-
-}
-
-
-el.style.left =
-x + 'px';
-
-
-el.style.top =
-y + 'px';
-
-
-el.addEventListener(
-
-'pointerdown',
-
-grab
+startDrag
 
 );
 
 
-game.appendChild(el);
+game.appendChild(
+
+character
+
+);
+
 
 });
 
 }
 
 
-/* =========================
-   START DRAG
-========================= */
 
-function grab(e){
+/* ==========================
+   START DRAG
+========================== */
+
+function startDrag(e){
+
 
 e.preventDefault();
 
@@ -937,103 +1420,151 @@ e.currentTarget;
 
 dragging
 .setPointerCapture(
+
 e.pointerId
+
 );
 
 
-const r =
+const itemRect =
+
 dragging
 .getBoundingClientRect();
 
 
-const gr =
+const gameRect =
+
 game
 .getBoundingClientRect();
 
 
+
 offsetX =
-e.clientX - r.left;
+
+e.clientX -
+itemRect.left;
 
 
 offsetY =
-e.clientY - r.top;
+
+e.clientY -
+itemRect.top;
 
 
-startX =
-r.left - gr.left;
+
+oldX =
+
+itemRect.left -
+gameRect.left;
 
 
-startY =
-r.top - gr.top;
+oldY =
+
+itemRect.top -
+gameRect.top;
+
+
+
+/* convert percentage position
+   to pixels */
+
+dragging.style.left =
+
+oldX + "px";
+
+
+dragging.style.top =
+
+oldY + "px";
 
 
 dragging
 .classList
-.add('dragging');
+.add("dragging");
+
 
 
 dragging
 .addEventListener(
-'pointermove',
-move
+
+"pointermove",
+
+moveDrag
+
 );
 
 
 dragging
 .addEventListener(
-'pointerup',
-drop
+
+"pointerup",
+
+endDrag
+
 );
 
 
 dragging
 .addEventListener(
-'pointercancel',
-drop
+
+"pointercancel",
+
+endDrag
+
 );
+
 
 }
 
 
-/* =========================
-   MOVE LETTER WITH FINGER
-========================= */
 
-function move(e){
+/* ==========================
+   MOVE WITH FINGER
+========================== */
+
+function moveDrag(e){
+
 
 if(!dragging)
 return;
 
 
-const gr =
+const gameRect =
+
 game
 .getBoundingClientRect();
 
-
-const w =
-dragging.offsetWidth;
-
-
-const h =
-dragging.offsetHeight;
 
 
 let x =
 
 e.clientX -
 
-gr.left -
+gameRect.left -
 
 offsetX;
+
 
 
 let y =
 
 e.clientY -
 
-gr.top -
+gameRect.top -
 
 offsetY;
+
+
+
+const width =
+
+dragging.offsetWidth;
+
+
+const height =
+
+dragging.offsetHeight;
+
 
 
 x =
@@ -1044,13 +1575,15 @@ Math.max(
 
 Math.min(
 
-gr.width - w,
+gameRect.width -
+width,
 
 x
 
 )
 
 );
+
 
 
 y =
@@ -1061,7 +1594,8 @@ Math.max(
 
 Math.min(
 
-gr.height - h,
+gameRect.height -
+height,
 
 y
 
@@ -1070,172 +1604,222 @@ y
 );
 
 
+
 dragging.style.left =
-x + 'px';
+
+x + "px";
 
 
 dragging.style.top =
-y + 'px';
+
+y + "px";
+
 
 }
 
 
-/* =========================
-   DROP LETTER
-========================= */
 
-function drop(e){
+/* ==========================
+   DROP
+========================== */
+
+function endDrag(e){
+
 
 if(!dragging)
 return;
 
 
-const item =
+const character =
 dragging;
 
 
-const ir =
-item
+const charRect =
+
+character
 .getBoundingClientRect();
 
 
-const cx =
-ir.left +
-ir.width / 2;
+
+const centerX =
+
+charRect.left +
+
+charRect.width / 2;
 
 
-const cy =
-ir.top +
-ir.height / 2;
+const centerY =
+
+charRect.top +
+
+charRect.height / 2;
 
 
-/* CHECK WHICH BUCKET */
 
-const bucket =
+const buckets =
 
-[
-...document
-.querySelectorAll('.bucket')
-]
-
-.find(
-
-b => {
-
-const r =
-b.getBoundingClientRect();
+document
+.querySelectorAll(".bucket");
 
 
-return (
+let selectedBucket =
+null;
 
-cx >= r.left &&
 
-cx <= r.right &&
 
-cy >= r.top &&
+buckets.forEach(
 
-cy <= r.bottom
+bucket => {
 
-);
+
+const rect =
+
+bucket
+.getBoundingClientRect();
+
+
+if(
+
+centerX >= rect.left &&
+
+centerX <= rect.right &&
+
+centerY >= rect.top &&
+
+centerY <= rect.bottom
+
+){
+
+selectedBucket =
+bucket;
+
+}
+
 
 });
 
 
-item
+
+character
 .classList
-.remove('dragging');
+.remove("dragging");
 
 
-item
+
+character
 .removeEventListener(
-'pointermove',
-move
+
+"pointermove",
+
+moveDrag
+
 );
 
 
-item
+character
 .removeEventListener(
-'pointerup',
-drop
+
+"pointerup",
+
+endDrag
+
 );
 
 
-item
+character
 .removeEventListener(
-'pointercancel',
-drop
+
+"pointercancel",
+
+endDrag
+
 );
 
 
-/* CORRECT */
+
+/* ==========================
+   CORRECT
+========================== */
 
 if(
 
-bucket &&
+selectedBucket &&
 
-bucket.dataset.letter ===
-item.dataset.letter
+selectedBucket.dataset.letter ===
+
+character.dataset.letter
 
 ){
 
-beep(true);
+playSound(true);
 
 
 score++;
 
 
-scoreEl.textContent =
+scoreText.textContent =
 score;
 
 
-item
+character
 .classList
-.add('correct');
+.add("correct");
 
 
-message.textContent =
-'Great! 🎉';
 
-
-message
+correctMessage
 .classList
-.add('show');
+.add("show");
+
 
 
 setTimeout(
 
-() =>
-message
+()=>{
+
+correctMessage
 .classList
-.remove('show'),
+.remove("show");
+
+},
 
 500
 
 );
 
 
+
 setTimeout(
 
-() =>
-item.remove(),
+()=>{
 
-260
+character.remove();
+
+},
+
+250
 
 );
 
 
-/* FINISHED */
+
+/* ALL COMPLETE */
 
 if(
-score === letters.length
+
+score ===
+letters.length
+
 ){
 
 setTimeout(
 
-() =>
+()=>{
 
 finish.style.display =
-'flex',
+"flex";
+
+},
 
 650
 
@@ -1243,53 +1827,70 @@ finish.style.display =
 
 }
 
+
 }
 
 
-/* WRONG */
+
+/* ==========================
+   WRONG
+========================== */
 
 else{
 
-beep(false);
+
+playSound(false);
 
 
-item
+character
 .classList
-.add('wrong');
+.add("wrong");
 
 
-item.style.left =
-startX + 'px';
+character.style.left =
+
+oldX + "px";
 
 
-item.style.top =
-startY + 'px';
+character.style.top =
+
+oldY + "px";
 
 
 setTimeout(
 
-() =>
-item
-.classList
-.remove('wrong'),
+()=>{
 
-320
+character
+.classList
+.remove("wrong");
+
+},
+
+350
 
 );
+
 
 }
 
 
 dragging = null;
 
+
 }
 
 
-/* START */
+
+/* ==========================
+   START
+========================== */
 
 startGame();
 
+
 </script>
+
 
 </body>
 </html>
