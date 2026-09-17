@@ -4637,7 +4637,7 @@
                     <button class="topic-btn" type="button" onclick="playClickSound(); openTransportMenu()" aria-label="Transport">
                         <img src="https://i.imgur.com/ntkuTTn.jpeg" alt="Transport">
                     </button>
-                    <button class="topic-btn module-locked" type="button" aria-disabled="true" title="New adventure coming">
+                    <button class="topic-btn" type="button" onclick="playClickSound(); openFoodMenu()" aria-label="Food">
                         <img src="https://i.imgur.com/UYeXhEV.jpeg" alt="Food">
                     </button>
                     <button class="topic-btn module-locked" type="button" aria-disabled="true" title="New adventure coming">
@@ -5438,6 +5438,60 @@
 
 
             <!-- TRANSPORT MODULE MENU SCREEN -->
+            <!-- FOOD MODULE MENU -->
+            <div id="food-menu-screen" class="card">
+                <h2 id="food-menu-title" style="color:#7ED957;font-family:'Fredoka One',cursive;">Food Module 🍎🥕</h2>
+                <p id="food-menu-desc" style="color:#111;font-weight:800;margin-top:5px;">Choose a fun food activity!</p>
+                <div class="abc-menu-grid">
+                    <button class="abc-sub-btn abc-image-btn" onclick="playClickSound(); startLearnFood('fruit')" aria-label="Fruit">
+                        <img src="https://i.imgur.com/SoeEBF6.jpeg" alt="Fruit">
+                    </button>
+                    <button class="abc-sub-btn abc-image-btn" onclick="playClickSound(); startLearnFood('vegetable')" aria-label="Vegetable">
+                        <img src="https://i.imgur.com/Kwz0y34.jpeg" alt="Vegetable">
+                    </button>
+                    <button class="abc-sub-btn abc-image-btn" onclick="playClickSound(); startSortFood()" aria-label="Fruit or Vegetable?">
+                        <img src="https://i.imgur.com/o2W4ZTq.jpeg" alt="Fruit or Vegetable?">
+                    </button>
+                </div>
+                <button class="action-btn home-btn" id="food-menu-home-btn" onclick="playClickSound(); navigateTo('home-screen')">Back to Home 🏠</button>
+            </div>
+
+            <!-- LEARN FRUIT / VEGETABLE: same flashcard format as Learn Animal -->
+            <div id="learn-food-screen" class="card">
+                <h2 id="learn-food-title" style="color:#333;margin-bottom:5px;font-family:'Fredoka One',cursive;">Learn Fruit 🍎</h2>
+                <p id="learn-food-progress" style="color:#444;font-weight:700;font-size:.9rem;">Fruit 1 of 10</p>
+                <div class="flashcard-box">
+                    <div class="flashcard-img-container" style="width:220px;height:220px;">
+                        <img id="learn-food-image" src="" alt="Food Image" referrerpolicy="no-referrer">
+                    </div>
+                    <div class="flashcard-text" id="learn-food-name-bm" style="color:#5E17EB;font-size:2rem;">Epal</div>
+                    <div id="learn-food-name-en" style="font-size:1.3rem;font-weight:700;color:#777;margin-top:-5px;">Apple</div>
+                    <button class="sound-btn" id="learn-food-listen" onclick="playFoodSound()">🔊 Listen / Dengar</button>
+                </div>
+                <div class="flashcard-nav">
+                    <button class="action-btn" id="prev-food-btn" style="background-color:#E74C3C;box-shadow:0 5px 0 #922B21,0 8px 20px rgba(0,0,0,.15);" onclick="playClickSound(); prevFoodFlash()">⬅ Prev</button>
+                    <button class="action-btn home-btn" id="learn-food-back" onclick="playClickSound(); openFoodMenu()">Back ↩️</button>
+                    <button class="action-btn" id="next-food-btn" style="background-color:var(--primary-green);box-shadow:0 5px 0 #5aa33d,0 8px 20px rgba(0,0,0,.15);" onclick="playClickSound(); nextFoodFlash()">Next ➡</button>
+                </div>
+            </div>
+
+            <!-- FRUIT OR VEGETABLE: same format and box sizes as Sort the Transport -->
+            <div id="sort-food-screen" class="card">
+                <h2 id="sort-food-title" style="color:#FFDE59;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #123F7A;">Fruit or Vegetable? 🍎🥕</h2>
+                <p id="sort-food-desc" style="color:#111;font-weight:800;margin:6px 0 8px;">Drag all 4 real pictures into the correct box.</p>
+                <div class="transport-sort-status">
+                    <span><span id="sort-food-set-label">Set</span>: <span id="sort-food-set">1</span>/5</span>
+                    <span><span id="sort-food-left-label">Left</span>: <span id="sort-food-left">4</span></span>
+                </div>
+                <div class="transport-sort-bank" id="food-sort-bank"></div>
+                <div class="transport-sort-zones" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+                    <div class="transport-sort-zone food-sort-zone" data-cat="fruit"><div class="transport-zone-title" id="food-zone-fruit">🍎 Fruit</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone food-sort-zone" data-cat="vegetable"><div class="transport-zone-title" id="food-zone-vegetable">🥕 Vegetable</div><div class="transport-zone-items"></div></div>
+                </div>
+                <div class="transport-feedback" id="sort-food-feedback"></div>
+                <button class="action-btn home-btn" id="sort-food-back" onclick="playClickSound(); openFoodMenu()">Back ↩️</button>
+            </div>
+
             <div id="transport-menu-screen" class="card">
                 <h2 id="transport-menu-title" style="color:#FFDE59;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #123F7A;">Transport Module 🚗</h2>
                 <p id="transport-menu-desc" style="color:#111;font-weight:800;margin-top:5px;">Choose a fun transport activity!</p>
@@ -6095,7 +6149,7 @@
             currentGlobalLang = (lang === 'ms' ? 'ms' : 'en');
             document.documentElement.lang = currentGlobalLang === 'ms' ? 'ms' : 'en';
             try { localStorage.setItem('kiddoraLanguage', currentGlobalLang); } catch(e) {}
-            setTimeout(()=>{ if(typeof updateColourLanguage === 'function') updateColourLanguage(); if(typeof updateBodyLanguage === 'function') updateBodyLanguage(); if(typeof updateShapeLanguage === 'function') updateShapeLanguage(); if(typeof updateTransportLanguage === 'function') updateTransportLanguage(); if(typeof updateInstallTutorialLanguage === 'function') updateInstallTutorialLanguage(); if(typeof updateBijakSukuKataLanguage === 'function') updateBijakSukuKataLanguage(); },0);
+            setTimeout(()=>{ if(typeof updateColourLanguage === 'function') updateColourLanguage(); if(typeof updateBodyLanguage === 'function') updateBodyLanguage(); if(typeof updateShapeLanguage === 'function') updateShapeLanguage(); if(typeof updateTransportLanguage === 'function') updateTransportLanguage(); if(typeof updateFoodLanguage === 'function') updateFoodLanguage(); if(typeof updateInstallTutorialLanguage === 'function') updateInstallTutorialLanguage(); if(typeof updateBijakSukuKataLanguage === 'function') updateBijakSukuKataLanguage(); },0);
             
             document.getElementById("lang-btn-en").classList.remove("active");
             document.getElementById("lang-btn-ms").classList.remove("active");
@@ -8309,7 +8363,8 @@
                 'draw-shape-screen',
                 'match-me-screen',
                 'sort-transport-screen',
-                'guess-transport-screen'
+                'guess-transport-screen',
+                'sort-food-screen'
             ]);
             document.body.classList.toggle('activity-bg-blur', activityScreens.has(screenId));
             document.body.classList.toggle('login-mode', screenId === 'login-screen');
@@ -9958,6 +10013,129 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         // =========================================================
+        // FOOD MODULE
+        // =========================================================
+        const foodDatabase = [
+            {id:'apple',cat:'fruit',en:'Apple',bm:'Epal',img:'https://loremflickr.com/640/640/apple,fruit?lock=501'},
+            {id:'banana',cat:'fruit',en:'Banana',bm:'Pisang',img:'https://loremflickr.com/640/640/banana,fruit?lock=502'},
+            {id:'orange',cat:'fruit',en:'Orange',bm:'Oren',img:'https://loremflickr.com/640/640/orange,fruit?lock=503'},
+            {id:'mango',cat:'fruit',en:'Mango',bm:'Mangga',img:'https://loremflickr.com/640/640/mango,fruit?lock=504'},
+            {id:'watermelon',cat:'fruit',en:'Watermelon',bm:'Tembikai',img:'https://loremflickr.com/640/640/watermelon,fruit?lock=505'},
+            {id:'grape',cat:'fruit',en:'Grapes',bm:'Anggur',img:'https://loremflickr.com/640/640/grapes,fruit?lock=506'},
+            {id:'pineapple',cat:'fruit',en:'Pineapple',bm:'Nanas',img:'https://loremflickr.com/640/640/pineapple,fruit?lock=507'},
+            {id:'strawberry',cat:'fruit',en:'Strawberry',bm:'Strawberi',img:'https://loremflickr.com/640/640/strawberry,fruit?lock=508'},
+            {id:'papaya',cat:'fruit',en:'Papaya',bm:'Betik',img:'https://loremflickr.com/640/640/papaya,fruit?lock=509'},
+            {id:'dragonfruit',cat:'fruit',en:'Dragon Fruit',bm:'Buah Naga',img:'https://loremflickr.com/640/640/dragonfruit,fruit?lock=510'},
+            {id:'carrot',cat:'vegetable',en:'Carrot',bm:'Lobak Merah',img:'https://loremflickr.com/640/640/carrot,vegetable?lock=511'},
+            {id:'broccoli',cat:'vegetable',en:'Broccoli',bm:'Brokoli',img:'https://loremflickr.com/640/640/broccoli,vegetable?lock=512'},
+            {id:'cabbage',cat:'vegetable',en:'Cabbage',bm:'Kubis',img:'https://loremflickr.com/640/640/cabbage,vegetable?lock=513'},
+            {id:'spinach',cat:'vegetable',en:'Spinach',bm:'Bayam',img:'https://loremflickr.com/640/640/spinach,vegetable?lock=514'},
+            {id:'cucumber',cat:'vegetable',en:'Cucumber',bm:'Timun',img:'https://loremflickr.com/640/640/cucumber,vegetable?lock=515'},
+            {id:'eggplant',cat:'vegetable',en:'Eggplant',bm:'Terung',img:'https://loremflickr.com/640/640/eggplant,vegetable?lock=516'},
+            {id:'cauliflower',cat:'vegetable',en:'Cauliflower',bm:'Kubis Bunga',img:'https://loremflickr.com/640/640/cauliflower,vegetable?lock=517'},
+            {id:'pumpkin',cat:'vegetable',en:'Pumpkin',bm:'Labu',img:'https://loremflickr.com/640/640/pumpkin,vegetable?lock=518'},
+            {id:'corn',cat:'vegetable',en:'Corn',bm:'Jagung',img:'https://loremflickr.com/640/640/corn,vegetable?lock=519'},
+            {id:'okra',cat:'vegetable',en:'Okra',bm:'Bendi',img:'https://loremflickr.com/640/640/okra,vegetable?lock=520'}
+        ];
+        const foodShuffle = arr => [...arr].sort(()=>Math.random()-.5);
+        const foodName = item => currentGlobalLang==='ms' ? item.bm : item.en;
+        let currentFoodCategory='fruit', currentLearnFoodList=[], currentLearnFoodIdx=0;
+
+        function openFoodMenu(){ updateFoodLanguage(); showScreen('food-menu-screen'); }
+        function updateFoodLanguage(){
+            const ms=currentGlobalLang==='ms';
+            const map={
+                'food-menu-title':ms?'Modul Makanan 🍎🥕':'Food Module 🍎🥕',
+                'food-menu-desc':ms?'Pilih aktiviti makanan yang menyeronokkan!':'Choose a fun food activity!',
+                'food-menu-home-btn':'Back to Home 🏠',
+                'learn-food-listen':ms?'🔊 Dengar':'🔊 Listen',
+                'learn-food-back':'Back ↩️',
+                'sort-food-title':ms?'Buah atau Sayur? 🍎🥕':'Fruit or Vegetable? 🍎🥕',
+                'sort-food-desc':ms?'Seret semua 4 gambar sebenar ke dalam kotak yang betul.':'Drag all 4 real pictures into the correct box.',
+                'sort-food-set-label':'Set','sort-food-left-label':ms?'Baki':'Left',
+                'food-zone-fruit':ms?'🍎 Buah':'🍎 Fruit',
+                'food-zone-vegetable':ms?'🥕 Sayur':'🥕 Vegetable',
+                'sort-food-back':'Back ↩️'
+            };
+            Object.entries(map).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.innerText=value;});
+            if(document.getElementById('learn-food-screen')?.classList.contains('active')) renderFoodFlashcard(false);
+        }
+        function startLearnFood(cat){
+            currentFoodCategory=cat;currentLearnFoodList=foodDatabase.filter(x=>x.cat===cat);currentLearnFoodIdx=0;
+            showScreen('learn-food-screen');updateFoodLanguage();renderFoodFlashcard(true);
+        }
+        function renderFoodFlashcard(speak=false){
+            const item=currentLearnFoodList[currentLearnFoodIdx];if(!item)return;
+            const ms=currentGlobalLang==='ms', fruit=currentFoodCategory==='fruit';
+            document.getElementById('learn-food-title').innerText=fruit?(ms?'Belajar Buah 🍎':'Learn Fruit 🍎'):(ms?'Belajar Sayur 🥕':'Learn Vegetable 🥕');
+            document.getElementById('learn-food-progress').innerText=`${fruit?(ms?'Buah':'Fruit'):(ms?'Sayur':'Vegetable')} ${currentLearnFoodIdx+1} ${ms?'daripada':'of'} ${currentLearnFoodList.length}`;
+            const image=document.getElementById('learn-food-image');image.src=item.img;image.alt=foodName(item);
+            document.getElementById('learn-food-name-bm').innerText=item.bm;document.getElementById('learn-food-name-en').innerText=item.en;
+            document.getElementById('prev-food-btn').style.display=currentLearnFoodIdx===0?'none':'inline-block';
+            document.getElementById('next-food-btn').innerText=currentLearnFoodIdx===currentLearnFoodList.length-1?(ms?'Tamat 🏁':'Finish 🏁'):'Next ➡';
+            if(speak)setTimeout(playFoodSound,120);
+        }
+        function playFoodSound(){
+            const item=currentLearnFoodList[currentLearnFoodIdx];if(!item||!('speechSynthesis'in window))return;
+            speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(foodName(item));u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.72;speechSynthesis.speak(u);
+        }
+        function prevFoodFlash(){if(currentLearnFoodIdx>0){currentLearnFoodIdx--;renderFoodFlashcard(true);}}
+        function nextFoodFlash(){
+            if(currentLearnFoodIdx<currentLearnFoodList.length-1){currentLearnFoodIdx++;renderFoodFlashcard(true);}
+            else{alert(currentGlobalLang==='ms'?'Syabas! Anda telah tamat belajar topik ini! 🎉':'Great job! You completed this topic! 🎉');openFoodMenu();}
+        }
+
+        let sortFoodSets=[],sortFoodSetIndex=0,selectedFoodSortId=null,foodSortDrag=null,foodSortFloat=null;
+        function startSortFood(){
+            const fruits=foodShuffle(foodDatabase.filter(x=>x.cat==='fruit'));
+            const vegetables=foodShuffle(foodDatabase.filter(x=>x.cat==='vegetable'));
+            sortFoodSets=Array.from({length:5},(_,i)=>foodShuffle([fruits[i*2],fruits[i*2+1],vegetables[i*2],vegetables[i*2+1]]));
+            sortFoodSetIndex=0;showScreen('sort-food-screen');updateFoodLanguage();setupFoodSortZones();renderFoodSortSet();
+        }
+        function setupFoodSortZones(){
+            document.querySelectorAll('.food-sort-zone').forEach(zone=>{if(zone.dataset.ready==='1')return;zone.dataset.ready='1';
+                zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag-over');});
+                zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));
+                zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag-over');attemptFoodSortDrop(e.dataTransfer.getData('text/plain')||selectedFoodSortId,zone.dataset.cat);});
+                zone.addEventListener('click',()=>{if(selectedFoodSortId)attemptFoodSortDrop(selectedFoodSortId,zone.dataset.cat);});
+            });
+        }
+        function renderFoodSortSet(){
+            selectedFoodSortId=null;const set=sortFoodSets[sortFoodSetIndex]||[],bank=document.getElementById('food-sort-bank');bank.innerHTML='';
+            document.querySelectorAll('.food-sort-zone .transport-zone-items').forEach(x=>x.innerHTML='');
+            document.getElementById('sort-food-feedback').innerText='';document.getElementById('sort-food-set').innerText=sortFoodSetIndex+1;document.getElementById('sort-food-left').innerText=set.length;
+            set.forEach(item=>bank.appendChild(makeFoodSortItem(item)));
+        }
+        function makeFoodSortItem(item){
+            const node=document.createElement('div');node.className='transport-sort-item food-sort-item';node.dataset.id=item.id;node.draggable=true;node.title=foodName(item);
+            const img=document.createElement('img');img.src=item.img;img.alt=foodName(item);img.referrerPolicy='no-referrer';node.appendChild(img);
+            node.addEventListener('dragstart',e=>{selectedFoodSortId=item.id;e.dataTransfer.setData('text/plain',item.id);setTimeout(()=>node.classList.add('selected'),0);});
+            node.addEventListener('dragend',()=>node.classList.remove('selected'));
+            node.addEventListener('click',()=>{document.querySelectorAll('.food-sort-item').forEach(x=>x.classList.remove('selected'));selectedFoodSortId=item.id;node.classList.add('selected');});
+            installFoodPointerDrag(node,item);return node;
+        }
+        function clearFoodHighlights(){document.querySelectorAll('.food-sort-zone.drag-over').forEach(z=>z.classList.remove('drag-over'));}
+        function cleanupFoodDrag(){clearFoodHighlights();foodSortDrag?.node?.classList.remove('dragging');foodSortFloat?.remove();foodSortDrag=null;foodSortFloat=null;}
+        function installFoodPointerDrag(node,item){
+            node.onpointerdown=e=>{if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();selectedFoodSortId=item.id;node.setPointerCapture?.(e.pointerId);foodSortDrag={node,pointerId:e.pointerId};
+                const r=node.getBoundingClientRect();foodSortFloat=document.createElement('div');foodSortFloat.className='transport-sort-floating';foodSortFloat.style.width=r.width+'px';foodSortFloat.style.height=r.height+'px';foodSortFloat.appendChild(node.querySelector('img').cloneNode(true));document.body.appendChild(foodSortFloat);moveFoodFloat(e);};
+            node.onpointermove=e=>{if(foodSortDrag?.node!==node)return;e.preventDefault();moveFoodFloat(e);clearFoodHighlights();document.elementFromPoint(e.clientX,e.clientY)?.closest('.food-sort-zone')?.classList.add('drag-over');};
+            node.onpointerup=e=>{if(foodSortDrag?.node!==node)return;e.preventDefault();const zone=document.elementFromPoint(e.clientX,e.clientY)?.closest('.food-sort-zone');cleanupFoodDrag();if(zone)attemptFoodSortDrop(item.id,zone.dataset.cat);};
+            node.onpointercancel=cleanupFoodDrag;
+        }
+        function moveFoodFloat(e){if(foodSortFloat){foodSortFloat.style.left=e.clientX+'px';foodSortFloat.style.top=e.clientY+'px';}}
+        function attemptFoodSortDrop(id,cat){
+            const item=foodDatabase.find(x=>x.id===id),node=document.querySelector(`.food-sort-item[data-id="${id}"]`);if(!item||!node||!document.getElementById('food-sort-bank').contains(node))return;
+            const fb=document.getElementById('sort-food-feedback');
+            if(item.cat!==cat){fb.innerText=currentGlobalLang==='ms'?'Cuba lagi 😊 Pilih kotak yang betul.':'Try again 😊 Choose the correct box.';fb.style.color='#E53935';playWrongSound();return;}
+            const thumb=document.createElement('div');thumb.className='transport-zone-thumb';const img=document.createElement('img');img.src=item.img;img.alt=foodName(item);thumb.appendChild(img);
+            document.querySelector(`.food-sort-zone[data-cat="${cat}"] .transport-zone-items`).appendChild(thumb);node.remove();selectedFoodSortId=null;playCorrectSound();
+            fb.innerText=currentGlobalLang==='ms'?'Betul! 🌟':'Correct! 🌟';fb.style.color='#2E7D32';const left=document.querySelectorAll('#food-sort-bank .food-sort-item').length;document.getElementById('sort-food-left').innerText=left;
+            if(left===0){fb.innerText=currentGlobalLang==='ms'?'Hebat! Semua gambar sudah diasingkan. 🎉':'Great! All pictures are sorted. 🎉';if(sortFoodSetIndex<4)setTimeout(()=>{sortFoodSetIndex++;renderFoodSortSet();},700);else setTimeout(finishFoodSort,700);}
+        }
+        function finishFoodSort(){if(window.saveScoreToFirebase)window.saveScoreToFirebase(currentGlobalLang==='ms'?'Buah atau Sayur':'Fruit or Vegetable',100);alert(currentGlobalLang==='ms'?'Tahniah! Anda telah lengkapkan semua 5 set! 🎉':'Congratulations! You completed all 5 sets! 🎉');openFoodMenu();}
+
+        // =========================================================
         // TRANSPORT MODULE
         // =========================================================
         const transportDatabase = [
@@ -10349,7 +10527,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const moduleRoutes = {
     abc: 'abc-menu-screen', number: 'num123-menu-screen', colour: 'colour-menu-screen',
     body: 'body-part-menu-screen', animal: 'animal-menu-screen', shape: 'shape-menu-screen',
-    transport: 'transport-menu-screen'
+    transport: 'transport-menu-screen', food: 'food-menu-screen'
   };
   const screenModule = {
     'bijak-suku-kata-screen':'abc','complete-abc-screen':'abc','spell-it-right-screen':'abc','abc-tracing-screen':'abc',
@@ -10360,7 +10538,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'learn-body-screen':'body','choose-body-screen':'body','match-body-count-screen':'body','match-body-game-screen':'body','label-body-screen':'body',
     'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
     'learn-shape-screen':'shape','match-shape-screen':'shape','draw-shape-screen':'shape','match-me-screen':'shape',
-    'learn-transport-cat-screen':'transport','learn-transport-flash-screen':'transport','sort-transport-screen':'transport','guess-transport-screen':'transport'
+    'learn-transport-cat-screen':'transport','learn-transport-flash-screen':'transport','sort-transport-screen':'transport','guess-transport-screen':'transport',
+    'learn-food-screen':'food','sort-food-screen':'food'
   };
   let completionOpen=false, completionModule=null;
   const originalAlert=window.alert.bind(window);
