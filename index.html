@@ -4440,14 +4440,14 @@
         .suku2-topbar{display:flex;justify-content:space-between;gap:12px;font-weight:900;color:#243b53;margin-bottom:10px}
         .suku2-instruction{font-weight:800;color:#334155;margin:6px 0 15px}
         .suku2-board{position:relative;display:flex;justify-content:space-between;align-items:stretch;width:100%;margin:20px 0;padding:0;isolation:isolate;user-select:none;touch-action:none}
-        .suku2-left,.suku2-right{display:grid;grid-template-rows:repeat(4,120px);gap:18px;position:relative;z-index:10}
-        .suku2-left{width:202px;transform:translateX(-78px)}
+        .suku2-left,.suku2-right{display:grid;grid-template-rows:repeat(4,135px);gap:18px;position:relative;z-index:10}
+        .suku2-left{width:223px;transform:translateX(-78px)}
         .suku2-right{width:76px;transform:translateX(78px);justify-items:center}
-        .suku2-row{width:202px;height:120px;min-height:120px;display:flex;align-items:center;justify-content:flex-start;gap:12px;border:0;background:transparent;border-radius:0;padding:0;cursor:grab;min-width:0;box-shadow:none;transition:.18s;touch-action:none;user-select:none}
+        .suku2-row{width:223px;height:135px;min-height:135px;display:flex;align-items:center;justify-content:flex-start;gap:12px;border:0;background:transparent;border-radius:0;padding:0;cursor:grab;min-width:0;box-shadow:none;transition:.18s;touch-action:none;user-select:none}
         .suku2-row:active{cursor:grabbing}
         .suku2-row.selected .suku2-first{border-color:#7c3aed;background:#f3e8ff;box-shadow:0 0 0 4px rgba(124,58,237,.18)}
         .suku2-row.matched{background:transparent;cursor:default}
-        .suku2-row img{width:114px;height:114px;aspect-ratio:1 / 1;object-fit:cover;border:0;border-radius:14px;flex:0 0 114px;background:transparent;box-shadow:none;pointer-events:none}
+        .suku2-row img{width:135px;height:135px;aspect-ratio:1 / 1;object-fit:cover;border:4px solid var(--primary-blue);border-radius:18px;box-sizing:border-box;flex:0 0 135px;background:transparent;box-shadow:0 5px 12px rgba(0,0,0,.12);pointer-events:none}
         .suku2-first,.suku2-choice{width:76px;height:76px;min-width:76px;min-height:76px;box-sizing:border-box;border:3px solid var(--primary-blue);background:#fff;border-radius:16px;font-family:'Fredoka One',cursive;font-size:1.55rem;color:#1e293b;box-shadow:0 4px 10px rgba(0,0,0,.08)}
         .suku2-first{display:flex;align-items:center;justify-content:center;color:#5E17EB;letter-spacing:.04em;pointer-events:none}
         .suku2-choice{align-self:center;padding:0;cursor:pointer;transition:.15s;touch-action:manipulation}
@@ -4458,20 +4458,20 @@
         .suku2-lines line{stroke:#7ED957;stroke-width:6;stroke-linecap:round}
         @keyframes suku2Shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
         @media(max-width:768px){
-            .suku2-left,.suku2-right{grid-template-rows:repeat(4,104px);gap:15px}
-            .suku2-left{width:164px;transform:translateX(-38px)}.suku2-right{width:66px;transform:translateX(38px)}
-            .suku2-row{width:164px;height:104px;min-height:104px;padding:0;gap:8px}
-            .suku2-row img{width:90px;height:90px;flex-basis:90px;border-radius:12px}.suku2-first,.suku2-choice{width:66px;height:66px;min-width:66px;min-height:66px;font-size:1.35rem;border-radius:15px}
+            .suku2-left,.suku2-right{grid-template-rows:repeat(4,116px);gap:15px}
+            .suku2-left{width:190px;transform:translateX(-38px)}.suku2-right{width:66px;transform:translateX(38px)}
+            .suku2-row{width:190px;height:116px;min-height:116px;padding:0;gap:8px}
+            .suku2-row img{width:116px;height:116px;flex-basis:116px;border-width:3px;border-radius:15px}.suku2-first,.suku2-choice{width:66px;height:66px;min-width:66px;min-height:66px;font-size:1.35rem;border-radius:15px}
         }
         @media(max-width:600px){
             .suku-activity-grid{grid-template-columns:1fr;gap:14px;margin:20px auto}.suku-activity-btn{padding:22px 12px}
             #bijak-suku-kata-2-screen .suku2-match-layout{padding:0!important}.suku2-lines line{stroke-width:5}
         }
         @media(max-width:430px){
-            .suku2-left,.suku2-right{grid-template-rows:repeat(4,98px)}
-            .suku2-left{width:150px;transform:translateX(-25px)}.suku2-right{width:62px;transform:translateX(25px)}
-            .suku2-row{width:150px;height:98px;min-height:98px;padding:0;gap:6px}
-            .suku2-row img{width:82px;height:82px;flex-basis:82px;border-radius:11px}.suku2-first,.suku2-choice{width:62px;height:62px;min-width:62px;min-height:62px;font-size:1.25rem}
+            .suku2-left,.suku2-right{grid-template-rows:repeat(4,110px)}
+            .suku2-left{width:178px;transform:translateX(-25px)}.suku2-right{width:62px;transform:translateX(25px)}
+            .suku2-row{width:178px;height:110px;min-height:110px;padding:0;gap:6px}
+            .suku2-row img{width:110px;height:110px;flex-basis:110px}.suku2-first,.suku2-choice{width:62px;height:62px;min-width:62px;min-height:62px;font-size:1.25rem}
         }
 
     </style>
