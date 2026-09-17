@@ -3435,8 +3435,6 @@
         /* TAKING AWAY - one large question per page */
         #taking-away-screen{width:min(98vw,960px);margin-left:50%;transform:translateX(-50%);}
         #taking-away-count-screen{width:min(94vw,620px);margin-left:50%;transform:translateX(-50%);}
-        .takeaway-count-options{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:25px 0;}
-        .takeaway-count-btn{min-width:130px;min-height:90px;border:4px solid #263238;border-radius:22px;background:#fff;font-family:'Fredoka One',cursive;font-size:2rem;color:#5E17EB;cursor:pointer;box-shadow:0 7px 0 #CBD5E1;}
         .takeaway-board{background:rgba(255,250,235,.97);border:4px solid #FFD45C;border-radius:28px;padding:18px;margin:14px auto;box-shadow:0 10px 28px rgba(0,0,0,.15);}
         .takeaway-instruction{font-weight:900;color:#374151;margin:5px 0 15px;}
         .takeaway-questions{display:flex;flex-direction:column;gap:14px;}
@@ -3449,7 +3447,7 @@
         .takeaway-basket{width:min(100%,360px);min-height:125px;margin:0 auto;border:5px dashed #A86424;border-radius:20px;background:#FFF1D1;display:flex;align-items:center;justify-content:center;position:relative;font-size:5rem;transition:.15s;}
         .takeaway-basket.hovered{border-color:#FF66C4;background:#FFF0F8;transform:scale(1.04);}
         .takeaway-basket-count{position:absolute;right:4px;top:3px;min-width:25px;height:25px;border-radius:50%;background:#5E17EB;color:#fff;font:bold 14px/25px Arial;}
-        .takeaway-answer-zone{width:min(100%,220px);height:90px;margin:0 auto;background:#fff;border:4px solid #243447;border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:3rem;transition:.16s;}
+        .takeaway-answer-zone{width:78px;height:78px;margin:0 auto;background:#fff;border:3px solid #263238;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:2.5rem;transition:.16s;box-sizing:border-box;}
         .takeaway-answer-zone.hovered{border-color:#FF66C4;background:#FFF0F8;transform:scale(1.04);}
         .takeaway-answer-zone.correct{background:#DDF8D1;border-color:#58B83C;color:#23821C;}
         .takeaway-answer-zone.wrong{background:#FFD9D9;border-color:#E64C4C;}
@@ -3460,7 +3458,7 @@
         .takeaway-floating.number{width:72px;height:72px;border:3px solid #263238;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:2.4rem;}
         .takeaway-status{min-height:28px;font-weight:900;color:#5E17EB;margin-top:8px;}
         @media(max-width:600px){
-            #taking-away-screen{width:calc(100vw - 8px);padding-left:0;padding-right:0}.takeaway-board{padding:10px 6px;border-radius:22px}.takeaway-row{gap:12px;padding:8px}.takeaway-equation{font-size:2.35rem}.takeaway-object-box{min-height:170px;padding:12px 6px;gap:7px;border-width:3px}.takeaway-object{font-size:clamp(3.2rem,16vw,4.6rem);padding:3px}.takeaway-basket{width:82%;min-height:105px;font-size:4.3rem;border-width:4px}.takeaway-answer-zone{height:72px;font-size:2.5rem;border-width:3px}.takeaway-answer-bank{gap:10px;padding:10px}.takeaway-answer-tile{width:68px;height:68px;font-size:2.2rem}
+            #taking-away-screen{width:calc(100vw - 8px);padding-left:0;padding-right:0}.takeaway-board{padding:10px 6px;border-radius:22px}.takeaway-row{gap:12px;padding:8px}.takeaway-equation{font-size:2.35rem}.takeaway-object-box{min-height:170px;padding:12px 6px;gap:7px;border-width:3px}.takeaway-object{font-size:clamp(3.2rem,16vw,4.6rem);padding:3px}.takeaway-basket{width:82%;min-height:105px;font-size:4.3rem;border-width:4px}.takeaway-answer-zone{width:68px;height:68px;font-size:2.2rem;border-width:3px}.takeaway-answer-bank{gap:10px;padding:10px}.takeaway-answer-tile{width:68px;height:68px;font-size:2.2rem}
         }
 
     
@@ -4943,9 +4941,11 @@
             <div id="taking-away-count-screen" class="card">
                 <h2 id="takeaway-count-title" style="color:#5E17EB;font-family:'Fredoka One',cursive;">Taking Away ➖</h2>
                 <p id="takeaway-count-text" style="font-weight:900;">Choose the number of questions</p>
-                <div class="takeaway-count-options">
-                    <button class="takeaway-count-btn" onclick="playClickSound(); startTakingAway(5)">5</button>
-                    <button class="takeaway-count-btn" onclick="playClickSound(); startTakingAway(10)">10</button>
+                <div class="question-count-grid">
+                    <button class="count-btn" onclick="playClickSound(); startTakingAway(5)">5</button>
+                    <button class="count-btn" onclick="playClickSound(); startTakingAway(10)">10</button>
+                    <button class="count-btn" onclick="playClickSound(); startTakingAway(15)">15</button>
+                    <button class="count-btn" onclick="playClickSound(); startTakingAway(20)">20</button>
                 </div>
                 <button class="action-btn home-btn" id="takeaway-count-back" onclick="playClickSound(); open123Menu()">Back ↩️</button>
             </div>
@@ -7826,7 +7826,7 @@
         }
 
         // =========================================================
-        // TAKING AWAY - one large question per page, selectable 5 or 10
+        // TAKING AWAY - one large question per page, selectable 5/10/15/20
         // =========================================================
         const takeAwayPairBank=[];
         for(let whole=2;whole<=10;whole++) for(let remove=1;remove<whole;remove++) takeAwayPairBank.push([whole,remove]);
@@ -7857,7 +7857,7 @@
             return shuffle123(takeAwayPairBank).slice(0,count);
         }
         function startTakingAway(count){
-            window.speechSynthesis&&window.speechSynthesis.cancel();takeAwayQuestionTotal=count===10?10:5;takeAwaySession=buildTakeAwaySession(takeAwayQuestionTotal);takeAwayQuestionIndex=0;takeAwayScore=0;takeAwayAnswers={};takeAwayRemoved={};takeAwayCountState={};takeAwayAdvancing=false;showScreen('taking-away-screen');renderTakeAwayQuestion();
+            window.speechSynthesis&&window.speechSynthesis.cancel();takeAwayQuestionTotal=[5,10,15,20].includes(count)?count:5;takeAwaySession=buildTakeAwaySession(takeAwayQuestionTotal);takeAwayQuestionIndex=0;takeAwayScore=0;takeAwayAnswers={};takeAwayRemoved={};takeAwayCountState={};takeAwayAdvancing=false;showScreen('taking-away-screen');renderTakeAwayQuestion();
         }
         function renderTakeAwayQuestion(){
             if(!takeAwaySession.length)return;const t=takeAwayText(),pair=takeAwaySession[takeAwayQuestionIndex];takeAwayAnswers={};takeAwayRemoved={0:0};takeAwayCountState={0:0};takeAwayAdvancing=false;
@@ -7883,7 +7883,7 @@
         function highlightTakeAwayBasket(x,y,q){document.querySelectorAll('.takeaway-basket').forEach(z=>z.classList.remove('hovered'));const z=document.elementFromPoint(x,y)?.closest('.takeaway-basket');if(z&&+z.dataset.q===q)z.classList.add('hovered');}
         function cleanupTakeAwayDrag(){if(takeAwayDrag?.type==='answer')takeAwayDrag.tile?.classList.remove('dragging');takeAwayDrag=null;takeAwayFloat?.remove();takeAwayFloat=null;document.querySelectorAll('.takeaway-basket,.takeaway-answer-zone').forEach(z=>z.classList.remove('hovered'));}
         function dropTakeAwayObject(el,basket,q){
-            const t=takeAwayText(),limit=+basket.dataset.limit;if(takeAwayRemoved[q]>=limit){speakText123(t.full,.7);return;}el.classList.add('removed');takeAwayRemoved[q]++;takeAwayCountState[q]=0;basket.querySelector('.takeaway-basket-count').textContent=`${takeAwayRemoved[q]}/${limit}`;const left=limit-takeAwayRemoved[q];document.getElementById('takeaway-status').textContent=left?'':t.ready;playClickSound();
+            const t=takeAwayText(),limit=+basket.dataset.limit;if(takeAwayRemoved[q]>=limit){speakText123(t.full,.7);return;}el.classList.add('removed');takeAwayRemoved[q]++;takeAwayCountState[q]=0;basket.querySelector('.takeaway-basket-count').textContent=`${takeAwayRemoved[q]}/${limit}`;const left=limit-takeAwayRemoved[q];document.getElementById('takeaway-status').textContent=left?'':t.ready;playClickSound();speakText123(getNum123Words()[takeAwayRemoved[q]]||String(takeAwayRemoved[q]),.58);
         }
         function installTakeAwayAnswerDrag(tile){
             tile.onpointerdown=e=>{if(tile.classList.contains('used')||takeAwayAdvancing)return;e.preventDefault();takeAwayDrag={type:'answer',tile,pointerId:e.pointerId};tile.setPointerCapture?.(e.pointerId);tile.classList.add('dragging');takeAwayFloat=document.createElement('div');takeAwayFloat.className='takeaway-floating number';takeAwayFloat.textContent=tile.dataset.value;document.body.appendChild(takeAwayFloat);moveTakeAwayFloat(e);};
@@ -10355,7 +10355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'bijak-suku-kata-screen':'abc','complete-abc-screen':'abc','spell-it-right-screen':'abc','abc-tracing-screen':'abc',
     'match-count-screen':'abc','match-game-screen':'abc','find-letter-screen':'abc','abc-flashcard-screen':'abc',
     'lesson-screen':'abc','count-selection-screen':'abc','quiz-screen':'abc','result-screen':'abc',
-    'num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','taking-away-screen':'number','find123-screen':'number',
+    'num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','taking-away-count-screen':'number','taking-away-screen':'number','find123-screen':'number',
     'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','find-colour-screen':'colour',
     'learn-body-screen':'body','choose-body-screen':'body','match-body-count-screen':'body','match-body-game-screen':'body','label-body-screen':'body',
     'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
