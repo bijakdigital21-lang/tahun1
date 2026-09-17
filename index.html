@@ -3432,21 +3432,24 @@
             .addup-answer-tile{width:60px;height:60px;font-size:2rem;}
         }
 
-        /* TAKING AWAY - 4 visual subtraction questions x 5 sets */
+        /* TAKING AWAY - one large question per page */
         #taking-away-screen{width:min(98vw,960px);margin-left:50%;transform:translateX(-50%);}
+        #taking-away-count-screen{width:min(94vw,620px);margin-left:50%;transform:translateX(-50%);}
+        .takeaway-count-options{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:25px 0;}
+        .takeaway-count-btn{min-width:130px;min-height:90px;border:4px solid #263238;border-radius:22px;background:#fff;font-family:'Fredoka One',cursive;font-size:2rem;color:#5E17EB;cursor:pointer;box-shadow:0 7px 0 #CBD5E1;}
         .takeaway-board{background:rgba(255,250,235,.97);border:4px solid #FFD45C;border-radius:28px;padding:18px;margin:14px auto;box-shadow:0 10px 28px rgba(0,0,0,.15);}
         .takeaway-instruction{font-weight:900;color:#374151;margin:5px 0 15px;}
         .takeaway-questions{display:flex;flex-direction:column;gap:14px;}
-        .takeaway-row{display:grid;grid-template-columns:116px minmax(0,1fr) 100px 82px;gap:10px;align-items:center;padding:9px;background:rgba(255,255,255,.62);border-radius:18px;}
-        .takeaway-equation{font-family:'Fredoka One',cursive;font-size:clamp(1.45rem,4vw,2.15rem);color:#263238;white-space:nowrap;}
-        .takeaway-object-box{min-height:100px;background:#fff;border:4px solid #243447;border-radius:16px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:4px;padding:8px;}
-        .takeaway-object{font-size:clamp(1.7rem,4.6vw,2.55rem);line-height:1;cursor:grab;user-select:none;touch-action:none;transition:.14s;filter:drop-shadow(0 2px 2px rgba(0,0,0,.12));}
+        .takeaway-row{display:flex;flex-direction:column;align-items:stretch;gap:16px;padding:14px;background:rgba(255,255,255,.62);border-radius:22px;}
+        .takeaway-equation{font-family:'Fredoka One',cursive;font-size:clamp(2.2rem,7vw,3.6rem);color:#263238;text-align:center;white-space:nowrap;}
+        .takeaway-object-box{min-height:190px;background:#fff;border:4px solid #243447;border-radius:20px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:12px;padding:18px;}
+        .takeaway-object{font-size:clamp(3.7rem,9vw,5.4rem);line-height:1;cursor:grab;user-select:none;touch-action:none;transition:.14s;filter:drop-shadow(0 3px 3px rgba(0,0,0,.14));padding:5px;}
         .takeaway-object.counted{transform:scale(1.2);}
         .takeaway-object.removed{opacity:.18;pointer-events:none;}
-        .takeaway-basket{min-height:90px;border:4px dashed #A86424;border-radius:16px;background:#FFF1D1;display:flex;align-items:center;justify-content:center;position:relative;font-size:3.3rem;transition:.15s;}
+        .takeaway-basket{width:min(100%,360px);min-height:125px;margin:0 auto;border:5px dashed #A86424;border-radius:20px;background:#FFF1D1;display:flex;align-items:center;justify-content:center;position:relative;font-size:5rem;transition:.15s;}
         .takeaway-basket.hovered{border-color:#FF66C4;background:#FFF0F8;transform:scale(1.04);}
         .takeaway-basket-count{position:absolute;right:4px;top:3px;min-width:25px;height:25px;border-radius:50%;background:#5E17EB;color:#fff;font:bold 14px/25px Arial;}
-        .takeaway-answer-zone{height:78px;background:#fff;border:4px solid #243447;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:2.5rem;transition:.16s;}
+        .takeaway-answer-zone{width:min(100%,220px);height:90px;margin:0 auto;background:#fff;border:4px solid #243447;border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:3rem;transition:.16s;}
         .takeaway-answer-zone.hovered{border-color:#FF66C4;background:#FFF0F8;transform:scale(1.04);}
         .takeaway-answer-zone.correct{background:#DDF8D1;border-color:#58B83C;color:#23821C;}
         .takeaway-answer-zone.wrong{background:#FFD9D9;border-color:#E64C4C;}
@@ -3457,7 +3460,7 @@
         .takeaway-floating.number{width:72px;height:72px;border:3px solid #263238;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:2.4rem;}
         .takeaway-status{min-height:28px;font-weight:900;color:#5E17EB;margin-top:8px;}
         @media(max-width:600px){
-            #taking-away-screen{width:calc(100vw - 8px);padding-left:0;padding-right:0}.takeaway-board{padding:10px 6px;border-radius:22px}.takeaway-row{grid-template-columns:1fr 66px 57px;gap:4px;padding:6px}.takeaway-equation{grid-column:1/-1;text-align:left;padding-left:5px}.takeaway-object-box{min-height:82px;padding:4px;gap:1px;border-width:3px}.takeaway-object{font-size:clamp(1.35rem,7vw,1.9rem)}.takeaway-basket{min-height:70px;font-size:2.6rem;border-width:3px}.takeaway-answer-zone{height:60px;font-size:2rem;border-width:3px}.takeaway-answer-bank{gap:9px;padding:10px}.takeaway-answer-tile{width:60px;height:60px;font-size:2rem}
+            #taking-away-screen{width:calc(100vw - 8px);padding-left:0;padding-right:0}.takeaway-board{padding:10px 6px;border-radius:22px}.takeaway-row{gap:12px;padding:8px}.takeaway-equation{font-size:2.35rem}.takeaway-object-box{min-height:170px;padding:12px 6px;gap:7px;border-width:3px}.takeaway-object{font-size:clamp(3.2rem,16vw,4.6rem);padding:3px}.takeaway-basket{width:82%;min-height:105px;font-size:4.3rem;border-width:4px}.takeaway-answer-zone{height:72px;font-size:2.5rem;border-width:3px}.takeaway-answer-bank{gap:10px;padding:10px}.takeaway-answer-tile{width:68px;height:68px;font-size:2.2rem}
         }
 
     
@@ -4845,7 +4848,7 @@
                     <button class="num123-menu-btn" onclick="playClickSound(); startAddThemUp()" aria-label="Add Them Up">
                         <img src="https://i.imgur.com/2HkHYvL.jpeg" alt="Add Them Up">
                     </button>
-                    <button class="num123-menu-btn" onclick="playClickSound(); startTakingAway()" aria-label="Taking Away">
+                    <button class="num123-menu-btn" onclick="playClickSound(); openTakingAwayCountScreen()" aria-label="Taking Away">
                         <img src="https://i.imgur.com/JPautVP.jpeg" alt="Taking Away">
                     </button>
                 </div>
@@ -4934,6 +4937,17 @@
                     <div class="addup-status" id="addup-status"></div>
                 </div>
                 <button class="action-btn home-btn" id="addup-back-btn" onclick="playClickSound(); open123Menu()">Back ↩️</button>
+            </div>
+
+            <!-- TAKING AWAY QUESTION COUNT -->
+            <div id="taking-away-count-screen" class="card">
+                <h2 id="takeaway-count-title" style="color:#5E17EB;font-family:'Fredoka One',cursive;">Taking Away ➖</h2>
+                <p id="takeaway-count-text" style="font-weight:900;">Choose the number of questions</p>
+                <div class="takeaway-count-options">
+                    <button class="takeaway-count-btn" onclick="playClickSound(); startTakingAway(5)">5</button>
+                    <button class="takeaway-count-btn" onclick="playClickSound(); startTakingAway(10)">10</button>
+                </div>
+                <button class="action-btn home-btn" id="takeaway-count-back" onclick="playClickSound(); open123Menu()">Back ↩️</button>
             </div>
 
             <!-- TAKING AWAY SCREEN -->
@@ -7530,7 +7544,8 @@
             if(document.getElementById('match123-screen')?.classList.contains('active') && match123Questions.length) renderMatch123();
             if(document.getElementById('lets-count-screen')?.classList.contains('active') && count123Questions.length) renderCount123();
             if(document.getElementById('add-them-up-screen')?.classList.contains('active') && addUpSets.length) renderAddUpSet();
-            if(document.getElementById('taking-away-screen')?.classList.contains('active') && takeAwaySets.length) renderTakeAwaySet();
+            if(document.getElementById('taking-away-count-screen')?.classList.contains('active')) openTakingAwayCountScreen();
+            if(document.getElementById('taking-away-screen')?.classList.contains('active') && takeAwaySession.length) renderTakeAwayQuestion();
             if(document.getElementById('find123-screen')?.classList.contains('active') && find123Questions.length) renderFind123();
         }
 
@@ -7811,79 +7826,51 @@
         }
 
         // =========================================================
-        // TAKING AWAY - 5 sets x 4 unique subtraction questions
+        // TAKING AWAY - one large question per page, selectable 5 or 10
         // =========================================================
         const takeAwayPairBank=[];
         for(let whole=2;whole<=10;whole++) for(let remove=1;remove<whole;remove++) takeAwayPairBank.push([whole,remove]);
         const takeAwayObjects=['🍎','🍊','🍓','🍐','🍇','🍒','🥝','🍋','🍑','🫐'];
-        let takeAwaySets=[],takeAwaySetIndex=0,takeAwayScore=0,takeAwayAnswers={},takeAwayRemoved={},takeAwayCountState={},takeAwayDrag=null,takeAwayFloat=null,takeAwayAdvancing=false;
+        let takeAwaySession=[],takeAwayQuestionIndex=0,takeAwayQuestionTotal=5,takeAwayScore=0,takeAwayAnswers={},takeAwayRemoved={},takeAwayCountState={},takeAwayDrag=null,takeAwayFloat=null,takeAwayAdvancing=false;
 
         function takeAwayText(){
             const ms=getNum123Lang()==='ms';
             return ms?{
-                title:'Taking Away ➖',set:'Set',instruction:'Seret objek ke dalam bakul mengikut soalan. Kira objek yang tinggal, kemudian seret jawapan yang betul ke dalam kotak.',
+                title:'Taking Away ➖',question:'Soalan',choose:'Pilih bilangan soalan',instruction:'Seret objek ke dalam bakul mengikut soalan. Kira objek yang tinggal, kemudian pilih jawapan yang betul.',
                 back:'Back ↩️',remove:n=>`Masukkan ${n} objek ke dalam bakul.`,ready:'Bagus! Tekan objek yang tinggal untuk mengira, kemudian pilih jawapan.',
-                full:'Objek yang perlu dikeluarkan sudah cukup.',first:'Keluarkan objek ke dalam bakul dahulu.',correct:'Betul!',wrong:'Cuba lagi.',fill:'Lengkapkan semua 4 soalan.',score:s=>`Hebat! Skor anda ${s}/100 🎉`
+                full:'Objek yang perlu dikeluarkan sudah cukup.',first:'Keluarkan objek ke dalam bakul dahulu.',correct:'Betul!',wrong:'Cuba lagi.',fill:'Masukkan objek ke dalam bakul dahulu.',score:s=>`Hebat! Skor anda ${s}/100 🎉`
             }:{
-                title:'Taking Away ➖',set:'Set',instruction:'Drag the objects into the basket. Count what remains, then drag the correct answer into the box.',
+                title:'Taking Away ➖',question:'Question',choose:'Choose the number of questions',instruction:'Drag the objects into the basket. Count what remains, then choose the correct answer.',
                 back:'Back ↩️',remove:n=>`Put ${n} object${n>1?'s':''} into the basket.`,ready:'Great! Tap the remaining objects to count, then choose the answer.',
-                full:'You have removed enough objects.',first:'Move the objects into the basket first.',correct:'Correct!',wrong:'Try again.',fill:'Complete all 4 questions.',score:s=>`Great job! Your score is ${s}/100 🎉`
+                full:'You have removed enough objects.',first:'Move the objects into the basket first.',correct:'Correct!',wrong:'Try again.',fill:'Move the objects into the basket first.',score:s=>`Great job! Your score is ${s}/100 🎉`
             };
         }
-        function buildTakeAwaySets(){
-            const sets=[],used=new Set();
-            for(let s=0;s<5;s++){
-                const set=[],wholeNumbers=new Set(),removeNumbers=new Set(),answerNumbers=new Set();
-                const candidates=shuffle123(takeAwayPairBank.filter(pair=>!used.has(pair.join('-'))));
-
-                // Pastikan setiap set benar-benar pelbagai: nombor asal dan
-                // nombor yang ditolak tidak berulang dalam 4 soalan yang sama.
-                for(const pair of candidates){
-                    const [whole,remove]=pair;
-                    const answer=whole-remove;
-                    if(wholeNumbers.has(whole)||removeNumbers.has(remove)||answerNumbers.has(answer))continue;
-                    set.push(pair);wholeNumbers.add(whole);removeNumbers.add(remove);answerNumbers.add(answer);
-                    if(set.length===4)break;
-                }
-
-                // Fallback sangat jarang: cuba semula dengan carian kombinasi
-                // supaya syarat kepelbagaian masih dikekalkan.
-                if(set.length<4){
-                    set.length=0;wholeNumbers.clear();removeNumbers.clear();answerNumbers.clear();
-                    const findCombination=(start)=>{
-                        if(set.length===4)return true;
-                        for(let i=start;i<candidates.length;i++){
-                            const pair=candidates[i],[whole,remove]=pair;
-                            const answer=whole-remove;
-                            if(wholeNumbers.has(whole)||removeNumbers.has(remove)||answerNumbers.has(answer))continue;
-                            set.push(pair);wholeNumbers.add(whole);removeNumbers.add(remove);answerNumbers.add(answer);
-                            if(findCombination(i+1))return true;
-                            set.pop();wholeNumbers.delete(whole);removeNumbers.delete(remove);answerNumbers.delete(answer);
-                        }
-                        return false;
-                    };
-                    findCombination(0);
-                }
-                set.forEach(pair=>used.add(pair.join('-')));
-                sets.push(shuffle123(set));
-            }
-            return sets;
+        function openTakingAwayCountScreen(){
+            window.speechSynthesis&&window.speechSynthesis.cancel();
+            const t=takeAwayText();
+            document.getElementById('takeaway-count-title').textContent=t.title;
+            document.getElementById('takeaway-count-text').textContent=t.choose;
+            document.getElementById('takeaway-count-back').textContent=t.back;
+            showScreen('taking-away-count-screen');
         }
-        function startTakingAway(){
-            window.speechSynthesis&&window.speechSynthesis.cancel();takeAwaySets=buildTakeAwaySets();takeAwaySetIndex=0;takeAwayScore=0;takeAwayAnswers={};takeAwayRemoved={};takeAwayCountState={};takeAwayAdvancing=false;showScreen('taking-away-screen');renderTakeAwaySet();
+        function buildTakeAwaySession(count){
+            return shuffle123(takeAwayPairBank).slice(0,count);
         }
-        function renderTakeAwaySet(){
-            if(!takeAwaySets.length)return;const t=takeAwayText(),set=takeAwaySets[takeAwaySetIndex];takeAwayAnswers={};takeAwayRemoved={};takeAwayCountState={};takeAwayAdvancing=false;
-            document.getElementById('takeaway-title').textContent=t.title;document.getElementById('takeaway-progress').textContent=`${t.set} ${takeAwaySetIndex+1} / 5`;document.getElementById('takeaway-score').textContent=takeAwayScore;document.getElementById('takeaway-instruction').textContent=t.instruction;document.getElementById('takeaway-back-btn').textContent=t.back;document.getElementById('takeaway-status').textContent=t.fill;
+        function startTakingAway(count){
+            window.speechSynthesis&&window.speechSynthesis.cancel();takeAwayQuestionTotal=count===10?10:5;takeAwaySession=buildTakeAwaySession(takeAwayQuestionTotal);takeAwayQuestionIndex=0;takeAwayScore=0;takeAwayAnswers={};takeAwayRemoved={};takeAwayCountState={};takeAwayAdvancing=false;showScreen('taking-away-screen');renderTakeAwayQuestion();
+        }
+        function renderTakeAwayQuestion(){
+            if(!takeAwaySession.length)return;const t=takeAwayText(),pair=takeAwaySession[takeAwayQuestionIndex];takeAwayAnswers={};takeAwayRemoved={0:0};takeAwayCountState={0:0};takeAwayAdvancing=false;
+            document.getElementById('takeaway-title').textContent=t.title;document.getElementById('takeaway-progress').textContent=`${t.question} ${takeAwayQuestionIndex+1} / ${takeAwayQuestionTotal}`;document.getElementById('takeaway-score').textContent=Math.round(takeAwayScore);document.getElementById('takeaway-instruction').textContent=t.instruction;document.getElementById('takeaway-back-btn').textContent=t.back;document.getElementById('takeaway-status').textContent=t.fill;
             const wrap=document.getElementById('takeaway-questions');wrap.innerHTML='';
-            set.forEach((pair,q)=>{
-                const [whole,remove]=pair,object=takeAwayObjects[(takeAwaySetIndex*4+q)%takeAwayObjects.length];takeAwayRemoved[q]=0;takeAwayCountState[q]=0;
-                const row=document.createElement('div');row.className='takeaway-row';row.dataset.q=q;
-                row.innerHTML=`<div class="takeaway-equation">${whole} − ${remove} = ?</div><div class="takeaway-object-box" data-q="${q}"></div><div class="takeaway-basket" data-q="${q}" data-limit="${remove}" title="${t.remove(remove)}">🧺<span class="takeaway-basket-count">0/${remove}</span></div><div class="takeaway-answer-zone" data-q="${q}" data-answer="${whole-remove}"></div>`;
-                const box=row.querySelector('.takeaway-object-box');for(let n=0;n<whole;n++)box.appendChild(makeTakeAwayObject(object,q));wrap.appendChild(row);
-            });
-            const answers=shuffle123(set.map(x=>x[0]-x[1])),bank=document.getElementById('takeaway-answer-bank');bank.innerHTML='';
-            answers.forEach((n,i)=>{const tile=document.createElement('div');tile.className='takeaway-answer-tile';tile.textContent=n;tile.dataset.value=n;tile.dataset.tile=i;installTakeAwayAnswerDrag(tile);bank.appendChild(tile);});
+            const [whole,remove]=pair,q=0,object=takeAwayObjects[takeAwayQuestionIndex%takeAwayObjects.length];
+            const row=document.createElement('div');row.className='takeaway-row';row.dataset.q=q;
+            row.innerHTML=`<div class="takeaway-equation">${whole} − ${remove} = ?</div><div class="takeaway-object-box" data-q="0"></div><div class="takeaway-basket" data-q="0" data-limit="${remove}" title="${t.remove(remove)}">🧺<span class="takeaway-basket-count">0/${remove}</span></div><div class="takeaway-answer-zone" data-q="0" data-answer="${whole-remove}">?</div>`;
+            const box=row.querySelector('.takeaway-object-box');for(let n=0;n<whole;n++)box.appendChild(makeTakeAwayObject(object,0));wrap.appendChild(row);
+            const correct=whole-remove,choices=new Set([correct]);
+            for(const n of shuffle123([1,2,3,4,5,6,7,8,9])){if(choices.size===4)break;choices.add(n);}
+            const answers=shuffle123([...choices]),bank=document.getElementById('takeaway-answer-bank');bank.innerHTML='';
+            answers.forEach((n,i)=>{const tile=document.createElement('div');tile.className='takeaway-answer-tile';tile.textContent=n;tile.dataset.value=n;tile.dataset.tile=i;installTakeAwayAnswerDrag(tile);tile.onclick=()=>dropTakeAwayAnswer(tile,row.querySelector('.takeaway-answer-zone'));bank.appendChild(tile);});
         }
         function makeTakeAwayObject(symbol,q){
             const el=document.createElement('span');el.className='takeaway-object';el.textContent=symbol;el.dataset.q=q;
@@ -7904,10 +7891,10 @@
             tile.onpointerup=tile.onpointercancel=e=>{if(takeAwayDrag?.tile!==tile)return;e.preventDefault();const zone=document.elementFromPoint(e.clientX,e.clientY)?.closest('.takeaway-answer-zone');cleanupTakeAwayDrag();if(zone)dropTakeAwayAnswer(tile,zone);};
         }
         function dropTakeAwayAnswer(tile,zone){
-            if(zone.classList.contains('correct')||tile.classList.contains('used'))return;const t=takeAwayText(),q=+zone.dataset.q,set=takeAwaySets[takeAwaySetIndex],remove=set[q][1];
+            if(zone.classList.contains('correct')||tile.classList.contains('used')||takeAwayAdvancing)return;const t=takeAwayText(),q=+zone.dataset.q,pair=takeAwaySession[takeAwayQuestionIndex],remove=pair[1];
             if(takeAwayRemoved[q]!==remove){document.getElementById('takeaway-status').textContent=t.first;speakText123(t.first,.7);return;}
-            const val=+tile.dataset.value,ans=+zone.dataset.answer;if(val===ans){zone.textContent=val;zone.classList.remove('wrong');zone.classList.add('correct');tile.classList.add('used');takeAwayAnswers[q]=val;takeAwayScore+=5;document.getElementById('takeaway-score').textContent=takeAwayScore;speakText123(`${val}. ${t.correct}`,.62);
-                if(Object.keys(takeAwayAnswers).length===4){takeAwayAdvancing=true;document.getElementById('takeaway-status').textContent=t.correct;setTimeout(()=>{if(takeAwaySetIndex<4){takeAwaySetIndex++;renderTakeAwaySet();}else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Taking Away',takeAwayScore);alert(t.score(takeAwayScore));open123Menu();}},900);}
+            const val=+tile.dataset.value,ans=+zone.dataset.answer;if(val===ans){zone.textContent=val;zone.classList.remove('wrong');zone.classList.add('correct');tile.classList.add('used');takeAwayAnswers[q]=val;takeAwayScore+=100/takeAwayQuestionTotal;document.getElementById('takeaway-score').textContent=Math.round(takeAwayScore);speakText123(`${val}. ${t.correct}`,.62);
+                takeAwayAdvancing=true;document.getElementById('takeaway-status').textContent=t.correct;setTimeout(()=>{if(takeAwayQuestionIndex<takeAwayQuestionTotal-1){takeAwayQuestionIndex++;renderTakeAwayQuestion();}else{const finalScore=Math.round(takeAwayScore);if(window.saveScoreToFirebase)window.saveScoreToFirebase('Taking Away',finalScore);alert(t.score(finalScore));open123Menu();}},900);
             }else{zone.classList.add('wrong');document.getElementById('takeaway-status').textContent=t.wrong;speakText123(t.wrong,.7);setTimeout(()=>zone.classList.remove('wrong'),500);}
         }
 
