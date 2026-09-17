@@ -7833,23 +7833,35 @@
         function buildTakeAwaySets(){
             const sets=[],used=new Set();
             for(let s=0;s<5;s++){
-                const set=[],wholeNumbers=new Set(),removeNumbers=new Set(),answerNumbers=new Set();
+                const set=[],wholeNumbers=new Set(),removeNumbers=new Set();
                 const candidates=shuffle123(takeAwayPairBank.filter(pair=>!used.has(pair.join('-'))));
 
-                // Setiap set mesti mempunyai nombor asal, nombor ditolak dan
-                // jawapan yang berbeza supaya pilihan jawapan tidak berulang.
-                const findCombination=(start)=>{
-                    if(set.length===4)return true;
-                    for(let i=start;i<candidates.length;i++){
-                        const pair=candidates[i],[whole,remove]=pair,answer=whole-remove;
-                        if(wholeNumbers.has(whole)||removeNumbers.has(remove)||answerNumbers.has(answer))continue;
-                        set.push(pair);wholeNumbers.add(whole);removeNumbers.add(remove);answerNumbers.add(answer);
-                        if(findCombination(i+1))return true;
-                        set.pop();wholeNumbers.delete(whole);removeNumbers.delete(remove);answerNumbers.delete(answer);
-                    }
-                    return false;
-                };
-                findCombination(0);
+                // Pastikan setiap set benar-benar pelbagai: nombor asal dan
+                // nombor yang ditolak tidak berulang dalam 4 soalan yang sama.
+                for(const pair of candidates){
+                    const [whole,remove]=pair;
+                    if(wholeNumbers.has(whole)||removeNumbers.has(remove))continue;
+                    set.push(pair);wholeNumbers.add(whole);removeNumbers.add(remove);
+                    if(set.length===4)break;
+                }
+
+                // Fallback sangat jarang: cuba semula dengan carian kombinasi
+                // supaya syarat kepelbagaian masih dikekalkan.
+                if(set.length<4){
+                    set.length=0;wholeNumbers.clear();removeNumbers.clear();
+                    const findCombination=(start)=>{
+                        if(set.length===4)return true;
+                        for(let i=start;i<candidates.length;i++){
+                            const pair=candidates[i],[whole,remove]=pair;
+                            if(wholeNumbers.has(whole)||removeNumbers.has(remove))continue;
+                            set.push(pair);wholeNumbers.add(whole);removeNumbers.add(remove);
+                            if(findCombination(i+1))return true;
+                            set.pop();wholeNumbers.delete(whole);removeNumbers.delete(remove);
+                        }
+                        return false;
+                    };
+                    findCombination(0);
+                }
                 set.forEach(pair=>used.add(pair.join('-')));
                 sets.push(shuffle123(set));
             }
@@ -7873,7 +7885,7 @@
         }
         function makeTakeAwayObject(symbol,q){
             const el=document.createElement('span');el.className='takeaway-object';el.textContent=symbol;el.dataset.q=q;
-            el.onclick=()=>{if(el.classList.contains('removed'))return;el.classList.add('counted');takeAwayCountState[q]=(takeAwayCountState[q]||0)+1;setTimeout(()=>el.classList.remove('counted'),260);};
+            el.onclick=()=>{if(el.classList.contains('removed'))return;el.classList.add('counted');takeAwayCountState[q]=(takeAwayCountState[q]||0)+1;speakText123(getNum123Words()[takeAwayCountState[q]]||String(takeAwayCountState[q]),.55);setTimeout(()=>el.classList.remove('counted'),260);};
             el.onpointerdown=e=>{if(el.classList.contains('removed')||takeAwayAdvancing)return;e.preventDefault();takeAwayDrag={type:'object',el,q,pointerId:e.pointerId};el.setPointerCapture?.(e.pointerId);takeAwayFloat=document.createElement('div');takeAwayFloat.className='takeaway-floating';takeAwayFloat.textContent=symbol;document.body.appendChild(takeAwayFloat);moveTakeAwayFloat(e);};
             el.onpointermove=e=>{if(takeAwayDrag?.el!==el)return;e.preventDefault();moveTakeAwayFloat(e);highlightTakeAwayBasket(e.clientX,e.clientY,q);};
             el.onpointerup=el.onpointercancel=e=>{if(takeAwayDrag?.el!==el)return;e.preventDefault();const basket=document.elementFromPoint(e.clientX,e.clientY)?.closest('.takeaway-basket');cleanupTakeAwayDrag();if(basket&&+basket.dataset.q===q)dropTakeAwayObject(el,basket,q);};return el;
@@ -7881,15 +7893,8 @@
         function moveTakeAwayFloat(e){if(takeAwayFloat){takeAwayFloat.style.left=e.clientX+'px';takeAwayFloat.style.top=e.clientY+'px';}}
         function highlightTakeAwayBasket(x,y,q){document.querySelectorAll('.takeaway-basket').forEach(z=>z.classList.remove('hovered'));const z=document.elementFromPoint(x,y)?.closest('.takeaway-basket');if(z&&+z.dataset.q===q)z.classList.add('hovered');}
         function cleanupTakeAwayDrag(){if(takeAwayDrag?.type==='answer')takeAwayDrag.tile?.classList.remove('dragging');takeAwayDrag=null;takeAwayFloat?.remove();takeAwayFloat=null;document.querySelectorAll('.takeaway-basket,.takeaway-answer-zone').forEach(z=>z.classList.remove('hovered'));}
-        function playTakeAwayBasketSound(){
-            if(audioCtx.state==='suspended')audioCtx.resume();
-            const now=audioCtx.currentTime,osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
-            osc.type='sine';osc.frequency.setValueAtTime(520,now);osc.frequency.exponentialRampToValueAtTime(260,now+.12);
-            gain.gain.setValueAtTime(.22,now);gain.gain.exponentialRampToValueAtTime(.01,now+.13);
-            osc.connect(gain);gain.connect(audioCtx.destination);osc.start(now);osc.stop(now+.13);
-        }
         function dropTakeAwayObject(el,basket,q){
-            const t=takeAwayText(),limit=+basket.dataset.limit;if(takeAwayRemoved[q]>=limit)return;el.classList.add('removed');takeAwayRemoved[q]++;takeAwayCountState[q]=0;basket.querySelector('.takeaway-basket-count').textContent=`${takeAwayRemoved[q]}/${limit}`;const left=limit-takeAwayRemoved[q];document.getElementById('takeaway-status').textContent=left?t.more(left):t.ready;playTakeAwayBasketSound();
+            const t=takeAwayText(),limit=+basket.dataset.limit;if(takeAwayRemoved[q]>=limit){speakText123(t.full,.7);return;}el.classList.add('removed');takeAwayRemoved[q]++;takeAwayCountState[q]=0;basket.querySelector('.takeaway-basket-count').textContent=`${takeAwayRemoved[q]}/${limit}`;const left=limit-takeAwayRemoved[q];document.getElementById('takeaway-status').textContent=left?t.more(left):t.ready;speakText123(left?t.more(left):t.ready,.65);
         }
         function installTakeAwayAnswerDrag(tile){
             tile.onpointerdown=e=>{if(tile.classList.contains('used')||takeAwayAdvancing)return;e.preventDefault();takeAwayDrag={type:'answer',tile,pointerId:e.pointerId};tile.setPointerCapture?.(e.pointerId);tile.classList.add('dragging');takeAwayFloat=document.createElement('div');takeAwayFloat.className='takeaway-floating number';takeAwayFloat.textContent=tile.dataset.value;document.body.appendChild(takeAwayFloat);moveTakeAwayFloat(e);};
@@ -7898,10 +7903,10 @@
         }
         function dropTakeAwayAnswer(tile,zone){
             if(zone.classList.contains('correct')||tile.classList.contains('used'))return;const t=takeAwayText(),q=+zone.dataset.q,set=takeAwaySets[takeAwaySetIndex],remove=set[q][1];
-            if(takeAwayRemoved[q]!==remove){document.getElementById('takeaway-status').textContent=t.first;return;}
-            const val=+tile.dataset.value,ans=+zone.dataset.answer;if(val===ans){zone.textContent=val;zone.classList.remove('wrong');zone.classList.add('correct');tile.classList.add('used');takeAwayAnswers[q]=val;takeAwayScore+=5;document.getElementById('takeaway-score').textContent=takeAwayScore;
+            if(takeAwayRemoved[q]!==remove){document.getElementById('takeaway-status').textContent=t.first;speakText123(t.first,.7);return;}
+            const val=+tile.dataset.value,ans=+zone.dataset.answer;if(val===ans){zone.textContent=val;zone.classList.remove('wrong');zone.classList.add('correct');tile.classList.add('used');takeAwayAnswers[q]=val;takeAwayScore+=5;document.getElementById('takeaway-score').textContent=takeAwayScore;speakText123(`${val}. ${t.correct}`,.62);
                 if(Object.keys(takeAwayAnswers).length===4){takeAwayAdvancing=true;document.getElementById('takeaway-status').textContent=t.correct;setTimeout(()=>{if(takeAwaySetIndex<4){takeAwaySetIndex++;renderTakeAwaySet();}else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Taking Away',takeAwayScore);alert(t.score(takeAwayScore));open123Menu();}},900);}
-            }else{zone.classList.add('wrong');document.getElementById('takeaway-status').textContent=t.wrong;setTimeout(()=>zone.classList.remove('wrong'),500);}
+            }else{zone.classList.add('wrong');document.getElementById('takeaway-status').textContent=t.wrong;speakText123(t.wrong,.7);setTimeout(()=>zone.classList.remove('wrong'),500);}
         }
 
         // =========================================================
