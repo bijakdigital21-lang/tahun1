@@ -7823,11 +7823,11 @@
             return ms?{
                 title:'Taking Away ➖',set:'Set',instruction:'Seret objek ke dalam bakul mengikut soalan. Kira objek yang tinggal, kemudian seret jawapan yang betul ke dalam kotak.',
                 back:'Back ↩️',remove:n=>`Masukkan ${n} objek ke dalam bakul.`,ready:'Bagus! Tekan objek yang tinggal untuk mengira, kemudian pilih jawapan.',
-                more:n=>`Masukkan ${n} objek lagi ke dalam bakul.`,full:'Objek yang perlu dikeluarkan sudah cukup.',first:'Keluarkan objek ke dalam bakul dahulu.',correct:'Betul!',wrong:'Cuba lagi.',fill:'Lengkapkan semua 4 soalan.',score:s=>`Hebat! Skor anda ${s}/100 🎉`
+                full:'Objek yang perlu dikeluarkan sudah cukup.',first:'Keluarkan objek ke dalam bakul dahulu.',correct:'Betul!',wrong:'Cuba lagi.',fill:'Lengkapkan semua 4 soalan.',score:s=>`Hebat! Skor anda ${s}/100 🎉`
             }:{
                 title:'Taking Away ➖',set:'Set',instruction:'Drag the objects into the basket. Count what remains, then drag the correct answer into the box.',
                 back:'Back ↩️',remove:n=>`Put ${n} object${n>1?'s':''} into the basket.`,ready:'Great! Tap the remaining objects to count, then choose the answer.',
-                more:n=>`Put ${n} more object${n>1?'s':''} into the basket.`,full:'You have removed enough objects.',first:'Move the objects into the basket first.',correct:'Correct!',wrong:'Try again.',fill:'Complete all 4 questions.',score:s=>`Great job! Your score is ${s}/100 🎉`
+                full:'You have removed enough objects.',first:'Move the objects into the basket first.',correct:'Correct!',wrong:'Try again.',fill:'Complete all 4 questions.',score:s=>`Great job! Your score is ${s}/100 🎉`
             };
         }
         function buildTakeAwaySets(){
@@ -7896,7 +7896,7 @@
         function highlightTakeAwayBasket(x,y,q){document.querySelectorAll('.takeaway-basket').forEach(z=>z.classList.remove('hovered'));const z=document.elementFromPoint(x,y)?.closest('.takeaway-basket');if(z&&+z.dataset.q===q)z.classList.add('hovered');}
         function cleanupTakeAwayDrag(){if(takeAwayDrag?.type==='answer')takeAwayDrag.tile?.classList.remove('dragging');takeAwayDrag=null;takeAwayFloat?.remove();takeAwayFloat=null;document.querySelectorAll('.takeaway-basket,.takeaway-answer-zone').forEach(z=>z.classList.remove('hovered'));}
         function dropTakeAwayObject(el,basket,q){
-            const t=takeAwayText(),limit=+basket.dataset.limit;if(takeAwayRemoved[q]>=limit){speakText123(t.full,.7);return;}el.classList.add('removed');takeAwayRemoved[q]++;takeAwayCountState[q]=0;basket.querySelector('.takeaway-basket-count').textContent=`${takeAwayRemoved[q]}/${limit}`;const left=limit-takeAwayRemoved[q];document.getElementById('takeaway-status').textContent=left?t.more(left):t.ready;playClickSound();if(!left)speakText123(t.ready,.65);
+            const t=takeAwayText(),limit=+basket.dataset.limit;if(takeAwayRemoved[q]>=limit){speakText123(t.full,.7);return;}el.classList.add('removed');takeAwayRemoved[q]++;takeAwayCountState[q]=0;basket.querySelector('.takeaway-basket-count').textContent=`${takeAwayRemoved[q]}/${limit}`;const left=limit-takeAwayRemoved[q];document.getElementById('takeaway-status').textContent=left?'':t.ready;playClickSound();
         }
         function installTakeAwayAnswerDrag(tile){
             tile.onpointerdown=e=>{if(tile.classList.contains('used')||takeAwayAdvancing)return;e.preventDefault();takeAwayDrag={type:'answer',tile,pointerId:e.pointerId};tile.setPointerCapture?.(e.pointerId);tile.classList.add('dragging');takeAwayFloat=document.createElement('div');takeAwayFloat.className='takeaway-floating number';takeAwayFloat.textContent=tile.dataset.value;document.body.appendChild(takeAwayFloat);moveTakeAwayFloat(e);};
