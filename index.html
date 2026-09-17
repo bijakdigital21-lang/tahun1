@@ -7831,20 +7831,38 @@
             };
         }
         function buildTakeAwaySets(){
-            const pool=shuffle123(takeAwayPairBank),sets=[],used=new Set();
+            const sets=[],used=new Set();
             for(let s=0;s<5;s++){
-                const set=[],answers=new Set();
-                for(const pair of pool){
-                    const key=pair.join('-'),answer=pair[0]-pair[1];
-                    if(used.has(key)||answers.has(answer))continue;
-                    set.push(pair);used.add(key);answers.add(answer);if(set.length===4)break;
+                const set=[],wholeNumbers=new Set(),removeNumbers=new Set();
+                const candidates=shuffle123(takeAwayPairBank.filter(pair=>!used.has(pair.join('-'))));
+
+                // Pastikan setiap set benar-benar pelbagai: nombor asal dan
+                // nombor yang ditolak tidak berulang dalam 4 soalan yang sama.
+                for(const pair of candidates){
+                    const [whole,remove]=pair;
+                    if(wholeNumbers.has(whole)||removeNumbers.has(remove))continue;
+                    set.push(pair);wholeNumbers.add(whole);removeNumbers.add(remove);
+                    if(set.length===4)break;
                 }
+
+                // Fallback sangat jarang: cuba semula dengan carian kombinasi
+                // supaya syarat kepelbagaian masih dikekalkan.
                 if(set.length<4){
-                    for(const pair of shuffle123(takeAwayPairBank)){
-                        const key=pair.join('-'),answer=pair[0]-pair[1];
-                        if(!used.has(key)&&!answers.has(answer)){set.push(pair);used.add(key);answers.add(answer);if(set.length===4)break;}
-                    }
+                    set.length=0;wholeNumbers.clear();removeNumbers.clear();
+                    const findCombination=(start)=>{
+                        if(set.length===4)return true;
+                        for(let i=start;i<candidates.length;i++){
+                            const pair=candidates[i],[whole,remove]=pair;
+                            if(wholeNumbers.has(whole)||removeNumbers.has(remove))continue;
+                            set.push(pair);wholeNumbers.add(whole);removeNumbers.add(remove);
+                            if(findCombination(i+1))return true;
+                            set.pop();wholeNumbers.delete(whole);removeNumbers.delete(remove);
+                        }
+                        return false;
+                    };
+                    findCombination(0);
                 }
+                set.forEach(pair=>used.add(pair.join('-')));
                 sets.push(shuffle123(set));
             }
             return sets;
