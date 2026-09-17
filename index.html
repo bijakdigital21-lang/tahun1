@@ -10103,6 +10103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const foodDatabase = [
             {id:'apple',cat:'fruit',en:'Apple',bm:'Epal',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWL3sFXC3SBeJmdXgdd7xyapAAEWBbNcPvjZ625iHV_g&s=10'},
             {id:'banana',cat:'fruit',en:'Banana',bm:'Pisang',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9stY-In-DVwLLzyyVuGzH16gmGKRj2mzkYqJApytapg&s=10'},
+            {id:'Guava',cat:'fruit',en:'Guava',bm:'Jambu Batu',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPaCjY8CZnUDwcY1FX84WmrNQUR71EwWhS8MEsuW4JMw&s=10'},
+            {id:'Kiwi',cat:'fruit',en:'Kiwi',bm:'Kiwi',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXzje-uhtMJCLqHLhx8gGLJhSdwpZvyqAI-AltJPdk7A&s=10'},
             {id:'orange',cat:'fruit',en:'Orange',bm:'Oren',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW5B8jGwTWNPMkuQ73Pvz2dj_rDsfqoCSis0IrQCCvZg&s=10'},
             {id:'mango',cat:'fruit',en:'Mango',bm:'Mangga',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZkSYIfz4foZGSsM5KXABVoyD0L8UDu72YO1Z-3jiZqw&s=10'},
             {id:'watermelon',cat:'fruit',en:'Watermelon',bm:'Tembikai',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_n_gTx2LY9rTdXti6r0z9nSlQq4Qyg2iMQTroXDnibg&s=10'},
@@ -10121,7 +10123,13 @@ document.addEventListener('DOMContentLoaded', () => {
             {id:'pumpkin',cat:'vegetable',en:'Pumpkin',bm:'Labu',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwHaxeWFfFqxdjiU1L1pWReL-EmW54-3-mlwizSgP31w&s=10'},
             {id:'corn',cat:'vegetable',en:'Corn',bm:'Jagung',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDPLoiudSgL2NqL_ZfG2uSB1fv9W6SYttviGGhYEYvxQ&s=10'},
             {id:'okra',cat:'vegetable',en:'Okra',bm:'Bendi',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyCZl_6-TZ5wwMZjKHQDtNsSJW8SgBkTKrdkP7QI1U1g&s=10'},
-            {id:'tomato',cat:'vegetable',en:'Tomato',bm:'Tomato',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq_gE0KSjPPQ9-ucTIOnM7ZzVLI9Hx-_XWERQHYtnbHQ&s=10'}
+            {id:'tomato',cat:'vegetable',en:'Tomato',bm:'Tomato',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq_gE0KSjPPQ9-ucTIOnM7ZzVLI9Hx-_XWERQHYtnbHQ&s=10'},
+
+
+            {id:'Potato',cat:'vegetable',en:'Potato',bm:'Kentang',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTI0pVme6fnWEDb3DE4eu1vH1iMMMgyr-e7coDi4cwh6w&s=10'},
+            {id:'onion',cat:'vegetable',en:'Onion',bm:'Bawang',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDlRCLXdLoW5TX40tSJh8k9_uBEyPt3aUOwAzXjFt4gg&s=10'},
+            {id:'Green beans',cat:'vegetable',en:'Green Beans',bm:'Kacang Buncis',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8ksoeA5OdZSGajP87N1YeDAm1Pec7Arsg4RzK8IJ4wQ&s=10'},
+            {id:'Bell pepper',cat:'vegetable',en:'Bell Pepper',bm:'Lada Benggala',img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEoE85AOx_u3sECK67Upl5__WCCDxarosrbU0U6tyDKQ&s=10'}
         ];
         const foodShuffle = arr => [...arr].sort(()=>Math.random()-.5);
         const foodName = item => currentGlobalLang==='ms' ? item.bm : item.en;
