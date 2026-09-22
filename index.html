@@ -39,7 +39,7 @@
 
         body {
             font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://i.imgur.com/Zjx17K5.jpeg') no-repeat center center fixed;
+            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://i.imgur.com/2JMsMk5.jpeg') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-dark);
             min-height: 100vh;
@@ -68,7 +68,7 @@
             pointer-events: none;
             background:
                 linear-gradient(rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.20)),
-                url('https://i.imgur.com/Zjx17K5.jpeg') no-repeat center center;
+                url('https://i.imgur.com/2JMsMk5.jpeg') no-repeat center center;
             background-size: cover;
             filter: blur(6px);
             transform: scale(1.04);
@@ -6169,10 +6169,42 @@
     </script>
 
     <script>
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // Create the context on demand: mobile browsers can suspend or interrupt it
+        // after the app has been left open in the background.
+        let audioCtx = null;
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        function getSoundContext() {
+            if (!AudioContextClass) return null;
+            if (!audioCtx || audioCtx.state === 'closed') audioCtx = new AudioContextClass();
+            return audioCtx;
+        }
+        async function playAppSound(draw) {
+            try {
+                let ctx = getSoundContext();
+                if (!ctx) return;
+                if (ctx.state !== 'running') await ctx.resume();
+                // A context may have been closed while resume was pending.
+                if (ctx.state === 'closed') {
+                    ctx = getSoundContext();
+                    await ctx.resume();
+                }
+                if (ctx.state === 'running') draw(ctx);
+            } catch (error) {
+                console.warn('Sound could not start:', error);
+            }
+        }
+        function wakeAppSound() {
+            const ctx = getSoundContext();
+            if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
+        }
+        document.addEventListener('pointerdown', wakeAppSound, {passive: true});
+        document.addEventListener('keydown', wakeAppSound);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && audioCtx) wakeAppSound();
+        });
 
         function playClickSound() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return playAppSound((audioCtx) => {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'sine';
@@ -6184,10 +6216,11 @@
             gain.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + 0.08);
+            });
         }
 
         function playCorrectSound() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return playAppSound((audioCtx) => {
             const now = audioCtx.currentTime;
             const osc1 = audioCtx.createOscillator();
             const gain1 = audioCtx.createGain();
@@ -6210,10 +6243,11 @@
             gain2.connect(audioCtx.destination);
             osc2.start(now + 0.1);
             osc2.stop(now + 0.3);
+            });
         }
 
         function playWrongSound() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return playAppSound((audioCtx) => {
             const now = audioCtx.currentTime;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
@@ -6226,6 +6260,7 @@
             gain.connect(audioCtx.destination);
             osc.start();
             osc.stop(now + 0.25);
+            });
         }
 
         let currentGlobalLang = 'en';
