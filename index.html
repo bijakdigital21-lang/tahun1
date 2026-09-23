@@ -7275,20 +7275,31 @@
             const picture=document.createElement('div');picture.className='complete-animal-pop-art';picture.textContent=animal[0];
             const name=document.createElement('div');name.className='complete-animal-pop-name';name.textContent=currentGlobalLang==='ms'?animal[1]:animal[2];
             card.append(picture,name);pop.append(card);document.body.append(pop);
-            // Speak the animal name as soon as its completed picture appears.
-            if('speechSynthesis' in window){
-                const synth=window.speechSynthesis;
-                synth.cancel();
-                const utterance=new SpeechSynthesisUtterance(name.textContent);
-                utterance.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';
-                utterance.rate=.7;
-                const voices=synth.getVoices();
-                const voice=voices.find(v=>v.lang.toLowerCase()===utterance.lang.toLowerCase())
-                    || voices.find(v=>v.lang.toLowerCase().startsWith(currentGlobalLang==='ms'?'ms':'en'));
-                if(voice) utterance.voice=voice;
-                synth.speak(utterance);
-                if(synth.paused) synth.resume();
-            }
+            // Automatic name audio on the completed-animal popup; button replays it on tap.
+            const speakName=()=>{
+                if(!('speechSynthesis' in window))return;
+                try {
+                    const synth=window.speechSynthesis;
+                    synth.cancel();
+                    const utterance=new SpeechSynthesisUtterance(name.textContent);
+                    utterance.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';
+                    utterance.rate=.8;
+                    utterance.volume=1;
+                    const voices=synth.getVoices();
+                    const voice=voices.find(v=>v.lang.toLowerCase()===utterance.lang.toLowerCase())
+                        || voices.find(v=>v.lang.toLowerCase().startsWith(currentGlobalLang==='ms'?'ms':'en'));
+                    if(voice)utterance.voice=voice;
+                    if(synth.paused)synth.resume();
+                    synth.speak(utterance);
+                }catch(err){console.warn('Animal name audio:',err);}
+            };
+            const replay=document.createElement('button');
+            replay.type='button';replay.className='sound-btn';
+            replay.textContent=currentGlobalLang==='ms'?'🔊 Dengar lagi':'🔊 Listen again';
+            replay.setAttribute('aria-label',currentGlobalLang==='ms'?'Sebut nama haiwan':'Say the animal name');
+            replay.addEventListener('click',e=>{e.stopPropagation();speakName()});
+            card.append(replay);
+            speakName();
             const session=completeAnimalSession;
             completeAnimalTimer=setTimeout(()=>{
                 pop.remove();if(session!==completeAnimalSession)return;
@@ -8816,6 +8827,7 @@
                 'match-paint-screen',
                 'find-colour-screen',
                 'match-animal-game-screen',
+                'complete-animal-screen',
                 'match-body-game-screen',
                 'find-animal-game-screen',
                 'choose-body-screen',
@@ -11020,7 +11032,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','taking-away-count-screen':'number','taking-away-screen':'number','find123-screen':'number',
     'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','match-paint-screen':'colour','find-colour-screen':'colour',
     'learn-body-screen':'body','choose-body-screen':'body','match-body-count-screen':'body','match-body-game-screen':'body','label-body-screen':'body',
-    'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
+    'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','complete-animal-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
     'learn-shape-screen':'shape','match-shape-screen':'shape','draw-shape-screen':'shape','match-me-screen':'shape',
     'learn-transport-cat-screen':'transport','learn-transport-flash-screen':'transport','sort-transport-screen':'transport','guess-transport-screen':'transport',
     'learn-food-screen':'food','sort-food-screen':'food'
