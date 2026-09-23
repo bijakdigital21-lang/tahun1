@@ -2175,7 +2175,7 @@
 
         /* =========================================================
            SPELL IT RIGHT - ABC MODULE
-           Kindergarten spelling: listen -> scramble -> tap letters
+           Kindergarten spelling: listen -> scramble -> drag letters
         ========================================================== */
         #spell-it-right-screen { width: 100%; }
         .spell-card {
@@ -2264,7 +2264,14 @@
             font-weight: 900;
             color: #222;
             text-transform: uppercase;
+            transition: transform .14s ease, background .14s ease, border-color .14s ease;
         }
+        .spell-slot.hovered {
+            background: #e7fbff;
+            border-color: #FF66C4;
+            transform: scale(1.08);
+        }
+        .spell-slot.filled { border-style: solid; border-color: #7ED957; background: #f3ffe9; }
         .spell-letter-bank {
             display: flex;
             justify-content: center;
@@ -2286,11 +2293,31 @@
             font-weight: 900;
             color: #2C3E50;
             cursor: pointer;
+            touch-action: none;
+            user-select: none;
             box-shadow: 0 5px 0 #c47d18, 0 7px 13px rgba(0,0,0,.14);
             transition: transform .12s ease, opacity .2s ease;
         }
         .spell-letter-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #c47d18; }
+        .spell-letter-btn.dragging { opacity: .45; transform: scale(.94); }
         .spell-letter-btn.used { opacity: .25; pointer-events: none; transform: scale(.9); }
+        .spell-floating {
+            position: fixed;
+            z-index: 99999;
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(-50%,-50%) scale(1.08);
+            pointer-events: none;
+            background: linear-gradient(145deg,#FFDE59,#ffb94d);
+            border: 3px solid #e59b21;
+            box-shadow: 0 8px 18px rgba(0,0,0,.25);
+            font: 900 2rem Arial,sans-serif;
+            color: #2C3E50;
+        }
         .spell-feedback {
             min-height: 32px;
             font-family: 'Fredoka One', cursive;
@@ -2315,6 +2342,7 @@
             .spell-learning-word { font-size: 1.9rem; letter-spacing: .22em; }
             .spell-slot { width: 46px; height: 51px; font-size: 1.7rem; }
             .spell-letter-btn { width: 55px; height: 55px; font-size: 1.75rem; }
+            .spell-floating { width:55px; height:55px; font-size:1.75rem; }
         }
 
     
@@ -8726,6 +8754,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let spellSelected = [];
         let spellOrder = [];
         let spellBusy = false;
+        let spellDrag = null;
+        let spellFloat = null;
 
         function shuffleSpellItems(items) {
             const arr = [...items];
@@ -8848,7 +8878,7 @@ document.addEventListener('DOMContentLoaded', () => {
             spellSelected = [];
             spellOrder = shuffleSpellLetters(item.word);
             document.getElementById('spell-learning-word').innerText = '';
-            document.getElementById('spell-instruction').innerText = 'Tap the letters in the correct order.';
+            document.getElementById('spell-instruction').innerText = 'Drag each letter into the correct answer box.';
             document.getElementById('spell-feedback').innerText = '';
             renderSpellSlots();
             renderSpellLetterBank();
@@ -8861,7 +8891,9 @@ document.addEventListener('DOMContentLoaded', () => {
             item.word.split('').forEach((_, i) => {
                 const slot = document.createElement('div');
                 slot.className = 'spell-slot';
+                slot.dataset.slotIndex = i;
                 slot.innerText = spellSelected[i] ? spellSelected[i].letter : '';
+                if (spellSelected[i]) slot.classList.add('filled');
                 wrap.appendChild(slot);
             });
         }
@@ -8875,18 +8907,77 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.innerText = obj.letter;
                 btn.dataset.spellIdx = idx;
                 btn.onclick = () => chooseSpellLetter(idx, btn);
+                installSpellLetterDrag(btn, idx);
                 bank.appendChild(btn);
             });
         }
 
         function chooseSpellLetter(idx, btn) {
             if (spellBusy || btn.classList.contains('used')) return;
+            const firstEmpty = spellSelected.findIndex(x => !x);
+            const slotIndex = firstEmpty === -1 ? spellSelected.length : firstEmpty;
+            placeSpellLetter(idx, btn, slotIndex);
+        }
+
+        function installSpellLetterDrag(btn, idx) {
+            btn.onpointerdown = e => {
+                if (spellBusy || btn.classList.contains('used')) return;
+                e.preventDefault();
+                spellDrag = { btn, idx, pointerId: e.pointerId, moved: false, startX: e.clientX, startY: e.clientY };
+                btn.setPointerCapture?.(e.pointerId);
+                btn.classList.add('dragging');
+                spellFloat = document.createElement('div');
+                spellFloat.className = 'spell-floating';
+                spellFloat.textContent = btn.textContent;
+                document.body.appendChild(spellFloat);
+                moveSpellFloat(e);
+            };
+            btn.onpointermove = e => {
+                if (spellDrag?.btn !== btn) return;
+                e.preventDefault();
+                if (Math.hypot(e.clientX - spellDrag.startX, e.clientY - spellDrag.startY) > 7) spellDrag.moved = true;
+                moveSpellFloat(e);
+                highlightSpellSlot(e.clientX, e.clientY);
+            };
+            btn.onpointerup = btn.onpointercancel = e => {
+                if (spellDrag?.btn !== btn) return;
+                e.preventDefault();
+                const moved = spellDrag.moved;
+                const slot = document.elementFromPoint(e.clientX, e.clientY)?.closest('.spell-slot');
+                cleanupSpellDrag();
+                if (slot) placeSpellLetter(idx, btn, Number(slot.dataset.slotIndex));
+                else if (!moved) chooseSpellLetter(idx, btn);
+            };
+        }
+
+        function moveSpellFloat(e) {
+            if (!spellFloat) return;
+            spellFloat.style.left = e.clientX + 'px';
+            spellFloat.style.top = e.clientY + 'px';
+        }
+
+        function highlightSpellSlot(x, y) {
+            document.querySelectorAll('#spell-answer-slots .spell-slot').forEach(slot => slot.classList.remove('hovered'));
+            const slot = document.elementFromPoint(x, y)?.closest('.spell-slot');
+            if (slot && !spellSelected[Number(slot.dataset.slotIndex)]) slot.classList.add('hovered');
+        }
+
+        function cleanupSpellDrag() {
+            spellDrag?.btn?.classList.remove('dragging');
+            spellDrag = null;
+            spellFloat?.remove();
+            spellFloat = null;
+            document.querySelectorAll('#spell-answer-slots .spell-slot').forEach(slot => slot.classList.remove('hovered'));
+        }
+
+        function placeSpellLetter(idx, btn, slotIndex) {
+            if (spellBusy || btn.classList.contains('used') || spellSelected[slotIndex]) return;
             playClickSound();
             btn.classList.add('used');
-            spellSelected.push({ ...spellOrder[idx], buttonIndex: idx });
+            spellSelected[slotIndex] = { ...spellOrder[idx], buttonIndex: idx };
             renderSpellSlots();
             const item = getCurrentSpellItem();
-            if (spellSelected.length === item.word.length) checkSpellAnswer();
+            if (spellSelected.filter(Boolean).length === item.word.length) checkSpellAnswer();
         }
 
         function checkSpellAnswer() {
