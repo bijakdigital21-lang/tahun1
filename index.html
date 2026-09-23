@@ -4628,11 +4628,13 @@
         .paint-pair{width:100%;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
         .paint-tube{width:min(83%,95px);height:clamp(78px,19vh,165px);border:0;background:transparent;padding:0;cursor:grab;touch-action:none;user-select:none;filter:drop-shadow(3px 4px 1px #8c7768);transition:opacity .18s}
         .paint-tube svg{width:100%;height:100%;pointer-events:none}
-        .paint-tube.matched{visibility:hidden}
+        .paint-tube.matched{filter:drop-shadow(0 0 5px #45b963)}
+        .paint-tube.selected{outline:3px solid #ffca42;border-radius:12px}
         .paint-target{width:min(88%,105px);height:clamp(46px,9vh,86px);background:#fff;border:2px solid #e5dccb;border-radius:8px;box-shadow:4px 5px 0 #bda995;display:grid;place-items:center;cursor:pointer;touch-action:none}
         .paint-target svg{width:65%;height:65%;pointer-events:none}
         .paint-target.over{outline:4px solid #ffca42}
         .paint-target.matched{border-color:#44ad68;background:#eaffeb}
+        .paint-tube.over{outline:4px solid #ffca42;border-radius:12px}
         .paint-target.wrong{animation:paintShake .28s}
         @keyframes paintShake{50%{transform:translateX(7px)}}
         .paint-drag-ghost{position:fixed;z-index:99999;pointer-events:none;opacity:.85;transform:translate(-50%,-50%);width:80px;height:125px;filter:drop-shadow(4px 8px 5px #777)}
@@ -5169,7 +5171,7 @@
             <div id="match-paint-screen" class="card">
                 <h2 id="match-paint-title">Match the Paint 🎨</h2>
                 <div class="colour-progress" id="match-paint-progress">Set 1 / 5 · ⭐ 0</div>
-                <p id="match-paint-instruction">Drag each paint tube to its matching colour.</p>
+                <p id="match-paint-instruction">Drag a paint tube onto another tube to swap their places and match the colours below.</p>
                 <div id="match-paint-board" class="paint-board"></div>
                 <p id="match-paint-feedback" aria-live="polite"></p>
                 <button class="action-btn home-btn" onclick="playClickSound(); openColourMenu()">Back ↩️</button>
@@ -8176,7 +8178,7 @@
             set('learn-colour-title','Learn Colour 🎨','Belajar Warna 🎨'); set('learn-colour-listen','🔊 Listen','🔊 Dengar'); set('learn-colour-prev','⬅ Prev','⬅ Prev'); set('learn-colour-next','Next ➡','Next ➡'); set('learn-colour-back','Back ↩️','Back ↩️');
             set('pop-balloon-title','Pop the Balloon 🎈','Pecahkan Belon 🎈'); set('pop-balloon-listen','🔊 Listen','🔊 Dengar'); set('pop-balloon-back','Back ↩️','Back ↩️');
             set('match-colour-title','Match the Colour 🎨','Suaikan Warna 🎨'); set('match-colour-instruction','Tap a colour word, then match it with the correct colour.','Tekan perkataan warna, kemudian suaikan dengan warna yang betul.'); set('match-colour-back','Back ↩️','Back ↩️');
-            set('match-paint-title','Match the Paint 🎨','Suaikan Cat 🎨'); set('match-paint-instruction','Drag each paint tube to its matching colour.','Seret setiap tiub cat ke warna yang betul.');
+            set('match-paint-title','Match the Paint 🎨','Suaikan Cat 🎨'); set('match-paint-instruction','Drag a paint tube onto another tube to swap their places and match the colours below.','Seret satu tiub cat ke tiub lain untuk bertukar tempat dan susun mengikut warna di bawah.');
             set('find-colour-title','Find the Colour 🔎','Cari Warna 🔎'); set('find-colour-listen','🔊 Listen','🔊 Dengar'); set('find-colour-back','Back ↩️','Back ↩️');
             if(document.getElementById('learn-colour-screen')?.classList.contains('active')) renderLearnColour();
             if(document.getElementById('pop-balloon-screen')?.classList.contains('active')) renderPopBalloon();
@@ -8185,50 +8187,67 @@
         }
 
 
-        // Match the Paint: six colours per set, five sets per session.
-        let paintSets=[],paintSetIndex=0,paintMatched=new Set(),paintScore=0,paintSelected=null,paintAdvanceTimer=null;
+        // Arrange six tubes by swapping their positions, five sets per session.
+        let paintSets=[],paintSetIndex=0,paintScore=0,paintSelected=null,paintAdvanceTimer=null,paintArrangement=[],paintTargets=[],paintFinishing=false;
         function paintTubeSvg(hex){return `<svg viewBox="0 0 90 180" aria-hidden="true"><path d="M21 20V5h48v15" fill="none" stroke="#a1998b" stroke-width="4"/><path d="M11 20h68l-6 43H17z" fill="#625e59"/><path d="M16 53h58v96q-2 10-14 11H30q-12-1-14-11z" fill="#fff"/><path d="M19 69h52v72q-3 9-13 9H32q-10 0-13-9z" fill="${hex}"/><path d="M25 21h40l-3 35H28z" fill="#514e49"/><path d="M28 159h34v15H28z" fill="#413d36"/><path d="M20 145q2 13 16 13h18q14 0 16-13" fill="none" stroke="#fff" stroke-width="6"/></svg>`}
         function paintSplashSvg(hex){return `<svg viewBox="0 0 90 75" aria-hidden="true"><path d="M17 35Q8 22 28 21Q30 8 42 16Q54 7 61 22Q78 22 70 37Q86 49 67 52Q67 69 51 60Q35 72 27 56Q10 59 17 45Q5 42 17 35Z" fill="${hex}"/></svg>`}
         function startMatchPaint(){
-            clearTimeout(paintAdvanceTimer);paintSetIndex=0;paintScore=0;paintSelected=null;
-            // Each page has six distinct colours; avoid identical colour combinations across pages.
+            clearTimeout(paintAdvanceTimer);paintSetIndex=0;paintScore=0;paintSelected=null;paintFinishing=false;
             const used=new Set();paintSets=[];
             while(paintSets.length<5){const set=colourShuffle(colourItems).slice(0,6),key=set.map(c=>c.en).sort().join('|');if(!used.has(key)){used.add(key);paintSets.push(set)}}
             showScreen('match-paint-screen');updateColourLanguage();renderPaintSet();
         }
         function renderPaintSet(){
-            paintMatched=new Set();paintSelected=null;
-            const colours=paintSets[paintSetIndex],tubes=colourShuffle(colours),targets=colourShuffle(colours);
+            paintSelected=null;paintFinishing=false;
+            const colours=paintSets[paintSetIndex];paintTargets=colourShuffle(colours);
+            do{paintArrangement=colourShuffle(paintTargets)}while(paintArrangement.every((c,i)=>c===paintTargets[i]));
             const board=document.getElementById('match-paint-board');board.innerHTML='';
-            document.getElementById('match-paint-progress').textContent=`${currentGlobalLang==='ms'?'Set':'Set'} ${paintSetIndex+1} / 5 · ⭐ ${paintScore}`;
             document.getElementById('match-paint-feedback').textContent='';
             for(let i=0;i<6;i++){
                 const pair=document.createElement('div');pair.className='paint-pair';
-                const tube=document.createElement('button');tube.type='button';tube.className='paint-tube';tube.dataset.paint=tubes[i].en;tube.setAttribute('aria-label',`${colourName(tubes[i])} paint tube`);tube.innerHTML=paintTubeSvg(tubes[i].hex);
-                const target=document.createElement('button');target.type='button';target.className='paint-target';target.dataset.paint=targets[i].en;target.setAttribute('aria-label',`${colourName(targets[i])} colour`);target.innerHTML=paintSplashSvg(targets[i].hex);
-                tube.addEventListener('pointerdown',paintPointerDown);tube.addEventListener('click',()=>{if(!paintMatched.has(tube.dataset.paint))paintSelected=tube.dataset.paint});
-                target.addEventListener('click',()=>{if(paintSelected)placePaint(paintSelected,target)});
+                const tube=document.createElement('button');tube.type='button';tube.className='paint-tube';tube.dataset.position=i;
+                tube.addEventListener('pointerdown',paintPointerDown);
+                tube.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();paintSelectTube(i)}});
+                const target=document.createElement('div');target.className='paint-target';target.dataset.paint=paintTargets[i].en;
+                target.setAttribute('aria-label',`${colourName(paintTargets[i])} colour`);target.innerHTML=paintSplashSvg(paintTargets[i].hex);
                 pair.append(tube,target);board.appendChild(pair);
             }
+            updatePaintBoard();
+        }
+        function updatePaintBoard(){
+            const tubes=document.querySelectorAll('#match-paint-board .paint-tube');
+            const targets=document.querySelectorAll('#match-paint-board .paint-target');
+            const matched=paintArrangement.filter((c,i)=>c===paintTargets[i]).length;
+            tubes.forEach((tube,i)=>{const c=paintArrangement[i];tube.innerHTML=paintTubeSvg(c.hex);tube.setAttribute('aria-label',`${colourName(c)} paint tube`);tube.classList.toggle('matched',c===paintTargets[i]);tube.classList.toggle('selected',paintSelected===i)});
+            targets.forEach((target,i)=>target.classList.toggle('matched',paintArrangement[i]===paintTargets[i]));
+            document.getElementById('match-paint-progress').textContent=`Set ${paintSetIndex+1} / 5 · ⭐ ${Math.round((paintSetIndex*6+matched)*100/30)}`;
+            if(matched===6&&!paintFinishing){
+                paintFinishing=true;paintScore=Math.round((paintSetIndex+1)*100/5);playCorrectSound();
+                document.getElementById('match-paint-feedback').textContent=currentGlobalLang==='ms'?'Bagus! Semua warna betul! 🌟':'Great! All colours match! 🌟';
+                paintAdvanceTimer=setTimeout(()=>{if(!document.getElementById('match-paint-screen').classList.contains('active'))return;paintSetIndex++;if(paintSetIndex<5)renderPaintSet();else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Match the Paint',100);alert(currentGlobalLang==='ms'?'Tahniah! Semua cat berjaya disusun! 🎉':'Great job! All paint tubes are in order! 🎉');openColourMenu()}},800);
+            }
+        }
+        function swapPaintTubes(from,to){
+            if(paintFinishing||from===to||from<0||to<0)return;
+            [paintArrangement[from],paintArrangement[to]]=[paintArrangement[to],paintArrangement[from]];
+            paintSelected=null;playClickSound();
+            document.getElementById('match-paint-feedback').textContent='';updatePaintBoard();
+        }
+        function paintSelectTube(index){
+            if(paintFinishing)return;
+            if(paintSelected===null)paintSelected=index;
+            else if(paintSelected===index)paintSelected=null;
+            else{swapPaintTubes(paintSelected,index);return}
+            updatePaintBoard();
         }
         function paintPointerDown(e){
-            if(paintMatched.has(e.currentTarget.dataset.paint))return;
-            e.preventDefault();const source=e.currentTarget,color=source.dataset.paint;
+            if(paintFinishing)return;
+            e.preventDefault();const source=e.currentTarget,from=Number(source.dataset.position),startX=e.clientX,startY=e.clientY;
             const ghost=source.cloneNode(true);ghost.className='paint-drag-ghost';document.body.appendChild(ghost);
-            const move=ev=>{ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';document.querySelectorAll('#match-paint-board .paint-target').forEach(t=>t.classList.toggle('over',t===document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.paint-target')))};
-            const end=ev=>{source.removeEventListener('pointermove',move);source.removeEventListener('pointerup',end);source.removeEventListener('pointercancel',cancel);ghost.remove();document.querySelectorAll('#match-paint-board .paint-target').forEach(t=>t.classList.remove('over'));const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#match-paint-board .paint-target');if(target)placePaint(color,target);else paintSelected=color};
-            const cancel=()=>{source.removeEventListener('pointermove',move);source.removeEventListener('pointerup',end);source.removeEventListener('pointercancel',cancel);ghost.remove()};
-            source.setPointerCapture(e.pointerId);source.addEventListener('pointermove',move);source.addEventListener('pointerup',end);source.addEventListener('pointercancel',cancel);move(e);
-        }
-        function placePaint(color,target){
-            if(paintMatched.has(color)||target.classList.contains('matched'))return;
-            if(target.dataset.paint!==color){playWrongSound();target.classList.remove('wrong');void target.offsetWidth;target.classList.add('wrong');document.getElementById('match-paint-feedback').textContent=currentGlobalLang==='ms'?'Cuba lagi 😊':'Try again 😊';return}
-            playCorrectSound();paintMatched.add(color);paintSelected=null;paintScore+=Math.round(100/30);
-            target.classList.add('matched');target.innerHTML=paintTubeSvg(colourItems.find(c=>c.en===color).hex);
-            document.querySelectorAll('#match-paint-board .paint-tube').forEach(t=>{if(t.dataset.paint===color)t.classList.add('matched')});
-            document.getElementById('match-paint-feedback').textContent=currentGlobalLang==='ms'?'Betul! 🌟':'Correct! 🌟';
-            document.getElementById('match-paint-progress').textContent=`Set ${paintSetIndex+1} / 5 · ⭐ ${paintMatched.size===6&&paintSetIndex===4?100:Math.min(paintScore,99)}`;
-            if(paintMatched.size===6)paintAdvanceTimer=setTimeout(()=>{if(!document.getElementById('match-paint-screen').classList.contains('active'))return;paintSetIndex++;if(paintSetIndex<5)renderPaintSet();else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Match the Paint',100);alert(currentGlobalLang==='ms'?'Tahniah! Semua cat berjaya disuaikan! 🎉':'Great job! All paint tubes matched! 🎉');openColourMenu()}},750);
+            const move=ev=>{ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';const under=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#match-paint-board .paint-tube');document.querySelectorAll('#match-paint-board .paint-tube').forEach(t=>t.classList.toggle('over',t===under&&t!==source))};
+            const clean=()=>{source.removeEventListener('pointermove',move);source.removeEventListener('pointerup',end);source.removeEventListener('pointercancel',cancel);ghost.remove();document.querySelectorAll('#match-paint-board .paint-tube').forEach(t=>t.classList.remove('over'))};
+            const end=ev=>{const under=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#match-paint-board .paint-tube'),to=under?Number(under.dataset.position):-1;clean();if(to>=0&&to!==from)swapPaintTubes(from,to);else if(Math.hypot(ev.clientX-startX,ev.clientY-startY)<12)paintSelectTube(from)};
+            const cancel=()=>clean();source.setPointerCapture(e.pointerId);source.addEventListener('pointermove',move);source.addEventListener('pointerup',end);source.addEventListener('pointercancel',cancel);move(e);
         }
 
         let learnColourIndex=0;
