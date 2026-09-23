@@ -6260,20 +6260,9 @@
             try {
                 let ctx = getSoundContext();
                 if (!ctx) return;
-                if (ctx.state === 'interrupted' || ctx.state === 'closed') {
-                    // iOS can leave an interrupted context silent after returning to the app.
-                    ctx = replaceSoundContext();
-                }
-                if (ctx.state !== 'running') {
-                    await Promise.race([ctx.resume(), new Promise(resolve => setTimeout(resolve, 800))]);
-                }
-                if (ctx.state !== 'running') {
-                    ctx = getSoundContext();
-                    if (ctx.state !== 'running') {
-                        ctx = replaceSoundContext();
-                        await Promise.race([ctx.resume(), new Promise(resolve => setTimeout(resolve, 800))]);
-                    }
-                }
+                // Resuming after a long background pause may take more than 800 ms.
+                // Keep the same context until the browser actually closes it.
+                if (ctx.state !== 'running') await ctx.resume();
                 if (ctx.state === 'running') draw(ctx);
             } catch (error) {
                 console.warn('Sound could not start:', error);
@@ -6281,9 +6270,7 @@
         }
         function wakeAppSound() {
             const ctx = getSoundContext();
-            if (ctx?.state === 'interrupted') {
-                replaceSoundContext().resume().catch(() => {});
-            } else if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
+            if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
         }
         document.addEventListener('pointerdown', wakeAppSound, {passive: true});
         document.addEventListener('touchstart', wakeAppSound, {passive: true});
@@ -8704,6 +8691,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Laraskan kelantangan audio (0.1 - 0.3 adalah yang paling sesuai untuk kanak-kanak supaya tidak mengganggu audio lain)
         if (bgAudio) {
             bgAudio.volume = 0.2;
+            // Mobile browsers may pause media when the app has been in the background.
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && isMusicPlaying && bgAudio.paused) bgAudio.play().catch(() => {});
+            });
+            document.addEventListener('pointerdown', () => {
+                if (isMusicPlaying && bgAudio.paused) bgAudio.play().catch(() => {});
+            }, {passive: true});
         }
 
         function toggleBgMusic() {
