@@ -4650,13 +4650,13 @@
 #complete-animal-screen { width:min(98vw,1080px); max-width:none; margin-left:50%; transform:translateX(-50%); }
 .complete-animal-board { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(55px,18vw,260px); width:100%; margin:14px auto; }
 .complete-animal-column { display:flex; flex-direction:column; gap:12px; min-width:0; }
-.complete-animal-row { height:clamp(130px,17vh,160px); display:flex; align-items:center; min-width:0; }
+.complete-animal-row { height:clamp(108px,14vh,125px); display:flex; align-items:center; min-width:0; }
 .complete-animal-left { justify-content:flex-start; }
 .complete-animal-right { justify-content:flex-end; }
-.complete-animal-half { position:relative; flex:none; width:clamp(135px,16vw,165px); height:clamp(125px,17vh,155px); overflow:hidden; border:0; background:transparent; touch-action:none; user-select:none; -webkit-user-select:none; }
+.complete-animal-half { position:relative; flex:none; width:clamp(135px,16vw,165px); aspect-ratio:4 / 3; height:auto; overflow:hidden; border:0; background:transparent; touch-action:none; user-select:none; -webkit-user-select:none; }
 .complete-animal-left .complete-animal-half { border-radius:0; }
 .complete-animal-right .complete-animal-half { border-radius:0; cursor:grab; box-shadow:none; }
-.complete-animal-half .complete-animal-art { position:absolute; left:0; top:0; width:200%; height:100%; object-fit:contain; pointer-events:none; }
+.complete-animal-half .complete-animal-art { position:absolute; left:0; top:0; width:200%; height:100%; object-fit:fill; pointer-events:none; }
 .complete-animal-half[data-side="right"] .complete-animal-art { left:-100%; }
 .complete-animal-half.matched { background:transparent; }
 .complete-animal-half.wrong { filter:drop-shadow(0 0 6px #ff4c42); }
@@ -4669,15 +4669,15 @@
 .complete-animal-pop { position:fixed; inset:0; background:rgba(28,39,89,.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10010; display:flex; align-items:center; justify-content:center; padding:16px; }
 .complete-animal-pop-card { width:min(350px,90vw); padding:20px; border-radius:25px; background:#fff9db; border:5px solid #ffce58; text-align:center; box-shadow:0 15px 35px #0004; }
 .complete-animal-pop-art { font-size:clamp(110px,22vw,180px); line-height:1.2; }
-.complete-animal-pop-art img { display:block; width:100%; max-height:240px; object-fit:contain; }
+.complete-animal-pop-art img { display:block; width:min(100%,300px); aspect-ratio:4 / 3; height:auto; object-fit:fill; margin:auto; }
 .complete-animal-pop-name { color:#373173; font:bold 2rem 'Fredoka One',system-ui,sans-serif; }
 @media(max-width:600px){
  #complete-animal-screen { width:calc(100vw - 10px); padding-left:8px; padding-right:8px; }
  .complete-animal-board { gap:clamp(48px,14vw,64px); }
  .complete-animal-column { gap:8px; }
- .complete-animal-row { height:clamp(90px,13vh,115px); }
- .complete-animal-half { width:clamp(83px,25vw,110px); height:clamp(86px,13vh,112px); }
- .complete-animal-half .complete-animal-art { font-size:clamp(68px,19vw,88px); }
+ .complete-animal-row { height:clamp(72px,11vh,86px); }
+ .complete-animal-half { width:clamp(83px,25vw,110px); }
+ .complete-animal-half .complete-animal-art { object-fit:fill; }
 }
     </style>
 </head>
@@ -6823,6 +6823,7 @@
 
         function openAnimalMenu() {
             showScreen('animal-menu-screen');
+            if(typeof completeAnimalPool!=='undefined') completeAnimalPool.forEach(animal=>preloadCompleteAnimalImage(animal[0]));
         }
 
         // 1. LEARN ANIMAL LOGIC
@@ -7177,6 +7178,39 @@
         let completeAnimalQuestions = [], completeAnimalSet = 0, completeAnimalMatched = new Set();
         let completeAnimalDrag = null, completeAnimalTimer = null, completeAnimalSession = 0;
         let completeAnimalSpeechWatchdog = null, completeAnimalUtterance = null;
+        const completeAnimalImageLoads = new Map();
+        function preloadCompleteAnimalImage(url){
+            if(!completeAnimalImageLoads.has(url)){
+                const img=new Image();
+                const loaded=new Promise(resolve=>{
+                    img.onload=()=>resolve();
+                    img.onerror=()=>resolve(); // A failed image must not block the activity.
+                });
+                img.src=url;
+                completeAnimalImageLoads.set(url,loaded);
+            }
+            return completeAnimalImageLoads.get(url);
+        }
+        window.addEventListener('load',()=>{
+            setTimeout(()=>completeAnimalPool.forEach(animal=>preloadCompleteAnimalImage(animal[0])),1200);
+        },{once:true});
+        async function showCompleteAnimalSet(){
+            const session=completeAnimalSession;
+            const set=completeAnimalSet;
+            const group=completeAnimalQuestions.slice(set*5,set*5+5);
+            const board=document.querySelector('#complete-animal-screen .complete-animal-board');
+            board.style.visibility='hidden';
+            const loading=document.getElementById('complete-animal-loading') || document.createElement('p');
+            loading.id='complete-animal-loading';
+            loading.style.textAlign='center';
+            loading.textContent=currentGlobalLang==='ms'?'Memuatkan gambar haiwan…':'Loading animal pictures…';
+            board.before(loading);
+            await Promise.all(group.map(animal=>preloadCompleteAnimalImage(animal[0])));
+            if(session!==completeAnimalSession || set!==completeAnimalSet)return;
+            renderCompleteAnimal();
+            board.style.visibility='visible';
+            loading.remove();
+        }
         function shuffleCompleteAnimal(items) {
             const a = [...items];
             for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
@@ -7200,13 +7234,16 @@
             completeAnimalSet=0;
             showScreen('complete-animal-screen');
             updateCompleteAnimalLanguage();
-            renderCompleteAnimal();
+            showCompleteAnimalSet();
+            completeAnimalQuestions.forEach(animal=>preloadCompleteAnimalImage(animal[0]));
         }
         function leaveCompleteAnimal(){
             completeAnimalSession++;
             clearTimeout(completeAnimalTimer);
             completeAnimalDrag?.ghost?.remove();
             completeAnimalDrag=null;
+            document.querySelector('#complete-animal-screen .complete-animal-board').style.visibility='visible';
+            document.getElementById('complete-animal-loading')?.remove();
             document.querySelector('.complete-animal-pop')?.remove();
             openAnimalMenu();
         }
@@ -7303,7 +7340,7 @@
                 pop.remove();
                 if(completeAnimalMatched.size!==Math.min(5,completeAnimalQuestions.length-completeAnimalSet*5))return;
                 completeAnimalSet++;
-                if(completeAnimalSet<Math.ceil(completeAnimalQuestions.length/5)){renderCompleteAnimal();return;}
+                if(completeAnimalSet<Math.ceil(completeAnimalQuestions.length/5)){showCompleteAnimalSet();return;}
                 if(window.saveScoreToFirebase)window.saveScoreToFirebase('Complete the Animal',100);
                 alert(currentGlobalLang==='ms'?'Tahniah! Semua haiwan berjaya dilengkapkan! 🎉':'Great job! You completed all the animals! 🎉');
                 leaveCompleteAnimal();
