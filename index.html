@@ -4619,96 +4619,25 @@
                 -webkit-text-stroke-width: 1.5px;
             }
         }
-        /* KIDDORA: colourful pastel boxes (visual only) */
-        :root{--box-pink:#FFE0F1;--box-yellow:#FFF3B8;--box-blue:#DDF6FF;--box-green:#E1F8D5;--box-purple:#EEE2FF;--box-orange:#FFE8C7}
 
-        /* Main learning panels and former white picture frames */
-        .learn123-board,.spell-card,.match123-object-box,.count123-dropzone,
-        .addup-object-box,.takeaway-object-box,#find-colour-screen #find-colour-question,
-        .label-stage,.transport-guess-card,.food-sort-item{
-            background:linear-gradient(145deg,var(--box-yellow),var(--box-pink))!important
-        }
-        .flashcard-img-container,.spell-picture,.body-learn-visual,.suku-picture,.transport-zone-thumb{
-            background:linear-gradient(145deg,var(--box-blue),var(--box-purple))!important
-        }
-
-        /* Answer, matching and draggable boxes. Correct/wrong colours are preserved. */
-        .find123-option:not(.correct):not(.wrong),.match123-number-target:not(.correct):not(.wrong),
-        .count123-answer:not(.correct):not(.wrong),.spell-slot,.spell-letter-btn,
-        .colour-word-item:not(.correct):not(.wrong),.colour-swatch-item:not(.correct):not(.wrong),
-        .find-colour-option:not(.correct):not(.wrong),.body-drag-label:not(.correct):not(.wrong),
-        .addup-answer-zone:not(.correct):not(.wrong),.addup-answer-tile:not(.correct):not(.wrong),
-        .takeaway-answer-zone:not(.correct):not(.wrong),.takeaway-answer-tile:not(.correct):not(.wrong),
-        .abc-path-cell:not(.correct):not(.wrong),.suku-option:not(.correct):not(.wrong),
-        .suku2-first:not(.correct):not(.wrong),.suku2-choice:not(.correct):not(.wrong):not(.matched),
-        .transport-guess-option:not(.correct):not(.wrong){background:var(--box-blue)!important}
-
-        .find123-option:nth-child(4n+1):not(.correct):not(.wrong),.match123-number-target:nth-child(4n+1):not(.correct):not(.wrong),
-        .count123-answer:nth-child(4n+1):not(.correct):not(.wrong),.spell-slot:nth-child(4n+1),.spell-letter-btn:nth-child(4n+1),
-        .colour-word-item:nth-child(4n+1):not(.correct):not(.wrong),.colour-swatch-item:nth-child(4n+1):not(.correct):not(.wrong),
-        .find-colour-option:nth-child(4n+1):not(.correct):not(.wrong),.body-drag-label:nth-child(4n+1):not(.correct):not(.wrong),
-        .addup-answer-tile:nth-child(4n+1):not(.correct):not(.wrong),.takeaway-answer-tile:nth-child(4n+1):not(.correct):not(.wrong),
-        .abc-path-cell:nth-child(4n+1):not(.correct):not(.wrong),.suku-option:nth-child(4n+1):not(.correct):not(.wrong),
-        .suku2-choice:nth-child(4n+1):not(.correct):not(.wrong):not(.matched),.transport-guess-option:nth-child(4n+1):not(.correct):not(.wrong){background:var(--box-pink)!important}
-
-        .find123-option:nth-child(4n+2):not(.correct):not(.wrong),.match123-number-target:nth-child(4n+2):not(.correct):not(.wrong),
-        .count123-answer:nth-child(4n+2):not(.correct):not(.wrong),.spell-slot:nth-child(4n+2),.spell-letter-btn:nth-child(4n+2),
-        .colour-word-item:nth-child(4n+2):not(.correct):not(.wrong),.colour-swatch-item:nth-child(4n+2):not(.correct):not(.wrong),
-        .find-colour-option:nth-child(4n+2):not(.correct):not(.wrong),.body-drag-label:nth-child(4n+2):not(.correct):not(.wrong),
-        .addup-answer-tile:nth-child(4n+2):not(.correct):not(.wrong),.takeaway-answer-tile:nth-child(4n+2):not(.correct):not(.wrong),
-        .abc-path-cell:nth-child(4n+2):not(.correct):not(.wrong),.suku-option:nth-child(4n+2):not(.correct):not(.wrong),
-        .suku2-choice:nth-child(4n+2):not(.correct):not(.wrong):not(.matched),.transport-guess-option:nth-child(4n+2):not(.correct):not(.wrong){background:var(--box-yellow)!important}
-
-        .find123-option:nth-child(4n+3):not(.correct):not(.wrong),.match123-number-target:nth-child(4n+3):not(.correct):not(.wrong),
-        .count123-answer:nth-child(4n+3):not(.correct):not(.wrong),.spell-slot:nth-child(4n+3),.spell-letter-btn:nth-child(4n+3),
-        .colour-word-item:nth-child(4n+3):not(.correct):not(.wrong),.colour-swatch-item:nth-child(4n+3):not(.correct):not(.wrong),
-        .find-colour-option:nth-child(4n+3):not(.correct):not(.wrong),.body-drag-label:nth-child(4n+3):not(.correct):not(.wrong),
-        .addup-answer-tile:nth-child(4n+3):not(.correct):not(.wrong),.takeaway-answer-tile:nth-child(4n+3):not(.correct):not(.wrong),
-        .abc-path-cell:nth-child(4n+3):not(.correct):not(.wrong),.suku-option:nth-child(4n+3):not(.correct):not(.wrong),
-        .suku2-choice:nth-child(4n+3):not(.correct):not(.wrong):not(.matched),.transport-guess-option:nth-child(4n+3):not(.correct):not(.wrong){background:var(--box-green)!important}
-
-        .find123-option:nth-child(4n):not(.correct):not(.wrong),.match123-number-target:nth-child(4n):not(.correct):not(.wrong),
-        .count123-answer:nth-child(4n):not(.correct):not(.wrong),.spell-slot:nth-child(4n),.spell-letter-btn:nth-child(4n),
-        .colour-word-item:nth-child(4n):not(.correct):not(.wrong),.colour-swatch-item:nth-child(4n):not(.correct):not(.wrong),
-        .find-colour-option:nth-child(4n):not(.correct):not(.wrong),.body-drag-label:nth-child(4n):not(.correct):not(.wrong),
-        .addup-answer-tile:nth-child(4n):not(.correct):not(.wrong),.takeaway-answer-tile:nth-child(4n):not(.correct):not(.wrong),
-        .abc-path-cell:nth-child(4n):not(.correct):not(.wrong),.suku-option:nth-child(4n):not(.correct):not(.wrong),
-        .suku2-choice:nth-child(4n):not(.correct):not(.wrong):not(.matched),.transport-guess-option:nth-child(4n):not(.correct):not(.wrong){background:var(--box-purple)!important}
-
-        .addup-answer-zone:not(.correct):not(.wrong),.takeaway-answer-zone:not(.correct):not(.wrong){background:var(--box-orange)!important}
-        .addup-floating,.takeaway-floating.number{background:var(--box-yellow)!important}
-        .suku2-choice.matched{background:var(--box-green)!important}
-        /* All remaining white matching, sorting, tracing and menu boxes */
-        .match-item,.animal-cat-btn,.trace-case-btn:not(.active),.body-drop:not(.correct),
-        .shape-progress-pill,.shape-trace-canvas-wrap,.tracing-board,.trace-canvas-wrap,
-        #draw-shape-screen .shape-tracing-board,#draw-shape-screen .shape-trace-canvas-wrap,
-        #match-shape-screen #match-shape-left .shape-match-item,
-        #match-shape-screen #match-shape-right .shape-mini,
-        .transport-cat-btn,.transport-sort-item,.transport-sort-zone,
-        .transport-sort-floating,.install-device-btn,.install-step,.profile-list-box{
-            background:var(--box-blue)!important
-        }
-        .match-item:nth-child(4n+1),.animal-cat-btn:nth-child(4n+1),.trace-case-btn:nth-child(4n+1):not(.active),
-        .body-drop:nth-child(4n+1):not(.correct),.transport-cat-btn:nth-child(4n+1),
-        .transport-sort-item:nth-child(4n+1),.transport-sort-zone:nth-child(4n+1){background:var(--box-pink)!important}
-        .match-item:nth-child(4n+2),.animal-cat-btn:nth-child(4n+2),.trace-case-btn:nth-child(4n+2):not(.active),
-        .body-drop:nth-child(4n+2):not(.correct),.transport-cat-btn:nth-child(4n+2),
-        .transport-sort-item:nth-child(4n+2),.transport-sort-zone:nth-child(4n+2){background:var(--box-yellow)!important}
-        .match-item:nth-child(4n+3),.animal-cat-btn:nth-child(4n+3),.trace-case-btn:nth-child(4n+3):not(.active),
-        .body-drop:nth-child(4n+3):not(.correct),.transport-cat-btn:nth-child(4n+3),
-        .transport-sort-item:nth-child(4n+3),.transport-sort-zone:nth-child(4n+3){background:var(--box-green)!important}
-        .match-item:nth-child(4n),.animal-cat-btn:nth-child(4n),.trace-case-btn:nth-child(4n):not(.active),
-        .body-drop:nth-child(4n):not(.correct),.transport-cat-btn:nth-child(4n),
-        .transport-sort-item:nth-child(4n),.transport-sort-zone:nth-child(4n){background:var(--box-purple)!important}
-
-        /* Image-only match boxes stay transparent; coloured frames remain visible. */
-        #match-animal-game-screen #match-animal-right-column .match-item,
-        #match-body-game-screen #match-body-right-column .match-item,
-        #match-colour-screen #colour-match-right .match-item,
-        #match-shape-screen #match-shape-right .shape-match-item{
-            background:transparent!important
-        }
-        #login-screen.login-kiddora-card{background:linear-gradient(180deg,#FFF8CF 0%,#FFEAF5 100%)!important}
+        #match-paint-screen{max-width:750px;padding:10px 12px 15px}
+        #match-paint-screen h2{font-family:'Fredoka One',cursive;color:#5E17EB;margin:2px 0;font-size:clamp(1.25rem,4vw,2rem)}
+        #match-paint-instruction{font-size:clamp(.76rem,2.4vw,1rem);font-weight:800;margin:2px 0 5px;color:#334155}
+        #match-paint-screen .colour-progress{margin:2px 0;padding:4px 12px}
+        .paint-board{width:min(100%,530px);margin:2px auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(5px,1.7vh,15px) clamp(7px,3vw,24px);justify-items:center;touch-action:none}
+        .paint-pair{width:100%;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+        .paint-tube{width:min(83%,95px);height:clamp(78px,19vh,165px);border:0;background:transparent;padding:0;cursor:grab;touch-action:none;user-select:none;filter:drop-shadow(3px 4px 1px #8c7768);transition:opacity .18s}
+        .paint-tube svg{width:100%;height:100%;pointer-events:none}
+        .paint-tube.matched{visibility:hidden}
+        .paint-target{width:min(88%,105px);height:clamp(46px,9vh,86px);background:#fff;border:2px solid #e5dccb;border-radius:8px;box-shadow:4px 5px 0 #bda995;display:grid;place-items:center;cursor:pointer;touch-action:none}
+        .paint-target svg{width:65%;height:65%;pointer-events:none}
+        .paint-target.over{outline:4px solid #ffca42}
+        .paint-target.matched{border-color:#44ad68;background:#eaffeb}
+        .paint-target.wrong{animation:paintShake .28s}
+        @keyframes paintShake{50%{transform:translateX(7px)}}
+        .paint-drag-ghost{position:fixed;z-index:99999;pointer-events:none;opacity:.85;transform:translate(-50%,-50%);width:80px;height:125px;filter:drop-shadow(4px 8px 5px #777)}
+        #match-paint-feedback{min-height:1.3em;font-weight:900;color:#2f7042;margin:2px}
+        @media(max-height:710px){.paint-tube{height:clamp(62px,16vh,110px)}.paint-target{height:clamp(38px,7vh,62px)}.paint-board{gap:3px 8px}}
     </style>
 </head>
 <body class="login-mode">
@@ -5192,6 +5121,7 @@
                     <button class="colour-menu-btn" onclick="playClickSound(); startPopBalloon()" aria-label="Pop the Balloon"><img src="https://i.imgur.com/8IJqqXN.jpeg" alt="Pop the Balloon"></button>
                     <button class="colour-menu-btn" onclick="playClickSound(); startMatchColour()" aria-label="Match the Colour"><img src="https://i.imgur.com/gcLU4jh.jpeg" alt="Match the Colour"></button>
                     <button class="colour-menu-btn" onclick="playClickSound(); startFindColour()" aria-label="Find the Colour"><img src="https://i.imgur.com/1tkkVaG.jpeg" alt="Find the Colour"></button>
+                    <button class="colour-menu-btn" onclick="playClickSound(); startMatchPaint()" aria-label="Match the Paint"><img src="https://i.imgur.com/9Wr0IGb.jpeg" alt="Match the Paint"></button>
                 </div>
                 <button class="action-btn home-btn" id="colour-home-btn" onclick="playClickSound(); navigateTo('home-screen')">Back to Home 🏠</button>
             </div>
@@ -5234,6 +5164,15 @@
                     </div>
                 </div>
                 <button class="action-btn home-btn" id="match-colour-back" onclick="playClickSound(); openColourMenu()">Back ↩️</button>
+            </div>
+
+            <div id="match-paint-screen" class="card">
+                <h2 id="match-paint-title">Match the Paint 🎨</h2>
+                <div class="colour-progress" id="match-paint-progress">Set 1 / 5 · ⭐ 0</div>
+                <p id="match-paint-instruction">Drag each paint tube to its matching colour.</p>
+                <div id="match-paint-board" class="paint-board"></div>
+                <p id="match-paint-feedback" aria-live="polite"></p>
+                <button class="action-btn home-btn" onclick="playClickSound(); openColourMenu()">Back ↩️</button>
             </div>
 
             <div id="find-colour-screen" class="card">
@@ -8237,11 +8176,59 @@
             set('learn-colour-title','Learn Colour 🎨','Belajar Warna 🎨'); set('learn-colour-listen','🔊 Listen','🔊 Dengar'); set('learn-colour-prev','⬅ Prev','⬅ Prev'); set('learn-colour-next','Next ➡','Next ➡'); set('learn-colour-back','Back ↩️','Back ↩️');
             set('pop-balloon-title','Pop the Balloon 🎈','Pecahkan Belon 🎈'); set('pop-balloon-listen','🔊 Listen','🔊 Dengar'); set('pop-balloon-back','Back ↩️','Back ↩️');
             set('match-colour-title','Match the Colour 🎨','Suaikan Warna 🎨'); set('match-colour-instruction','Tap a colour word, then match it with the correct colour.','Tekan perkataan warna, kemudian suaikan dengan warna yang betul.'); set('match-colour-back','Back ↩️','Back ↩️');
+            set('match-paint-title','Match the Paint 🎨','Suaikan Cat 🎨'); set('match-paint-instruction','Drag each paint tube to its matching colour.','Seret setiap tiub cat ke warna yang betul.');
             set('find-colour-title','Find the Colour 🔎','Cari Warna 🔎'); set('find-colour-listen','🔊 Listen','🔊 Dengar'); set('find-colour-back','Back ↩️','Back ↩️');
             if(document.getElementById('learn-colour-screen')?.classList.contains('active')) renderLearnColour();
             if(document.getElementById('pop-balloon-screen')?.classList.contains('active')) renderPopBalloon();
             if(document.getElementById('match-colour-screen')?.classList.contains('active')) renderMatchColourSet();
             if(document.getElementById('find-colour-screen')?.classList.contains('active')) renderFindColour();
+        }
+
+
+        // Match the Paint: six colours per set, five sets per session.
+        let paintSets=[],paintSetIndex=0,paintMatched=new Set(),paintScore=0,paintSelected=null,paintAdvanceTimer=null;
+        function paintTubeSvg(hex){return `<svg viewBox="0 0 90 180" aria-hidden="true"><path d="M21 20V5h48v15" fill="none" stroke="#a1998b" stroke-width="4"/><path d="M11 20h68l-6 43H17z" fill="#625e59"/><path d="M16 53h58v96q-2 10-14 11H30q-12-1-14-11z" fill="#fff"/><path d="M19 69h52v72q-3 9-13 9H32q-10 0-13-9z" fill="${hex}"/><path d="M25 21h40l-3 35H28z" fill="#514e49"/><path d="M28 159h34v15H28z" fill="#413d36"/><path d="M20 145q2 13 16 13h18q14 0 16-13" fill="none" stroke="#fff" stroke-width="6"/></svg>`}
+        function paintSplashSvg(hex){return `<svg viewBox="0 0 90 75" aria-hidden="true"><path d="M17 35Q8 22 28 21Q30 8 42 16Q54 7 61 22Q78 22 70 37Q86 49 67 52Q67 69 51 60Q35 72 27 56Q10 59 17 45Q5 42 17 35Z" fill="${hex}"/></svg>`}
+        function startMatchPaint(){
+            clearTimeout(paintAdvanceTimer);paintSetIndex=0;paintScore=0;paintSelected=null;
+            // Each page has six distinct colours; avoid identical colour combinations across pages.
+            const used=new Set();paintSets=[];
+            while(paintSets.length<5){const set=colourShuffle(colourItems).slice(0,6),key=set.map(c=>c.en).sort().join('|');if(!used.has(key)){used.add(key);paintSets.push(set)}}
+            showScreen('match-paint-screen');updateColourLanguage();renderPaintSet();
+        }
+        function renderPaintSet(){
+            paintMatched=new Set();paintSelected=null;
+            const colours=paintSets[paintSetIndex],tubes=colourShuffle(colours),targets=colourShuffle(colours);
+            const board=document.getElementById('match-paint-board');board.innerHTML='';
+            document.getElementById('match-paint-progress').textContent=`${currentGlobalLang==='ms'?'Set':'Set'} ${paintSetIndex+1} / 5 · ⭐ ${paintScore}`;
+            document.getElementById('match-paint-feedback').textContent='';
+            for(let i=0;i<6;i++){
+                const pair=document.createElement('div');pair.className='paint-pair';
+                const tube=document.createElement('button');tube.type='button';tube.className='paint-tube';tube.dataset.paint=tubes[i].en;tube.setAttribute('aria-label',`${colourName(tubes[i])} paint tube`);tube.innerHTML=paintTubeSvg(tubes[i].hex);
+                const target=document.createElement('button');target.type='button';target.className='paint-target';target.dataset.paint=targets[i].en;target.setAttribute('aria-label',`${colourName(targets[i])} colour`);target.innerHTML=paintSplashSvg(targets[i].hex);
+                tube.addEventListener('pointerdown',paintPointerDown);tube.addEventListener('click',()=>{if(!paintMatched.has(tube.dataset.paint))paintSelected=tube.dataset.paint});
+                target.addEventListener('click',()=>{if(paintSelected)placePaint(paintSelected,target)});
+                pair.append(tube,target);board.appendChild(pair);
+            }
+        }
+        function paintPointerDown(e){
+            if(paintMatched.has(e.currentTarget.dataset.paint))return;
+            e.preventDefault();const source=e.currentTarget,color=source.dataset.paint;
+            const ghost=source.cloneNode(true);ghost.className='paint-drag-ghost';document.body.appendChild(ghost);
+            const move=ev=>{ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';document.querySelectorAll('#match-paint-board .paint-target').forEach(t=>t.classList.toggle('over',t===document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.paint-target')))};
+            const end=ev=>{source.removeEventListener('pointermove',move);source.removeEventListener('pointerup',end);source.removeEventListener('pointercancel',cancel);ghost.remove();document.querySelectorAll('#match-paint-board .paint-target').forEach(t=>t.classList.remove('over'));const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#match-paint-board .paint-target');if(target)placePaint(color,target);else paintSelected=color};
+            const cancel=()=>{source.removeEventListener('pointermove',move);source.removeEventListener('pointerup',end);source.removeEventListener('pointercancel',cancel);ghost.remove()};
+            source.setPointerCapture(e.pointerId);source.addEventListener('pointermove',move);source.addEventListener('pointerup',end);source.addEventListener('pointercancel',cancel);move(e);
+        }
+        function placePaint(color,target){
+            if(paintMatched.has(color)||target.classList.contains('matched'))return;
+            if(target.dataset.paint!==color){playWrongSound();target.classList.remove('wrong');void target.offsetWidth;target.classList.add('wrong');document.getElementById('match-paint-feedback').textContent=currentGlobalLang==='ms'?'Cuba lagi 😊':'Try again 😊';return}
+            playCorrectSound();paintMatched.add(color);paintSelected=null;paintScore+=Math.round(100/30);
+            target.classList.add('matched');target.innerHTML=paintTubeSvg(colourItems.find(c=>c.en===color).hex);
+            document.querySelectorAll('#match-paint-board .paint-tube').forEach(t=>{if(t.dataset.paint===color)t.classList.add('matched')});
+            document.getElementById('match-paint-feedback').textContent=currentGlobalLang==='ms'?'Betul! 🌟':'Correct! 🌟';
+            document.getElementById('match-paint-progress').textContent=`Set ${paintSetIndex+1} / 5 · ⭐ ${paintMatched.size===6&&paintSetIndex===4?100:Math.min(paintScore,99)}`;
+            if(paintMatched.size===6)paintAdvanceTimer=setTimeout(()=>{if(!document.getElementById('match-paint-screen').classList.contains('active'))return;paintSetIndex++;if(paintSetIndex<5)renderPaintSet();else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Match the Paint',100);alert(currentGlobalLang==='ms'?'Tahniah! Semua cat berjaya disuaikan! 🎉':'Great job! All paint tubes matched! 🎉');openColourMenu()}},750);
         }
 
         let learnColourIndex=0;
@@ -8614,6 +8601,7 @@
                 'find123-screen',
                 'pop-balloon-screen',
                 'match-colour-screen',
+                'match-paint-screen',
                 'find-colour-screen',
                 'match-animal-game-screen',
                 'match-body-game-screen',
@@ -10811,7 +10799,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'match-count-screen':'abc','match-game-screen':'abc','find-letter-screen':'abc','abc-flashcard-screen':'abc',
     'lesson-screen':'abc','count-selection-screen':'abc','quiz-screen':'abc','result-screen':'abc',
     'num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','taking-away-count-screen':'number','taking-away-screen':'number','find123-screen':'number',
-    'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','find-colour-screen':'colour',
+    'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','match-paint-screen':'colour','find-colour-screen':'colour',
     'learn-body-screen':'body','choose-body-screen':'body','match-body-count-screen':'body','match-body-game-screen':'body','label-body-screen':'body',
     'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
     'learn-shape-screen':'shape','match-shape-screen':'shape','draw-shape-screen':'shape','match-me-screen':'shape',
