@@ -5417,7 +5417,6 @@
             <!-- COMPLETE THE ANIMAL: five sets of five unique animal pictures -->
             <div id="complete-animal-screen" class="card">
                 <h2 id="complete-animal-title" style="color:#5E17EB;font-family:'Fredoka One',cursive;">Complete the Animal 🐾</h2>
-                <small style="display:inline-block;background:#ffe566;color:#302b62;border:2px solid #302b62;border-radius:18px;padding:3px 12px;font-weight:800;"></small>
                 <p id="complete-animal-instruction">Drag the right half to complete the animal on the left.</p>
                 <p><span id="complete-animal-set-label">Set</span> <span id="complete-animal-set">1</span>/5 · <span id="complete-animal-matched">0</span>/5</p>
                 <div class="complete-animal-board">
@@ -7168,6 +7167,7 @@
         ];
         let completeAnimalQuestions = [], completeAnimalSet = 0, completeAnimalMatched = new Set();
         let completeAnimalDrag = null, completeAnimalTimer = null, completeAnimalSession = 0;
+        let completeAnimalSpeechWatchdog = null, completeAnimalUtterance = null;
         function shuffleCompleteAnimal(items) {
             const a = [...items];
             for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
@@ -7184,6 +7184,8 @@
         function startCompleteAnimal(){
             completeAnimalSession++;
             clearTimeout(completeAnimalTimer);
+            clearTimeout(completeAnimalSpeechWatchdog);
+            completeAnimalUtterance=null;
             document.querySelector('.complete-animal-pop')?.remove();
             completeAnimalQuestions=shuffleCompleteAnimal(completeAnimalPool);
             completeAnimalSet=0;
@@ -7275,23 +7277,76 @@
             const picture=document.createElement('div');picture.className='complete-animal-pop-art';picture.textContent=animal[0];
             const name=document.createElement('div');name.className='complete-animal-pop-name';name.textContent=currentGlobalLang==='ms'?animal[1]:animal[2];
             card.append(picture,name);pop.append(card);document.body.append(pop);
-            // Automatic name audio on the completed-animal popup; button replays it on tap.
+            // Keep the popup visible until the animal name has been spoken.
+            const session=completeAnimalSession;
+            const openedAt=Date.now();
+            let speechAttempt=0, speechStarted=false, popupClosed=false;
+            const finishPopup=()=>{
+                if(popupClosed || session!==completeAnimalSession || !pop.isConnected)return;
+                popupClosed=true;
+                clearTimeout(completeAnimalTimer);
+                clearTimeout(completeAnimalSpeechWatchdog);
+                completeAnimalUtterance=null;
+                pop.remove();
+                if(completeAnimalMatched.size!==5)return;
+                completeAnimalSet++;
+                if(completeAnimalSet<5){renderCompleteAnimal();return;}
+                if(window.saveScoreToFirebase)window.saveScoreToFirebase('Complete the Animal',100);
+                alert(currentGlobalLang==='ms'?'Tahniah! Semua haiwan berjaya dilengkapkan! 🎉':'Great job! You completed all the animals! 🎉');
+                leaveCompleteAnimal();
+            };
+            const scheduleFinish=(delay)=>{
+                clearTimeout(completeAnimalTimer);
+                completeAnimalTimer=setTimeout(finishPopup,Math.max(delay,1850-(Date.now()-openedAt)));
+            };
             const speakName=()=>{
-                if(!('speechSynthesis' in window))return;
-                try {
+                if(popupClosed || session!==completeAnimalSession)return;
+                clearTimeout(completeAnimalTimer);
+                clearTimeout(completeAnimalSpeechWatchdog);
+                const attempt=++speechAttempt;
+                speechStarted=false;
+                if(!('speechSynthesis' in window)){
+                    scheduleFinish(2700);
+                    return;
+                }
+                try{
                     const synth=window.speechSynthesis;
                     synth.cancel();
                     const utterance=new SpeechSynthesisUtterance(name.textContent);
+                    completeAnimalUtterance=utterance; // Retain until the voice ends.
                     utterance.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';
-                    utterance.rate=.8;
+                    utterance.rate=.82;
                     utterance.volume=1;
                     const voices=synth.getVoices();
                     const voice=voices.find(v=>v.lang.toLowerCase()===utterance.lang.toLowerCase())
                         || voices.find(v=>v.lang.toLowerCase().startsWith(currentGlobalLang==='ms'?'ms':'en'));
                     if(voice)utterance.voice=voice;
+                    utterance.onstart=()=>{
+                        if(attempt!==speechAttempt || popupClosed)return;
+                        speechStarted=true;
+                        clearTimeout(completeAnimalSpeechWatchdog);
+                    };
+                    utterance.onend=()=>{
+                        if(attempt!==speechAttempt || popupClosed)return;
+                        clearTimeout(completeAnimalSpeechWatchdog);
+                        scheduleFinish(550);
+                    };
+                    utterance.onerror=()=>{
+                        if(attempt!==speechAttempt || popupClosed)return;
+                        if(attempt<3){clearTimeout(completeAnimalSpeechWatchdog);completeAnimalSpeechWatchdog=setTimeout(speakName,150);}
+                        else scheduleFinish(2800);
+                    };
                     if(synth.paused)synth.resume();
                     synth.speak(utterance);
-                }catch(err){console.warn('Animal name audio:',err);}
+                    // Some browsers silently drop a queued utterance after cancel().
+                    completeAnimalSpeechWatchdog=setTimeout(()=>{
+                        if(attempt!==speechAttempt || popupClosed || speechStarted)return;
+                        if(attempt<3)speakName();
+                        else scheduleFinish(2800);
+                    },1000);
+                    // A browser without onend must still let the child continue.
+                    completeAnimalTimer=setTimeout(finishPopup,6500);
+                }catch(err){console.warn('Animal name audio:',err);scheduleFinish(2800);}
             };
             const replay=document.createElement('button');
             replay.type='button';replay.className='sound-btn';
@@ -7300,16 +7355,6 @@
             replay.addEventListener('click',e=>{e.stopPropagation();speakName()});
             card.append(replay);
             speakName();
-            const session=completeAnimalSession;
-            completeAnimalTimer=setTimeout(()=>{
-                pop.remove();if(session!==completeAnimalSession)return;
-                if(completeAnimalMatched.size!==5)return;
-                completeAnimalSet++;
-                if(completeAnimalSet<5){renderCompleteAnimal();return;}
-                if(window.saveScoreToFirebase)window.saveScoreToFirebase('Complete the Animal',100);
-                alert(currentGlobalLang==='ms'?'Tahniah! Semua haiwan berjaya dilengkapkan! 🎉':'Great job! You completed all the animals! 🎉');
-                leaveCompleteAnimal();
-            },2700);
         }
         document.addEventListener('pointermove',moveCompleteAnimalGhost);
         document.addEventListener('pointerup',finishCompleteAnimalDrag);
