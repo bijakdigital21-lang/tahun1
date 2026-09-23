@@ -4639,6 +4639,9 @@
         @keyframes paintShake{50%{transform:translateX(7px)}}
         .paint-drag-ghost{position:fixed;z-index:99999;pointer-events:none;opacity:.85;transform:translate(-50%,-50%);width:80px;height:125px;filter:drop-shadow(4px 8px 5px #777)}
         #match-paint-feedback{min-height:1.3em;font-weight:900;color:#2f7042;margin:2px}
+        .paint-success-pop{position:fixed;inset:0;z-index:99998;display:grid;place-items:center;background:rgba(31,33,66,.28);pointer-events:none}
+        .paint-success-pop span{padding:22px 38px;border:5px solid #fff;border-radius:28px;background:#ffda63;color:#573694;font:900 clamp(2rem,7vw,4rem) 'Fredoka One',cursive;box-shadow:0 12px 0 #e9a64e,0 20px 35px #51426b66;animation:paintSuccessPop .24s ease-out both}
+        @keyframes paintSuccessPop{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
         @media(max-height:710px){.paint-tube{height:clamp(62px,16vh,110px)}.paint-target{height:clamp(38px,7vh,62px)}.paint-board{gap:3px 8px}}
     </style>
 </head>
@@ -8192,7 +8195,7 @@
         function paintTubeSvg(hex){return `<svg viewBox="0 0 90 180" aria-hidden="true"><path d="M21 20V5h48v15" fill="none" stroke="#a1998b" stroke-width="4"/><path d="M11 20h68l-6 43H17z" fill="#625e59"/><path d="M16 53h58v96q-2 10-14 11H30q-12-1-14-11z" fill="#fff"/><path d="M19 69h52v72q-3 9-13 9H32q-10 0-13-9z" fill="${hex}"/><path d="M25 21h40l-3 35H28z" fill="#514e49"/><path d="M28 159h34v15H28z" fill="#413d36"/><path d="M20 145q2 13 16 13h18q14 0 16-13" fill="none" stroke="#fff" stroke-width="6"/></svg>`}
         function paintSplashSvg(hex){return `<svg viewBox="0 0 90 75" aria-hidden="true"><path d="M17 35Q8 22 28 21Q30 8 42 16Q54 7 61 22Q78 22 70 37Q86 49 67 52Q67 69 51 60Q35 72 27 56Q10 59 17 45Q5 42 17 35Z" fill="${hex}"/></svg>`}
         function startMatchPaint(){
-            clearTimeout(paintAdvanceTimer);paintSetIndex=0;paintScore=0;paintSelected=null;paintFinishing=false;
+            clearTimeout(paintAdvanceTimer);document.querySelector('.paint-success-pop')?.remove();paintSetIndex=0;paintScore=0;paintSelected=null;paintFinishing=false;
             const used=new Set();paintSets=[];
             while(paintSets.length<5){const set=colourShuffle(colourItems).slice(0,6),key=set.map(c=>c.en).sort().join('|');if(!used.has(key)){used.add(key);paintSets.push(set)}}
             showScreen('match-paint-screen');updateColourLanguage();renderPaintSet();
@@ -8200,7 +8203,7 @@
         function renderPaintSet(){
             paintSelected=null;paintFinishing=false;
             const colours=paintSets[paintSetIndex];paintTargets=colourShuffle(colours);
-            do{paintArrangement=colourShuffle(paintTargets)}while(paintArrangement.every((c,i)=>c===paintTargets[i]));
+            do{paintArrangement=colourShuffle(paintTargets)}while(paintArrangement.some((c,i)=>c===paintTargets[i]));
             const board=document.getElementById('match-paint-board');board.innerHTML='';
             document.getElementById('match-paint-feedback').textContent='';
             for(let i=0;i<6;i++){
@@ -8224,7 +8227,8 @@
             if(matched===6&&!paintFinishing){
                 paintFinishing=true;paintScore=Math.round((paintSetIndex+1)*100/5);playCorrectSound();
                 document.getElementById('match-paint-feedback').textContent=currentGlobalLang==='ms'?'Bagus! Semua warna betul! 🌟':'Great! All colours match! 🌟';
-                paintAdvanceTimer=setTimeout(()=>{if(!document.getElementById('match-paint-screen').classList.contains('active'))return;paintSetIndex++;if(paintSetIndex<5)renderPaintSet();else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Match the Paint',100);alert(currentGlobalLang==='ms'?'Tahniah! Semua cat berjaya disusun! 🎉':'Great job! All paint tubes are in order! 🎉');openColourMenu()}},800);
+                const pop=document.createElement('div');pop.className='paint-success-pop';pop.setAttribute('role','status');pop.innerHTML='<span>Good Job! 🌟</span>';document.body.appendChild(pop);
+                paintAdvanceTimer=setTimeout(()=>{pop.remove();if(!document.getElementById('match-paint-screen').classList.contains('active'))return;paintSetIndex++;if(paintSetIndex<5)renderPaintSet();else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Match the Paint',100);alert(currentGlobalLang==='ms'?'Tahniah! Semua cat berjaya disusun! 🎉':'Great job! All paint tubes are in order! 🎉');openColourMenu()}},1000);
             }
         }
         function swapPaintTubes(from,to){
