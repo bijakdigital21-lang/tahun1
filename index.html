@@ -4656,7 +4656,7 @@
 .complete-animal-half { position:relative; flex:none; width:clamp(135px,16vw,165px); height:clamp(125px,17vh,155px); overflow:hidden; border:3px solid #69c9ec; background:#fffef2; touch-action:none; user-select:none; -webkit-user-select:none; }
 .complete-animal-left .complete-animal-half { border-radius:16px 0 0 16px; border-right:2px dashed #ff9a3d; }
 .complete-animal-right .complete-animal-half { border-radius:0 16px 16px 0; border-left:2px dashed #ff9a3d; cursor:grab; box-shadow:0 4px 0 #d3af69; }
-.complete-animal-half .complete-animal-art { position:absolute; left:0; top:0; width:200%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-size:clamp(104px,11vw,128px); line-height:1; }
+.complete-animal-half .complete-animal-art { position:absolute; left:0; top:0; width:200%; height:100%; object-fit:contain; pointer-events:none; }
 .complete-animal-half[data-side="right"] .complete-animal-art { left:-100%; }
 .complete-animal-half.matched { border-color:#46bd64; background:#e8ffe3; }
 .complete-animal-half.wrong { background:#ffb2ad; }
@@ -4669,6 +4669,7 @@
 .complete-animal-pop { position:fixed; inset:0; background:rgba(28,39,89,.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10010; display:flex; align-items:center; justify-content:center; padding:16px; }
 .complete-animal-pop-card { width:min(350px,90vw); padding:20px; border-radius:25px; background:#fff9db; border:5px solid #ffce58; text-align:center; box-shadow:0 15px 35px #0004; }
 .complete-animal-pop-art { font-size:clamp(110px,22vw,180px); line-height:1.2; }
+.complete-animal-pop-art img { display:block; width:100%; max-height:240px; object-fit:contain; }
 .complete-animal-pop-name { color:#373173; font:bold 2rem 'Fredoka One',system-ui,sans-serif; }
 @media(max-width:600px){
  #complete-animal-screen { width:calc(100vw - 10px); padding-left:8px; padding-right:8px; }
@@ -5414,11 +5415,11 @@
                 </div>
             </div>
 
-            <!-- COMPLETE THE ANIMAL: five sets of five unique animal pictures -->
+            <!-- COMPLETE THE ANIMAL: 22 unique animal pictures across five sets -->
             <div id="complete-animal-screen" class="card">
                 <h2 id="complete-animal-title" style="color:#5E17EB;font-family:'Fredoka One',cursive;">Complete the Animal 🐾</h2>
                 <p id="complete-animal-instruction">Drag the right half to complete the animal on the left.</p>
-                <p><span id="complete-animal-set-label">Set</span> <span id="complete-animal-set">1</span>/5 · <span id="complete-animal-matched">0</span>/5</p>
+                <p><span id="complete-animal-set-label">Set</span> <span id="complete-animal-set">1</span>/5 · <span id="complete-animal-matched">0</span>/<span id="complete-animal-set-size">5</span></p>
                 <div class="complete-animal-board">
                     <div id="complete-animal-left" class="complete-animal-column"></div>
                     <div id="complete-animal-right" class="complete-animal-column"></div>
@@ -7157,13 +7158,19 @@
             loadMatchAnimalPage();
         }
 
-        // COMPLETE THE ANIMAL: 25 distinct cartoon animal pictures in five sets.
+        // COMPLETE THE ANIMAL: 22 distinct animal pictures in five sets, without repeats.
         const completeAnimalPool = [
-            ['🐯','Harimau','Tiger'],['🦁','Singa','Lion'],['🐻','Beruang','Bear'],['🐼','Panda','Panda'],['🐨','Koala','Koala'],
-            ['🐮','Lembu','Cow'],['🐷','Babi','Pig'],['🐑','Biri-biri','Sheep'],['🐐','Kambing','Goat'],['🐴','Kuda','Horse'],
-            ['🦌','Rusa','Deer'],['🐘','Gajah','Elephant'],['🦒','Zirafah','Giraffe'],['🦓','Kuda belang','Zebra'],['🦛','Badak air','Hippopotamus'],
-            ['🦏','Badak sumbu','Rhinoceros'],['🐒','Monyet','Monkey'],['🦊','Musang','Fox'],['🐺','Serigala','Wolf'],['🐰','Arnab','Rabbit'],
-            ['🐱','Kucing','Cat'],['🐶','Anjing','Dog'],['🐸','Katak','Frog'],['🐧','Penguin','Penguin'],['🐊','Buaya','Crocodile']
+            ['https://i.imgur.com/jTkBzz0.jpeg','Gajah','Elephant'],['https://i.imgur.com/IlhGsG9.jpeg','Singa','Lion'],
+            ['https://i.imgur.com/dAZIwpy.jpeg','Buaya','Crocodile'],['https://i.imgur.com/9enfbES.jpeg','Rusa','Deer'],
+            ['https://i.imgur.com/nXphQfl.jpeg','Itik','Duck'],['https://i.imgur.com/zVHl4Va.jpeg','Serigala','Wolf'],
+            ['https://i.imgur.com/qCUfVpX.jpeg','Musang','Fox'],['https://i.imgur.com/CsHd8Wn.jpeg','Ayam','Chicken'],
+            ['https://i.imgur.com/1H24FEp.jpeg','Kucing','Cat'],['https://i.imgur.com/pr9ssPZ.jpeg','Arnab','Rabbit'],
+            ['https://i.imgur.com/Eh3EPk3.jpeg','Alpaka','Alpaca'],['https://i.imgur.com/nejHB5D.jpeg','Kalkun','Turkey'],
+            ['https://i.imgur.com/78AP1UQ.jpeg','Keldai','Donkey'],['https://i.imgur.com/xgKATBA.jpeg','Kuda','Horse'],
+            ['https://i.imgur.com/6mf6Gmf.jpeg','Lembu','Cow'],['https://i.imgur.com/4IJ1370.jpeg','Kuda belang','Zebra'],
+            ['https://i.imgur.com/qnx5EoG.jpeg','Biri-biri','Sheep'],['https://i.imgur.com/f5MK4tg.jpeg','Kambing','Goat'],
+            ['https://i.imgur.com/n6PfcRQ.jpeg','Badak air','Hippopotamus'],['https://i.imgur.com/kE6Ov4J.jpeg','Badak sumbu','Rhinoceros'],
+            ['https://i.imgur.com/L7wt2jv.jpeg','Zirafah','Giraffe'],['https://i.imgur.com/Brh8bMo.jpeg','Harimau','Tiger']
         ];
         let completeAnimalQuestions = [], completeAnimalSet = 0, completeAnimalMatched = new Set();
         let completeAnimalDrag = null, completeAnimalTimer = null, completeAnimalSession = 0;
@@ -7207,9 +7214,11 @@
             half.dataset.animal=String(index);
             half.dataset.side=side;
             half.setAttribute('aria-label',(currentGlobalLang==='ms'?'Bahagian ':'Half ')+(side==='left'?'kiri':'kanan'));
-            const art=document.createElement('span');
+            const art=document.createElement('img');
             art.className='complete-animal-art';
-            art.textContent=animal[0];
+            art.src=animal[0];
+            art.alt='';
+            art.draggable=false;
             half.append(art);
             if(side==='right')half.addEventListener('pointerdown',completeAnimalPointerDown);
             return half;
@@ -7221,6 +7230,7 @@
             const left=document.getElementById('complete-animal-left'), right=document.getElementById('complete-animal-right');
             left.replaceChildren(); right.replaceChildren();
             const group=completeAnimalQuestions.slice(completeAnimalSet*5,completeAnimalSet*5+5);
+            document.getElementById('complete-animal-set-size').textContent=group.length;
             group.forEach((animal,i)=>{const row=document.createElement('div');row.className='complete-animal-row complete-animal-left';row.append(completeAnimalHalf(animal,completeAnimalSet*5+i,'left'));left.append(row)});
             shuffleCompleteAnimal(group.map((_,i)=>completeAnimalSet*5+i)).forEach(i=>{
                 const row=document.createElement('div');row.className='complete-animal-row complete-animal-right';row.append(completeAnimalHalf(completeAnimalQuestions[i],i,'right'));right.append(row)
@@ -7274,7 +7284,8 @@
             playCorrectSound();
             const pop=document.createElement('div');pop.className='complete-animal-pop';
             const card=document.createElement('div');card.className='complete-animal-pop-card';
-            const picture=document.createElement('div');picture.className='complete-animal-pop-art';picture.textContent=animal[0];
+            const picture=document.createElement('div');picture.className='complete-animal-pop-art';
+            const fullImage=document.createElement('img');fullImage.src=animal[0];fullImage.alt=currentGlobalLang==='ms'?animal[1]:animal[2];picture.append(fullImage);
             const name=document.createElement('div');name.className='complete-animal-pop-name';name.textContent=currentGlobalLang==='ms'?animal[1]:animal[2];
             card.append(picture,name);pop.append(card);document.body.append(pop);
             // Keep the popup visible until the animal name has been spoken.
@@ -7288,9 +7299,9 @@
                 clearTimeout(completeAnimalSpeechWatchdog);
                 completeAnimalUtterance=null;
                 pop.remove();
-                if(completeAnimalMatched.size!==5)return;
+                if(completeAnimalMatched.size!==Math.min(5,completeAnimalQuestions.length-completeAnimalSet*5))return;
                 completeAnimalSet++;
-                if(completeAnimalSet<5){renderCompleteAnimal();return;}
+                if(completeAnimalSet<Math.ceil(completeAnimalQuestions.length/5)){renderCompleteAnimal();return;}
                 if(window.saveScoreToFirebase)window.saveScoreToFirebase('Complete the Animal',100);
                 alert(currentGlobalLang==='ms'?'Tahniah! Semua haiwan berjaya dilengkapkan! 🎉':'Great job! You completed all the animals! 🎉');
                 leaveCompleteAnimal();
