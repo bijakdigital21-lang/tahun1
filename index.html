@@ -2175,7 +2175,7 @@
 
         /* =========================================================
            SPELL IT RIGHT - ABC MODULE
-           Kindergarten spelling: listen -> scramble -> drag letters
+           Kindergarten spelling: listen -> scramble -> tap letters
         ========================================================== */
         #spell-it-right-screen { width: 100%; }
         .spell-card {
@@ -2264,14 +2264,7 @@
             font-weight: 900;
             color: #222;
             text-transform: uppercase;
-            transition: transform .14s ease, background .14s ease, border-color .14s ease;
         }
-        .spell-slot.hovered {
-            background: #e7fbff;
-            border-color: #FF66C4;
-            transform: scale(1.08);
-        }
-        .spell-slot.filled { border-style: solid; border-color: #7ED957; background: #f3ffe9; }
         .spell-letter-bank {
             display: flex;
             justify-content: center;
@@ -2293,31 +2286,11 @@
             font-weight: 900;
             color: #2C3E50;
             cursor: pointer;
-            touch-action: none;
-            user-select: none;
             box-shadow: 0 5px 0 #c47d18, 0 7px 13px rgba(0,0,0,.14);
             transition: transform .12s ease, opacity .2s ease;
         }
         .spell-letter-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #c47d18; }
-        .spell-letter-btn.dragging { opacity: .45; transform: scale(.94); }
         .spell-letter-btn.used { opacity: .25; pointer-events: none; transform: scale(.9); }
-        .spell-floating {
-            position: fixed;
-            z-index: 99999;
-            width: 64px;
-            height: 64px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: translate(-50%,-50%) scale(1.08);
-            pointer-events: none;
-            background: linear-gradient(145deg,#FFDE59,#ffb94d);
-            border: 3px solid #e59b21;
-            box-shadow: 0 8px 18px rgba(0,0,0,.25);
-            font: 900 2rem Arial,sans-serif;
-            color: #2C3E50;
-        }
         .spell-feedback {
             min-height: 32px;
             font-family: 'Fredoka One', cursive;
@@ -2342,7 +2315,6 @@
             .spell-learning-word { font-size: 1.9rem; letter-spacing: .22em; }
             .spell-slot { width: 46px; height: 51px; font-size: 1.7rem; }
             .spell-letter-btn { width: 55px; height: 55px; font-size: 1.75rem; }
-            .spell-floating { width:55px; height:55px; font-size:1.75rem; }
         }
 
     
@@ -4647,48 +4619,96 @@
                 -webkit-text-stroke-width: 1.5px;
             }
         }
-        /* Menu drawer untuk semua saiz skrin: phone, tablet dan laptop */
-        .mobile-toggle {
-            display: block;
+        /* KIDDORA: colourful pastel boxes (visual only) */
+        :root{--box-pink:#FFE0F1;--box-yellow:#FFF3B8;--box-blue:#DDF6FF;--box-green:#E1F8D5;--box-purple:#EEE2FF;--box-orange:#FFE8C7}
+
+        /* Main learning panels and former white picture frames */
+        .learn123-board,.spell-card,.match123-object-box,.count123-dropzone,
+        .addup-object-box,.takeaway-object-box,#find-colour-screen #find-colour-question,
+        .label-stage,.transport-guess-card,.food-sort-item{
+            background:linear-gradient(145deg,var(--box-yellow),var(--box-pink))!important
+        }
+        .flashcard-img-container,.spell-picture,.body-learn-visual,.suku-picture,.transport-zone-thumb{
+            background:linear-gradient(145deg,var(--box-blue),var(--box-purple))!important
         }
 
-        .sidebar {
-            left: -260px;
-        }
+        /* Answer, matching and draggable boxes. Correct/wrong colours are preserved. */
+        .find123-option:not(.correct):not(.wrong),.match123-number-target:not(.correct):not(.wrong),
+        .count123-answer:not(.correct):not(.wrong),.spell-slot,.spell-letter-btn,
+        .colour-word-item:not(.correct):not(.wrong),.colour-swatch-item:not(.correct):not(.wrong),
+        .find-colour-option:not(.correct):not(.wrong),.body-drag-label:not(.correct):not(.wrong),
+        .addup-answer-zone:not(.correct):not(.wrong),.addup-answer-tile:not(.correct):not(.wrong),
+        .takeaway-answer-zone:not(.correct):not(.wrong),.takeaway-answer-tile:not(.correct):not(.wrong),
+        .abc-path-cell:not(.correct):not(.wrong),.suku-option:not(.correct):not(.wrong),
+        .suku2-first:not(.correct):not(.wrong),.suku2-choice:not(.correct):not(.wrong):not(.matched),
+        .transport-guess-option:not(.correct):not(.wrong){background:var(--box-blue)!important}
 
-        .sidebar.open {
-            left: 0;
-        }
+        .find123-option:nth-child(4n+1):not(.correct):not(.wrong),.match123-number-target:nth-child(4n+1):not(.correct):not(.wrong),
+        .count123-answer:nth-child(4n+1):not(.correct):not(.wrong),.spell-slot:nth-child(4n+1),.spell-letter-btn:nth-child(4n+1),
+        .colour-word-item:nth-child(4n+1):not(.correct):not(.wrong),.colour-swatch-item:nth-child(4n+1):not(.correct):not(.wrong),
+        .find-colour-option:nth-child(4n+1):not(.correct):not(.wrong),.body-drag-label:nth-child(4n+1):not(.correct):not(.wrong),
+        .addup-answer-tile:nth-child(4n+1):not(.correct):not(.wrong),.takeaway-answer-tile:nth-child(4n+1):not(.correct):not(.wrong),
+        .abc-path-cell:nth-child(4n+1):not(.correct):not(.wrong),.suku-option:nth-child(4n+1):not(.correct):not(.wrong),
+        .suku2-choice:nth-child(4n+1):not(.correct):not(.wrong):not(.matched),.transport-guess-option:nth-child(4n+1):not(.correct):not(.wrong){background:var(--box-pink)!important}
 
-        .main-content {
-            margin-left: 0;
-            padding-top: 70px;
-        }
+        .find123-option:nth-child(4n+2):not(.correct):not(.wrong),.match123-number-target:nth-child(4n+2):not(.correct):not(.wrong),
+        .count123-answer:nth-child(4n+2):not(.correct):not(.wrong),.spell-slot:nth-child(4n+2),.spell-letter-btn:nth-child(4n+2),
+        .colour-word-item:nth-child(4n+2):not(.correct):not(.wrong),.colour-swatch-item:nth-child(4n+2):not(.correct):not(.wrong),
+        .find-colour-option:nth-child(4n+2):not(.correct):not(.wrong),.body-drag-label:nth-child(4n+2):not(.correct):not(.wrong),
+        .addup-answer-tile:nth-child(4n+2):not(.correct):not(.wrong),.takeaway-answer-tile:nth-child(4n+2):not(.correct):not(.wrong),
+        .abc-path-cell:nth-child(4n+2):not(.correct):not(.wrong),.suku-option:nth-child(4n+2):not(.correct):not(.wrong),
+        .suku2-choice:nth-child(4n+2):not(.correct):not(.wrong):not(.matched),.transport-guess-option:nth-child(4n+2):not(.correct):not(.wrong){background:var(--box-yellow)!important}
 
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            display: block;
-            background: rgba(0, 0, 0, 0.42);
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            z-index: 99;
-        }
+        .find123-option:nth-child(4n+3):not(.correct):not(.wrong),.match123-number-target:nth-child(4n+3):not(.correct):not(.wrong),
+        .count123-answer:nth-child(4n+3):not(.correct):not(.wrong),.spell-slot:nth-child(4n+3),.spell-letter-btn:nth-child(4n+3),
+        .colour-word-item:nth-child(4n+3):not(.correct):not(.wrong),.colour-swatch-item:nth-child(4n+3):not(.correct):not(.wrong),
+        .find-colour-option:nth-child(4n+3):not(.correct):not(.wrong),.body-drag-label:nth-child(4n+3):not(.correct):not(.wrong),
+        .addup-answer-tile:nth-child(4n+3):not(.correct):not(.wrong),.takeaway-answer-tile:nth-child(4n+3):not(.correct):not(.wrong),
+        .abc-path-cell:nth-child(4n+3):not(.correct):not(.wrong),.suku-option:nth-child(4n+3):not(.correct):not(.wrong),
+        .suku2-choice:nth-child(4n+3):not(.correct):not(.wrong):not(.matched),.transport-guess-option:nth-child(4n+3):not(.correct):not(.wrong){background:var(--box-green)!important}
 
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
+        .find123-option:nth-child(4n):not(.correct):not(.wrong),.match123-number-target:nth-child(4n):not(.correct):not(.wrong),
+        .count123-answer:nth-child(4n):not(.correct):not(.wrong),.spell-slot:nth-child(4n),.spell-letter-btn:nth-child(4n),
+        .colour-word-item:nth-child(4n):not(.correct):not(.wrong),.colour-swatch-item:nth-child(4n):not(.correct):not(.wrong),
+        .find-colour-option:nth-child(4n):not(.correct):not(.wrong),.body-drag-label:nth-child(4n):not(.correct):not(.wrong),
+        .addup-answer-tile:nth-child(4n):not(.correct):not(.wrong),.takeaway-answer-tile:nth-child(4n):not(.correct):not(.wrong),
+        .abc-path-cell:nth-child(4n):not(.correct):not(.wrong),.suku-option:nth-child(4n):not(.correct):not(.wrong),
+        .suku2-choice:nth-child(4n):not(.correct):not(.wrong):not(.matched),.transport-guess-option:nth-child(4n):not(.correct):not(.wrong){background:var(--box-purple)!important}
 
-        @media (min-width: 769px) {
-            .main-content {
-                padding: 70px 30px 40px;
-            }
+        .addup-answer-zone:not(.correct):not(.wrong),.takeaway-answer-zone:not(.correct):not(.wrong){background:var(--box-orange)!important}
+        .addup-floating,.takeaway-floating.number{background:var(--box-yellow)!important}
+        .suku2-choice.matched{background:var(--box-green)!important}
+        /* All remaining white matching, sorting, tracing and menu boxes */
+        .match-item,.animal-cat-btn,.trace-case-btn:not(.active),.body-drop:not(.correct),
+        .shape-progress-pill,.shape-trace-canvas-wrap,.tracing-board,.trace-canvas-wrap,
+        #draw-shape-screen .shape-tracing-board,#draw-shape-screen .shape-trace-canvas-wrap,
+        #match-shape-screen #match-shape-left .shape-match-item,
+        #match-shape-screen #match-shape-right .shape-mini,
+        .transport-cat-btn,.transport-sort-item,.transport-sort-zone,
+        .transport-sort-floating,.install-device-btn,.install-step,.profile-list-box{
+            background:var(--box-blue)!important
         }
+        .match-item:nth-child(4n+1),.animal-cat-btn:nth-child(4n+1),.trace-case-btn:nth-child(4n+1):not(.active),
+        .body-drop:nth-child(4n+1):not(.correct),.transport-cat-btn:nth-child(4n+1),
+        .transport-sort-item:nth-child(4n+1),.transport-sort-zone:nth-child(4n+1){background:var(--box-pink)!important}
+        .match-item:nth-child(4n+2),.animal-cat-btn:nth-child(4n+2),.trace-case-btn:nth-child(4n+2):not(.active),
+        .body-drop:nth-child(4n+2):not(.correct),.transport-cat-btn:nth-child(4n+2),
+        .transport-sort-item:nth-child(4n+2),.transport-sort-zone:nth-child(4n+2){background:var(--box-yellow)!important}
+        .match-item:nth-child(4n+3),.animal-cat-btn:nth-child(4n+3),.trace-case-btn:nth-child(4n+3):not(.active),
+        .body-drop:nth-child(4n+3):not(.correct),.transport-cat-btn:nth-child(4n+3),
+        .transport-sort-item:nth-child(4n+3),.transport-sort-zone:nth-child(4n+3){background:var(--box-green)!important}
+        .match-item:nth-child(4n),.animal-cat-btn:nth-child(4n),.trace-case-btn:nth-child(4n):not(.active),
+        .body-drop:nth-child(4n):not(.correct),.transport-cat-btn:nth-child(4n),
+        .transport-sort-item:nth-child(4n),.transport-sort-zone:nth-child(4n){background:var(--box-purple)!important}
 
+        /* Image-only match boxes stay transparent; coloured frames remain visible. */
+        #match-animal-game-screen #match-animal-right-column .match-item,
+        #match-body-game-screen #match-body-right-column .match-item,
+        #match-colour-screen #colour-match-right .match-item,
+        #match-shape-screen #match-shape-right .shape-match-item{
+            background:transparent!important
+        }
+        #login-screen.login-kiddora-card{background:linear-gradient(180deg,#FFF8CF 0%,#FFEAF5 100%)!important}
     </style>
 </head>
 <body class="login-mode">
@@ -4699,9 +4719,6 @@
     <!-- BACKGROUND MUSIC: IKON SPEAKER SENTIASA ADA PADA SETIAP PAPARAN -->
     <button id="bg-music-toggle" type="button" aria-label="Turn background music on or off" title="Background Music" onclick="toggleBgMusic()">🔊</button>
 
-    <!-- OVERLAY / BACKDROP SKRIN BELAKANG -->
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
-
     <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-logo">
@@ -4709,6 +4726,9 @@
         </div>
         <div class="sidebar-title">KIDDORA</div>
         <div class="sidebar-subtitle">Kids Education App</div>
+        <!-- OVERLAY / BACKDROP SKRIN BELAKANG -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
         <!-- BUTTON PILIHAN BAHASA -->
         <div class="sidebar-language-container">
             <span>🌐 Language / Bahasa</span>
@@ -8754,8 +8774,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let spellSelected = [];
         let spellOrder = [];
         let spellBusy = false;
-        let spellDrag = null;
-        let spellFloat = null;
 
         function shuffleSpellItems(items) {
             const arr = [...items];
@@ -8878,7 +8896,7 @@ document.addEventListener('DOMContentLoaded', () => {
             spellSelected = [];
             spellOrder = shuffleSpellLetters(item.word);
             document.getElementById('spell-learning-word').innerText = '';
-            document.getElementById('spell-instruction').innerText = 'Drag each letter into the correct answer box.';
+            document.getElementById('spell-instruction').innerText = 'Tap the letters in the correct order.';
             document.getElementById('spell-feedback').innerText = '';
             renderSpellSlots();
             renderSpellLetterBank();
@@ -8891,9 +8909,7 @@ document.addEventListener('DOMContentLoaded', () => {
             item.word.split('').forEach((_, i) => {
                 const slot = document.createElement('div');
                 slot.className = 'spell-slot';
-                slot.dataset.slotIndex = i;
                 slot.innerText = spellSelected[i] ? spellSelected[i].letter : '';
-                if (spellSelected[i]) slot.classList.add('filled');
                 wrap.appendChild(slot);
             });
         }
@@ -8907,77 +8923,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.innerText = obj.letter;
                 btn.dataset.spellIdx = idx;
                 btn.onclick = () => chooseSpellLetter(idx, btn);
-                installSpellLetterDrag(btn, idx);
                 bank.appendChild(btn);
             });
         }
 
         function chooseSpellLetter(idx, btn) {
             if (spellBusy || btn.classList.contains('used')) return;
-            const firstEmpty = spellSelected.findIndex(x => !x);
-            const slotIndex = firstEmpty === -1 ? spellSelected.length : firstEmpty;
-            placeSpellLetter(idx, btn, slotIndex);
-        }
-
-        function installSpellLetterDrag(btn, idx) {
-            btn.onpointerdown = e => {
-                if (spellBusy || btn.classList.contains('used')) return;
-                e.preventDefault();
-                spellDrag = { btn, idx, pointerId: e.pointerId, moved: false, startX: e.clientX, startY: e.clientY };
-                btn.setPointerCapture?.(e.pointerId);
-                btn.classList.add('dragging');
-                spellFloat = document.createElement('div');
-                spellFloat.className = 'spell-floating';
-                spellFloat.textContent = btn.textContent;
-                document.body.appendChild(spellFloat);
-                moveSpellFloat(e);
-            };
-            btn.onpointermove = e => {
-                if (spellDrag?.btn !== btn) return;
-                e.preventDefault();
-                if (Math.hypot(e.clientX - spellDrag.startX, e.clientY - spellDrag.startY) > 7) spellDrag.moved = true;
-                moveSpellFloat(e);
-                highlightSpellSlot(e.clientX, e.clientY);
-            };
-            btn.onpointerup = btn.onpointercancel = e => {
-                if (spellDrag?.btn !== btn) return;
-                e.preventDefault();
-                const moved = spellDrag.moved;
-                const slot = document.elementFromPoint(e.clientX, e.clientY)?.closest('.spell-slot');
-                cleanupSpellDrag();
-                if (slot) placeSpellLetter(idx, btn, Number(slot.dataset.slotIndex));
-                else if (!moved) chooseSpellLetter(idx, btn);
-            };
-        }
-
-        function moveSpellFloat(e) {
-            if (!spellFloat) return;
-            spellFloat.style.left = e.clientX + 'px';
-            spellFloat.style.top = e.clientY + 'px';
-        }
-
-        function highlightSpellSlot(x, y) {
-            document.querySelectorAll('#spell-answer-slots .spell-slot').forEach(slot => slot.classList.remove('hovered'));
-            const slot = document.elementFromPoint(x, y)?.closest('.spell-slot');
-            if (slot && !spellSelected[Number(slot.dataset.slotIndex)]) slot.classList.add('hovered');
-        }
-
-        function cleanupSpellDrag() {
-            spellDrag?.btn?.classList.remove('dragging');
-            spellDrag = null;
-            spellFloat?.remove();
-            spellFloat = null;
-            document.querySelectorAll('#spell-answer-slots .spell-slot').forEach(slot => slot.classList.remove('hovered'));
-        }
-
-        function placeSpellLetter(idx, btn, slotIndex) {
-            if (spellBusy || btn.classList.contains('used') || spellSelected[slotIndex]) return;
             playClickSound();
             btn.classList.add('used');
-            spellSelected[slotIndex] = { ...spellOrder[idx], buttonIndex: idx };
+            spellSelected.push({ ...spellOrder[idx], buttonIndex: idx });
             renderSpellSlots();
             const item = getCurrentSpellItem();
-            if (spellSelected.filter(Boolean).length === item.word.length) checkSpellAnswer();
+            if (spellSelected.length === item.word.length) checkSpellAnswer();
         }
 
         function checkSpellAnswer() {
@@ -9631,7 +9588,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const row=document.createElement('div');row.className='suku2-row';row.id=`suku2-row-${index}`;row.dataset.second=item.second;row.dataset.word=item.word;row.tabIndex=0;
                 row.innerHTML=`<img src="${item.image}" alt="${item.word}"><span class="suku2-first">${item.first}</span>`;
                 row.onclick=()=>{if(!suku2SuppressClick)selectSuku2Row(row)};row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectSuku2Row(row)}};
-                row.ondragover=e=>{e.preventDefault()};row.ondrop=e=>{e.preventDefault();const choiceId=e.dataTransfer.getData('text/plain');const choice=document.getElementById(choiceId);if(choice)trySuku2Match(row,choice)};
                 row.onpointerdown=e=>startSuku2Drag(e,row);
                 row.onpointermove=moveSuku2Drag;
                 row.onpointerup=endSuku2Drag;
@@ -9640,13 +9596,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             sukuShuffle(set.map((item,index)=>({second:item.second,key:index}))).forEach((item,index)=>{
                 const choice=document.createElement('button');choice.type='button';choice.className='suku2-choice';choice.id=`suku2-choice-${index}`;choice.dataset.second=item.second;choice.textContent=item.second;choice.draggable=false;
-                choice.onclick=()=>{if(!suku2SuppressClick)selectSuku2Choice(choice)};choice.onpointerdown=e=>startSuku2Drag(e,choice);choice.onpointermove=moveSuku2Drag;choice.onpointerup=endSuku2Drag;choice.onpointercancel=cancelSuku2Drag;
+                choice.onclick=()=>{if(!suku2SuppressClick)selectSuku2Choice(choice)};
                 right.appendChild(choice);
             });
             requestAnimationFrame(drawSuku2Lines);
         }
         function startSuku2Drag(e,row){
-            if(row.classList.contains('matched')||e.button>0)return;
+            if(!row.classList.contains('suku2-row')||row.classList.contains('matched')||e.button>0)return;
             e.preventDefault();suku2DragRow=row;suku2Dragging=true;suku2DragStartX=e.clientX;suku2DragStartY=e.clientY;
             const board=document.getElementById('suku2-board').getBoundingClientRect();suku2DragX=e.clientX-board.left;suku2DragY=e.clientY-board.top;
             row.classList.add('selected');row.setPointerCapture?.(e.pointerId);playClickSound();drawSuku2Lines();
@@ -9659,10 +9615,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         function endSuku2Drag(e){
             if(!suku2Dragging||!suku2DragRow)return;
-            const origin=suku2DragRow, fromLeft=origin.classList.contains('suku2-row');
-            const target=document.elementFromPoint(e.clientX,e.clientY)?.closest(fromLeft?'#suku2-right .suku2-choice':'#suku2-left .suku2-row');
+            const origin=suku2DragRow;
+            const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('#suku2-right .suku2-choice');
             origin.releasePointerCapture?.(e.pointerId);origin.classList.remove('selected');suku2DragRow=null;suku2Dragging=false;
-            if(target&&!target.classList.contains('matched'))trySuku2Match(fromLeft?origin:target,fromLeft?target:origin);else drawSuku2Lines();
+            if(target&&!target.classList.contains('matched'))trySuku2Match(origin,target);else drawSuku2Lines();
             setTimeout(()=>{suku2SuppressClick=false},0);
         }
         function cancelSuku2Drag(e){
@@ -9676,6 +9632,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         function selectSuku2Choice(choice){
             if(choice.classList.contains('matched'))return;
+            if(!suku2SelectedRow){
+                document.getElementById('suku2-message').textContent=currentGlobalLang==='ms'?'Pilih atau seret dari sebelah kiri dahulu.':'Choose or drag from the left first.';
+                return;
+            }
             document.querySelectorAll('#suku2-right .suku2-choice').forEach(el=>el.classList.remove('selected'));choice.classList.add('selected');suku2SelectedChoice=choice;
             if(suku2SelectedRow)trySuku2Match(suku2SelectedRow,choice);
         }
@@ -9695,11 +9655,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const base=board.getBoundingClientRect();svg.setAttribute('viewBox',`0 0 ${base.width} ${base.height}`);svg.innerHTML='';
             document.querySelectorAll('#suku2-left .suku2-row.matched').forEach(row=>{
                 const choice=document.getElementById(row.dataset.choiceId);if(!choice)return;const a=row.getBoundingClientRect(),b=choice.getBoundingClientRect();
-                const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',suku2DragRow.classList.contains('suku2-choice')?a.left-base.left:a.right-base.left);line.setAttribute('y1',a.top+a.height/2-base.top);line.setAttribute('x2',b.left-base.left);line.setAttribute('y2',b.top+b.height/2-base.top);svg.appendChild(line);
+                const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',a.right-base.left);line.setAttribute('y1',a.top+a.height/2-base.top);line.setAttribute('x2',b.left-base.left);line.setAttribute('y2',b.top+b.height/2-base.top);svg.appendChild(line);
             });
             if(suku2Dragging&&suku2DragRow){
                 const a=suku2DragRow.getBoundingClientRect(),line=document.createElementNS('http://www.w3.org/2000/svg','line');
-                line.setAttribute('x1',suku2DragRow.classList.contains('suku2-choice')?a.left-base.left:a.right-base.left);line.setAttribute('y1',a.top+a.height/2-base.top);line.setAttribute('x2',suku2DragX);line.setAttribute('y2',suku2DragY);line.style.stroke='#FF66C4';line.style.strokeDasharray='9 7';svg.appendChild(line);
+                line.setAttribute('x1',a.right-base.left);line.setAttribute('y1',a.top+a.height/2-base.top);line.setAttribute('x2',suku2DragX);line.setAttribute('y2',suku2DragY);line.style.stroke='#FF66C4';line.style.strokeDasharray='9 7';svg.appendChild(line);
             }
         }
         window.addEventListener('resize',()=>{if(document.getElementById('bijak-suku-kata-2-screen')?.classList.contains('active'))requestAnimationFrame(drawSuku2Lines)});
