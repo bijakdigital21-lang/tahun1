@@ -4646,27 +4646,38 @@
         @media(max-width:600px){#match-paint-screen{padding:8px 0 12px}#match-paint-screen #match-paint-board.paint-board{padding:10px 7px;gap:8px 5px;border-width:3px;border-radius:18px}.paint-tube{width:100%;height:clamp(90px,17vh,145px)}}
         @media(max-height:710px){.paint-tube{height:clamp(85px,19vh,135px)}.paint-target{height:clamp(38px,7vh,62px)}#match-paint-screen #match-paint-board.paint-board{gap:6px 8px;padding:10px}}
 
-/* Complete the Animal: each half shows the same illustration, clipped down the middle. */
-#complete-animal-screen { max-width: 850px; }
-.complete-animal-board { display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap:clamp(12px,6vw,110px); max-width:650px; margin:14px auto; }
-.complete-animal-column { display:flex; flex-direction:column; gap:7px; min-width:0; }
-.complete-animal-row { height:clamp(60px,11vh,94px); display:flex; align-items:center; justify-content:center; }
-.complete-animal-left { justify-content:flex-end; }
-.complete-animal-right { justify-content:flex-start; }
-.complete-animal-half { position:relative; width:clamp(62px,11vh,92px); height:clamp(60px,11vh,94px); overflow:hidden; border:3px solid #69c9ec; background:#fffef2; touch-action:none; user-select:none; -webkit-user-select:none; }
+/* Complete the Animal: large halves on opposite sides, same spacing as Match the Animal. */
+#complete-animal-screen { width:min(98vw,1080px); max-width:none; margin-left:50%; transform:translateX(-50%); }
+.complete-animal-board { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(55px,18vw,260px); width:100%; margin:14px auto; }
+.complete-animal-column { display:flex; flex-direction:column; gap:12px; min-width:0; }
+.complete-animal-row { height:clamp(130px,17vh,160px); display:flex; align-items:center; min-width:0; }
+.complete-animal-left { justify-content:flex-start; }
+.complete-animal-right { justify-content:flex-end; }
+.complete-animal-half { position:relative; flex:none; width:clamp(135px,16vw,165px); height:clamp(125px,17vh,155px); overflow:hidden; border:3px solid #69c9ec; background:#fffef2; touch-action:none; user-select:none; -webkit-user-select:none; }
 .complete-animal-left .complete-animal-half { border-radius:16px 0 0 16px; border-right:2px dashed #ff9a3d; }
 .complete-animal-right .complete-animal-half { border-radius:0 16px 16px 0; border-left:2px dashed #ff9a3d; cursor:grab; box-shadow:0 4px 0 #d3af69; }
-.complete-animal-half .complete-animal-art { position:absolute; width:200%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-size:clamp(65px,11vh,102px); line-height:1; }
-.complete-animal-right .complete-animal-art { left:-100%; }
+.complete-animal-half .complete-animal-art { position:absolute; left:0; top:0; width:200%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-size:clamp(150px,19vw,190px); line-height:1; }
+.complete-animal-half[data-side="right"] .complete-animal-art { left:-100%; }
 .complete-animal-half.matched { border-color:#46bd64; background:#e8ffe3; }
 .complete-animal-half.wrong { background:#ffb2ad; }
 .complete-animal-half.dragging { opacity:.45; }
+.complete-animal-left.complete-animal-combined { justify-content:flex-start; }
+.complete-animal-combined .complete-animal-half { border-color:#46bd64; background:#e8ffe3; box-shadow:none; cursor:default; }
+.complete-animal-combined .complete-animal-half:first-child { border-right:0; }
+.complete-animal-combined .complete-animal-half:last-child { border-left:0; border-radius:0 16px 16px 0; }
 .complete-animal-ghost { position:fixed; z-index:10005; pointer-events:none; transform:translate(-50%,-50%); filter:drop-shadow(0 7px 7px #0005); }
 .complete-animal-pop { position:fixed; inset:0; background:#1c275987; z-index:10010; display:flex; align-items:center; justify-content:center; padding:16px; }
 .complete-animal-pop-card { width:min(350px,90vw); padding:20px; border-radius:25px; background:#fff9db; border:5px solid #ffce58; text-align:center; box-shadow:0 15px 35px #0004; }
 .complete-animal-pop-art { font-size:clamp(110px,22vw,180px); line-height:1.2; }
 .complete-animal-pop-name { color:#373173; font:bold 2rem 'Fredoka One',system-ui,sans-serif; }
-@media(max-width:430px){ .complete-animal-board { gap:20px; } #complete-animal-screen { padding-left:10px; padding-right:10px; } }
+@media(max-width:600px){
+ #complete-animal-screen { width:calc(100vw - 10px); padding-left:8px; padding-right:8px; }
+ .complete-animal-board { gap:clamp(48px,14vw,64px); }
+ .complete-animal-column { gap:8px; }
+ .complete-animal-row { height:clamp(90px,13vh,115px); }
+ .complete-animal-half { width:clamp(83px,25vw,110px); height:clamp(86px,13vh,112px); }
+ .complete-animal-half .complete-animal-art { font-size:clamp(125px,33vw,155px); }
+}
     </style>
 </head>
 <body class="login-mode">
@@ -5406,6 +5417,7 @@
             <!-- COMPLETE THE ANIMAL: five sets of five unique animal pictures -->
             <div id="complete-animal-screen" class="card">
                 <h2 id="complete-animal-title" style="color:#5E17EB;font-family:'Fredoka One',cursive;">Complete the Animal 🐾</h2>
+                <small style="display:inline-block;background:#ffe566;color:#302b62;border:2px solid #302b62;border-radius:18px;padding:3px 12px;font-weight:800;">GAMBAR BESAR · v3</small>
                 <p id="complete-animal-instruction">Drag the right half to complete the animal on the left.</p>
                 <p><span id="complete-animal-set-label">Set</span> <span id="complete-animal-set">1</span>/5 · <span id="complete-animal-matched">0</span>/5</p>
                 <div class="complete-animal-board">
@@ -7233,7 +7245,15 @@
         function finishCompleteAnimalDrag(e){
             const drag=completeAnimalDrag;
             if(!drag || e.pointerId!==drag.id)return;
-            const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.complete-animal-left .complete-animal-half');
+            const point=document.elementFromPoint(e.clientX,e.clientY);
+            let target=point?.closest('.complete-animal-left .complete-animal-half');
+            // Accept a drop directly next to the cut edge so the pieces visibly join.
+            if(!target){
+                target=[...document.querySelectorAll('#complete-animal-left .complete-animal-half:not(.matched)')].find(half=>{
+                    const r=half.getBoundingClientRect();
+                    return e.clientX>=r.left && e.clientX<=r.right+r.width && e.clientY>=r.top && e.clientY<=r.bottom;
+                });
+            }
             drag.ghost.remove();drag.source.classList.remove('dragging');completeAnimalDrag=null;
             if(!target || !document.getElementById('complete-animal-screen').classList.contains('active') || completeAnimalMatched.has(target.dataset.animal))return;
             if(target.dataset.animal!==drag.source.dataset.animal){
@@ -7243,6 +7263,11 @@
             const index=Number(target.dataset.animal),animal=completeAnimalQuestions[index];
             completeAnimalMatched.add(String(index));
             target.classList.add('matched');drag.source.classList.add('matched');
+            // Move the right half beside its matching left half; keep the completed picture there.
+            drag.source.removeEventListener('pointerdown',completeAnimalPointerDown);
+            target.parentElement.classList.add('complete-animal-combined');
+            target.parentElement.append(drag.source);
+            drag.source.style.pointerEvents='none';
             document.getElementById('complete-animal-matched').textContent=completeAnimalMatched.size;
             playCorrectSound();
             const pop=document.createElement('div');pop.className='complete-animal-pop';
