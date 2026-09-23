@@ -4656,7 +4656,7 @@
 .complete-animal-half { position:relative; flex:none; width:clamp(135px,16vw,165px); height:clamp(125px,17vh,155px); overflow:hidden; border:3px solid #69c9ec; background:#fffef2; touch-action:none; user-select:none; -webkit-user-select:none; }
 .complete-animal-left .complete-animal-half { border-radius:16px 0 0 16px; border-right:2px dashed #ff9a3d; }
 .complete-animal-right .complete-animal-half { border-radius:0 16px 16px 0; border-left:2px dashed #ff9a3d; cursor:grab; box-shadow:0 4px 0 #d3af69; }
-.complete-animal-half .complete-animal-art { position:absolute; left:0; top:0; width:200%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-size:clamp(150px,19vw,190px); line-height:1; }
+.complete-animal-half .complete-animal-art { position:absolute; left:0; top:0; width:200%; height:100%; display:flex; align-items:center; justify-content:center; font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-size:clamp(104px,11vw,128px); line-height:1; }
 .complete-animal-half[data-side="right"] .complete-animal-art { left:-100%; }
 .complete-animal-half.matched { border-color:#46bd64; background:#e8ffe3; }
 .complete-animal-half.wrong { background:#ffb2ad; }
@@ -4666,7 +4666,7 @@
 .complete-animal-combined .complete-animal-half:first-child { border-right:0; }
 .complete-animal-combined .complete-animal-half:last-child { border-left:0; border-radius:0 16px 16px 0; }
 .complete-animal-ghost { position:fixed; z-index:10005; pointer-events:none; transform:translate(-50%,-50%); filter:drop-shadow(0 7px 7px #0005); }
-.complete-animal-pop { position:fixed; inset:0; background:#1c275987; z-index:10010; display:flex; align-items:center; justify-content:center; padding:16px; }
+.complete-animal-pop { position:fixed; inset:0; background:rgba(28,39,89,.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10010; display:flex; align-items:center; justify-content:center; padding:16px; }
 .complete-animal-pop-card { width:min(350px,90vw); padding:20px; border-radius:25px; background:#fff9db; border:5px solid #ffce58; text-align:center; box-shadow:0 15px 35px #0004; }
 .complete-animal-pop-art { font-size:clamp(110px,22vw,180px); line-height:1.2; }
 .complete-animal-pop-name { color:#373173; font:bold 2rem 'Fredoka One',system-ui,sans-serif; }
@@ -4676,7 +4676,7 @@
  .complete-animal-column { gap:8px; }
  .complete-animal-row { height:clamp(90px,13vh,115px); }
  .complete-animal-half { width:clamp(83px,25vw,110px); height:clamp(86px,13vh,112px); }
- .complete-animal-half .complete-animal-art { font-size:clamp(125px,33vw,155px); }
+ .complete-animal-half .complete-animal-art { font-size:clamp(68px,19vw,88px); }
 }
     </style>
 </head>
@@ -5417,7 +5417,7 @@
             <!-- COMPLETE THE ANIMAL: five sets of five unique animal pictures -->
             <div id="complete-animal-screen" class="card">
                 <h2 id="complete-animal-title" style="color:#5E17EB;font-family:'Fredoka One',cursive;">Complete the Animal 🐾</h2>
-                <small style="display:inline-block;background:#ffe566;color:#302b62;border:2px solid #302b62;border-radius:18px;padding:3px 12px;font-weight:800;">GAMBAR BESAR · v3</small>
+                <small style="display:inline-block;background:#ffe566;color:#302b62;border:2px solid #302b62;border-radius:18px;padding:3px 12px;font-weight:800;">GAMBAR PENUH · v4</small>
                 <p id="complete-animal-instruction">Drag the right half to complete the animal on the left.</p>
                 <p><span id="complete-animal-set-label">Set</span> <span id="complete-animal-set">1</span>/5 · <span id="complete-animal-matched">0</span>/5</p>
                 <div class="complete-animal-board">
@@ -7275,10 +7275,19 @@
             const picture=document.createElement('div');picture.className='complete-animal-pop-art';picture.textContent=animal[0];
             const name=document.createElement('div');name.className='complete-animal-pop-name';name.textContent=currentGlobalLang==='ms'?animal[1]:animal[2];
             card.append(picture,name);pop.append(card);document.body.append(pop);
+            // Speak the animal name as soon as its completed picture appears.
             if('speechSynthesis' in window){
-                speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(name.textContent);
-                utterance.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';utterance.rate=.75;
-                speechSynthesis.speak(utterance);
+                const synth=window.speechSynthesis;
+                synth.cancel();
+                const utterance=new SpeechSynthesisUtterance(name.textContent);
+                utterance.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';
+                utterance.rate=.7;
+                const voices=synth.getVoices();
+                const voice=voices.find(v=>v.lang.toLowerCase()===utterance.lang.toLowerCase())
+                    || voices.find(v=>v.lang.toLowerCase().startsWith(currentGlobalLang==='ms'?'ms':'en'));
+                if(voice) utterance.voice=voice;
+                synth.speak(utterance);
+                if(synth.paused) synth.resume();
             }
             const session=completeAnimalSession;
             completeAnimalTimer=setTimeout(()=>{
@@ -7289,7 +7298,7 @@
                 if(window.saveScoreToFirebase)window.saveScoreToFirebase('Complete the Animal',100);
                 alert(currentGlobalLang==='ms'?'Tahniah! Semua haiwan berjaya dilengkapkan! 🎉':'Great job! You completed all the animals! 🎉');
                 leaveCompleteAnimal();
-            },2100);
+            },2700);
         }
         document.addEventListener('pointermove',moveCompleteAnimalGhost);
         document.addEventListener('pointerup',finishCompleteAnimalDrag);
