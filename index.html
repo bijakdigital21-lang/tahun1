@@ -4624,7 +4624,7 @@
         #match-paint-screen h2{font-family:'Fredoka One',cursive;color:#5E17EB;margin:2px 0;font-size:clamp(1.25rem,4vw,2rem)}
         #match-paint-instruction{font-size:clamp(.76rem,2.4vw,1rem);font-weight:800;margin:2px 0 5px;color:#334155}
         #match-paint-screen .colour-progress{margin:2px 0;padding:4px 12px}
-        .paint-board{width:min(100%,530px);margin:2px auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(5px,1.7vh,15px) clamp(7px,3vw,24px);justify-items:center;touch-action:none}
+        #match-paint-screen #match-paint-board.paint-board{width:min(100%,530px);margin:8px auto 12px;padding:clamp(14px,3vw,24px);box-sizing:border-box;background:#ffebbd;border:4px solid #dfa45c;border-radius:26px;box-shadow:0 8px 0 #c88d49,0 16px 28px #725b4460;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(5px,1.7vh,15px) clamp(7px,3vw,24px);justify-items:center;touch-action:none}
         .paint-pair{width:100%;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
         .paint-tube{width:min(83%,95px);height:clamp(78px,19vh,165px);border:0;background:transparent;padding:0;cursor:grab;touch-action:none;user-select:none;filter:drop-shadow(3px 4px 1px #8c7768);transition:opacity .18s}
         .paint-tube svg{width:100%;height:100%;pointer-events:none}
@@ -5175,7 +5175,7 @@
                 <h2 id="match-paint-title">Match the Paint 🎨</h2>
                 <div class="colour-progress" id="match-paint-progress">Set 1 / 5 · ⭐ 0</div>
                 <p id="match-paint-instruction">Drag a paint tube onto another tube to swap their places and match the colours below.</p>
-                <div id="match-paint-board" class="paint-board"></div>
+                <div id="match-paint-board" class="paint-board" style="background:#ffebbd;border:4px solid #dfa45c;border-radius:26px;box-shadow:0 8px 0 #c88d49,0 16px 28px #725b4460"></div>
                 <p id="match-paint-feedback" aria-live="polite"></p>
                 <button class="action-btn home-btn" onclick="playClickSound(); openColourMenu()">Back ↩️</button>
             </div>
