@@ -4619,372 +4619,247 @@
                 -webkit-text-stroke-width: 1.5px;
             }
         }
-    </style>
-    <!-- =========================================================
-         KIDDORA CARTOON THEME
-         Lapisan visual sahaja. Semua fungsi dan logik app dikekalkan.
-    ========================================================== -->
-    <style id="kiddora-cartoon-theme">
+
+        /* =========================================================
+           KIDDORA CARTOON THEME — VISUAL ONLY
+           Tiada fungsi, kandungan atau background utama diubah.
+        ========================================================== */
         :root {
-            --cartoon-ink: #26385f;
-            --cartoon-blue: #63c8ff;
-            --cartoon-blue-dark: #2f86c8;
+            --cartoon-ink: #263a5a;
+            --cartoon-pink: #ff70b7;
+            --cartoon-pink-dark: #c83f86;
+            --cartoon-blue: #63d9ef;
+            --cartoon-blue-dark: #229bb8;
             --cartoon-yellow: #ffd95a;
-            --cartoon-pink: #ff86b7;
-            --cartoon-green: #86dc78;
-            --cartoon-purple: #a88bff;
-            --cartoon-cream: #fff9df;
-            --cartoon-paper: rgba(255, 255, 255, .94);
-            --cartoon-line: 3px solid var(--cartoon-ink);
-            --cartoon-shadow: 0 7px 0 rgba(38, 56, 95, .22), 0 12px 22px rgba(38, 56, 95, .13);
+            --cartoon-yellow-dark: #d49b18;
+            --cartoon-green: #8bdd72;
+            --cartoon-green-dark: #439d46;
+            --cartoon-purple: #b99af7;
+            --cartoon-purple-dark: #7451bd;
+            --cartoon-cream: rgba(255, 238, 178, .94);
+            --cartoon-peach: rgba(255, 210, 178, .94);
+            --cartoon-mint: rgba(196, 244, 211, .94);
+            --cartoon-sky: rgba(190, 235, 250, .94);
+            --cartoon-lilac: rgba(224, 207, 250, .94);
         }
 
-        body {
-            color: var(--cartoon-ink);
-        }
-
-        /* Panel menu seperti papan kartun */
+        /* Bingkai dan butang utama ala ilustrasi kartun. */
         .sidebar {
-            background: linear-gradient(180deg, rgba(49, 112, 181, .97), rgba(72, 80, 159, .97));
-            border-right: 4px solid var(--cartoon-ink);
-            box-shadow: 7px 0 0 rgba(255, 255, 255, .45), 12px 0 25px rgba(38, 56, 95, .22);
+            border-right: 5px solid var(--cartoon-ink);
+            box-shadow: 7px 0 0 rgba(255, 217, 90, .9), 12px 0 22px rgba(24, 48, 83, .28);
         }
-
-        .sidebar-logo {
-            background: var(--cartoon-yellow);
-            border: 4px solid var(--cartoon-ink);
-            box-shadow: 0 5px 0 rgba(25, 42, 78, .35);
+        .sidebar-logo, .home-app-logo {
+            border: 4px solid var(--cartoon-ink) !important;
+            outline: 4px solid var(--cartoon-yellow);
+            box-shadow: 0 7px 0 rgba(38, 58, 90, .22), 0 11px 18px rgba(0, 0, 0, .18) !important;
         }
-
-        .sidebar-title,
-        .page-title,
-        .section-title,
-        .card-title,
-        h1, h2, h3 {
-            font-family: 'Fredoka One', 'Quicksand', sans-serif;
-            letter-spacing: .25px;
-        }
-
-        .sidebar-title {
-            color: var(--cartoon-yellow);
-            -webkit-text-stroke: 1px var(--cartoon-ink);
-            text-shadow: 0 3px 0 rgba(25, 42, 78, .65);
-        }
-
-        .sidebar-subtitle { color: #fff; }
-
-        .sidebar-language-container {
-            background: rgba(255, 255, 255, .18);
-            border: 3px solid var(--cartoon-yellow);
-            border-radius: 18px 14px 20px 15px;
-            box-shadow: 0 4px 0 rgba(24, 39, 78, .35);
-        }
-
+        .sidebar-language-container,
         .nav-item,
         .lang-btn,
         .mobile-toggle {
-            border: 2px solid var(--cartoon-ink);
-            box-shadow: 0 4px 0 rgba(24, 39, 78, .55);
-        }
-
-        .nav-item {
-            background: rgba(255, 255, 255, .18);
-            border-radius: 16px 13px 17px 14px;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: var(--cartoon-pink);
-            transform: translateY(-2px) rotate(-.35deg);
-            box-shadow: 0 6px 0 rgba(24, 39, 78, .52);
-        }
-
-        /* Semua kad utama menjadi kepingan ilustrasi kartun */
-        .card,
-        .modal-content,
-        .profile-card,
-        .settings-card,
-        .result-card,
-        .question-card,
-        .game-card,
-        .activity-card,
-        .selection-card,
-        .instruction-box,
-        .colour-board,
-        .addup-board,
-        .taking-board,
-        .shape-tracing-board,
-        .login-kiddora-card,
-        #login-screen.login-kiddora-card {
-            background: var(--cartoon-paper);
-            border: var(--cartoon-line);
-            border-radius: 26px 21px 29px 23px;
-            box-shadow: var(--cartoon-shadow);
-        }
-
-        .card.active {
-            animation: cartoonCardIn .34s cubic-bezier(.2, .9, .25, 1.15);
-        }
-
-        @keyframes cartoonCardIn {
-            from { opacity: 0; transform: translateY(10px) scale(.985); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Tajuk lebih jelas pada background bercorak */
-        .page-title,
-        .section-title,
-        .welcome-title,
-        .module-title {
-            color: var(--cartoon-ink);
-            text-shadow: 0 2px 0 #fff, 2px 0 0 #fff, -2px 0 0 #fff, 0 -2px 0 #fff;
-        }
-
-        /* Kotak modul dan submenu */
-        .category-btn,
-        .module-btn,
-        .abc-sub-btn,
-        .animal-cat-btn,
-        .number-cat-btn,
-        .colour-cat-btn,
-        .body-cat-btn,
-        .shape-cat-btn,
-        .transport-menu-btn,
-        .food-cat-btn,
-        .menu-btn,
-        .topic-btn {
-            background: var(--cartoon-paper);
-            border: var(--cartoon-line) !important;
-            border-radius: 24px 18px 26px 20px !important;
-            box-shadow: var(--cartoon-shadow) !important;
-            overflow: hidden;
-            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
-        }
-
-        .category-btn:nth-child(4n+1), .module-btn:nth-child(4n+1), .abc-sub-btn:nth-child(4n+1) { background: #fff6c8; }
-        .category-btn:nth-child(4n+2), .module-btn:nth-child(4n+2), .abc-sub-btn:nth-child(4n+2) { background: #e7f8ff; }
-        .category-btn:nth-child(4n+3), .module-btn:nth-child(4n+3), .abc-sub-btn:nth-child(4n+3) { background: #ffe8f1; }
-        .category-btn:nth-child(4n), .module-btn:nth-child(4n), .abc-sub-btn:nth-child(4n) { background: #ebfbe5; }
-
-        .category-btn:hover,
-        .module-btn:hover,
-        .abc-sub-btn:hover,
-        .animal-cat-btn:hover,
-        .number-cat-btn:hover,
-        .colour-cat-btn:hover,
-        .body-cat-btn:hover,
-        .shape-cat-btn:hover,
-        .transport-menu-btn:hover,
-        .food-cat-btn:hover,
-        .menu-btn:hover,
-        .topic-btn:hover {
-            transform: translateY(-5px) rotate(-.5deg) !important;
-            box-shadow: 0 10px 0 rgba(38, 56, 95, .2), 0 16px 25px rgba(38, 56, 95, .16) !important;
-            filter: saturate(1.08);
-        }
-
-        /* Semua butang tindakan */
-        button,
-        .action-btn,
-        .back-btn,
-        .start-btn,
-        .next-btn,
-        .audio-btn,
-        .home-btn,
-        .close-btn,
-        .flashcard-nav,
-        .match-animal-audio-btn,
-        .match-body-audio-btn,
-        .match-colour-audio-btn,
-        .shape-match-audio-btn {
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 800;
-        }
-
-        .action-btn,
-        .back-btn,
-        .start-btn,
-        .next-btn,
-        .audio-btn,
-        .home-btn,
-        .close-btn,
-        .flashcard-nav,
-        .login-submit,
-        #bg-music-toggle {
             border: 3px solid var(--cartoon-ink) !important;
-            border-radius: 16px 13px 18px 14px !important;
-            box-shadow: 0 5px 0 rgba(38, 56, 95, .3) !important;
-            transition: transform .12s ease, box-shadow .12s ease;
+            border-radius: 18px 15px 19px 14px !important;
+            box-shadow: 0 5px 0 rgba(15, 35, 65, .55), 0 8px 13px rgba(0, 0, 0, .16) !important;
         }
+        .nav-item:nth-child(4n+1) { border-color: var(--cartoon-yellow) !important; }
+        .nav-item:nth-child(4n+2) { border-color: var(--cartoon-pink) !important; }
+        .nav-item:nth-child(4n+3) { border-color: var(--cartoon-blue) !important; }
+        .nav-item:nth-child(4n)   { border-color: var(--cartoon-green) !important; }
 
+        .topic-btn,
+        .abc-sub-btn.abc-image-btn,
+        .num123-menu-btn,
+        .colour-menu-btn,
+        .body-menu-btn,
+        .shape-menu-btn,
+        #transport-menu-screen .transport-menu-btn,
+        .food-menu-btn {
+            border: 4px solid var(--cartoon-ink) !important;
+            border-radius: 24px 19px 25px 20px !important;
+            background: transparent !important;
+            box-shadow: 0 8px 0 var(--cartoon-pink-dark), 0 12px 20px rgba(20, 38, 67, .24) !important;
+        }
+        .topic-btn:nth-child(5n+2),
+        .abc-sub-btn.abc-image-btn:nth-child(5n+2),
+        .num123-menu-btn:nth-child(5n+2),
+        .colour-menu-btn:nth-child(5n+2),
+        .body-menu-btn:nth-child(5n+2),
+        .shape-menu-btn:nth-child(5n+2),
+        #transport-menu-screen .transport-menu-btn:nth-child(5n+2),
+        .food-menu-btn:nth-child(5n+2) { box-shadow: 0 8px 0 var(--cartoon-blue-dark), 0 12px 20px rgba(20,38,67,.24) !important; }
+        .topic-btn:nth-child(5n+3),
+        .abc-sub-btn.abc-image-btn:nth-child(5n+3),
+        .num123-menu-btn:nth-child(5n+3),
+        .colour-menu-btn:nth-child(5n+3),
+        .body-menu-btn:nth-child(5n+3),
+        .shape-menu-btn:nth-child(5n+3),
+        #transport-menu-screen .transport-menu-btn:nth-child(5n+3),
+        .food-menu-btn:nth-child(5n+3) { box-shadow: 0 8px 0 var(--cartoon-yellow-dark), 0 12px 20px rgba(20,38,67,.24) !important; }
+        .topic-btn:nth-child(5n+4),
+        .abc-sub-btn.abc-image-btn:nth-child(5n+4),
+        .num123-menu-btn:nth-child(5n+4),
+        .colour-menu-btn:nth-child(5n+4),
+        .body-menu-btn:nth-child(5n+4),
+        .shape-menu-btn:nth-child(5n+4),
+        #transport-menu-screen .transport-menu-btn:nth-child(5n+4),
+        .food-menu-btn:nth-child(5n+4) { box-shadow: 0 8px 0 var(--cartoon-green-dark), 0 12px 20px rgba(20,38,67,.24) !important; }
+        .topic-btn:nth-child(5n),
+        .abc-sub-btn.abc-image-btn:nth-child(5n),
+        .num123-menu-btn:nth-child(5n),
+        .colour-menu-btn:nth-child(5n),
+        .body-menu-btn:nth-child(5n),
+        .shape-menu-btn:nth-child(5n),
+        #transport-menu-screen .transport-menu-btn:nth-child(5n),
+        .food-menu-btn:nth-child(5n) { box-shadow: 0 8px 0 var(--cartoon-purple-dark), 0 12px 20px rgba(20,38,67,.24) !important; }
+        .topic-btn img,
+        .abc-sub-btn.abc-image-btn img,
+        .num123-menu-btn img,
+        .colour-menu-btn img,
+        .body-menu-btn img,
+        .shape-menu-btn img,
+        #transport-menu-screen .transport-menu-btn img,
+        .food-menu-btn img { border-radius: 19px 15px 20px 16px !important; }
+
+        .action-btn,
+        .sound-btn,
+        .switch-profile-btn,
+        .count-option-btn,
+        .flashcard-nav button,
+        .login-submit {
+            border: 3px solid var(--cartoon-ink) !important;
+            border-radius: 18px 14px 19px 15px !important;
+            box-shadow: 0 6px 0 var(--cartoon-ink), 0 9px 14px rgba(0,0,0,.17) !important;
+            font-weight: 900 !important;
+        }
         .action-btn:active,
-        .back-btn:active,
-        .start-btn:active,
-        .next-btn:active,
-        .audio-btn:active,
-        .home-btn:active,
-        .close-btn:active,
-        .flashcard-nav:active,
-        .login-submit:active,
-        #bg-music-toggle:active {
+        .sound-btn:active,
+        .count-option-btn:active,
+        .login-submit:active {
             transform: translateY(4px) !important;
-            box-shadow: 0 1px 0 rgba(38, 56, 95, .3) !important;
+            box-shadow: 0 2px 0 var(--cartoon-ink), 0 5px 9px rgba(0,0,0,.14) !important;
         }
 
-        /* Pilihan jawapan, padanan dan objek latihan */
-        .answer-option,
-        .option-btn,
-        .choice-btn,
-        .letter-option,
-        .number-option,
+        /* Semua papan aktiviti menggunakan pastel, bukan latar putih. */
+        .flashcard-box,
+        .quiz-box,
+        .game-board,
+        .colour-board,
+        .balloon-field,
+        .colour-match-wrap,
+        .match-container,
+        .shape-match-container,
+        .addup-board,
+        .takeaway-board,
+        .transport-sort-bank,
+        .transport-sort-zone,
+        .label-body-board,
+        .shape-tracing-board,
+        .suku-card,
+        .suku2-match-layout {
+            background: var(--cartoon-cream) !important;
+            border: 4px solid var(--cartoon-ink) !important;
+            border-radius: 28px 22px 29px 23px !important;
+            box-shadow: 0 8px 0 rgba(38,58,90,.24), 0 13px 23px rgba(20,38,67,.19) !important;
+        }
+        .match-column:nth-child(odd),
+        .shape-match-column:nth-child(odd),
+        .colour-match-col:nth-child(odd) { background: var(--cartoon-sky) !important; }
+        .match-column:nth-child(even),
+        .shape-match-column:nth-child(even),
+        .colour-match-col:nth-child(even) { background: var(--cartoon-lilac) !important; }
+
         .match-item,
         .shape-match-item,
+        .colour-word-item,
+        .colour-swatch-item,
         .find-colour-option,
-        .find-colour-chip,
         .animal-img-card,
         .body-img-card,
         .transport-guess-option,
-        .transport-sort-item,
-        .transport-sort-zone,
         .suku-option,
-        .suku2-item,
-        .addup-answer-tile,
+        .suku2-first,
+        .suku2-choice,
+        .addup-object-box,
         .addup-answer-zone,
-        .take-answer-option,
-        .take-answer-zone,
-        .question-count-btn {
-            background: var(--cartoon-cream);
-            border: var(--cartoon-line) !important;
-            border-radius: 18px 14px 20px 15px !important;
-            box-shadow: 0 5px 0 rgba(38, 56, 95, .2) !important;
-            transition: transform .14s ease, box-shadow .14s ease;
-        }
-
-        .answer-option:hover,
-        .option-btn:hover,
-        .choice-btn:hover,
-        .letter-option:hover,
-        .number-option:hover,
-        .match-item:hover,
-        .shape-match-item:hover,
-        .find-colour-option:hover,
-        .animal-img-card:hover,
-        .body-img-card:hover,
-        .transport-guess-option:hover,
-        .question-count-btn:hover {
-            transform: translateY(-3px) rotate(.35deg);
-            box-shadow: 0 8px 0 rgba(38, 56, 95, .18) !important;
-        }
-
-        .selected, .drag-over, .hovered {
-            outline: 4px solid var(--cartoon-yellow) !important;
-            outline-offset: 2px;
-        }
-
-        .correct {
-            background-color: #c9f4be !important;
-            border-color: #2c8d52 !important;
-        }
-
-        .wrong {
-            background-color: #ffd3d3 !important;
-            border-color: #d54c57 !important;
-        }
-
-        /* Medan input */
-        input,
-        select,
-        textarea,
-        .form-input,
-        #login-screen .login-field .form-input {
-            background: #fffef7;
-            color: var(--cartoon-ink);
-            border: 3px solid var(--cartoon-ink) !important;
-            border-radius: 15px 12px 17px 13px !important;
-            box-shadow: inset 0 -3px 0 rgba(38, 56, 95, .08);
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus,
-        .form-input:focus,
-        #login-screen .login-field .form-input:focus {
-            outline: 4px solid rgba(99, 200, 255, .45) !important;
-            border-color: var(--cartoon-blue-dark) !important;
-        }
-
-        /* Pop-up seperti gelembung komik */
-        .modal,
-        .popup-overlay,
-        .completion-modal,
-        .feedback-overlay {
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content,
-        .popup-content,
-        .completion-content,
-        .feedback-popup {
-            background: linear-gradient(145deg, #ffffff, #fff7d1) !important;
+        .addup-answer-tile,
+        .takeaway-object-box,
+        .takeaway-answer-zone,
+        .takeaway-answer-tile,
+        .abc-path-cell,
+        .body-drag-label,
+        .form-input {
+            background: var(--cartoon-sky) !important;
             border: 4px solid var(--cartoon-ink) !important;
-            border-radius: 30px 23px 32px 25px !important;
-            box-shadow: 0 10px 0 rgba(38, 56, 95, .27), 0 20px 45px rgba(20, 37, 78, .28) !important;
+            border-radius: 19px 15px 20px 16px !important;
+            box-shadow: 0 5px 0 rgba(38,58,90,.28), 0 8px 13px rgba(0,0,0,.12) !important;
         }
-
-        /* Gambar kekal kemas dalam bingkai kartun */
-        .category-btn img,
-        .module-btn img,
-        .abc-sub-btn img,
-        .animal-cat-btn img,
-        .number-cat-btn img,
-        .colour-cat-btn img,
-        .body-cat-btn img,
-        .shape-cat-btn img,
-        .transport-menu-btn img,
-        .food-cat-btn img,
-        .flashcard-image,
-        .learn-image {
-            border-radius: 18px 14px 20px 15px;
-        }
-
-        /* Garisan lukisan tangan pada papan khas */
-        .transport-sort-zone:nth-child(odd),
-        .match-item:nth-child(odd),
-        .shape-match-item:nth-child(odd) { transform: rotate(-.25deg); }
-
-        .transport-sort-zone:nth-child(even),
         .match-item:nth-child(even),
-        .shape-match-item:nth-child(even) { transform: rotate(.25deg); }
+        .shape-match-item:nth-child(even),
+        .find-colour-option:nth-child(even),
+        .animal-img-card:nth-child(even),
+        .body-img-card:nth-child(even),
+        .transport-guess-option:nth-child(even),
+        .suku-option:nth-child(even),
+        .addup-answer-tile:nth-child(even),
+        .takeaway-answer-tile:nth-child(even) { background: var(--cartoon-peach) !important; }
+        .match-item:nth-child(3n),
+        .shape-match-item:nth-child(3n),
+        .find-colour-option:nth-child(3n),
+        .animal-img-card:nth-child(3n),
+        .body-img-card:nth-child(3n),
+        .transport-guess-option:nth-child(3n),
+        .suku-option:nth-child(3n) { background: var(--cartoon-mint) !important; }
 
-        /* Telefon: bayang lebih ringan dan ruang kekal selesa */
-        @media (max-width: 768px) {
-            :root {
-                --cartoon-line: 2.5px solid var(--cartoon-ink);
-                --cartoon-shadow: 0 5px 0 rgba(38, 56, 95, .2), 0 9px 16px rgba(38, 56, 95, .12);
-            }
+        .flashcard-img-container,
+        .body-learn-visual,
+        .shape-learn-visual,
+        .suku-picture,
+        .label-stage,
+        .transport-zone-thumb {
+            background: var(--cartoon-sky) !important;
+            border: 4px solid var(--cartoon-ink) !important;
+            border-radius: 24px 19px 25px 20px !important;
+            box-shadow: 0 7px 0 rgba(38,58,90,.26), 0 11px 18px rgba(0,0,0,.14) !important;
+        }
 
-            .sidebar { border-right-width: 3px; }
-            .card, .modal-content, .login-kiddora-card, #login-screen.login-kiddora-card {
-                border-radius: 22px 18px 24px 19px;
-            }
+        /* Login kekal jelas, tetapi kadnya turut menjadi ilustrasi pastel. */
+        #login-screen.login-kiddora-card {
+            background: var(--cartoon-cream) !important;
+            border: 5px solid var(--cartoon-ink) !important;
+            border-radius: 34px 27px 35px 28px !important;
+            box-shadow: 0 10px 0 var(--cartoon-pink-dark), 0 18px 34px rgba(20,38,67,.28) !important;
+            overflow: hidden;
+        }
+        #login-screen .login-form-area { background: var(--cartoon-cream) !important; }
+        #login-screen .login-field { background: var(--cartoon-sky) !important; border: 3px solid var(--cartoon-ink) !important; }
 
-            .category-btn,
-            .module-btn,
-            .abc-sub-btn,
-            .animal-cat-btn,
-            .number-cat-btn,
-            .colour-cat-btn,
-            .body-cat-btn,
-            .shape-cat-btn,
-            .transport-menu-btn,
-            .food-cat-btn {
-                border-radius: 19px 15px 21px 16px !important;
+        @media (hover:hover) {
+            .topic-btn:hover,
+            .abc-sub-btn.abc-image-btn:hover,
+            .num123-menu-btn:hover,
+            .colour-menu-btn:hover,
+            .body-menu-btn:hover,
+            .shape-menu-btn:hover,
+            #transport-menu-screen .transport-menu-btn:hover {
+                transform: translateY(-5px) rotate(-1deg) !important;
+                filter: saturate(1.08);
             }
         }
 
-        /* Hormati tetapan peranti yang mengurangkan animasi */
-        @media (prefers-reduced-motion: reduce) {
-            .card.active { animation: none; }
-            *, *::before, *::after { scroll-behavior: auto !important; }
+        @media (max-width: 600px) {
+            .topic-btn,
+            .abc-sub-btn.abc-image-btn,
+            .num123-menu-btn,
+            .colour-menu-btn,
+            .body-menu-btn,
+            .shape-menu-btn,
+            #transport-menu-screen .transport-menu-btn,
+            .food-menu-btn { border-width: 3px !important; border-radius: 20px 16px 21px 17px !important; }
+            .match-item, .shape-match-item, .colour-word-item, .colour-swatch-item,
+            .find-colour-option, .animal-img-card, .body-img-card,
+            .transport-guess-option, .suku-option, .suku2-first, .suku2-choice {
+                border-width: 3px !important;
+            }
         }
     </style>
 </head>
