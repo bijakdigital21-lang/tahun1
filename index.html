@@ -4786,10 +4786,11 @@
 
         /* Column arithmetic */
         .column-board{width:min(100%,350px);margin:16px auto;padding:16px 28px;background:#fffaf0;border:4px solid #b9a4f7;border-radius:24px;box-shadow:0 9px 0 #ded2fb;color:#272052;font-family:Arial,sans-serif;font-weight:900}
-        .column-row,.column-carry-row{display:grid;grid-template-columns:repeat(3,1fr);align-items:center;text-align:center;gap:6px;min-height:64px;font-size:clamp(2rem,10vw,3.6rem)}
-        .column-carry-row{min-height:48px;font-size:1rem;color:#754ab3}.column-carry{font-size:1.7rem;border:2px dashed #ad94d5;border-radius:10px;background:#eee5ff}
-        .column-bottom{border-bottom:5px solid #272052}.column-answer{padding-top:10px}.column-answer input{width:100%;height:62px;border:3px solid #8360d7;border-radius:13px;text-align:center;font-size:2rem;font-weight:900;color:#272052;background:white;appearance:textfield}
-        .column-answer input:disabled{background:#f2edff}.column-answer input::-webkit-inner-spin-button,.column-answer input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+        .column-row{display:grid;grid-template-columns:repeat(3,1fr);align-items:center;text-align:center;gap:6px;min-height:64px;font-size:clamp(2rem,10vw,3.6rem)}
+        .column-bottom{border-bottom:5px solid #272052}.column-answer{padding-top:10px}.column-digit{width:100%;height:62px;border:3px solid #8360d7;border-radius:13px;text-align:center;font-size:2rem;font-weight:900;color:#272052;background:white;cursor:pointer}
+        .column-digit:disabled{background:#f2edff;cursor:default}.column-digit.active{outline:4px solid #ffcb4b;outline-offset:2px}
+        .column-number-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;width:min(100%,360px);margin:12px auto 20px}
+        .column-number-board button{min-height:56px;border:0;border-radius:15px;background:#7049cf;color:#fff;font-size:1.65rem;font-weight:900;box-shadow:0 4px 0 #4b2c9b;cursor:pointer}.column-number-board button:active{transform:translateY(3px);box-shadow:0 1px 0 #4b2c9b}
         .column-instruction,.column-hint{font-weight:800;color:#343051}.column-hint{min-height:28px}
         .column-overlay[hidden]{display:none}.column-overlay{position:fixed;inset:0;background:rgba(28,19,55,.55);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px}
         .column-dialog{width:min(100%,430px);padding:28px 20px;background:#fff8df;border:5px solid #ad83e5;border-radius:28px;text-align:center;box-shadow:0 16px 50px #22134266}.column-dialog h2{color:#572fa8;font-family:'Fredoka One',cursive}.column-dialog p{font-size:1.2rem;font-weight:800;color:#353052}.column-dialog .action-btn{margin:8px}
@@ -5195,12 +5196,12 @@
                 <div class="num-progress-pill" id="column-progress"></div>
                 <p id="column-instruction" class="column-instruction"></p>
                 <div class="column-board">
-                    <div class="column-carry-row"><span id="column-carry-label">Carry</span><span id="column-carry" class="column-carry">–</span><span></span></div>
                     <div class="column-row"><span></span><span id="column-top-ten"></span><span id="column-top-one"></span></div>
                     <div class="column-row column-bottom"><span id="column-sign"></span><span id="column-bottom-ten"></span><span id="column-bottom-one"></span></div>
-                    <div class="column-row column-answer"><span id="column-hundred">&nbsp;</span><input id="column-tens" type="number" inputmode="numeric" min="0" max="9" aria-label="Tens" disabled><input id="column-ones" type="number" inputmode="numeric" min="0" max="18" aria-label="Ones result" oninput="columnOnesChanged()"></div>
+                    <div class="column-row column-answer"><span>&nbsp;</span><button type="button" id="column-tens" class="column-digit" onclick="selectColumnDigit('tens')" aria-label="Tens" disabled></button><button type="button" id="column-ones" class="column-digit active" onclick="selectColumnDigit('ones')" aria-label="Ones"></button></div>
                 </div>
                 <p id="column-hint" class="column-hint"></p>
+                <div id="column-number-board" class="column-number-board" aria-label="Number board"></div>
                 <button id="column-check" class="action-btn" onclick="checkColumnMath()">Check ✅</button>
                 <button class="action-btn home-btn" id="column-back" onclick="open123Menu()">Back ↩️</button>
             </div>
@@ -8252,7 +8253,6 @@
             document.getElementById('column-count-back').textContent=t.back;
             document.getElementById('column-back').textContent=t.back;
             document.getElementById('column-instruction').textContent=t.instruction;
-            document.getElementById('column-carry-label').textContent=t.carry;
             document.getElementById('column-check').textContent=t.check;
             if(columnQuestions.length) document.getElementById('column-progress').textContent=`${t.question} ${columnIndex+1} / ${columnQuestions.length} · ⭐ ${columnScore}`;
         }
@@ -8263,7 +8263,7 @@
         function startColumnMath(count){
             const bank=[];
             if(columnMode==='addition'){
-                for(let a=10;a<=89;a++)for(let b=1;b<=99;b++)if(a+b<=99 && (b<10||b>=10))bank.push({a,b});
+                for(let a=10;a<=99;a++)for(let b=10;b<=99;b++)if(a%10+b%10<=9 && Math.floor(a/10)+Math.floor(b/10)<=9)bank.push({a,b});
             }else{
                 for(let a=10;a<=99;a++)for(let b=1;b<=9;b++)if(a%10>=b)bank.push({a,b});
             }
@@ -8280,32 +8280,47 @@
             document.getElementById('column-bottom-ten').textContent=b>=10?Math.floor(b/10):'';
             document.getElementById('column-bottom-one').textContent=b%10;
             document.getElementById('column-sign').textContent=columnMode==='addition'?'+':'−';
-            document.getElementById('column-carry').textContent='–';
-            document.getElementById('column-hundred').innerHTML='&nbsp;';
             const ones=document.getElementById('column-ones'),tens=document.getElementById('column-tens');
-            ones.value='';tens.value='';ones.disabled=false;tens.disabled=true;
+            ones.textContent='';tens.textContent='';ones.disabled=false;tens.disabled=true;selectColumnDigit('ones');
             document.getElementById('column-hint').textContent=t.ones;
             document.getElementById('column-check').disabled=false;
             document.getElementById('column-math-screen').scrollIntoView({block:'start'});
         }
-        function columnOnesChanged(){
-            if(columnLocked)return;
-            const input=document.getElementById('column-ones'),raw=input.value;
-            const valid=/^\d{1,2}$/.test(raw)&&Number(raw)<=18;
-            const carry=columnMode==='addition' && valid ? Math.floor(Number(raw)/10):0;
-            document.getElementById('column-carry').textContent=carry||'–';
-            document.getElementById('column-tens').disabled=!valid;
-            document.getElementById('column-hint').textContent=valid?columnText().tens:columnText().ones;
-            if(valid && raw.length===2)document.getElementById('column-tens').focus();
+        let columnActiveDigit='ones';
+        function selectColumnDigit(which){
+            const ones=document.getElementById('column-ones'),tens=document.getElementById('column-tens');
+            if(columnLocked || (which==='tens' && tens.disabled))return;
+            columnActiveDigit=which;
+            ones.classList.toggle('active',which==='ones');tens.classList.toggle('active',which==='tens');
+            document.getElementById('column-hint').textContent=which==='ones'?columnText().ones:columnText().tens;
         }
+        function enterColumnDigit(n){
+            if(columnLocked)return;
+            const target=document.getElementById(columnActiveDigit==='ones'?'column-ones':'column-tens');
+            target.textContent=String(n);
+            if(columnActiveDigit==='ones'){
+                document.getElementById('column-tens').disabled=false;
+                selectColumnDigit('tens');
+            }
+        }
+        function setupColumnBoard(){
+            const board=document.getElementById('column-number-board');
+            for(let n=0;n<=9;n++){
+                const button=document.createElement('button');button.type='button';button.textContent=String(n);
+                button.onclick=()=>{if(typeof playClickSound==='function')playClickSound();enterColumnDigit(n)};
+                board.appendChild(button);
+            }
+        }
+        setupColumnBoard();
         function checkColumnMath(){
             if(columnLocked)return;
             const t=columnText(),ones=document.getElementById('column-ones'),tens=document.getElementById('column-tens');
-            if(tens.disabled || !/^\d$/.test(tens.value)) {document.getElementById('column-hint').textContent=t.fill;return;}
-            const {a,b}=columnQuestions[columnIndex],right=columnMode==='addition'?(a%10+b%10):(a%10-b%10),carry=Math.floor(Number(ones.value)/10);
-            const expected=columnMode==='addition'?a+b:a-b;
-            const entered=(Math.floor(a/10)+(columnMode==='addition'?Math.floor(b/10)+carry:0)>9?100:0)+Number(tens.value)*10+Number(ones.value)%10;
-            const correct=Number(ones.value)===right && entered===expected;
+            if(!/^\d$/.test(ones.textContent) || !/^\d$/.test(tens.textContent)){
+                document.getElementById('column-hint').textContent=t.fill;return;
+            }
+            const {a,b}=columnQuestions[columnIndex],expected=columnMode==='addition'?a+b:a-b;
+            const entered=Number(tens.textContent)*10+Number(ones.textContent);
+            const correct=entered===expected;
             columnLocked=true;document.getElementById('column-check').disabled=true;
             if(correct){columnScore++;showColumnModal(t.well,'',[]);columnTimer=setTimeout(nextColumnMath,1200);}
             else showColumnModal('❌ '+t.wrong,`${a} ${columnMode==='addition'?'+':'−'} ${b} = ${expected}`,[[t.correct,retryColumnMath],[t.next,nextColumnMath]]);
