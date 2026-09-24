@@ -4620,6 +4620,23 @@
         #sort-transport-screen [data-cat="water"]::before { content: "🚢"; }
         #sort-food-screen [data-cat="fruit"]::before { content: "🍎"; }
         #sort-food-screen [data-cat="vegetable"]::before { content: "🥕"; }
+        /* Answered pictures keep the same size as the original draggable cards. */
+        #sort-transport-screen .transport-zone-items,
+        #sort-food-screen .transport-zone-items {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) !important;
+            justify-items: center;
+            align-content: start;
+            gap: 8px !important;
+        }
+        #sort-transport-screen .transport-zone-thumb,
+        #sort-food-screen .transport-zone-thumb {
+            box-sizing: border-box;
+            width: min(100%, var(--sort-answer-size, 110px)) !important;
+            min-width: 0 !important;
+            height: auto;
+            aspect-ratio: 1 / 1;
+        }
         #sort-transport-screen .transport-zone-title,
         #sort-food-screen .transport-zone-title {
             font-size: 1.5rem !important;
@@ -10822,6 +10839,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.food-sort-zone .transport-zone-items').forEach(x=>x.innerHTML='');
             document.getElementById('sort-food-feedback').innerText='';document.getElementById('sort-food-set').innerText=sortFoodSetIndex+1;document.getElementById('sort-food-left').innerText=set.length;
             set.forEach(item=>bank.appendChild(makeFoodSortItem(item)));
+            updateSortAnswerBoxSize('sort-food-screen','food-sort-bank');
         }
         function makeFoodSortItem(item){
             const node=document.createElement('div');node.className='transport-sort-item food-sort-item';node.dataset.id=item.id;node.draggable=true;node.title=foodName(item);
@@ -11026,7 +11044,23 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('sort-transport-set').innerText=sortTransportSetIndex+1;
             document.getElementById('sort-transport-left').innerText=set.length;
             transportShuffle(set).forEach(item=>bank.appendChild(makeTransportSortItem(item)));
+            updateSortAnswerBoxSize('sort-transport-screen','transport-sort-bank');
         }
+        function updateSortAnswerBoxSize(screenId,bankId){
+            const screen=document.getElementById(screenId),card=document.querySelector('#'+bankId+' .transport-sort-item');
+            if(!screen||!card)return;
+            const originalSize=card.getBoundingClientRect().width;
+            screen.querySelectorAll('.transport-sort-zone').forEach(zone=>{
+                const innerWidth=zone.clientWidth-parseFloat(getComputedStyle(zone).paddingLeft)-parseFloat(getComputedStyle(zone).paddingRight);
+                const pictureSize=Math.max(0,Math.min(originalSize,innerWidth));
+                zone.style.setProperty('--sort-answer-size',pictureSize+'px');
+                zone.style.setProperty('min-height',Math.ceil(pictureSize*3+90)+'px','important');
+            });
+        }
+        window.addEventListener('resize',()=>{
+            if(document.getElementById('sort-food-screen')?.classList.contains('active'))updateSortAnswerBoxSize('sort-food-screen','food-sort-bank');
+            if(document.getElementById('sort-transport-screen')?.classList.contains('active'))updateSortAnswerBoxSize('sort-transport-screen','transport-sort-bank');
+        });
         function makeTransportSortItem(item){
             const d=document.createElement('div');
             d.className='transport-sort-item';d.dataset.id=item.id;d.draggable=true;
