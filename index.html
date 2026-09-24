@@ -4594,6 +4594,50 @@
             }
             #sort-food-screen .transport-zone-title { font-size: .78rem !important; }
         }
+
+        /* Larger category names with muted picture hints inside sorting boxes. */
+        #sort-transport-screen .transport-sort-zone,
+        #sort-food-screen .transport-sort-zone {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+        #sort-transport-screen .transport-sort-zone::before,
+        #sort-food-screen .transport-sort-zone::before {
+            position: absolute;
+            left: 50%;
+            top: 52%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(4.5rem, 10vw, 8rem);
+            line-height: 1;
+            opacity: .15;
+            filter: blur(1.5px) grayscale(.3);
+            pointer-events: none;
+            z-index: 0;
+        }
+        #sort-transport-screen [data-cat="land"]::before { content: "🚗"; }
+        #sort-transport-screen [data-cat="air"]::before { content: "✈️"; }
+        #sort-transport-screen [data-cat="water"]::before { content: "🚢"; }
+        #sort-food-screen [data-cat="fruit"]::before { content: "🍎"; }
+        #sort-food-screen [data-cat="vegetable"]::before { content: "🥕"; }
+        #sort-transport-screen .transport-zone-title,
+        #sort-food-screen .transport-zone-title {
+            position: relative;
+            z-index: 1;
+            font-size: 1.55rem !important;
+            line-height: 1.15 !important;
+            white-space: normal !important;
+            overflow-wrap: anywhere;
+        }
+        #sort-transport-screen .transport-zone-items,
+        #sort-food-screen .transport-zone-items { position: relative; z-index: 1; }
+        @media (max-width: 768px) {
+            #sort-transport-screen .transport-zone-title { font-size: clamp(1.05rem, 3.7vw, 1.4rem) !important; }
+            #sort-food-screen .transport-zone-title { font-size: clamp(1.15rem, 4vw, 1.5rem) !important; }
+            #sort-transport-screen .transport-sort-zone::before,
+            #sort-food-screen .transport-sort-zone::before { font-size: clamp(4rem, 17vw, 6rem); }
+        }
+
         /* Teks yang terletak terus di atas background bercorak. */
         .home-intro-title,
         .home-intro-subtitle,
@@ -5758,8 +5802,8 @@
                 </div>
                 <div class="transport-sort-bank" id="food-sort-bank"></div>
                 <div class="transport-sort-zones" style="grid-template-columns:repeat(2,minmax(0,1fr));">
-                    <div class="transport-sort-zone food-sort-zone" data-cat="fruit"><div class="transport-zone-title" id="food-zone-fruit">🍎 Fruit</div><div class="transport-zone-items"></div></div>
-                    <div class="transport-sort-zone food-sort-zone" data-cat="vegetable"><div class="transport-zone-title" id="food-zone-vegetable">🥕 Vegetable</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone food-sort-zone" data-cat="fruit"><div class="transport-zone-title" id="food-zone-fruit">Fruit</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone food-sort-zone" data-cat="vegetable"><div class="transport-zone-title" id="food-zone-vegetable">Vegetable</div><div class="transport-zone-items"></div></div>
                 </div>
                 <div class="transport-feedback" id="sort-food-feedback"></div>
                 <button class="action-btn home-btn" id="sort-food-back" onclick="playClickSound(); openFoodMenu()">Back ↩️</button>
@@ -5819,9 +5863,9 @@
                 </div>
                 <div class="transport-sort-bank" id="transport-sort-bank"></div>
                 <div class="transport-sort-zones">
-                    <div class="transport-sort-zone" data-cat="land"><div class="transport-zone-title" id="transport-zone-land">🚗 Land</div><div class="transport-zone-items"></div></div>
-                    <div class="transport-sort-zone" data-cat="air"><div class="transport-zone-title" id="transport-zone-air">✈️ Air</div><div class="transport-zone-items"></div></div>
-                    <div class="transport-sort-zone" data-cat="water"><div class="transport-zone-title" id="transport-zone-water">🚢 Water</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone" data-cat="land"><div class="transport-zone-title" id="transport-zone-land">Land</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone" data-cat="air"><div class="transport-zone-title" id="transport-zone-air">Air</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone" data-cat="water"><div class="transport-zone-title" id="transport-zone-water">Water</div><div class="transport-zone-items"></div></div>
                 </div>
                 <div class="transport-feedback" id="sort-transport-feedback"></div>
                 <button class="action-btn" id="sort-transport-next" style="display:none;background:var(--primary-green);box-shadow:0 5px 0 #4d9d31;" onclick="playClickSound(); nextSortTransportSet()">Next Set ➡</button>
@@ -10721,8 +10765,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 'sort-food-title':ms?'Buah atau Sayur? 🍎🥕':'Fruit or Vegetable? 🍎🥕',
                 'sort-food-desc':ms?'Seret semua 4 gambar sebenar ke dalam kotak yang betul.':'Drag all 4 real pictures into the correct box.',
                 'sort-food-set-label':'Set','sort-food-left-label':ms?'Baki':'Left',
-                'food-zone-fruit':ms?'🍎 Buah':'🍎 Fruit',
-                'food-zone-vegetable':ms?'🥕 Sayur':'🥕 Vegetable',
+                'food-zone-fruit':ms?'Buah':'Fruit',
+                'food-zone-vegetable':ms?'Sayur':'Vegetable',
                 'sort-food-back':'Back ↩️'
             };
             Object.entries(map).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.innerText=value;});
@@ -10864,9 +10908,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 'sort-transport-desc': ms ? 'Seret semua 5 gambar kenderaan ke dalam kotak yang betul.' : 'Drag all 5 transport pictures into the correct box.',
                 'sort-transport-set-label': ms ? 'Set' : 'Set',
                 'sort-transport-left-label': ms ? 'Baki' : 'Left',
-                'transport-zone-land': ms ? '🚗 Darat' : '🚗 Land',
-                'transport-zone-air': ms ? '✈️ Udara' : '✈️ Air',
-                'transport-zone-water': ms ? '🚢 Air' : '🚢 Water',
+                'transport-zone-land': ms ? 'Darat' : 'Land',
+                'transport-zone-air': ms ? 'Udara' : 'Air',
+                'transport-zone-water': ms ? 'Air' : 'Water',
                 'sort-transport-next': ms ? 'Next Set ➡' : 'Next Set ➡',
                 'sort-transport-back': ms ? 'Back ↩️' : 'Back ↩️',
                 'guess-transport-title': ms ? 'Teka Pengangkutan ✅' : 'Guess the Transport ✅',
@@ -11291,7 +11335,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(token!==jobsQuizToken)return;
                 pop.hidden=true;
                 if(jobsAnswered===(jobsQuizMode==='choose'?2:4)){
-                    if(jobsSet===(jobsQuizMode==='choose'?4:2)){alert(currentGlobalLang==='ms'?'🎉 Selesai!':'🎉 Well done!');openJobsMenu()}
+                    if(jobsSet===(jobsQuizMode==='choose'?4:2)){alert(currentGlobalLang==='ms'?'🎉 Syabas! Selesai!':'🎉 Well done!')}
                     else{jobsSet++;renderJobsSet();window.scrollTo({top:0,behavior:'instant'})}
                 }else if(jobsQuizMode==='who'||window.innerWidth<=768){
                     const next=[...document.querySelectorAll('#jobs-quiz-grid .transport-guess-card')].find(el=>!el.classList.contains('answered'));
@@ -11317,7 +11361,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const moduleRoutes = {
     abc: 'abc-menu-screen', number: 'num123-menu-screen', colour: 'colour-menu-screen',
     body: 'body-part-menu-screen', animal: 'animal-menu-screen', shape: 'shape-menu-screen',
-    transport: 'transport-menu-screen', food: 'food-menu-screen'
+    transport: 'transport-menu-screen', food: 'food-menu-screen', jobs: 'jobs-menu-screen'
   };
   const screenModule = {
     'bijak-suku-kata-screen':'abc','complete-abc-screen':'abc','spell-it-right-screen':'abc','abc-tracing-screen':'abc',
@@ -11329,7 +11373,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','complete-animal-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
     'learn-shape-screen':'shape','match-shape-screen':'shape','draw-shape-screen':'shape','match-me-screen':'shape',
     'learn-transport-cat-screen':'transport','learn-transport-flash-screen':'transport','sort-transport-screen':'transport','guess-transport-screen':'transport',
-    'learn-food-screen':'food','sort-food-screen':'food'
+    'learn-food-screen':'food','sort-food-screen':'food',
+    'jobs-quiz-screen':'jobs'
   };
   let completionOpen=false, completionModule=null;
   const originalAlert=window.alert.bind(window);
@@ -11339,7 +11384,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function inferModule(){ return screenModule[activeScreenId()] || completionModule || 'abc'; }
   function isCompletionMessage(msg){
     const t=String(msg||'').toLowerCase();
-    return /completed|complete all|completing|finished|finish!|quiz finished|quiz tamat|tamat!|tamat belajar|tahniah|syabas|selesai|lengkapkan|melengkapkan|habiskan|menghabiskan|hebat!|amazing!|great job/.test(t);
+    return /completed|complete all|completing|finished|finish!|quiz finished|quiz tamat|tamat!|tamat belajar|tahniah|syabas|selesai|lengkapkan|melengkapkan|habiskan|menghabiskan|hebat!|amazing!|great job|well done/.test(t);
   }
   function extractDetail(msg){
     const t=String(msg||'');
@@ -11350,9 +11395,9 @@ document.addEventListener('DOMContentLoaded', () => {
     completionModule=moduleKey || inferModule(); completionOpen=true;
     try{ window.speechSynthesis?.cancel(); }catch(e){}
     const pop=document.getElementById('universal-completion-pop');
-    document.getElementById('universal-completion-title').textContent = currentGlobalLang==='ms' ? '🎉 DAH SELESAI! 🎉' : '🎉 ALL DONE! 🎉';
+    document.getElementById('universal-completion-title').textContent = completionModule==='jobs' ? (currentGlobalLang==='ms'?'🎉 SYABAS! 🎉':'🎉 WELL DONE! 🎉') : (currentGlobalLang==='ms'?'🎉 DAH SELESAI! 🎉':'🎉 ALL DONE! 🎉');
     const d=document.getElementById('universal-completion-detail'); d.textContent=detail||''; d.style.display=detail?'block':'none';
-    document.getElementById('universal-completion-close').textContent='Close ✖️';
+    document.getElementById('universal-completion-close').textContent=completionModule==='jobs' && currentGlobalLang==='ms'?'Tutup ✖️':'Close ✖️';
     pop.style.pointerEvents='auto'; pop.classList.add('show'); pop.setAttribute('aria-hidden','false');
   }
   function closeCompletion(){
