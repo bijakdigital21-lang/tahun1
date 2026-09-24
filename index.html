@@ -4682,10 +4682,14 @@
 
         .jobs-heading {color:#FFDE59;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #123F7A}
         #jobs-quiz-status,#jobs-progress {font-weight:800;color:#222}
+        #jobs-learn-screen .flashcard-img-container {width:min(100%,340px);height:auto;aspect-ratio:1/1;flex:none}
+        #jobs-learn-screen .flashcard-img-container img {object-fit:contain;display:block}
+        .container:has(#jobs-quiz-screen.active.jobs-choose-mode) {max-width:1250px}
+        #jobs-quiz-screen.jobs-choose-mode #jobs-quiz-grid {grid-template-columns:1fr;width:100%}
         .jobs-choose-card {display:grid;grid-template-columns:minmax(100px,1fr) repeat(3,minmax(0,1.25fr));align-items:center;gap:8px}
         .jobs-choose-card .jobs-prompt {font-size:clamp(15px,2vw,23px);font-weight:900;color:#194580;overflow-wrap:anywhere}
         .jobs-pick {border:3px solid #5e17eb;border-radius:16px;background:#fff7d6;padding:5px;cursor:pointer;min-width:0}
-        .jobs-pick img {width:100%;height:clamp(75px,11vw,150px);object-fit:contain;display:block}
+        .jobs-pick img {width:100%;height:clamp(120px,16vw,210px);object-fit:contain;display:block}
         .jobs-pick.wrong {border-color:#e53935;background:#ffcccc}
         .jobs-pick.correct {border-color:#28a745;background:#d6ffd7}
         .jobs-who-card:nth-child(4n+1){background:#fff0cf}
@@ -4698,7 +4702,7 @@
         .jobs-pop-inner {background:#fff8de;border:5px solid #ffce55;border-radius:25px;padding:20px;display:grid;text-align:center;gap:12px;width:min(340px,90vw);box-shadow:0 15px 40px #2228}
         .jobs-pop-inner img {width:100%;height:220px;object-fit:contain}
         .jobs-pop-inner strong {font-size:clamp(22px,5vw,32px);color:#244783}
-        @media(max-width:650px){.jobs-choose-card{grid-template-columns:repeat(3,minmax(0,1fr))}.jobs-choose-card .jobs-prompt{grid-column:1/-1}.jobs-pick img{height:85px}}
+        @media(max-width:650px){.jobs-choose-card{grid-template-columns:repeat(3,minmax(0,1fr))}.jobs-choose-card .jobs-prompt{grid-column:1/-1}.jobs-pick img{height:clamp(100px,26vw,155px)}}
 
     </style>
 </head>
@@ -11198,6 +11202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function moveJobsLearn(delta){if(delta>0&&jobsLearnIndex===jobsData.length-1){openJobsMenu();return}jobsLearnIndex=Math.max(0,jobsLearnIndex+delta);renderJobsLearn();speakCurrentJob()}
         function startJobsQuiz(mode){
             jobsQuizToken++;clearTimeout(jobsTimer);jobsQuizMode=mode;jobsQuizOrder=jobsShuffle(jobsData).slice(0,12);jobsSet=0;
+            document.getElementById('jobs-quiz-screen').classList.toggle('jobs-choose-mode',mode==='choose');
             showScreen('jobs-quiz-screen');renderJobsSet();
         }
         function renderJobsSet(){
@@ -11237,10 +11242,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 pop.hidden=true;
                 if(jobsAnswered===4){
                     if(jobsSet===2){alert(currentGlobalLang==='ms'?'🎉 Selesai!':'🎉 Well done!');openJobsMenu()}
-                    else{jobsSet++;renderJobsSet()}
-                }else if(window.innerWidth<=768){
+                    else{jobsSet++;renderJobsSet();window.scrollTo({top:0,behavior:'instant'})}
+                }else if(jobsQuizMode==='who'||window.innerWidth<=768){
                     const next=[...document.querySelectorAll('#jobs-quiz-grid .transport-guess-card')].find(el=>!el.classList.contains('answered'));
-                    if(next)next.scrollIntoView({behavior:'smooth',block:'center'});
+                    if(next)next.scrollIntoView({behavior:'smooth',block:'start'});
                 }
             },2300);
         }
