@@ -4600,7 +4600,7 @@
             position: relative;
             isolation: isolate;
             overflow: hidden;
-            min-height: 330px !important;
+            min-height: 200px !important;
         }
         #sort-transport-screen .transport-sort-zone::before,
         #sort-food-screen .transport-sort-zone::before {
@@ -4651,7 +4651,7 @@
         }
         @media (max-width: 768px) {
             #sort-transport-screen .transport-sort-zone,
-            #sort-food-screen .transport-sort-zone { min-height: 310px !important; }
+            #sort-food-screen .transport-sort-zone { min-height: 180px !important; }
             #sort-transport-screen .transport-zone-title { font-size: 1.05rem !important; }
             #sort-food-screen .transport-zone-title { font-size: 1.2rem !important; }
             #sort-transport-screen .transport-sort-zone::before { font-size: clamp(3.5rem, 13vw, 6rem); }
@@ -4659,7 +4659,7 @@
         }
         @media (max-width: 430px) {
             #sort-transport-screen .transport-sort-zone,
-            #sort-food-screen .transport-sort-zone { min-height: 290px !important; }
+            #sort-food-screen .transport-sort-zone { min-height: 160px !important; }
             #sort-transport-screen .transport-zone-title { font-size: .91rem !important; }
             #sort-food-screen .transport-zone-title { font-size: 1rem !important; }
         }
@@ -11064,7 +11064,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const innerWidth=zone.clientWidth-parseFloat(getComputedStyle(zone).paddingLeft)-parseFloat(getComputedStyle(zone).paddingRight);
                 const pictureSize=Math.max(0,Math.min(originalSize,innerWidth));
                 zone.style.setProperty('--sort-answer-size',pictureSize+'px');
-                zone.style.setProperty('min-height',Math.ceil(pictureSize*3+90)+'px','important');
+                zone.style.setProperty('min-height',Math.ceil(pictureSize*2+70)+'px','important');
             });
         }
         window.addEventListener('resize',()=>{
