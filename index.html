@@ -4532,6 +4532,17 @@
 @media(max-width:600px){#bijak-suku-kata-2-screen{padding:8px 5px}.suku2-row{grid-template-columns:clamp(82px,24vw,116px) minmax(105px,1fr) clamp(74px,23vw,110px);min-height:clamp(82px,24vw,116px);gap:5px}.suku2-row img{width:clamp(82px,24vw,116px);height:clamp(82px,24vw,116px);border-width:4px}.suku2-plank{height:clamp(76px,22vw,100px);padding:6px;gap:3px}.suku2-drop{width:clamp(44px,11vw,65px);height:clamp(56px,16vw,72px)}.suku2-choice{height:clamp(37px,11vw,48px);min-height:37px}.suku2-options{gap:3px}.suku2-instruction{font-size:.88rem;padding:10px}.suku2-topbar>span{padding:8px 16px}.suku-activity-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:360px){.suku2-row{grid-template-columns:82px minmax(100px,1fr) 74px}.suku2-first{font-size:1.15rem}.suku2-choice{font-size:1.1rem}}
 
+
+/* Give Activity 2 the entire available screen width; keep match-game image dimensions. */
+.container:has(#bijak-suku-kata-2-screen.active){max-width:1200px;width:100%;box-sizing:border-box;padding-inline:clamp(5px,1vw,12px)}
+#bijak-suku-kata-2-screen.active{max-width:1180px;width:100%;padding-inline:clamp(4px,1vw,12px)}
+#bijak-suku-kata-2-screen .suku2-row{grid-template-columns:135px minmax(140px,1fr) minmax(100px,160px);gap:clamp(8px,2.5vw,28px)}
+#bijak-suku-kata-2-screen .suku2-row img{width:135px;height:135px;box-sizing:border-box}
+#bijak-suku-kata-2-screen .suku2-row.matched .suku2-plank{justify-content:center}
+#bijak-suku-kata-2-screen .suku2-row.matched .suku2-first{font-size:clamp(1.55rem,4vw,2.35rem);letter-spacing:.07em}
+@media(max-width:768px){#bijak-suku-kata-2-screen .suku2-row{grid-template-columns:116px minmax(110px,1fr) minmax(85px,120px);gap:8px;min-height:116px}#bijak-suku-kata-2-screen .suku2-row img{width:116px;height:116px}}
+@media(max-width:430px){#bijak-suku-kata-2-screen .suku2-row{grid-template-columns:110px minmax(90px,1fr) minmax(72px,88px);gap:4px;min-height:110px}#bijak-suku-kata-2-screen .suku2-row img{width:110px;height:110px}#bijak-suku-kata-2-screen .suku2-plank{height:85px;padding:5px}#bijak-suku-kata-2-screen .suku2-first{font-size:1.2rem}#bijak-suku-kata-2-screen .suku2-drop{width:42px;height:62px;flex:none}#bijak-suku-kata-2-screen .suku2-choice{font-size:1.15rem}}
+
         /* Fruit or Vegetable: enlarged to match the Sort the Transport format */
         #sort-food-screen .transport-sort-bank {
             grid-template-columns: repeat(4, minmax(92px, 1fr));
@@ -10561,7 +10572,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 playWrongSound();drop.classList.add('wrong');choice.classList.add('wrong');document.getElementById('suku2-message').textContent=currentGlobalLang==='ms'?'Cuba lagi 😊':'Try again 😊';
                 setTimeout(()=>{drop.classList.remove('wrong');choice.classList.remove('wrong')},450);return;
             }
-            playCorrectSound();drop.textContent=choice.textContent;drop.classList.add('matched');row.classList.add('matched');
+            playCorrectSound();row.querySelector('.suku2-first').textContent+=choice.textContent;drop.remove();row.classList.add('matched');
             row.querySelectorAll('.suku2-choice').forEach(el=>{el.classList.add('matched');el.disabled=true});
             suku2SelectedChoice=null;suku2Matched++;suku2Score++;document.getElementById('suku2-score').textContent=suku2Score;
             document.getElementById('suku2-message').textContent=currentGlobalLang==='ms'?`${row.dataset.word.toUpperCase()} — Betul! 🌟`:`${row.dataset.word.toUpperCase()} — Correct! 🌟`;
