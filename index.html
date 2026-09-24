@@ -4543,6 +4543,14 @@
 @media(max-width:768px){#bijak-suku-kata-2-screen .suku2-row{grid-template-columns:116px minmax(110px,1fr) minmax(85px,120px);gap:8px;min-height:116px}#bijak-suku-kata-2-screen .suku2-row img{width:116px;height:116px}}
 @media(max-width:430px){#bijak-suku-kata-2-screen .suku2-row{grid-template-columns:110px minmax(90px,1fr) minmax(72px,88px);gap:4px;min-height:110px}#bijak-suku-kata-2-screen .suku2-row img{width:110px;height:110px}#bijak-suku-kata-2-screen .suku2-plank{height:85px;padding:5px}#bijak-suku-kata-2-screen .suku2-first{font-size:1.2rem}#bijak-suku-kata-2-screen .suku2-drop{width:42px;height:62px;flex:none}#bijak-suku-kata-2-screen .suku2-choice{font-size:1.15rem}}
 
+
+/* Activity 2 header follows the other matching exercises. */
+#bijak-suku-kata-2-screen .suku2-topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;box-sizing:border-box;background:rgba(255,249,196,.95);padding:10px 20px;border-radius:15px;box-shadow:0 4px 10px rgba(0,0,0,.05);margin:0 0 15px;font-weight:700;color:#243b53}
+#bijak-suku-kata-2-screen .suku2-topbar>span{background:none;padding:0;text-shadow:none;white-space:nowrap;color:inherit}
+#bijak-suku-kata-2-screen #suku2-title{font-family:'Fredoka One',cursive;color:#5E17EB;text-shadow:none;font-size:clamp(.98rem,2.5vw,1.35rem)}
+#bijak-suku-kata-2-screen .suku2-instruction{background:none;max-width:none;margin:0 0 15px;padding:0;color:#444;text-shadow:none;font-weight:700}
+@media(max-width:430px){#bijak-suku-kata-2-screen .suku2-topbar{padding:10px 8px;gap:4px;font-size:.8rem}#bijak-suku-kata-2-screen #suku2-title{font-size:.95rem}#bijak-suku-kata-2-screen .suku2-instruction{font-size:.9rem}}
+
         /* Fruit or Vegetable: enlarged to match the Sort the Transport format */
         #sort-food-screen .transport-sort-bank {
             grid-template-columns: repeat(4, minmax(92px, 1fr));
@@ -5325,9 +5333,9 @@
 
             <!-- BIJAK SUKU KATA: AKTIVITI 2 -->
             <div id="bijak-suku-kata-2-screen" class="card">
-                <h2 id="suku2-title" style="color:#ffff00;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #5E17EB;">Aktiviti 2</h2>
                 <div class="suku2-match-layout">
-                    <div class="suku2-topbar">
+                    <div class="quiz-header suku2-topbar">
+                        <span id="suku2-title">Aktiviti 2</span>
                         <span id="suku2-set-label">Set <span id="suku2-set-progress">1 / 5</span></span>
                         <span>⭐ <span id="suku2-score">0</span></span>
                     </div>
