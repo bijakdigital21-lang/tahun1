@@ -4688,7 +4688,9 @@
         #jobs-quiz-screen.jobs-choose-mode #jobs-quiz-grid {grid-template-columns:minmax(0,1fr);width:100%}
         #jobs-quiz-screen.jobs-choose-mode {width:100%}
         .jobs-choose-card {display:grid;grid-template-columns:minmax(110px,.5fr) repeat(3,minmax(0,1fr));align-items:center;gap:12px;padding:14px;width:100%}
-        .jobs-choose-card .jobs-prompt {font-size:clamp(15px,2vw,23px);font-weight:900;color:#194580;overflow-wrap:anywhere}
+        .jobs-choose-card .jobs-prompt {font-size:clamp(15px,2vw,23px);font-weight:900;color:#194580;overflow-wrap:anywhere;display:flex;align-items:center;justify-content:center;gap:8px}
+        .jobs-audio-btn {width:42px;height:42px;flex:0 0 42px;border:0;border-radius:50%;background:var(--primary-pink);color:#fff;font-size:1.25rem;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 4px 0 #b33687,0 5px 10px rgba(0,0,0,.12);cursor:pointer;touch-action:manipulation}
+        .jobs-audio-btn:active {transform:translateY(2px);box-shadow:0 2px 0 #b33687}
         .jobs-pick {border:3px solid #5e17eb;border-radius:16px;background:#fff7d6;padding:5px;cursor:pointer;min-width:0}
         .jobs-pick img {width:100%;height:clamp(200px,25vw,340px);object-fit:contain;display:block}
         .jobs-pick.wrong {border-color:#e53935;background:#ffcccc}
@@ -4710,7 +4712,7 @@
             #jobs-quiz-screen.jobs-choose-mode #jobs-quiz-grid{margin-left:0;margin-right:0;gap:10px}
             #jobs-quiz-screen.jobs-choose-mode .jobs-choose-card{box-sizing:border-box;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;padding:4px 2px;border-width:2px;border-radius:12px}
             #jobs-quiz-screen.jobs-choose-mode .jobs-pick{box-sizing:border-box;width:100%;padding:0;border-width:2px;border-radius:8px;overflow:hidden}
-            #jobs-quiz-screen.jobs-choose-mode .jobs-pick img{width:100%;height:clamp(180px,54vw,290px);object-fit:contain}
+            #jobs-quiz-screen.jobs-choose-mode .jobs-pick img{width:100%;height:clamp(145px,42vw,225px);object-fit:contain}
         }
 
     </style>
@@ -11189,10 +11191,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const jobsShuffle=a=>[...a].sort(()=>Math.random()-.5);
         let jobsLearnIndex=0,jobsQuizMode='',jobsQuizOrder=[],jobsSet=0,jobsAnswered=0,jobsQuizToken=0,jobsTimer=0;
         function openJobsMenu(){jobsQuizToken++;clearTimeout(jobsTimer);document.getElementById('jobs-pop').hidden=true;showScreen('jobs-menu-screen');document.getElementById('jobs-menu-title').textContent=currentGlobalLang==='ms'?'Pekerjaan & Profesion 👩‍⚕️':'Jobs & Profession 👩‍⚕️';document.getElementById('jobs-menu-desc').textContent=currentGlobalLang==='ms'?'Pilih aktiviti pekerjaan!':'Choose an activity!'}
-        function jobsSpeak(j){
+        function jobsSpeak(j, rate=.75){
             if(!('speechSynthesis' in window))return;
             speechSynthesis.cancel();
-            const u=new SpeechSynthesisUtterance(jobsName(j));u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.75;
+            const u=new SpeechSynthesisUtterance(jobsName(j));u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=rate;
             speechSynthesis.speak(u);
         }
         function startJobsLearn(){jobsLearnIndex=0;showScreen('jobs-learn-screen');renderJobsLearn();speakCurrentJob()}
@@ -11223,7 +11225,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card=document.createElement('div');card.className='transport-guess-card '+(jobsQuizMode==='choose'?'jobs-choose-card':'jobs-who-card');
                 const options=jobsShuffle([target,...jobsShuffle(jobsData.filter(x=>x.id!==target.id)).slice(0,2)]);
                 if(jobsQuizMode==='choose'){
-                    const prompt=document.createElement('div');prompt.className='jobs-prompt';prompt.textContent=jobsName(target);card.appendChild(prompt);
+                    const prompt=document.createElement('div');prompt.className='jobs-prompt';
+                    const label=document.createElement('span');label.textContent=jobsName(target);prompt.appendChild(label);
+                    const listen=document.createElement('button');listen.type='button';listen.className='jobs-audio-btn';listen.textContent='🔊';listen.setAttribute('aria-label',(currentGlobalLang==='ms'?'Dengar ':'Listen to ')+jobsName(target));listen.title='Listen / Dengar';listen.onclick=()=>jobsSpeak(target, .4);prompt.appendChild(listen);card.appendChild(prompt);
                     options.forEach(choice=>{
                         const b=document.createElement('button');b.className='jobs-pick';b.setAttribute('aria-label',jobsName(choice));
                         const img=document.createElement('img');img.src=choice.img;img.alt=jobsName(choice);b.appendChild(img);
