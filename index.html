@@ -4610,8 +4610,8 @@
             transform: translate(-50%, -50%);
             font-size: clamp(4.5rem, 10vw, 8.5rem);
             line-height: 1;
-            opacity: .18;
-            filter: blur(3px);
+            opacity: .34;
+            filter: blur(2px);
             pointer-events: none;
             z-index: -1;
         }
@@ -4620,6 +4620,11 @@
         #sort-transport-screen [data-cat="water"]::before { content: "🚢"; }
         #sort-food-screen [data-cat="fruit"]::before { content: "🍎"; }
         #sort-food-screen [data-cat="vegetable"]::before { content: "🥕"; }
+        #sort-transport-screen [data-cat="land"] { background:#fff1d9 !important; border-color:#eea857 !important; }
+        #sort-transport-screen [data-cat="air"] { background:#e4f4ff !important; border-color:#68b7ed !important; }
+        #sort-transport-screen [data-cat="water"] { background:#e5f9f3 !important; border-color:#5abf9f !important; }
+        #sort-food-screen [data-cat="fruit"] { background:#ffe9ef !important; border-color:#ed8eaf !important; }
+        #sort-food-screen [data-cat="vegetable"] { background:#edfadf !important; border-color:#90c96e !important; }
         /* Answered pictures keep the same size as the original draggable cards. */
         #sort-transport-screen .transport-zone-items,
         #sort-food-screen .transport-zone-items {
@@ -5876,10 +5881,10 @@
             <!-- SORT THE TRANSPORT -->
             <div id="sort-transport-screen" class="card">
                 <h2 id="sort-transport-title" style="color:#FFDE59;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #123F7A;">Sort the Transport 🚗✈️🚢</h2>
-                <p id="sort-transport-desc" style="color:#111;font-weight:800;margin:6px 0 8px;">Drag all 5 transport pictures into the correct box.</p>
+                <p id="sort-transport-desc" style="color:#111;font-weight:800;margin:6px 0 8px;">Drag all 6 transport pictures into the correct box.</p>
                 <div class="transport-sort-status">
                     <span><span id="sort-transport-set-label">Set</span>: <span id="sort-transport-set">1</span>/5</span>
-                    <span><span id="sort-transport-left-label">Left</span>: <span id="sort-transport-left">5</span></span>
+                    <span><span id="sort-transport-left-label">Left</span>: <span id="sort-transport-left">6</span></span>
                 </div>
                 <div class="transport-sort-bank" id="transport-sort-bank"></div>
                 <div class="transport-sort-zones">
@@ -10928,7 +10933,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'transport-flash-listen': ms ? '🔊 Dengar' : '🔊 Listen',
                 'transport-flash-back': ms ? 'Back ↩️' : 'Back ↩️',
                 'sort-transport-title': ms ? 'Asingkan Pengangkutan 🚗✈️🚢' : 'Sort the Transport 🚗✈️🚢',
-                'sort-transport-desc': ms ? 'Seret semua 5 gambar kenderaan ke dalam kotak yang betul.' : 'Drag all 5 transport pictures into the correct box.',
+                'sort-transport-desc': ms ? 'Seret semua 6 gambar kenderaan ke dalam kotak yang betul.' : 'Drag all 6 transport pictures into the correct box.',
                 'sort-transport-set-label': ms ? 'Set' : 'Set',
                 'sort-transport-left-label': ms ? 'Baki' : 'Left',
                 'transport-zone-land': ms ? '🚗 Darat' : '🚗 Land',
@@ -11015,8 +11020,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // ---------- Sort the Transport ----------
         let sortTransportSets=[], sortTransportSetIndex=0, selectedTransportSortId=null;
         function startSortTransport(){
-            const pool=transportShuffle(transportDatabase).slice(0,25);
-            sortTransportSets=Array.from({length:5},(_,i)=>pool.slice(i*5,i*5+5));
+            // Each set has two unique pictures from every category.
+            // Refill a shuffled category pool only when fewer than two remain.
+            const pools=Object.fromEntries(['land','air','water'].map(cat=>[cat,transportShuffle(transportDatabase.filter(item=>item.cat===cat))]));
+            sortTransportSets=Array.from({length:5},()=>transportShuffle(['land','air','water'].flatMap(cat=>{
+                if(pools[cat].length<2)pools[cat]=transportShuffle(transportDatabase.filter(item=>item.cat===cat));
+                return pools[cat].splice(0,2);
+            })));
             sortTransportSetIndex=0;
             showScreen('sort-transport-screen');
             updateTransportLanguage();
