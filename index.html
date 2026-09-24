@@ -4710,7 +4710,7 @@
             .main-content:has(#jobs-quiz-screen.active.jobs-choose-mode){padding-left:0;padding-right:0}
             .container:has(#jobs-quiz-screen.active.jobs-choose-mode){padding:0;max-width:100vw}
             #jobs-quiz-screen.jobs-choose-mode #jobs-quiz-grid{margin-left:0;margin-right:0;gap:10px}
-            #jobs-quiz-screen.jobs-choose-mode .jobs-choose-card{box-sizing:border-box;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;padding:4px 2px;border-width:2px;border-radius:12px}
+            #jobs-quiz-screen.jobs-choose-mode .jobs-choose-card{box-sizing:border-box;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:3px;row-gap:13px;padding:12px 5px 14px;border-width:2px;border-radius:12px}
             #jobs-quiz-screen.jobs-choose-mode .jobs-pick{box-sizing:border-box;width:100%;padding:0;border-width:2px;border-radius:8px;overflow:hidden}
             #jobs-quiz-screen.jobs-choose-mode .jobs-pick img{width:100%;height:clamp(145px,42vw,225px);object-fit:contain}
         }
@@ -6468,7 +6468,7 @@
             if(typeof updateCompleteAnimalLanguage === 'function') updateCompleteAnimalLanguage();
             document.documentElement.lang = currentGlobalLang === 'ms' ? 'ms' : 'en';
             try { localStorage.setItem('kiddoraLanguage', currentGlobalLang); } catch(e) {}
-            setTimeout(()=>{ if(typeof updateColourLanguage === 'function') updateColourLanguage(); if(typeof updateBodyLanguage === 'function') updateBodyLanguage(); if(typeof updateShapeLanguage === 'function') updateShapeLanguage(); if(typeof updateTransportLanguage === 'function') updateTransportLanguage(); if(typeof updateFoodLanguage === 'function') updateFoodLanguage(); if(typeof updateInstallTutorialLanguage === 'function') updateInstallTutorialLanguage(); if(typeof updateBijakSukuKataLanguage === 'function') updateBijakSukuKataLanguage(); },0);
+            setTimeout(()=>{ if(typeof updateColourLanguage === 'function') updateColourLanguage(); if(typeof updateBodyLanguage === 'function') updateBodyLanguage(); if(typeof updateShapeLanguage === 'function') updateShapeLanguage(); if(typeof updateTransportLanguage === 'function') updateTransportLanguage(); if(typeof updateFoodLanguage === 'function') updateFoodLanguage(); if(typeof updateJobsLanguage === 'function') updateJobsLanguage(); if(typeof updateInstallTutorialLanguage === 'function') updateInstallTutorialLanguage(); if(typeof updateBijakSukuKataLanguage === 'function') updateBijakSukuKataLanguage(); },0);
             
             document.getElementById("lang-btn-en").classList.remove("active");
             document.getElementById("lang-btn-ms").classList.remove("active");
@@ -11191,6 +11191,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const jobsShuffle=a=>[...a].sort(()=>Math.random()-.5);
         let jobsLearnIndex=0,jobsQuizMode='',jobsQuizOrder=[],jobsSet=0,jobsAnswered=0,jobsQuizToken=0,jobsTimer=0;
         function openJobsMenu(){jobsQuizToken++;clearTimeout(jobsTimer);document.getElementById('jobs-pop').hidden=true;showScreen('jobs-menu-screen');document.getElementById('jobs-menu-title').textContent=currentGlobalLang==='ms'?'Pekerjaan & Profesion 👩‍⚕️':'Jobs & Profession 👩‍⚕️';document.getElementById('jobs-menu-desc').textContent=currentGlobalLang==='ms'?'Pilih aktiviti pekerjaan!':'Choose an activity!'}
+        function updateJobsLanguage(){
+            const ms=currentGlobalLang==='ms';
+            const menu=document.getElementById('jobs-menu-screen');
+            document.getElementById('jobs-menu-title').textContent=ms?'Pekerjaan & Profesion 👩‍⚕️':'Jobs & Profession 👩‍⚕️';
+            document.getElementById('jobs-menu-desc').textContent=ms?'Pilih aktiviti pekerjaan!':'Choose an activity!';
+            const menuButtons=menu.querySelectorAll('.transport-menu-btn');
+            [ms?'Pekerjaan':'Jobs',ms?'Pilih Pekerjaan Yang Betul':'Choose the Correct Job',ms?'Siapakah Saya?':'Who Am I?'].forEach((name,i)=>{menuButtons[i].setAttribute('aria-label',name);menuButtons[i].querySelector('img').alt=name});
+            menu.querySelector('.home-btn').textContent=ms?'Kembali ke Utama 🏠':'Back to Home 🏠';
+            const learn=document.getElementById('jobs-learn-screen');
+            learn.querySelector('.sound-btn').textContent=ms?'🔊 Dengar':'🔊 Listen';
+            learn.querySelector('.home-btn').textContent=ms?'Kembali ↩️':'Back ↩️';
+            document.getElementById('jobs-prev').textContent=ms?'⬅ Sebelum':'⬅ Prev';
+            if(learn.classList.contains('active'))renderJobsLearn();
+            const quiz=document.getElementById('jobs-quiz-screen');
+            quiz.querySelector('.home-btn').textContent=ms?'Kembali ↩️':'Back ↩️';
+            if(quiz.classList.contains('active')){
+                document.getElementById('jobs-quiz-title').textContent=jobsQuizMode==='choose'?(ms?'Pilih Pekerjaan Yang Betul':'Choose the Correct Job'):(ms?'Siapakah Saya?':'Who Am I?');
+                const count=jobsQuizMode==='choose'?2:4;
+                document.getElementById('jobs-quiz-status').textContent='Set '+(jobsSet+1)+'/'+(jobsQuizMode==='choose'?5:3)+' · '+count+(ms?' soalan':' questions');
+                quiz.querySelectorAll('#jobs-quiz-grid .transport-guess-card').forEach(card=>{
+                    const target=jobsData.find(j=>j.id===card.dataset.jobId);
+                    if(!target)return;
+                    const prompt=card.querySelector('.jobs-prompt');
+                    if(prompt){prompt.querySelector('span').textContent=jobsName(target);prompt.querySelector('.jobs-audio-btn').setAttribute('aria-label',(ms?'Dengar ':'Listen to ')+jobsName(target))}
+                    const image=card.querySelector('.transport-guess-img');
+                    if(image)image.alt=ms?'Pekerjaan apakah ini?':'What job is this?';
+                    card.querySelectorAll('.jobs-pick, .transport-guess-option').forEach(button=>{
+                        const choice=jobsData.find(j=>j.id===button.dataset.jobId);
+                        if(!choice)return;
+                        if(button.classList.contains('jobs-pick')){button.setAttribute('aria-label',jobsName(choice));button.querySelector('img').alt=jobsName(choice)}
+                        else button.textContent='☐ '+jobsName(choice);
+                    });
+                });
+            }
+            const pop=document.getElementById('jobs-pop');
+            if(!pop.hidden){const target=jobsData.find(j=>j.id===pop.dataset.jobId);if(target)document.getElementById('jobs-pop-name').textContent=jobsName(target)}
+        }
         function jobsSpeak(j, rate=.75){
             if(!('speechSynthesis' in window))return;
             speechSynthesis.cancel();
@@ -11222,14 +11259,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const totalSets=jobsQuizMode==='choose'?5:3;
             document.getElementById('jobs-quiz-status').textContent='Set '+(jobsSet+1)+'/'+totalSets+' · '+(currentGlobalLang==='ms'?questionsPerSet+' soalan':questionsPerSet+' questions');
             jobsQuizOrder.slice(jobsSet*questionsPerSet,(jobsSet+1)*questionsPerSet).forEach(target=>{
-                const card=document.createElement('div');card.className='transport-guess-card '+(jobsQuizMode==='choose'?'jobs-choose-card':'jobs-who-card');
+                const card=document.createElement('div');card.className='transport-guess-card '+(jobsQuizMode==='choose'?'jobs-choose-card':'jobs-who-card');card.dataset.jobId=target.id;
                 const options=jobsShuffle([target,...jobsShuffle(jobsData.filter(x=>x.id!==target.id)).slice(0,2)]);
                 if(jobsQuizMode==='choose'){
                     const prompt=document.createElement('div');prompt.className='jobs-prompt';
                     const label=document.createElement('span');label.textContent=jobsName(target);prompt.appendChild(label);
                     const listen=document.createElement('button');listen.type='button';listen.className='jobs-audio-btn';listen.textContent='🔊';listen.setAttribute('aria-label',(currentGlobalLang==='ms'?'Dengar ':'Listen to ')+jobsName(target));listen.title='Listen / Dengar';listen.onclick=()=>jobsSpeak(target, .4);prompt.appendChild(listen);card.appendChild(prompt);
                     options.forEach(choice=>{
-                        const b=document.createElement('button');b.className='jobs-pick';b.setAttribute('aria-label',jobsName(choice));
+                        const b=document.createElement('button');b.className='jobs-pick';b.dataset.jobId=choice.id;b.setAttribute('aria-label',jobsName(choice));
                         const img=document.createElement('img');img.src=choice.img;img.alt=jobsName(choice);b.appendChild(img);
                         b.onclick=()=>answerJobs(card,target,choice,b,token);card.appendChild(b);
                     });
@@ -11237,7 +11274,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const img=document.createElement('img');img.className='transport-guess-img';img.src=target.img;img.alt=currentGlobalLang==='ms'?'Pekerjaan apakah ini?':'What job is this?';card.appendChild(img);
                     const opts=document.createElement('div');opts.className='transport-guess-options';
                     options.forEach(choice=>{
-                        const b=document.createElement('button');b.className='transport-guess-option';b.textContent='☐ '+jobsName(choice);
+                        const b=document.createElement('button');b.className='transport-guess-option';b.dataset.jobId=choice.id;b.textContent='☐ '+jobsName(choice);
                         b.onclick=()=>answerJobs(card,target,choice,b,token);opts.appendChild(b);
                     });card.appendChild(opts);
                 }
@@ -11248,7 +11285,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(token!==jobsQuizToken||card.classList.contains('answered'))return;
             if(choice.id!==target.id){playWrongSound();button.classList.add('wrong');return}
             card.classList.add('answered');button.classList.add('correct');playCorrectSound();jobsAnswered++;
-            const pop=document.getElementById('jobs-pop');document.getElementById('jobs-pop-image').src=target.img;document.getElementById('jobs-pop-name').textContent=jobsName(target);pop.hidden=false;
+            const pop=document.getElementById('jobs-pop');pop.dataset.jobId=target.id;document.getElementById('jobs-pop-image').src=target.img;document.getElementById('jobs-pop-name').textContent=jobsName(target);pop.hidden=false;
             jobsSpeak(target);
             jobsTimer=setTimeout(()=>{
                 if(token!==jobsQuizToken)return;
