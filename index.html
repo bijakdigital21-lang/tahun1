@@ -4679,6 +4679,21 @@
  .complete-animal-half { width:clamp(83px,25vw,110px); height:clamp(86px,13vh,112px); }
  .complete-animal-half .complete-animal-art { font-size:clamp(68px,19vw,88px); }
 }
+
+/* Complete the Face */
+.face-board{position:relative;width:min(76vw,330px);height:min(96vw,420px);max-height:420px;margin:12px auto;background:#fff7dd;border:5px solid #7449ac;border-radius:24px;touch-action:none}
+.face-head{position:absolute;left:14%;top:12%;width:72%;height:78%;border-radius:48% 48% 45% 45%;background:#f8c99d;border:4px solid #bd815e}
+.face-slot{position:absolute;border:2px dashed #9d73b9;border-radius:18px;background:#fff9;display:grid;place-items:center;color:#694190;font-size:11px;font-weight:900;text-align:center;touch-action:none}
+.face-slot.filled{border:0;background:transparent;color:transparent}
+.face-slot svg{width:100%;height:100%;overflow:visible}
+.face-bank{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;max-width:670px;margin:15px auto}
+.face-tile{width:94px;height:90px;border:3px solid #7550aa;border-radius:16px;background:#fff2c9;display:grid;justify-items:center;align-content:center;cursor:grab;touch-action:none;font-weight:900;color:#482e75}
+.face-tile svg{width:62px;height:53px}.face-tile.used{visibility:hidden}
+.face-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-50%);opacity:.9}
+.face-overlay{position:fixed;inset:0;z-index:100000;background:#211c45a8;display:grid;place-items:center}
+.face-popup{background:#fff8db;padding:23px 35px;border:5px solid #865ac0;border-radius:28px;text-align:center;color:#57328a;font:900 2rem 'Fredoka One',sans-serif;box-shadow:0 12px 40px #0005}
+.face-popup svg{display:block;width:140px;height:100px;margin:auto}
+
     </style>
 </head>
 <body class="login-mode">
@@ -5243,6 +5258,7 @@
                     <button class="body-menu-btn" onclick="playClickSound(); openMatchBodyCountScreen()" aria-label="Match the Body Part">
                         <img src="https://i.imgur.com/zFSPyNc.jpeg" alt="Match the Body Part">
                     </button>
+                    <button class="body-menu-btn" onclick="playClickSound(); startCompleteFace()" aria-label="Complete the Face"><img src="https://i.imgur.com/bbWrTRA.jpeg" alt="Complete the Face"></button>
                     <button class="body-menu-btn body-locked" type="button" aria-label="Label the Body Part - New adventure coming" aria-disabled="true" disabled style="position:relative;cursor:not-allowed;overflow:hidden;">
                         <img src="https://i.imgur.com/a2fnp6s.jpeg" alt="Label the Body Part" style="filter:brightness(.58);">
                         <span aria-hidden="true" style="position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(18,63,122,.72);color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;line-height:1.25;text-align:center;text-shadow:0 2px 4px rgba(0,0,0,.35);pointer-events:none;">
@@ -5252,6 +5268,23 @@
                     </button>
                 </div>
                 <button class="action-btn home-btn" id="body-menu-back" onclick="playClickSound(); navigateTo('home-screen')">Back to Home 🏠</button>
+            </div>
+
+
+            <div id="complete-face-screen" class="card">
+                <h2 style="color:#5E17EB;font-family:'Fredoka One',cursive">Complete the Face 🧒</h2>
+                <p id="face-instruction" style="font-weight:800">Drag each part onto the correct place on the face.</p>
+                <div class="face-board" id="face-board">
+                    <div class="face-head"></div>
+                    <div class="face-slot" data-face="hair" style="left:20%;top:4%;width:60%;height:22%"></div>
+                    <div class="face-slot" data-face="ear" style="left:2%;top:36%;width:96%;height:20%"></div>
+                    <div class="face-slot" data-face="eyebrow" style="left:26%;top:36%;width:48%;height:9%"></div>
+                    <div class="face-slot" data-face="eye" style="left:26%;top:46%;width:48%;height:10%"></div>
+                    <div class="face-slot" data-face="nose" style="left:42%;top:57%;width:16%;height:12%"></div>
+                    <div class="face-slot" data-face="mouth" style="left:32%;top:72%;width:36%;height:11%"></div>
+                </div>
+                <div class="face-bank" id="face-bank"></div>
+                <button class="action-btn home-btn" onclick="leaveCompleteFace()">Back ↩️</button>
             </div>
 
             <div id="learn-body-screen" class="card">
@@ -7191,6 +7224,47 @@
             document.getElementById('complete-animal-back').textContent=ms?'Kembali ↩️':'Back ↩️';
             document.getElementById('complete-animal-btn-text').textContent=ms?'4) Lengkapkan Haiwan':'4) Complete the Animal';
         }
+        // Decode each picture once; later sets reuse the browser's decoded image cache.
+        const completeAnimalImageCache = new Map();
+        function preloadCompleteAnimal(animal) {
+            const url = animal[0];
+            if (!completeAnimalImageCache.has(url)) {
+                const img = new Image();
+                img.decoding = 'async';
+                img.src = url;
+                const ready = (img.decode ? img.decode() : new Promise((resolve, reject) => {
+                    img.onload = resolve; img.onerror = reject;
+                })).catch(() => undefined);
+                completeAnimalImageCache.set(url, ready);
+            }
+            return completeAnimalImageCache.get(url);
+        }
+        async function showCompleteAnimalSet(session) {
+            const screen = document.getElementById('complete-animal-screen');
+            const group = completeAnimalQuestions.slice(completeAnimalSet * 5, completeAnimalSet * 5 + 5);
+            const board = screen.querySelector('.complete-animal-board');
+            board.style.visibility = 'hidden';
+            let indicator = document.getElementById('complete-animal-loading');
+            if (!indicator) {
+                indicator = document.createElement('p');
+                indicator.id = 'complete-animal-loading';
+                indicator.style.cssText = 'text-align:center;font-weight:bold;color:#5E17EB';
+                board.before(indicator);
+            }
+            indicator.textContent = currentGlobalLang === 'ms' ? 'Sedang menyediakan gambar haiwan…' : 'Preparing animal pictures…';
+            indicator.hidden = false;
+            await Promise.all(group.map(preloadCompleteAnimal));
+            if (session !== completeAnimalSession || !screen.classList.contains('active')) return;
+            renderCompleteAnimal();
+            board.style.visibility = '';
+            indicator.hidden = true;
+            // Fetch and decode the remaining pictures while the child works on this set.
+            const rest = completeAnimalQuestions.slice((completeAnimalSet + 1) * 5);
+            for (let i = 0; i < rest.length; i += 5) {
+                if (session !== completeAnimalSession) break;
+                await Promise.all(rest.slice(i, i + 5).map(preloadCompleteAnimal));
+            }
+        }
         function startCompleteAnimal(){
             completeAnimalSession++;
             clearTimeout(completeAnimalTimer);
@@ -7201,7 +7275,7 @@
             completeAnimalSet=0;
             showScreen('complete-animal-screen');
             updateCompleteAnimalLanguage();
-            renderCompleteAnimal();
+            showCompleteAnimalSet(completeAnimalSession);
         }
         function leaveCompleteAnimal(){
             completeAnimalSession++;
@@ -7304,7 +7378,7 @@
                 pop.remove();
                 if(completeAnimalMatched.size!==Math.min(5,completeAnimalQuestions.length-completeAnimalSet*5))return;
                 completeAnimalSet++;
-                if(completeAnimalSet<Math.ceil(completeAnimalQuestions.length/5)){renderCompleteAnimal();return;}
+                if(completeAnimalSet<Math.ceil(completeAnimalQuestions.length/5)){showCompleteAnimalSet(completeAnimalSession);return;}
                 if(window.saveScoreToFirebase)window.saveScoreToFirebase('Complete the Animal',100);
                 alert(currentGlobalLang==='ms'?'Tahniah! Semua haiwan berjaya dilengkapkan! 🎉':'Great job! You completed all the animals! 🎉');
                 leaveCompleteAnimal();
@@ -8659,6 +8733,62 @@
         function updateBodyLanguage(){const ms=currentGlobalLang==='ms',set=(id,en,bm)=>{const e=document.getElementById(id);if(e)e.innerText=ms?bm:en};set('body-menu-title','Body Part Module 🧒','Modul Anggota Badan 🧒');set('body-menu-desc','Choose a body part activity!','Pilih aktiviti anggota badan!');set('body-learn-menu-text','Learn the Body Part','Belajar Anggota Badan');set('body-choose-menu-text','Choose the Body Part','Pilih Anggota Badan');set('body-label-menu-text','Label the Body Part','Label Anggota Badan');set('match-body-count-title','Match the Body Part 🧩','Padankan Anggota Badan 🧩');set('match-body-count-desc','Select how many pages/sets you want to play:','Pilih berapa halaman/set yang mahu dimainkan:');set('match-body-count-back','Back ↩️','Back ↩️');set('match-body-header-title','Match Body Part','Padankan Anggota Badan');set('match-body-page-label','Page','Halaman');set('match-body-score-label','Score','Skor');set('match-body-instruction','Drag a line from the body part name to the correct picture!','Tarik garis dari nama anggota badan ke gambar yang betul!');set('match-body-back','Back ↩️','Back ↩️');set('body-menu-back','Back to Home 🏠','Back to Home 🏠');set('learn-body-title','Learn the Body Part 🧒','Belajar Anggota Badan 🧒');set('body-learn-listen','🔊 Listen','🔊 Dengar');set('choose-body-title','Choose the Body Part 🔎','Pilih Anggota Badan 🔎');set('choose-body-listen','🔊 Listen','🔊 Dengar');set('label-body-title','Label the Body Part 🏷️','Label Anggota Badan 🏷️');set('label-body-desc','Drag each label into the correct box. You can also tap a label, then tap a box.','Seret setiap label ke kotak yang betul. Boleh juga tekan label, kemudian tekan kotak.');set('label-body-reset','Reset 🔄','Mula Semula 🔄');if(document.getElementById('learn-body-screen')?.classList.contains('active'))renderLearnBodyPart();if(document.getElementById('choose-body-screen')?.classList.contains('active')&&chooseBodyOrder.length)renderChooseBody();if(document.getElementById('label-body-screen')?.classList.contains('active'))renderBodyLabelBank(true);if(document.getElementById('match-body-game-screen')?.classList.contains('active')&&matchBodyGameData.length)loadMatchBodyPage()}
         function openBodyPartMenu(){window.speechSynthesis?.cancel();updateBodyLanguage();showScreen('body-part-menu-screen')}
 
+
+        // Self-contained face matching activity. SVG pieces fit exactly in the target slots.
+        const faceNames={hair:['Rambut','Hair'],ear:['Telinga','Ears'],eyebrow:['Kening','Eyebrows'],eye:['Mata','Eyes'],nose:['Hidung','Nose'],mouth:['Mulut','Mouth']};
+        const faceShapes={
+            hair:'<path d="M5 58 Q3 4 50 12 Q96 0 95 58 Q75 32 65 43 Q48 23 36 43 Q18 30 5 58Z" fill="#533125" stroke="#3a201b" stroke-width="3"/>',
+            ear:'<ellipse cx="9" cy="50" rx="8" ry="24" fill="#f2ad81" stroke="#a66c50" stroke-width="3"/><ellipse cx="91" cy="50" rx="8" ry="24" fill="#f2ad81" stroke="#a66c50" stroke-width="3"/>',
+            eyebrow:'<path d="M9 45 Q23 29 41 42 M59 42 Q76 29 91 45" stroke="#543025" stroke-width="9" fill="none" stroke-linecap="round"/>',
+            eye:'<ellipse cx="27" cy="50" rx="17" ry="12" fill="white" stroke="#5b3d3c" stroke-width="3"/><ellipse cx="73" cy="50" rx="17" ry="12" fill="white" stroke="#5b3d3c" stroke-width="3"/><circle cx="27" cy="50" r="7" fill="#292336"/><circle cx="73" cy="50" r="7" fill="#292336"/>',
+            nose:'<path d="M44 24 Q43 59 38 68 Q50 79 64 67" stroke="#a96751" stroke-width="6" fill="none" stroke-linecap="round"/>',
+            mouth:'<path d="M19 43 Q50 77 81 43 Q49 54 19 43Z" fill="#cf5365" stroke="#a23c52" stroke-width="3"/>'
+        };
+        let facePlaced=new Set(),faceDrag=null,faceTimer=null,faceRun=0;
+        function faceSvg(id){return '<svg viewBox="0 0 100 100" aria-hidden="true">'+faceShapes[id]+'</svg>'}
+        function faceName(id){return faceNames[id][currentGlobalLang==='ms'?0:1]}
+        function startCompleteFace(){
+            faceRun++;clearTimeout(faceTimer);document.querySelectorAll('.face-overlay,.face-ghost').forEach(e=>e.remove());
+            facePlaced=new Set();faceDrag=null;
+            const bank=document.getElementById('face-bank');bank.innerHTML='';
+            document.getElementById('face-instruction').textContent=currentGlobalLang==='ms'?'Seret setiap bahagian ke tempat yang betul pada muka.':'Drag each part onto the correct place on the face.';
+            document.querySelectorAll('#face-board .face-slot').forEach(slot=>{slot.classList.remove('filled');slot.textContent='?';});
+            Object.keys(faceNames).sort(()=>Math.random()-.5).forEach(id=>{
+                const tile=document.createElement('div');tile.className='face-tile';tile.dataset.face=id;
+                tile.innerHTML=faceSvg(id)+'<span>'+faceName(id)+'</span>';tile.addEventListener('pointerdown',facePointerDown);bank.append(tile);
+            });
+            showScreen('complete-face-screen');
+        }
+        function leaveCompleteFace(){faceRun++;clearTimeout(faceTimer);faceDrag?.ghost.remove();faceDrag=null;document.querySelectorAll('.face-overlay').forEach(e=>e.remove());openBodyPartMenu()}
+        function facePointerDown(e){
+            if(faceDrag||e.currentTarget.classList.contains('used'))return;
+            e.preventDefault();const source=e.currentTarget,ghost=source.cloneNode(true);
+            ghost.classList.add('face-ghost');document.body.append(ghost);
+            faceDrag={source,ghost,id:e.pointerId};ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';
+        }
+        document.addEventListener('pointermove',e=>{if(faceDrag&&e.pointerId===faceDrag.id){faceDrag.ghost.style.left=e.clientX+'px';faceDrag.ghost.style.top=e.clientY+'px'}});
+        document.addEventListener('pointercancel',e=>{if(faceDrag?.id===e.pointerId){faceDrag.ghost.remove();faceDrag=null}});
+        document.addEventListener('pointerup',e=>{
+            if(!faceDrag||e.pointerId!==faceDrag.id)return;
+            const drag=faceDrag;drag.ghost.remove();faceDrag=null;
+            const slot=document.elementFromPoint(e.clientX,e.clientY)?.closest('#face-board .face-slot');
+            if(!slot||slot.dataset.face!==drag.source.dataset.face||slot.classList.contains('filled')){if(typeof playWrongSound==='function')playWrongSound();return}
+            const id=slot.dataset.face;slot.classList.add('filled');slot.innerHTML=faceSvg(id);drag.source.classList.add('used');facePlaced.add(id);
+            if(typeof playCorrectSound==='function')playCorrectSound();
+            const run=faceRun,overlay=document.createElement('div');overlay.className='face-overlay';
+            overlay.innerHTML='<div class="face-popup">'+faceSvg(id)+'<div>'+faceName(id)+'</div></div>';
+            document.body.append(overlay);speakBody(faceName(id));
+            faceTimer=setTimeout(()=>{
+                overlay.remove();if(run!==faceRun)return;
+                if(facePlaced.size===Object.keys(faceNames).length){
+                    if(window.saveScoreToFirebase)window.saveScoreToFirebase('Complete the Face',100);
+                    const done=document.createElement('div');done.className='face-overlay';
+                    done.innerHTML='<div class="face-popup">🌟 Good job! 🌟</div>';document.body.append(done);
+                    faceTimer=setTimeout(()=>{done.remove();if(run===faceRun)leaveCompleteFace()},2200);
+                }
+            },1800);
+        });
+
         // MATCH THE BODY PART - follows Match the Animal format
         let matchBodyPagesCount=5,currentMatchBodyPageIdx=0,matchBodyGameData=[],matchBodyScoreCount=0;
         let activeDragBody=null,isDraggingBody=false,dragBodyX=0,dragBodyY=0,completedBodyLines=[],matchedBodyPairsInPage=0,matchBodyEventsReady=false;
@@ -8891,6 +9021,7 @@
                 'find-animal-game-screen',
                 'choose-body-screen',
                 'label-body-screen',
+                'complete-face-screen',
                 'match-game-screen',
                 'find-letter-screen',
                 'quiz-screen',
