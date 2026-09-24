@@ -4600,6 +4600,7 @@
             position: relative;
             isolation: isolate;
             overflow: hidden;
+            min-height: 330px !important;
         }
         #sort-transport-screen .transport-sort-zone::before,
         #sort-food-screen .transport-sort-zone::before {
@@ -4627,12 +4628,16 @@
             z-index: 1;
         }
         @media (max-width: 768px) {
+            #sort-transport-screen .transport-sort-zone,
+            #sort-food-screen .transport-sort-zone { min-height: 310px !important; }
             #sort-transport-screen .transport-zone-title { font-size: 1.05rem !important; }
             #sort-food-screen .transport-zone-title { font-size: 1.2rem !important; }
             #sort-transport-screen .transport-sort-zone::before { font-size: clamp(3.5rem, 13vw, 6rem); }
             #sort-food-screen .transport-sort-zone::before { font-size: clamp(5rem, 19vw, 7rem); }
         }
         @media (max-width: 430px) {
+            #sort-transport-screen .transport-sort-zone,
+            #sort-food-screen .transport-sort-zone { min-height: 290px !important; }
             #sort-transport-screen .transport-zone-title { font-size: .91rem !important; }
             #sort-food-screen .transport-zone-title { font-size: 1rem !important; }
         }
