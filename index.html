@@ -2602,6 +2602,22 @@
         }
 
 
+
+/* Label the Body Part: full-body illustration and 16 answer boxes */
+#label-body-screen .label-body-board{max-width:760px;background:#fff1d8;padding:12px}
+#label-body-screen .label-stage{width:min(100%,600px);aspect-ratio:6/7.5;border:3px solid #e7b67e;background:#fffefa;overflow:hidden}
+#label-body-screen .label-person-svg{position:absolute;left:25%;top:0;width:50%;height:100%;pointer-events:none}
+#label-body-screen .label-guides{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#label-body-screen .label-guides line{stroke:#746071;stroke-width:1.3;stroke-dasharray:2 2}
+#label-body-screen .label-guides circle{fill:#7848bc}
+#label-body-screen .body-drop{width:25%;min-height:0;height:7.5%;font-size:clamp(.55rem,1.7vw,.9rem);padding:2px;border:2px dashed #8754b6;background:#fff;box-shadow:0 2px 5px #0002;line-height:1.05}
+#label-body-screen .body-drop.correct{background:#dff7df;border-color:#4caf50}
+#label-body-screen .body-label-bank{max-width:760px;min-height:80px}
+#label-body-screen .body-drag-label{touch-action:none;user-select:none;background:#fff7ed;border-color:#8754b6}
+#label-body-screen .body-drag-label.dragging{opacity:.6}
+#label-body-screen .body-drag-label.ghost{position:fixed;z-index:99999;pointer-events:none;opacity:.95;box-shadow:0 8px 22px #0004;margin:0;transform:translate(-50%,-50%)}
+@media(max-width:480px){#label-body-screen .label-body-board{padding:5px}#label-body-screen .body-drop{width:27%;font-size:clamp(.49rem,2.1vw,.68rem);border-width:1.5px}#label-body-screen .body-drag-label{padding:8px 10px}}
+
         /* ===== BODY PART MODULE ===== */
         /* Image buttons: same visual format as other topic menus (e.g. Colour) */
         .body-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:30px 0}
@@ -4679,21 +4695,6 @@
  .complete-animal-half { width:clamp(83px,25vw,110px); height:clamp(86px,13vh,112px); }
  .complete-animal-half .complete-animal-art { font-size:clamp(68px,19vw,88px); }
 }
-
-/* Complete the Face */
-.face-board{position:relative;width:min(76vw,330px);height:min(96vw,420px);max-height:420px;margin:12px auto;background:#fff7dd;border:5px solid #7449ac;border-radius:24px;touch-action:none}
-.face-head{position:absolute;left:14%;top:12%;width:72%;height:78%;border-radius:48% 48% 45% 45%;background:#f8c99d;border:4px solid #bd815e}
-.face-slot{position:absolute;border:2px dashed #9d73b9;border-radius:18px;background:#fff9;display:grid;place-items:center;color:#694190;font-size:11px;font-weight:900;text-align:center;touch-action:none}
-.face-slot.filled{border:0;background:transparent;color:transparent}
-.face-slot svg{width:100%;height:100%;overflow:visible}
-.face-bank{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;max-width:670px;margin:15px auto}
-.face-tile{width:94px;height:90px;border:3px solid #7550aa;border-radius:16px;background:#fff2c9;display:grid;justify-items:center;align-content:center;cursor:grab;touch-action:none;font-weight:900;color:#482e75}
-.face-tile svg{width:62px;height:53px}.face-tile.used{visibility:hidden}
-.face-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-50%);opacity:.9}
-.face-overlay{position:fixed;inset:0;z-index:100000;background:#211c45a8;display:grid;place-items:center}
-.face-popup{background:#fff8db;padding:23px 35px;border:5px solid #865ac0;border-radius:28px;text-align:center;color:#57328a;font:900 2rem 'Fredoka One',sans-serif;box-shadow:0 12px 40px #0005}
-.face-popup svg{display:block;width:140px;height:100px;margin:auto}
-
     </style>
 </head>
 <body class="login-mode">
@@ -5258,33 +5259,11 @@
                     <button class="body-menu-btn" onclick="playClickSound(); openMatchBodyCountScreen()" aria-label="Match the Body Part">
                         <img src="https://i.imgur.com/zFSPyNc.jpeg" alt="Match the Body Part">
                     </button>
-                    <button class="body-menu-btn" onclick="playClickSound(); startCompleteFace()" aria-label="Complete the Face"><img src="https://i.imgur.com/bbWrTRA.jpeg" alt="Complete the Face"></button>
-                    <button class="body-menu-btn body-locked" type="button" aria-label="Label the Body Part - New adventure coming" aria-disabled="true" disabled style="position:relative;cursor:not-allowed;overflow:hidden;">
-                        <img src="https://i.imgur.com/a2fnp6s.jpeg" alt="Label the Body Part" style="filter:brightness(.58);">
-                        <span aria-hidden="true" style="position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(18,63,122,.72);color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;line-height:1.25;text-align:center;text-shadow:0 2px 4px rgba(0,0,0,.35);pointer-events:none;">
-                            <span style="font-size:2rem;line-height:1;">🔒</span>
-                            <span>New adventure coming</span>
-                        </span>
+                    <button class="body-menu-btn" type="button" onclick="playClickSound(); startLabelBodyPart()" aria-label="Label the Body Part">
+                        <img src="https://i.imgur.com/a2fnp6s.jpeg" alt="Label the Body Part">
                     </button>
                 </div>
                 <button class="action-btn home-btn" id="body-menu-back" onclick="playClickSound(); navigateTo('home-screen')">Back to Home 🏠</button>
-            </div>
-
-
-            <div id="complete-face-screen" class="card">
-                <h2 style="color:#5E17EB;font-family:'Fredoka One',cursive">Complete the Face 🧒</h2>
-                <p id="face-instruction" style="font-weight:800">Drag each part onto the correct place on the face.</p>
-                <div class="face-board" id="face-board">
-                    <div class="face-head"></div>
-                    <div class="face-slot" data-face="hair" style="left:20%;top:4%;width:60%;height:22%"></div>
-                    <div class="face-slot" data-face="ear" style="left:2%;top:36%;width:96%;height:20%"></div>
-                    <div class="face-slot" data-face="eyebrow" style="left:26%;top:36%;width:48%;height:9%"></div>
-                    <div class="face-slot" data-face="eye" style="left:26%;top:46%;width:48%;height:10%"></div>
-                    <div class="face-slot" data-face="nose" style="left:42%;top:57%;width:16%;height:12%"></div>
-                    <div class="face-slot" data-face="mouth" style="left:32%;top:72%;width:36%;height:11%"></div>
-                </div>
-                <div class="face-bank" id="face-bank"></div>
-                <button class="action-btn home-btn" onclick="leaveCompleteFace()">Back ↩️</button>
             </div>
 
             <div id="learn-body-screen" class="card">
@@ -5340,11 +5319,28 @@
             <div id="label-body-screen" class="card">
                 <h2 id="label-body-title" style="color:#5E17EB;font-family:'Fredoka One',cursive;">Label the Body Part 🏷️</h2>
                 <p id="label-body-desc" style="font-weight:800;color:#333;margin:6px 0;">Drag each label into the correct box. You can also tap a label, then tap a box.</p>
-                <div class="body-progress">⭐ <span id="label-body-score">0</span> / 100</div>
-                <div class="label-body-board"><div class="label-stage" id="label-body-stage">
-                    <svg class="label-person-svg" viewBox="0 0 300 500" aria-label="Full body child illustration"><circle cx="150" cy="72" r="54" fill="#f6bd91"/><path d="M100 60 Q110 5 150 10 Q205 12 202 62 Q177 40 105 55" fill="#663b25"/><circle cx="130" cy="70" r="6" fill="#222"/><circle cx="170" cy="70" r="6" fill="#222"/><path d="M144 88 Q150 94 156 88" stroke="#c86d63" stroke-width="4" fill="none"/><path d="M130 105 Q150 120 170 105" stroke="#d54b54" stroke-width="4" fill="none"/><rect x="105" y="125" width="90" height="150" rx="40" fill="#f6bd91"/><path d="M108 145 L45 225" stroke="#f6bd91" stroke-width="28" stroke-linecap="round"/><path d="M192 145 L255 225" stroke="#f6bd91" stroke-width="28" stroke-linecap="round"/><circle cx="39" cy="232" r="17" fill="#f6bd91"/><circle cx="261" cy="232" r="17" fill="#f6bd91"/><rect x="105" y="250" width="90" height="65" rx="8" fill="#3478f6"/><path d="M125 305 L105 440" stroke="#f6bd91" stroke-width="34" stroke-linecap="round"/><path d="M175 305 L195 440" stroke="#f6bd91" stroke-width="34" stroke-linecap="round"/><ellipse cx="92" cy="456" rx="35" ry="14" fill="#f6bd91"/><ellipse cx="208" cy="456" rx="35" ry="14" fill="#f6bd91"/></svg>
-                    <div class="body-drop" data-part="head" style="left:2%;top:7%"></div><div class="body-drop" data-part="eye" style="right:2%;top:15%"></div><div class="body-drop" data-part="ear" style="left:2%;top:20%"></div><div class="body-drop" data-part="nose" style="right:2%;top:25%"></div><div class="body-drop" data-part="mouth" style="right:2%;top:34%"></div><div class="body-drop" data-part="arm" style="left:2%;top:43%"></div><div class="body-drop" data-part="hand" style="right:2%;top:48%"></div><div class="body-drop" data-part="leg" style="left:2%;top:70%"></div><div class="body-drop" data-part="knee" style="right:2%;top:72%"></div><div class="body-drop" data-part="foot" style="right:2%;top:88%"></div>
-                </div></div><div class="body-label-bank" id="body-label-bank"></div><button class="action-btn clear-btn" id="label-body-reset" onclick="playClickSound(); startLabelBodyPart()">Reset 🔄</button><button class="action-btn home-btn" onclick="playClickSound(); openBodyPartMenu()">Back ↩️</button>
+                <div class="body-progress">⭐ <span id="label-body-score">0</span> / 16</div>
+                <div class="label-body-board"><div class="label-stage" id="label-body-stage"><svg class="label-person-svg" viewBox="0 0 300 500" role="img" aria-label="Illustration of a child from hair to feet" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="150" cy="480" rx="83" ry="11" fill="#dde8f0"/>
+<path d="M120 269 L112 395 L106 451 M180 269 L188 395 L194 451" stroke="#e8a679" stroke-width="32" stroke-linecap="round" fill="none"/>
+<path d="M104 447 Q90 460 78 465 Q70 476 85 480 L123 480 Q130 475 121 459 Z M196 447 Q210 460 222 465 Q230 476 215 480 L177 480 Q170 475 179 459 Z" fill="#edac7d"/>
+<path d="M119 380 Q112 389 113 403 M181 380 Q188 389 187 403" stroke="#c98262" stroke-width="3" fill="none"/>
+<path d="M106 160 Q75 170 64 214 L48 263 M194 160 Q225 170 236 214 L252 263" stroke="#e9a878" stroke-width="25" stroke-linecap="round" fill="none"/>
+<path d="M64 214 L48 263 M236 214 L252 263" stroke="#c98262" stroke-width="2" fill="none"/>
+<path d="M48 255 L35 278 M48 255 L44 285 M48 255 L54 283 M252 255 L265 278 M252 255 L256 285 M252 255 L246 283" stroke="#e9a878" stroke-width="7" stroke-linecap="round"/>
+<path d="M130 129 L130 155 Q150 171 170 155 L170 129" fill="#edaf82"/>
+<path d="M103 165 Q112 151 129 151 Q150 171 171 151 Q189 153 198 165 L207 269 Q150 284 93 269 Z" fill="#ef83af" stroke="#d65f91" stroke-width="3"/>
+<path d="M95 268 Q150 281 205 268 L195 323 L153 323 L150 291 L147 323 L105 323 Z" fill="#255976"/>
+<ellipse cx="96" cy="87" rx="11" ry="19" fill="#e8a679"/><ellipse cx="204" cy="87" rx="11" ry="19" fill="#e8a679"/>
+<ellipse cx="150" cy="83" rx="55" ry="65" fill="#f3b487" stroke="#d99369" stroke-width="2"/>
+<path d="M94 80 Q77 15 139 13 Q191 -4 205 54 Q182 47 166 25 Q143 65 99 61 Z" fill="#78442d"/>
+<path d="M103 47 Q117 14 154 18 M174 17 Q194 35 197 54" fill="none" stroke="#9b5c38" stroke-width="8" stroke-linecap="round"/>
+<path d="M112 70 Q125 64 136 70 M164 70 Q176 64 188 70" stroke="#653a2f" stroke-width="4" fill="none" stroke-linecap="round"/>
+<ellipse cx="124" cy="83" rx="9" ry="6" fill="white"/><ellipse cx="176" cy="83" rx="9" ry="6" fill="white"/><circle cx="125" cy="83" r="4" fill="#243a4a"/><circle cx="175" cy="83" r="4" fill="#243a4a"/>
+<path d="M149 86 L144 105 Q150 110 157 105" fill="none" stroke="#bd765e" stroke-width="2"/>
+<circle cx="111" cy="103" r="8" fill="#f39d98" opacity=".6"/><circle cx="189" cy="103" r="8" fill="#f39d98" opacity=".6"/>
+<path d="M133 118 Q150 132 167 118 Q150 141 133 118" fill="#ac4a59" stroke="#9b4b4d" stroke-width="2"/>
+</svg><svg class="label-guides" viewBox="0 0 300 500" preserveAspectRatio="none" aria-hidden="true"><line x1="77" y1="40" x2="100.0" y2="36"/><circle cx="100.0" cy="36" r="3"/><line x1="77" y1="95" x2="123.5" y2="85"/><circle cx="123.5" cy="85" r="3"/><line x1="77" y1="150" x2="137.0" y2="70"/><circle cx="137.0" cy="70" r="3"/><line x1="77" y1="205" x2="130.0" y2="104"/><circle cx="130.0" cy="104" r="3"/><line x1="77" y1="260" x2="149.0" y2="134"/><circle cx="149.0" cy="134" r="3"/><line x1="77" y1="315" x2="142.5" y2="150"/><circle cx="142.5" cy="150" r="3"/><line x1="77" y1="370" x2="114.5" y2="209"/><circle cx="114.5" cy="209" r="3"/><line x1="77" y1="430" x2="105.5" y2="230"/><circle cx="105.5" cy="230" r="3"/><line x1="223" y1="40" x2="163.0" y2="83"/><circle cx="163.0" cy="83" r="3"/><line x1="223" y1="95" x2="150.5" y2="103"/><circle cx="150.5" cy="103" r="3"/><line x1="223" y1="150" x2="151.5" y2="121"/><circle cx="151.5" cy="121" r="3"/><line x1="223" y1="205" x2="153.5" y2="229"/><circle cx="153.5" cy="229" r="3"/><line x1="223" y1="260" x2="166.5" y2="335"/><circle cx="166.5" cy="335" r="3"/><line x1="223" y1="315" x2="168.0" y2="389"/><circle cx="168.0" cy="389" r="3"/><line x1="223" y1="370" x2="172.5" y2="426"/><circle cx="172.5" cy="426" r="3"/><line x1="223" y1="430" x2="175.5" y2="467"/><circle cx="175.5" cy="467" r="3"/></svg><div class="body-drop" data-part="hair" style="left:1%;top:4%" aria-label="hair answer box"></div><div class="body-drop" data-part="ear" style="left:1%;top:15%" aria-label="ear answer box"></div><div class="body-drop" data-part="eyebrow" style="left:1%;top:26%" aria-label="eyebrow answer box"></div><div class="body-drop" data-part="cheek" style="left:1%;top:37%" aria-label="cheek answer box"></div><div class="body-drop" data-part="chin" style="left:1%;top:48%" aria-label="chin answer box"></div><div class="body-drop" data-part="neck" style="left:1%;top:59%" aria-label="neck answer box"></div><div class="body-drop" data-part="arm" style="left:1%;top:70%" aria-label="arm answer box"></div><div class="body-drop" data-part="elbow" style="left:1%;top:82%" aria-label="elbow answer box"></div><div class="body-drop" data-part="eye" style="right:1%;top:4%" aria-label="eye answer box"></div><div class="body-drop" data-part="nose" style="right:1%;top:15%" aria-label="nose answer box"></div><div class="body-drop" data-part="mouth" style="right:1%;top:26%" aria-label="mouth answer box"></div><div class="body-drop" data-part="stomach" style="right:1%;top:37%" aria-label="stomach answer box"></div><div class="body-drop" data-part="thigh" style="right:1%;top:48%" aria-label="thigh answer box"></div><div class="body-drop" data-part="knee" style="right:1%;top:59%" aria-label="knee answer box"></div><div class="body-drop" data-part="calf" style="right:1%;top:70%" aria-label="calf answer box"></div><div class="body-drop" data-part="leg" style="right:1%;top:82%" aria-label="leg answer box"></div></div></div><div class="body-label-bank" id="body-label-bank"></div><button class="action-btn clear-btn" id="label-body-reset" onclick="playClickSound(); startLabelBodyPart()">Reset 🔄</button><button class="action-btn home-btn" onclick="playClickSound(); openBodyPartMenu()">Back ↩️</button>
             </div>
 
             <!-- ANIMAL MODULE MENU SCREEN -->
@@ -8733,62 +8729,6 @@
         function updateBodyLanguage(){const ms=currentGlobalLang==='ms',set=(id,en,bm)=>{const e=document.getElementById(id);if(e)e.innerText=ms?bm:en};set('body-menu-title','Body Part Module 🧒','Modul Anggota Badan 🧒');set('body-menu-desc','Choose a body part activity!','Pilih aktiviti anggota badan!');set('body-learn-menu-text','Learn the Body Part','Belajar Anggota Badan');set('body-choose-menu-text','Choose the Body Part','Pilih Anggota Badan');set('body-label-menu-text','Label the Body Part','Label Anggota Badan');set('match-body-count-title','Match the Body Part 🧩','Padankan Anggota Badan 🧩');set('match-body-count-desc','Select how many pages/sets you want to play:','Pilih berapa halaman/set yang mahu dimainkan:');set('match-body-count-back','Back ↩️','Back ↩️');set('match-body-header-title','Match Body Part','Padankan Anggota Badan');set('match-body-page-label','Page','Halaman');set('match-body-score-label','Score','Skor');set('match-body-instruction','Drag a line from the body part name to the correct picture!','Tarik garis dari nama anggota badan ke gambar yang betul!');set('match-body-back','Back ↩️','Back ↩️');set('body-menu-back','Back to Home 🏠','Back to Home 🏠');set('learn-body-title','Learn the Body Part 🧒','Belajar Anggota Badan 🧒');set('body-learn-listen','🔊 Listen','🔊 Dengar');set('choose-body-title','Choose the Body Part 🔎','Pilih Anggota Badan 🔎');set('choose-body-listen','🔊 Listen','🔊 Dengar');set('label-body-title','Label the Body Part 🏷️','Label Anggota Badan 🏷️');set('label-body-desc','Drag each label into the correct box. You can also tap a label, then tap a box.','Seret setiap label ke kotak yang betul. Boleh juga tekan label, kemudian tekan kotak.');set('label-body-reset','Reset 🔄','Mula Semula 🔄');if(document.getElementById('learn-body-screen')?.classList.contains('active'))renderLearnBodyPart();if(document.getElementById('choose-body-screen')?.classList.contains('active')&&chooseBodyOrder.length)renderChooseBody();if(document.getElementById('label-body-screen')?.classList.contains('active'))renderBodyLabelBank(true);if(document.getElementById('match-body-game-screen')?.classList.contains('active')&&matchBodyGameData.length)loadMatchBodyPage()}
         function openBodyPartMenu(){window.speechSynthesis?.cancel();updateBodyLanguage();showScreen('body-part-menu-screen')}
 
-
-        // Self-contained face matching activity. SVG pieces fit exactly in the target slots.
-        const faceNames={hair:['Rambut','Hair'],ear:['Telinga','Ears'],eyebrow:['Kening','Eyebrows'],eye:['Mata','Eyes'],nose:['Hidung','Nose'],mouth:['Mulut','Mouth']};
-        const faceShapes={
-            hair:'<path d="M5 58 Q3 4 50 12 Q96 0 95 58 Q75 32 65 43 Q48 23 36 43 Q18 30 5 58Z" fill="#533125" stroke="#3a201b" stroke-width="3"/>',
-            ear:'<ellipse cx="9" cy="50" rx="8" ry="24" fill="#f2ad81" stroke="#a66c50" stroke-width="3"/><ellipse cx="91" cy="50" rx="8" ry="24" fill="#f2ad81" stroke="#a66c50" stroke-width="3"/>',
-            eyebrow:'<path d="M9 45 Q23 29 41 42 M59 42 Q76 29 91 45" stroke="#543025" stroke-width="9" fill="none" stroke-linecap="round"/>',
-            eye:'<ellipse cx="27" cy="50" rx="17" ry="12" fill="white" stroke="#5b3d3c" stroke-width="3"/><ellipse cx="73" cy="50" rx="17" ry="12" fill="white" stroke="#5b3d3c" stroke-width="3"/><circle cx="27" cy="50" r="7" fill="#292336"/><circle cx="73" cy="50" r="7" fill="#292336"/>',
-            nose:'<path d="M44 24 Q43 59 38 68 Q50 79 64 67" stroke="#a96751" stroke-width="6" fill="none" stroke-linecap="round"/>',
-            mouth:'<path d="M19 43 Q50 77 81 43 Q49 54 19 43Z" fill="#cf5365" stroke="#a23c52" stroke-width="3"/>'
-        };
-        let facePlaced=new Set(),faceDrag=null,faceTimer=null,faceRun=0;
-        function faceSvg(id){return '<svg viewBox="0 0 100 100" aria-hidden="true">'+faceShapes[id]+'</svg>'}
-        function faceName(id){return faceNames[id][currentGlobalLang==='ms'?0:1]}
-        function startCompleteFace(){
-            faceRun++;clearTimeout(faceTimer);document.querySelectorAll('.face-overlay,.face-ghost').forEach(e=>e.remove());
-            facePlaced=new Set();faceDrag=null;
-            const bank=document.getElementById('face-bank');bank.innerHTML='';
-            document.getElementById('face-instruction').textContent=currentGlobalLang==='ms'?'Seret setiap bahagian ke tempat yang betul pada muka.':'Drag each part onto the correct place on the face.';
-            document.querySelectorAll('#face-board .face-slot').forEach(slot=>{slot.classList.remove('filled');slot.textContent='?';});
-            Object.keys(faceNames).sort(()=>Math.random()-.5).forEach(id=>{
-                const tile=document.createElement('div');tile.className='face-tile';tile.dataset.face=id;
-                tile.innerHTML=faceSvg(id)+'<span>'+faceName(id)+'</span>';tile.addEventListener('pointerdown',facePointerDown);bank.append(tile);
-            });
-            showScreen('complete-face-screen');
-        }
-        function leaveCompleteFace(){faceRun++;clearTimeout(faceTimer);faceDrag?.ghost.remove();faceDrag=null;document.querySelectorAll('.face-overlay').forEach(e=>e.remove());openBodyPartMenu()}
-        function facePointerDown(e){
-            if(faceDrag||e.currentTarget.classList.contains('used'))return;
-            e.preventDefault();const source=e.currentTarget,ghost=source.cloneNode(true);
-            ghost.classList.add('face-ghost');document.body.append(ghost);
-            faceDrag={source,ghost,id:e.pointerId};ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';
-        }
-        document.addEventListener('pointermove',e=>{if(faceDrag&&e.pointerId===faceDrag.id){faceDrag.ghost.style.left=e.clientX+'px';faceDrag.ghost.style.top=e.clientY+'px'}});
-        document.addEventListener('pointercancel',e=>{if(faceDrag?.id===e.pointerId){faceDrag.ghost.remove();faceDrag=null}});
-        document.addEventListener('pointerup',e=>{
-            if(!faceDrag||e.pointerId!==faceDrag.id)return;
-            const drag=faceDrag;drag.ghost.remove();faceDrag=null;
-            const slot=document.elementFromPoint(e.clientX,e.clientY)?.closest('#face-board .face-slot');
-            if(!slot||slot.dataset.face!==drag.source.dataset.face||slot.classList.contains('filled')){if(typeof playWrongSound==='function')playWrongSound();return}
-            const id=slot.dataset.face;slot.classList.add('filled');slot.innerHTML=faceSvg(id);drag.source.classList.add('used');facePlaced.add(id);
-            if(typeof playCorrectSound==='function')playCorrectSound();
-            const run=faceRun,overlay=document.createElement('div');overlay.className='face-overlay';
-            overlay.innerHTML='<div class="face-popup">'+faceSvg(id)+'<div>'+faceName(id)+'</div></div>';
-            document.body.append(overlay);speakBody(faceName(id));
-            faceTimer=setTimeout(()=>{
-                overlay.remove();if(run!==faceRun)return;
-                if(facePlaced.size===Object.keys(faceNames).length){
-                    if(window.saveScoreToFirebase)window.saveScoreToFirebase('Complete the Face',100);
-                    const done=document.createElement('div');done.className='face-overlay';
-                    done.innerHTML='<div class="face-popup">🌟 Good job! 🌟</div>';document.body.append(done);
-                    faceTimer=setTimeout(()=>{done.remove();if(run===faceRun)leaveCompleteFace()},2200);
-                }
-            },1800);
-        });
-
         // MATCH THE BODY PART - follows Match the Animal format
         let matchBodyPagesCount=5,currentMatchBodyPageIdx=0,matchBodyGameData=[],matchBodyScoreCount=0;
         let activeDragBody=null,isDraggingBody=false,dragBodyX=0,dragBodyY=0,completedBodyLines=[],matchedBodyPairsInPage=0,matchBodyEventsReady=false;
@@ -8912,11 +8852,14 @@
                 finishOrAdvanceChooseBody(3000);
             }
         }
-        const labelBodyIds=['head','eye','ear','nose','mouth','arm','hand','leg','knee','foot'];let selectedBodyLabel=null,labelBodyDone=new Set();
-        function startLabelBodyPart(){labelBodyDone=new Set();selectedBodyLabel=null;document.getElementById('label-body-score').innerText='0';document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>{z.innerHTML='';z.classList.remove('correct','over')});showScreen('label-body-screen');updateBodyLanguage();renderBodyLabelBank(false);setupBodyDropZones()}
-        function renderBodyLabelBank(preserve=false){const bank=document.getElementById('body-label-bank');if(!bank)return;bank.innerHTML='';bodyShuffle(labelBodyIds).forEach(id=>{if(preserve&&labelBodyDone.has(id))return;const p=bodyParts.find(x=>x.id===id),d=document.createElement('div');d.className='body-drag-label';d.draggable=true;d.dataset.part=id;d.innerText=bodyText(p);d.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',id));d.onclick=()=>{document.querySelectorAll('.body-drag-label').forEach(x=>x.classList.remove('selected'));selectedBodyLabel=id;d.classList.add('selected')};bank.appendChild(d)})}
+        const labelBodyIds=['hair','ear','eye','eyebrow','nose','cheek','chin','mouth','neck','arm','elbow','stomach','knee','leg','calf','thigh'];
+        const labelExtraNames={cheek:{en:'Cheek',ms:'Pipi'},chin:{en:'Chin',ms:'Dagu'},elbow:{en:'Elbow',ms:'Siku'},calf:{en:'Calf',ms:'Betis'},thigh:{en:'Thigh',ms:'Peha'}};
+        let selectedBodyLabel=null,labelBodyDone=new Set();
+        function labelBodyName(id){const p=bodyParts.find(x=>x.id===id)||labelExtraNames[id];return p?bodyText(p):id}
+        function startLabelBodyPart(){labelBodyDone=new Set();selectedBodyLabel=null;document.getElementById('label-body-score').innerText='0';document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>{z.textContent='';z.classList.remove('correct','over')});showScreen('label-body-screen');updateBodyLanguage();renderBodyLabelBank(false);setupBodyDropZones()}
+        function renderBodyLabelBank(preserve=false){const bank=document.getElementById('body-label-bank');if(!bank)return;bank.innerHTML='';bodyShuffle(labelBodyIds).forEach(id=>{if(preserve&&labelBodyDone.has(id))return;const d=document.createElement('div');d.className='body-drag-label';d.draggable=true;d.dataset.part=id;d.textContent=labelBodyName(id);d.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',id));d.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;const x=e.clientX,y=e.clientY;let ghost=null,moved=false;const move=ev=>{if(!moved&&Math.hypot(ev.clientX-x,ev.clientY-y)<9)return;if(!moved){moved=true;ghost=d.cloneNode(true);ghost.classList.add('ghost');document.body.appendChild(ghost);d.classList.add('dragging')}ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>z.classList.remove('over'));const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#label-body-screen .body-drop');if(target)target.classList.add('over')};const finish=ev=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',finish);window.removeEventListener('pointercancel',finish);if(ghost)ghost.remove();d.classList.remove('dragging');document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>z.classList.remove('over'));if(moved){const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#label-body-screen .body-drop');if(target)placeBodyLabel(id,target);e.preventDefault()}};window.addEventListener('pointermove',move);window.addEventListener('pointerup',finish,{once:true});window.addEventListener('pointercancel',finish,{once:true})});d.onclick=()=>{document.querySelectorAll('#label-body-screen .body-drag-label').forEach(x=>x.classList.remove('selected'));selectedBodyLabel=id;d.classList.add('selected')};bank.appendChild(d)});document.querySelectorAll('#label-body-screen .body-drop.correct').forEach(z=>z.textContent=labelBodyName(z.dataset.part))}
         function setupBodyDropZones(){document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>{z.ondragover=e=>{e.preventDefault();z.classList.add('over')};z.ondragleave=()=>z.classList.remove('over');z.ondrop=e=>{e.preventDefault();z.classList.remove('over');placeBodyLabel(e.dataTransfer.getData('text/plain'),z)};z.onclick=()=>{if(selectedBodyLabel)placeBodyLabel(selectedBodyLabel,z)}})}
-        function placeBodyLabel(id,zone){if(!id||labelBodyDone.has(id))return;if(zone.dataset.part===id){playCorrectSound();labelBodyDone.add(id);const p=bodyParts.find(x=>x.id===id);zone.innerText=bodyText(p);zone.classList.add('correct');const el=document.querySelector(`#body-label-bank .body-drag-label[data-part="${id}"]`);if(el)el.remove();selectedBodyLabel=null;document.getElementById('label-body-score').innerText=labelBodyDone.size*10;if(labelBodyDone.size===labelBodyIds.length){if(window.saveScoreToFirebase)window.saveScoreToFirebase(currentGlobalLang==='ms'?'Label Anggota Badan':'Label the Body Part',100);setTimeout(()=>alert(currentGlobalLang==='ms'?'Tahniah! Semua label betul! 🎉':'Excellent! All labels are correct! 🎉'),250)}}else{playWrongSound();zone.classList.add('over');setTimeout(()=>zone.classList.remove('over'),450)}}
+        function placeBodyLabel(id,zone){if(!id||labelBodyDone.has(id)||zone.classList.contains('correct'))return;if(zone.dataset.part===id){playCorrectSound();labelBodyDone.add(id);zone.textContent=labelBodyName(id);zone.classList.add('correct');const el=document.querySelector(`#body-label-bank .body-drag-label[data-part="${id}"]`);if(el)el.remove();selectedBodyLabel=null;document.getElementById('label-body-score').innerText=labelBodyDone.size;if(labelBodyDone.size===labelBodyIds.length){if(window.saveScoreToFirebase)window.saveScoreToFirebase(currentGlobalLang==='ms'?'Label Anggota Badan':'Label the Body Part',100);setTimeout(()=>{alert(currentGlobalLang==='ms'?'Tahniah! Semua label betul! 🎉':'Excellent! All labels are correct! 🎉');openBodyPartMenu()},350)}}else{playWrongSound();zone.classList.add('over');setTimeout(()=>zone.classList.remove('over'),450)}}
 
         const lessonData = {
             numeric: {
@@ -9021,7 +8964,6 @@
                 'find-animal-game-screen',
                 'choose-body-screen',
                 'label-body-screen',
-                'complete-face-screen',
                 'match-game-screen',
                 'find-letter-screen',
                 'quiz-screen',
