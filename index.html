@@ -6743,41 +6743,72 @@
     </script>
 
     <script>
-        // Create the context on demand: mobile browsers can suspend or interrupt it
-        // after the app has been left open in the background.
+        // Mobile browsers may suspend or interrupt Web Audio after a long pause.
         let audioCtx = null;
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         function replaceSoundContext() {
             if (!AudioContextClass) return null;
             const previous = audioCtx;
-            audioCtx = new AudioContextClass();
-            const current = audioCtx;
-            current.addEventListener('statechange', () => {
-                if (current === audioCtx && !document.hidden && current.state === 'interrupted') wakeAppSound();
-            });
-            if (previous && previous.state !== 'closed') previous.close().catch(() => {});
-            return current;
+            try { audioCtx = new AudioContextClass(); }
+            catch (error) { audioCtx = null; return null; }
+            if (previous && previous !== audioCtx && previous.state !== 'closed') {
+                try { previous.close().catch(() => {}); } catch (error) {}
+            }
+            return audioCtx;
         }
         function getSoundContext() {
             if (!AudioContextClass) return null;
-            if (!audioCtx || audioCtx.state === 'closed') replaceSoundContext();
+            if (!audioCtx || audioCtx.state === 'closed') return replaceSoundContext();
             return audioCtx;
         }
-        async function playAppSound(draw) {
-            try {
-                let ctx = getSoundContext();
-                if (!ctx) return;
-                // Resuming after a long background pause may take more than 800 ms.
-                // Keep the same context until the browser actually closes it.
-                if (ctx.state !== 'running') await ctx.resume();
-                if (ctx.state === 'running') draw(ctx);
-            } catch (error) {
-                console.warn('Sound could not start:', error);
+        function resumeSoundContext(ctx) {
+            if (!ctx || ctx.state === 'running') return;
+            // Resume must start during the tap itself for mobile autoplay rules.
+            try { ctx.resume().catch(() => {}); } catch (error) {}
+        }
+        function playAppSound(draw) {
+            let ctx = getSoundContext();
+            if (!ctx) return;
+            if (ctx.state === 'interrupted') ctx = replaceSoundContext();
+            if (!ctx) return;
+            if (ctx.state === 'running') {
+                try { draw(ctx); } catch (error) { console.warn('Sound could not play:', error); }
+                return;
             }
+            // One tap can recover an interrupted context; a stalled resume cannot
+            // block later taps indefinitely. Keep the original sound for this tap.
+            let completed = false;
+            const attempt = ctx;
+            const finish = () => {
+                if (completed || attempt !== audioCtx || attempt.state !== 'running') return;
+                completed = true;
+                try { draw(attempt); } catch (error) { console.warn('Sound could not play:', error); }
+            };
+            try { attempt.resume().then(finish, () => {}); } catch (error) {}
+            const started = Date.now();
+            const check = () => {
+                if (completed || attempt !== audioCtx) return;
+                if (attempt.state === 'running') { finish(); return; }
+                if (Date.now() - started < 700) { setTimeout(check, 100); return; }
+                ctx = replaceSoundContext();
+                if (!ctx) return;
+                // A new context is created while this tap is still being handled.
+                try { ctx.resume().then(() => {
+                    if (ctx === audioCtx && ctx.state === 'running' && !completed) {
+                        completed = true;
+                        draw(ctx);
+                    }
+                }, () => {}); } catch (error) {}
+            };
+            setTimeout(check, 100);
         }
         function wakeAppSound() {
             const ctx = getSoundContext();
-            if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
+            if (ctx && ctx.state === 'interrupted') {
+                resumeSoundContext(replaceSoundContext());
+            } else {
+                resumeSoundContext(ctx);
+            }
         }
         document.addEventListener('pointerdown', wakeAppSound, {passive: true});
         document.addEventListener('touchstart', wakeAppSound, {passive: true});
@@ -6785,7 +6816,7 @@
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && audioCtx) wakeAppSound();
         });
-        window.addEventListener('pageshow', wakeAppSound);
+        window.addEventListener('pageshow', () => { if (audioCtx) wakeAppSound(); });
 
         function playCompletionApplause() {
             return playAppSound((ctx) => {
