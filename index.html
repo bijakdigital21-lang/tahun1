@@ -6509,6 +6509,33 @@
         });
         window.addEventListener('pageshow', wakeAppSound);
 
+        function playCompletionApplause() {
+            return playAppSound((ctx) => {
+                const duration=0.16, sampleRate=ctx.sampleRate;
+                const buffer=ctx.createBuffer(1,Math.ceil(sampleRate*duration),sampleRate);
+                const samples=buffer.getChannelData(0);
+                for(let i=0;i<samples.length;i++)samples[i]=(Math.random()*2-1);
+                const now=ctx.currentTime;
+                for(const offset of [0,.11,.22,.34,.47,.60,.75,.91]){
+                    const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();
+                    source.buffer=buffer;filter.type='bandpass';filter.frequency.value=1100+(offset*420);
+                    gain.gain.setValueAtTime(.001,now+offset);
+                    gain.gain.exponentialRampToValueAtTime(.24,now+offset+.012);
+                    gain.gain.exponentialRampToValueAtTime(.001,now+offset+duration);
+                    source.connect(filter);filter.connect(gain);gain.connect(ctx.destination);
+                    source.start(now+offset);source.stop(now+offset+duration);
+                }
+            });
+        }
+        function announceAllDone() {
+            playCompletionApplause();
+            if(!('speechSynthesis' in window))return;
+            speechSynthesis.cancel();
+            const voice=new SpeechSynthesisUtterance('All done');
+            voice.lang='en-US';voice.rate=.8;voice.pitch=1.05;
+            speechSynthesis.speak(voice);
+        }
+
         function playClickSound() {
             return playAppSound((audioCtx) => {
             const osc = audioCtx.createOscillator();
@@ -8242,8 +8269,8 @@
         // Column arithmetic has its own session state; other Number activities are untouched.
         let columnMode='addition', columnQuestions=[], columnIndex=0, columnScore=0, columnLocked=false, columnTimer=null;
         const columnCopy={
-            en:{addition:'Addition ➕',subtraction:'Subtraction ➖',choose:'Choose the number of questions',back:'Back ↩️',question:'Question',instruction:'Start with the ones on the right, then answer the tens on the left.',carry:'Carry',ones:'Enter the ones result first.',tens:'Now enter the tens digit.',check:'Check ✅',fill:'Complete both answer boxes first.',well:'Well done! 🎉',wrong:'The correct answer is',correct:'Make a correction 🔄',next:'Next ➡',done:'All done! 🎉',score:'Score',home:'Back to Home 🏠'},
-            ms:{addition:'Tambah ➕',subtraction:'Tolak ➖',choose:'Pilih bilangan soalan',back:'Kembali ↩️',question:'Soalan',instruction:'Jawab nilai sa di sebelah kanan dahulu, kemudian nilai puluh di sebelah kiri.',carry:'Bawa',ones:'Isi hasil nilai sa dahulu.',tens:'Sekarang isi digit nilai puluh.',check:'Semak ✅',fill:'Lengkapkan kedua-dua kotak jawapan dahulu.',well:'Syabas! 🎉',wrong:'Jawapan yang betul ialah',correct:'Buat pembetulan 🔄',next:'Seterusnya ➡',done:'Selesai! 🎉',score:'Skor',home:'Kembali ke Home 🏠'}
+            en:{addition:'Addition ➕',subtraction:'Subtraction ➖',choose:'Choose the number of questions',back:'Back ↩️',question:'Question',instruction:'Start with the ones on the right, then answer the tens on the left.',carry:'Carry',ones:'Enter the ones result first.',tens:'Now enter the tens digit.',check:'Check ✅',fill:'Complete both answer boxes first.',well:'Correct! ✅',wrong:'The correct answer is',correct:'Make a correction 🔄',next:'Next ➡',done:'All done! 🎉',score:'Score',home:'Back to Home 🏠',backNumber:'Back to Number 🔢'},
+            ms:{addition:'Tambah ➕',subtraction:'Tolak ➖',choose:'Pilih bilangan soalan',back:'Kembali ↩️',question:'Soalan',instruction:'Jawab nilai sa di sebelah kanan dahulu, kemudian nilai puluh di sebelah kiri.',carry:'Bawa',ones:'Isi hasil nilai sa dahulu.',tens:'Sekarang isi digit nilai puluh.',check:'Semak ✅',fill:'Lengkapkan kedua-dua kotak jawapan dahulu.',well:'Correct! ✅',wrong:'Jawapan yang betul ialah',correct:'Buat pembetulan 🔄',next:'Seterusnya ➡',done:'Selesai! 🎉',score:'Skor',home:'Kembali ke Home 🏠',backNumber:'Kembali ke Number 🔢'}
         };
         const columnText=()=>columnCopy[getNum123Lang()];
         function updateColumnLanguage(){
@@ -8332,17 +8359,30 @@
             actions.forEach(([label,action])=>{const btn=document.createElement('button');btn.className='action-btn';btn.textContent=label;btn.onclick=action;box.appendChild(btn)});
             document.getElementById('column-modal').hidden=false;
             // Read the feedback aloud in the currently selected language.
-            const spoken=answer ? `${title.replace(/[❌🎉]/g,'')}. ${answer}` : title.replace(/[🎉]/g,'');
-            speakText123(spoken,.8);
+            if(title===columnText().done) announceAllDone();
+            else {
+                const spoken=answer ? `${title.replace(/[❌🎉]/g,'')}. ${answer}` : title.replace(/[🎉✅]/g,'');
+                speakText123(spoken,.8);
+            }
         }
         function retryColumnMath(){renderColumnMath();}
+        function returnFromColumnToNumber(){
+            clearTimeout(columnTimer);
+            document.getElementById('column-modal').hidden=true;
+            const universal=document.getElementById('universal-completion-pop');
+            if(universal){universal.classList.remove('show');universal.style.pointerEvents='none';universal.setAttribute('aria-hidden','true');}
+            if(window.speechSynthesis)window.speechSynthesis.cancel();
+            // Go straight to Number activities after the final question.
+            showScreen('num123-menu-screen');
+            updateNumberLanguage();
+        }
         function nextColumnMath(){
             if(window.speechSynthesis)window.speechSynthesis.cancel();
             clearTimeout(columnTimer);document.getElementById('column-modal').hidden=true;
             if(++columnIndex<columnQuestions.length){renderColumnMath();return;}
             const t=columnText(),percent=Math.round(columnScore/columnQuestions.length*100);
             if(window.saveScoreToFirebase)window.saveScoreToFirebase(columnMode==='addition'?'Addition':'Subtraction',percent);
-            showColumnModal(t.done,`${t.score}: ${columnScore}/${columnQuestions.length}`,[[t.back,()=>{document.getElementById('column-modal').hidden=true;if(window.speechSynthesis)window.speechSynthesis.cancel();open123Menu()}]]);
+            showColumnModal(t.done,`${t.score}: ${columnScore}/${columnQuestions.length}`,[[t.backNumber,returnFromColumnToNumber]]);
         }
         const numberWords123 = {
             en: ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen','Twenty'],
@@ -8815,7 +8855,7 @@
             if(matched===6&&!paintFinishing){
                 paintFinishing=true;paintScore=Math.round((paintSetIndex+1)*100/5);playCorrectSound();
                 document.getElementById('match-paint-feedback').textContent=currentGlobalLang==='ms'?'Bagus! Semua warna betul! 🌟':'Great! All colours match! 🌟';
-                const pop=document.createElement('div');pop.className='paint-success-pop';pop.setAttribute('role','status');pop.innerHTML='<span>Good Job! 🌟</span>';document.body.appendChild(pop);
+                const pop=document.createElement('div');pop.className='paint-success-pop';pop.setAttribute('role','status');pop.innerHTML='<span>Correct! 🌟</span>';document.body.appendChild(pop);speakText123('Correct',.8);
                 paintAdvanceTimer=setTimeout(()=>{pop.remove();if(!document.getElementById('match-paint-screen').classList.contains('active'))return;paintSetIndex++;if(paintSetIndex<5)renderPaintSet();else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Match the Paint',100);alert(currentGlobalLang==='ms'?'Tahniah! Semua cat berjaya disusun! 🎉':'Great job! All paint tubes are in order! 🎉');openColourMenu()}},1000);
             }
         }
@@ -9592,11 +9632,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 feedback.style.color = '#5E17EB';
                 feedback.innerText = `🎉 Finished! Score: ${spellScore} / ${spellSessionWords.length}`;
                 document.getElementById('spell-next-btn').style.display = 'none';
-                document.getElementById('spell-learning-word').innerText = 'WELL DONE!';
+                document.getElementById('spell-learning-word').innerText = 'ALL DONE!';
                 document.getElementById('spell-instruction').innerText = 'You completed Spell it Right!';
                 document.getElementById('spell-letter-bank').innerHTML = '';
                 document.getElementById('spell-answer-slots').innerHTML = '';
-                speakWholeWord('Well done');
+                alert('Completed Spell it Right! 🎉');
             }
         }
 
@@ -10151,6 +10191,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="action-btn home-btn" onclick="closeSukuCompletion()" style="font-size:1rem;">Close ✖️</button>`;
             pop.style.pointerEvents='auto';
             pop.classList.add('show');
+            announceAllDone();
         }
         function closeSukuCompletion(){
             const pop=document.getElementById('suku-pop');
@@ -10276,6 +10317,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const pop=document.getElementById('suku-pop'),inner=document.getElementById('suku-pop-inner'),ms=currentGlobalLang==='ms';
             inner.innerHTML=`<div style="font-size:clamp(2rem,7vw,3.6rem);margin-bottom:12px;">${ms?'🎉 DAH SELESAI! 🎉':'🎉 ALL DONE! 🎉'}</div><div style="font-family:'Quicksand',sans-serif;font-size:1.05rem;color:#2C3E50;margin-bottom:18px;font-weight:800;">${ms?'Skor':'Score'}: ${suku2Score} / 20</div><button class="action-btn home-btn" onclick="closeSuku2Completion()" style="font-size:1rem;">Close ✖️</button>`;
             pop.style.pointerEvents='auto';pop.classList.add('show');
+            announceAllDone();
         }
         function closeSuku2Completion(){const pop=document.getElementById('suku-pop');pop.classList.remove('show');pop.style.pointerEvents='none';openBijakSukuKataMenu()}
 
@@ -11563,7 +11605,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'bijak-suku-kata-screen':'abc','complete-abc-screen':'abc','spell-it-right-screen':'abc','abc-tracing-screen':'abc',
     'match-count-screen':'abc','match-game-screen':'abc','find-letter-screen':'abc','abc-flashcard-screen':'abc',
     'lesson-screen':'abc','count-selection-screen':'abc','quiz-screen':'abc','result-screen':'abc',
-    'num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','taking-away-count-screen':'number','taking-away-screen':'number','find123-screen':'number',
+    'column-math-screen':'number','column-count-screen':'number','num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','taking-away-count-screen':'number','taking-away-screen':'number','find123-screen':'number',
     'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','match-paint-screen':'colour','find-colour-screen':'colour',
     'learn-body-screen':'body','choose-body-screen':'body','match-body-count-screen':'body','match-body-game-screen':'body','label-body-screen':'body',
     'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','complete-animal-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
@@ -11580,7 +11622,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function inferModule(){ return screenModule[activeScreenId()] || completionModule || 'abc'; }
   function isCompletionMessage(msg){
     const t=String(msg||'').toLowerCase();
-    return /completed|complete all|completing|finished|finish!|quiz finished|quiz tamat|tamat!|tamat belajar|tahniah|syabas|selesai|lengkapkan|melengkapkan|habiskan|menghabiskan|hebat!|amazing!|great job|well done/.test(t);
+    return /completed|complete all|completing|finished|finish!|quiz finished|quiz tamat|tamat!|tamat belajar|tahniah|syabas|selesai|lengkapkan|melengkapkan|habiskan|menghabiskan|hebat!|amazing!|great job|well done|excellent! all labels/.test(t);
   }
   function extractDetail(msg){
     const t=String(msg||'');
@@ -11591,10 +11633,11 @@ document.addEventListener('DOMContentLoaded', () => {
     completionModule=moduleKey || inferModule(); completionOpen=true;
     try{ window.speechSynthesis?.cancel(); }catch(e){}
     const pop=document.getElementById('universal-completion-pop');
-    document.getElementById('universal-completion-title').textContent = completionModule==='jobs' ? (currentGlobalLang==='ms'?'🎉 SYABAS! 🎉':'🎉 WELL DONE! 🎉') : (currentGlobalLang==='ms'?'🎉 DAH SELESAI! 🎉':'🎉 ALL DONE! 🎉');
+    document.getElementById('universal-completion-title').textContent = '🎉 ALL DONE! 🎉';
     const d=document.getElementById('universal-completion-detail'); d.textContent=detail||''; d.style.display=detail?'block':'none';
     document.getElementById('universal-completion-close').textContent=completionModule==='jobs' && currentGlobalLang==='ms'?'Tutup ✖️':'Close ✖️';
     pop.style.pointerEvents='auto'; pop.classList.add('show'); pop.setAttribute('aria-hidden','false');
+    announceAllDone();
   }
   function closeCompletion(){
     const pop=document.getElementById('universal-completion-pop'); pop.classList.remove('show'); pop.style.pointerEvents='none'; pop.setAttribute('aria-hidden','true');
@@ -11631,7 +11674,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const inner=document.getElementById('suku-pop-inner');
       if(inner){
         const title=inner.querySelector('div');
-        if(title) title.textContent=currentGlobalLang==='ms'?'🎉 DAH SELESAI! 🎉':'🎉 ALL DONE! 🎉';
+        if(title) title.textContent='🎉 ALL DONE! 🎉';
         const close=inner.querySelector('button'); if(close) close.textContent='Close ✖️';
       }
     };
