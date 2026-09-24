@@ -4682,14 +4682,15 @@
 
         .jobs-heading {color:#FFDE59;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #123F7A}
         #jobs-quiz-status,#jobs-progress {font-weight:800;color:#222}
-        #jobs-learn-screen .flashcard-img-container {width:min(100%,340px);height:auto;aspect-ratio:1/1;flex:none}
-        #jobs-learn-screen .flashcard-img-container img {object-fit:contain;display:block}
-        .container:has(#jobs-quiz-screen.active.jobs-choose-mode) {max-width:1250px}
-        #jobs-quiz-screen.jobs-choose-mode #jobs-quiz-grid {grid-template-columns:1fr;width:100%}
-        .jobs-choose-card {display:grid;grid-template-columns:minmax(100px,1fr) repeat(3,minmax(0,1.25fr));align-items:center;gap:8px}
+        #jobs-learn-screen .flashcard-img-container {width:fit-content;max-width:100%;height:auto;aspect-ratio:auto;flex:none;line-height:0;margin:15px auto}
+        #jobs-learn-screen .flashcard-img-container img {width:auto;height:auto;max-width:min(100%,420px);max-height:55vh;object-fit:contain;display:block}
+        .container:has(#jobs-quiz-screen.active.jobs-choose-mode) {max-width:1450px;width:100%}
+        #jobs-quiz-screen.jobs-choose-mode #jobs-quiz-grid {grid-template-columns:minmax(0,1fr);width:100%}
+        #jobs-quiz-screen.jobs-choose-mode {width:100%}
+        .jobs-choose-card {display:grid;grid-template-columns:minmax(110px,.7fr) repeat(3,minmax(0,1fr));align-items:center;gap:12px;padding:14px;width:100%}
         .jobs-choose-card .jobs-prompt {font-size:clamp(15px,2vw,23px);font-weight:900;color:#194580;overflow-wrap:anywhere}
         .jobs-pick {border:3px solid #5e17eb;border-radius:16px;background:#fff7d6;padding:5px;cursor:pointer;min-width:0}
-        .jobs-pick img {width:100%;height:clamp(120px,16vw,210px);object-fit:contain;display:block}
+        .jobs-pick img {width:100%;height:clamp(170px,22vw,290px);object-fit:contain;display:block}
         .jobs-pick.wrong {border-color:#e53935;background:#ffcccc}
         .jobs-pick.correct {border-color:#28a745;background:#d6ffd7}
         .jobs-who-card:nth-child(4n+1){background:#fff0cf}
@@ -4702,7 +4703,7 @@
         .jobs-pop-inner {background:#fff8de;border:5px solid #ffce55;border-radius:25px;padding:20px;display:grid;text-align:center;gap:12px;width:min(340px,90vw);box-shadow:0 15px 40px #2228}
         .jobs-pop-inner img {width:100%;height:220px;object-fit:contain}
         .jobs-pop-inner strong {font-size:clamp(22px,5vw,32px);color:#244783}
-        @media(max-width:650px){.jobs-choose-card{grid-template-columns:repeat(3,minmax(0,1fr))}.jobs-choose-card .jobs-prompt{grid-column:1/-1}.jobs-pick img{height:clamp(100px,26vw,155px)}}
+        @media(max-width:650px){.jobs-choose-card{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:8px}.jobs-choose-card .jobs-prompt{grid-column:1/-1}.jobs-pick{padding:2px}.jobs-pick img{height:clamp(125px,37vw,210px)}}
 
     </style>
 </head>
@@ -4862,7 +4863,6 @@
                 <h2 class="jobs-heading" id="jobs-learn-title">Jobs</h2>
                 <p id="jobs-progress"></p>
                 <div class="flashcard-box">
-                    <div class="flashcard-letter" id="jobs-letter"></div>
                     <div class="flashcard-img-container"><img id="jobs-image" src="" alt="Job"></div>
                     <div class="flashcard-text" id="jobs-caption"></div>
                     <button class="sound-btn" onclick="speakCurrentJob()">🔊 Listen / Dengar</button>
@@ -11192,7 +11192,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const j=jobsData[jobsLearnIndex];
             document.getElementById('jobs-learn-title').textContent=currentGlobalLang==='ms'?'Kenali Pekerjaan':'Jobs';
             document.getElementById('jobs-progress').textContent=(jobsLearnIndex+1)+' / '+jobsData.length;
-            document.getElementById('jobs-letter').textContent=jobsName(j).charAt(0);
             document.getElementById('jobs-image').src=j.img;
             document.getElementById('jobs-caption').textContent=jobsName(j);
             document.getElementById('jobs-prev').style.display=jobsLearnIndex?'inline-block':'none';
