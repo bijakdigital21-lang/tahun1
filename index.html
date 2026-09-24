@@ -4969,6 +4969,30 @@
             #match-body-game-screen .match-body-name,
             #match-shape-screen .match-shape-name {font-size: .83rem !important;}
         }
+
+        /* Keep only the wood artwork on the four left answer signs. */
+        #match-animal-game-screen #match-animal-left-column .match-item,
+        #match-colour-screen #colour-match-left .match-item,
+        #match-body-game-screen #match-body-left-column .match-item,
+        #match-shape-screen #match-shape-left .shape-match-item,
+        #match-animal-game-screen #match-animal-left-column .match-item.matched,
+        #match-colour-screen #colour-match-left .match-item.matched,
+        #match-body-game-screen #match-body-left-column .match-item.matched,
+        #match-shape-screen #match-shape-left .shape-match-item.matched {
+            border: 0 !important;
+            box-shadow: none !important;
+        }
+        #match-animal-game-screen #match-animal-left-column .match-item::before,
+        #match-animal-game-screen #match-animal-left-column .match-item::after,
+        #match-colour-screen #colour-match-left .match-item::before,
+        #match-colour-screen #colour-match-left .match-item::after,
+        #match-body-game-screen #match-body-left-column .match-item::before,
+        #match-body-game-screen #match-body-left-column .match-item::after,
+        #match-shape-screen #match-shape-left .shape-match-item::before,
+        #match-shape-screen #match-shape-left .shape-match-item::after {
+            content: none !important;
+            display: none !important;
+        }
     </style>
 </head>
 <body class="login-mode">
