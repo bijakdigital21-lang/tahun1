@@ -4509,6 +4509,31 @@
             .suku2-row img{width:110px;height:110px;flex-basis:110px}.suku2-first,.suku2-choice{width:62px;height:62px;min-width:62px;min-height:62px;font-size:1.25rem}
         }
 
+
+/* Wooden sign theme for Bijak Suku Kata */
+.suku-activity-btn,.suku2-plank{position:relative;background:linear-gradient(175deg,#ffe1a1 0%,#e9a958 46%,#c78339 52%,#eeaf61 100%)!important;border:4px solid #8b4c22!important;border-radius:18px!important;color:#4c2512!important;text-shadow:1px 2px #fff1d3!important;box-shadow:inset 0 3px 0 #ffe8b5,inset 0 -5px 0 #a56730,0 8px 0 #744120,0 12px 19px #33201350!important}
+.suku-activity-btn::before,.suku-activity-btn::after{content:'●';position:absolute;top:50%;transform:translateY(-50%);font-size:12px;color:#7a421e;text-shadow:1px 1px #ffe1a1}
+.suku-activity-btn::before{left:12px}.suku-activity-btn::after{right:12px}
+#bijak-suku-kata-2-screen #suku2-title{position:relative;display:table;margin:6px auto 26px;padding:9px 42px;background:linear-gradient(#fbd18a,#d98b3f);border:4px solid #8b4c22;border-radius:18px;color:#482410!important;text-shadow:1px 2px #fff0cd!important;box-shadow:inset 0 2px #ffe5ae,0 7px #73401e,0 11px 17px #27140860}
+#bijak-suku-kata-2-screen #suku2-title::before,#bijak-suku-kata-2-screen #suku2-title::after{content:'';position:absolute;bottom:100%;height:26px;width:5px;background:#654428;border-radius:5px}
+#bijak-suku-kata-2-screen #suku2-title::before{left:16%}#bijak-suku-kata-2-screen #suku2-title::after{right:16%}
+#bijak-suku-kata-2-screen .suku2-topbar span,#bijak-suku-kata-2-screen .suku2-instruction{background:linear-gradient(#fff3d5,#eec58a);border:3px solid #a96c3a;border-radius:15px;padding:9px 14px;box-shadow:0 4px 0 #814a26;color:#4b2b19}
+#bijak-suku-kata-2-screen .suku2-instruction{margin:18px auto;text-align:center;max-width:720px}
+#bijak-suku-kata-2-screen .suku2-board{display:grid;grid-template-columns:1fr;gap:12px;width:100%;max-width:750px;margin:20px auto;touch-action:auto}
+#bijak-suku-kata-2-screen .suku2-row{display:grid;grid-template-columns:minmax(75px,1fr) minmax(105px,1.45fr) minmax(72px,.95fr);gap:10px;width:100%;height:auto;min-height:112px;cursor:default;touch-action:auto}
+#bijak-suku-kata-2-screen .suku2-row img{width:100%;height:112px;object-fit:contain;background:#fffdf4;border:6px solid #995826;border-radius:21px;box-shadow:inset 0 0 0 3px #e9b777,0 5px 8px #34201266;flex:none}
+#bijak-suku-kata-2-screen .suku2-first{width:100%;height:88px;min-width:0;min-height:0;gap:5px;padding:5px;font-size:clamp(1rem,4vw,1.8rem);color:#452614;letter-spacing:0;pointer-events:auto}
+#bijak-suku-kata-2-screen .suku2-slot{display:grid;place-items:center;width:42%;height:65px;background:#fff8e8;border:2px dashed #89532e;border-radius:13px;color:#49270f}
+#bijak-suku-kata-2-screen .suku2-slot.filled{border-style:solid;background:#e7f2be}
+#bijak-suku-kata-2-screen .suku2-choices{display:grid;gap:9px;height:100%;align-content:center}
+#bijak-suku-kata-2-screen .suku2-choice{width:100%;height:47px;min-width:0;min-height:0;font-size:clamp(.95rem,3.5vw,1.45rem);touch-action:none;color:#4a2713;cursor:grab}
+#bijak-suku-kata-2-screen .suku2-choice.matched{opacity:.46;cursor:default}
+#bijak-suku-kata-2-screen .suku2-choice.dragging{opacity:.65;transform:scale(1.04)}
+#bijak-suku-kata-2-screen .suku2-row.matched .suku2-first{background:linear-gradient(#f4d68b,#d4ad59)!important}
+#bijak-suku-kata-2-screen .suku2-row.selected .suku2-first{border-color:#76461e!important;background:linear-gradient(#ffe8b1,#db9b50)!important}
+#bijak-suku-kata-2-screen .suku2-lines,#bijak-suku-kata-2-screen .suku2-left,#bijak-suku-kata-2-screen .suku2-right{display:none}
+@media(max-width:430px){#bijak-suku-kata-2-screen .suku2-board{gap:9px}#bijak-suku-kata-2-screen .suku2-row{grid-template-columns:minmax(68px,1fr) minmax(104px,1.5fr) minmax(58px,.82fr);gap:6px;min-height:95px}#bijak-suku-kata-2-screen .suku2-row img{height:95px}#bijak-suku-kata-2-screen .suku2-first{height:78px}#bijak-suku-kata-2-screen .suku2-slot{height:57px}#bijak-suku-kata-2-screen .suku2-choice{height:42px}}
+
         /* Fruit or Vegetable: enlarged to match the Sort the Transport format */
         #sort-food-screen .transport-sort-bank {
             grid-template-columns: repeat(4, minmax(92px, 1fr));
@@ -5297,7 +5322,7 @@
                         <span id="suku2-set-label">Set <span id="suku2-set-progress">1 / 5</span></span>
                         <span>⭐ <span id="suku2-score">0</span></span>
                     </div>
-                    <p id="suku2-instruction" class="suku2-instruction">Padankan gambar dan suku kata pertama dengan suku kata kedua yang betul.</p>
+                    <p id="suku2-instruction" class="suku2-instruction">Tarik suku kata kedua yang betul ke kotak jawapan untuk melengkapkan perkataan!</p>
                     <div id="suku2-board" class="suku2-board">
                         <svg id="suku2-lines" class="suku2-lines" aria-hidden="true"></svg>
                         <div id="suku2-left" class="suku2-left"></div>
@@ -10402,7 +10427,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'suku1-title':ms?'Aktiviti 1 📖':'Activity 1 📖',
                 'suku1-back':ms?'Kembali ↩️':'Back ↩️',
                 'suku2-title':ms?'Aktiviti 2 🔗':'Activity 2 🔗',
-                'suku2-instruction':ms?'Padankan gambar dan suku kata pertama dengan suku kata kedua yang betul.':'Match each picture and first syllable with the correct second syllable.',
+                'suku2-instruction':ms?'Tarik suku kata kedua yang betul ke kotak jawapan untuk melengkapkan perkataan!':'Drag the correct second syllable into the answer box to complete each word!',
                 'suku2-back':ms?'Kembali ↩️':'Back ↩️'
             };
             Object.entries(labels).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.textContent=value});
@@ -10473,93 +10498,45 @@ document.addEventListener('DOMContentLoaded', () => {
             suku2Sets=buildSuku2Sets();suku2SetIndex=0;suku2Score=0;suku2Matched=0;suku2SelectedRow=null;suku2SelectedChoice=null;
             showScreen('bijak-suku-kata-2-screen');renderSuku2Set();
         }
+        let suku2DragChoice=null,suku2DragMoved=false,suku2ActiveChoice=null;
         function renderSuku2Set(){
             const set=suku2Sets[suku2SetIndex];if(!set)return;
-            suku2Matched=0;suku2SelectedRow=null;suku2SelectedChoice=null;
+            suku2Matched=0;suku2SelectedRow=null;suku2ActiveChoice=null;suku2DragChoice=null;
             document.getElementById('suku2-set-progress').textContent=`${suku2SetIndex+1} / ${suku2Sets.length}`;
             document.getElementById('suku2-score').textContent=suku2Score;
             document.getElementById('suku2-message').textContent='';
             document.getElementById('suku2-lines').innerHTML='';
-            const left=document.getElementById('suku2-left'),right=document.getElementById('suku2-right');left.innerHTML='';right.innerHTML='';
+            const board=document.getElementById('suku2-board'),left=document.getElementById('suku2-left'),right=document.getElementById('suku2-right');
+            left.innerHTML='';right.innerHTML='';board.querySelectorAll('.suku2-row').forEach(row=>row.remove());
+            const seconds=[...new Set(sukuWords.map(word=>word.second))];
             set.forEach((item,index)=>{
-                const row=document.createElement('div');row.className='suku2-row';row.id=`suku2-row-${index}`;row.dataset.second=item.second;row.dataset.word=item.word;row.tabIndex=0;
-                row.innerHTML=`<img src="${item.image}" alt="${item.word}"><span class="suku2-first">${item.first}</span>`;
-                row.onclick=()=>{if(!suku2SuppressClick)selectSuku2Row(row)};row.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectSuku2Row(row)}};
-                row.onpointerdown=e=>startSuku2Drag(e,row);
-                row.onpointermove=moveSuku2Drag;
-                row.onpointerup=endSuku2Drag;
-                row.onpointercancel=cancelSuku2Drag;
-                left.appendChild(row);
+                const row=document.createElement('div');row.className='suku2-row';row.id=`suku2-row-${index}`;row.dataset.second=item.second;row.dataset.word=item.word;
+                const decoy=sukuShuffle(seconds.filter(second=>second!==item.second))[0];
+                const choices=sukuShuffle([item.second,decoy]);
+                row.innerHTML=`<img src="${item.image}" alt="${item.word}"><div class="suku2-first suku2-plank"><span>${item.first}</span><span class="suku2-slot" role="button" tabindex="0" aria-label="${currentGlobalLang==='ms'?'Letak suku kata kedua':'Drop second syllable'}">?</span></div><div class="suku2-choices"></div>`;
+                const slot=row.querySelector('.suku2-slot');
+                slot.onclick=()=>{if(suku2ActiveChoice)trySuku2Match(row,suku2ActiveChoice)};
+                slot.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&suku2ActiveChoice){e.preventDefault();trySuku2Match(row,suku2ActiveChoice)}};
+                choices.forEach((second,choiceIndex)=>{
+                    const choice=document.createElement('button');choice.type='button';choice.className='suku2-choice suku2-plank';choice.id=`suku2-choice-${index}-${choiceIndex}`;choice.dataset.second=second;choice.textContent=second;
+                    choice.onclick=()=>{if(suku2DragMoved)return;document.querySelectorAll('#suku2-board .suku2-choice').forEach(el=>el.classList.remove('selected'));choice.classList.add('selected');suku2ActiveChoice=choice};
+                    choice.onpointerdown=e=>{if(row.classList.contains('matched'))return;suku2DragChoice=choice;suku2DragMoved=false;choice.setPointerCapture?.(e.pointerId)};
+                    choice.onpointermove=e=>{if(suku2DragChoice!==choice)return;if(e.buttons||e.pointerType==='touch'){suku2DragMoved=true;choice.classList.add('dragging')}};
+                    choice.onpointerup=e=>{if(suku2DragChoice!==choice)return;choice.releasePointerCapture?.(e.pointerId);choice.classList.remove('dragging');suku2DragChoice=null;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.suku2-slot');if(target&&target.closest('.suku2-row')===row)trySuku2Match(row,choice);setTimeout(()=>suku2DragMoved=false,0)};
+                    choice.onpointercancel=()=>{suku2DragChoice=null;choice.classList.remove('dragging');suku2DragMoved=false};
+                    row.querySelector('.suku2-choices').appendChild(choice);
+                });
+                board.appendChild(row);
             });
-            sukuShuffle(set.map((item,index)=>({second:item.second,key:index}))).forEach((item,index)=>{
-                const choice=document.createElement('button');choice.type='button';choice.className='suku2-choice';choice.id=`suku2-choice-${index}`;choice.dataset.second=item.second;choice.textContent=item.second;choice.draggable=false;
-                choice.onclick=()=>{if(!suku2SuppressClick)selectSuku2Choice(choice)};
-                right.appendChild(choice);
-            });
-            requestAnimationFrame(drawSuku2Lines);
-        }
-        function startSuku2Drag(e,row){
-            if(!row.classList.contains('suku2-row')||row.classList.contains('matched')||e.button>0)return;
-            e.preventDefault();suku2DragRow=row;suku2Dragging=true;suku2DragStartX=e.clientX;suku2DragStartY=e.clientY;
-            const board=document.getElementById('suku2-board').getBoundingClientRect();suku2DragX=e.clientX-board.left;suku2DragY=e.clientY-board.top;
-            row.classList.add('selected');row.setPointerCapture?.(e.pointerId);playClickSound();drawSuku2Lines();
-        }
-        function moveSuku2Drag(e){
-            if(!suku2Dragging||!suku2DragRow)return;
-            e.preventDefault();
-            if(Math.hypot(e.clientX-suku2DragStartX,e.clientY-suku2DragStartY)>6)suku2SuppressClick=true;
-            const board=document.getElementById('suku2-board').getBoundingClientRect();suku2DragX=e.clientX-board.left;suku2DragY=e.clientY-board.top;drawSuku2Lines();
-        }
-        function endSuku2Drag(e){
-            if(!suku2Dragging||!suku2DragRow)return;
-            const origin=suku2DragRow;
-            const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('#suku2-right .suku2-choice');
-            origin.releasePointerCapture?.(e.pointerId);origin.classList.remove('selected');suku2DragRow=null;suku2Dragging=false;
-            if(target&&!target.classList.contains('matched'))trySuku2Match(origin,target);else drawSuku2Lines();
-            setTimeout(()=>{suku2SuppressClick=false},0);
-        }
-        function cancelSuku2Drag(e){
-            if(suku2DragRow){suku2DragRow.releasePointerCapture?.(e.pointerId);suku2DragRow.classList.remove('selected')}
-            suku2DragRow=null;suku2Dragging=false;suku2SuppressClick=false;drawSuku2Lines();
-        }
-        function selectSuku2Row(row){
-            if(row.classList.contains('matched'))return;
-            document.querySelectorAll('#suku2-left .suku2-row').forEach(el=>el.classList.remove('selected'));row.classList.add('selected');suku2SelectedRow=row;
-            if(suku2SelectedChoice)trySuku2Match(row,suku2SelectedChoice);
-        }
-        function selectSuku2Choice(choice){
-            if(choice.classList.contains('matched'))return;
-            if(!suku2SelectedRow){
-                document.getElementById('suku2-message').textContent=currentGlobalLang==='ms'?'Pilih atau seret dari sebelah kiri dahulu.':'Choose or drag from the left first.';
-                return;
-            }
-            document.querySelectorAll('#suku2-right .suku2-choice').forEach(el=>el.classList.remove('selected'));choice.classList.add('selected');suku2SelectedChoice=choice;
-            if(suku2SelectedRow)trySuku2Match(suku2SelectedRow,choice);
         }
         function trySuku2Match(row,choice){
-            if(!row||!choice||row.classList.contains('matched')||choice.classList.contains('matched'))return;
-            if(row.dataset.second!==choice.dataset.second){
-                playWrongSound();choice.classList.add('wrong');document.getElementById('suku2-message').textContent=currentGlobalLang==='ms'?'Cuba lagi 😊':'Try again 😊';
-                setTimeout(()=>choice.classList.remove('wrong'),450);return;
-            }
-            playCorrectSound();row.classList.remove('selected');choice.classList.remove('selected');row.classList.add('matched');choice.classList.add('matched');row.dataset.choiceId=choice.id;
-            suku2SelectedRow=null;suku2SelectedChoice=null;suku2Matched++;suku2Score++;document.getElementById('suku2-score').textContent=suku2Score;document.getElementById('suku2-message').textContent=currentGlobalLang==='ms'?`${row.dataset.word.toUpperCase()} — Betul! 🌟`:`${row.dataset.word.toUpperCase()} — Correct! 🌟`;
-            drawSuku2Lines();
+            if(!row||!choice||row.classList.contains('matched')||choice.closest('.suku2-row')!==row)return;
+            if(row.dataset.second!==choice.dataset.second){playWrongSound();choice.classList.add('wrong');document.getElementById('suku2-message').textContent=currentGlobalLang==='ms'?'Cuba lagi 😊':'Try again 😊';setTimeout(()=>choice.classList.remove('wrong'),450);return}
+            playCorrectSound();row.classList.add('matched');choice.classList.remove('selected');choice.classList.add('matched');row.querySelector('.suku2-slot').textContent=choice.dataset.second;row.querySelector('.suku2-slot').classList.add('filled');suku2ActiveChoice=null;
+            suku2Matched++;suku2Score++;document.getElementById('suku2-score').textContent=suku2Score;document.getElementById('suku2-message').textContent=currentGlobalLang==='ms'?`${row.dataset.word.toUpperCase()} — Betul! 🌟`:`${row.dataset.word.toUpperCase()} — Correct! 🌟`;
             if(suku2Matched===4)setTimeout(()=>{if(suku2SetIndex<suku2Sets.length-1){suku2SetIndex++;renderSuku2Set()}else{finishSuku2Session()}},750);
         }
-        function drawSuku2Lines(){
-            const board=document.getElementById('suku2-board'),svg=document.getElementById('suku2-lines');if(!board||!svg)return;
-            const base=board.getBoundingClientRect();svg.setAttribute('viewBox',`0 0 ${base.width} ${base.height}`);svg.innerHTML='';
-            document.querySelectorAll('#suku2-left .suku2-row.matched').forEach(row=>{
-                const choice=document.getElementById(row.dataset.choiceId);if(!choice)return;const a=row.getBoundingClientRect(),b=choice.getBoundingClientRect();
-                const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',a.right-base.left);line.setAttribute('y1',a.top+a.height/2-base.top);line.setAttribute('x2',b.left-base.left);line.setAttribute('y2',b.top+b.height/2-base.top);svg.appendChild(line);
-            });
-            if(suku2Dragging&&suku2DragRow){
-                const a=suku2DragRow.getBoundingClientRect(),line=document.createElementNS('http://www.w3.org/2000/svg','line');
-                line.setAttribute('x1',a.right-base.left);line.setAttribute('y1',a.top+a.height/2-base.top);line.setAttribute('x2',suku2DragX);line.setAttribute('y2',suku2DragY);line.style.stroke='#FF66C4';line.style.strokeDasharray='9 7';svg.appendChild(line);
-            }
-        }
-        window.addEventListener('resize',()=>{if(document.getElementById('bijak-suku-kata-2-screen')?.classList.contains('active'))requestAnimationFrame(drawSuku2Lines)});
+        function drawSuku2Lines(){}
         function finishSuku2Session(){
             const pop=document.getElementById('suku-pop'),inner=document.getElementById('suku-pop-inner'),ms=currentGlobalLang==='ms';
             inner.innerHTML=`<div style="font-size:clamp(2rem,7vw,3.6rem);margin-bottom:12px;">${ms?'🎉 DAH SELESAI! 🎉':'🎉 ALL DONE! 🎉'}</div><div style="font-family:'Quicksand',sans-serif;font-size:1.05rem;color:#2C3E50;margin-bottom:18px;font-weight:800;">${ms?'Skor':'Score'}: ${suku2Score} / 20</div><button class="action-btn home-btn" onclick="closeSuku2Completion()" style="font-size:1rem;">Close ✖️</button>`;
