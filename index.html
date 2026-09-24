@@ -2602,22 +2602,6 @@
         }
 
 
-
-/* Label the Body Part: full-body illustration and 16 answer boxes */
-#label-body-screen .label-body-board{max-width:760px;background:#fff1d8;padding:12px}
-#label-body-screen .label-stage{width:min(100%,600px);aspect-ratio:6/7.5;border:3px solid #e7b67e;background:#fffefa;overflow:hidden}
-#label-body-screen .label-person-svg{position:absolute;left:25%;top:0;width:50%;height:100%;pointer-events:none}
-#label-body-screen .label-guides{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-#label-body-screen .label-guides line{stroke:#746071;stroke-width:1.3;stroke-dasharray:2 2}
-#label-body-screen .label-guides circle{fill:#7848bc}
-#label-body-screen .body-drop{width:25%;min-height:0;height:7.5%;font-size:clamp(.55rem,1.7vw,.9rem);padding:2px;border:2px dashed #8754b6;background:#fff;box-shadow:0 2px 5px #0002;line-height:1.05}
-#label-body-screen .body-drop.correct{background:#dff7df;border-color:#4caf50}
-#label-body-screen .body-label-bank{max-width:760px;min-height:80px}
-#label-body-screen .body-drag-label{touch-action:none;user-select:none;background:#fff7ed;border-color:#8754b6}
-#label-body-screen .body-drag-label.dragging{opacity:.6}
-#label-body-screen .body-drag-label.ghost{position:fixed;z-index:99999;pointer-events:none;opacity:.95;box-shadow:0 8px 22px #0004;margin:0;transform:translate(-50%,-50%)}
-@media(max-width:480px){#label-body-screen .label-body-board{padding:5px}#label-body-screen .body-drop{width:27%;font-size:clamp(.49rem,2.1vw,.68rem);border-width:1.5px}#label-body-screen .body-drag-label{padding:8px 10px}}
-
         /* ===== BODY PART MODULE ===== */
         /* Image buttons: same visual format as other topic menus (e.g. Colour) */
         .body-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:30px 0}
@@ -4695,6 +4679,27 @@
  .complete-animal-half { width:clamp(83px,25vw,110px); height:clamp(86px,13vh,112px); }
  .complete-animal-half .complete-animal-art { font-size:clamp(68px,19vw,88px); }
 }
+
+        .jobs-heading {color:#FFDE59;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #123F7A}
+        #jobs-quiz-status,#jobs-progress {font-weight:800;color:#222}
+        .jobs-choose-card {display:grid;grid-template-columns:minmax(100px,1fr) repeat(3,minmax(0,1.25fr));align-items:center;gap:8px}
+        .jobs-choose-card .jobs-prompt {font-size:clamp(15px,2vw,23px);font-weight:900;color:#194580;overflow-wrap:anywhere}
+        .jobs-pick {border:3px solid #5e17eb;border-radius:16px;background:#fff7d6;padding:5px;cursor:pointer;min-width:0}
+        .jobs-pick img {width:100%;height:clamp(75px,11vw,150px);object-fit:contain;display:block}
+        .jobs-pick.wrong {border-color:#e53935;background:#ffcccc}
+        .jobs-pick.correct {border-color:#28a745;background:#d6ffd7}
+        .jobs-who-card:nth-child(4n+1){background:#fff0cf}
+        .jobs-who-card:nth-child(4n+2){background:#dff5ff}
+        .jobs-who-card:nth-child(4n+3){background:#ffe3ef}
+        .jobs-who-card:nth-child(4n){background:#e6f8dc}
+        .jobs-who-card .transport-guess-img {object-fit:contain}
+        .jobs-pop[hidden]{display:none}
+        .jobs-pop {position:fixed;inset:0;z-index:10000;background:rgba(12,29,60,.52);display:grid;place-items:center;padding:16px}
+        .jobs-pop-inner {background:#fff8de;border:5px solid #ffce55;border-radius:25px;padding:20px;display:grid;text-align:center;gap:12px;width:min(340px,90vw);box-shadow:0 15px 40px #2228}
+        .jobs-pop-inner img {width:100%;height:220px;object-fit:contain}
+        .jobs-pop-inner strong {font-size:clamp(22px,5vw,32px);color:#244783}
+        @media(max-width:650px){.jobs-choose-card{grid-template-columns:repeat(3,minmax(0,1fr))}.jobs-choose-card .jobs-prompt{grid-column:1/-1}.jobs-pick img{height:85px}}
+
     </style>
 </head>
 <body class="login-mode">
@@ -4832,10 +4837,46 @@
                     <button class="topic-btn" type="button" onclick="playClickSound(); openFoodMenu()" aria-label="Food">
                         <img src="https://i.imgur.com/NXcCZky.jpeg" alt="Food">
                     </button>
-                    <button class="topic-btn module-locked" type="button" aria-disabled="true" title="New adventure coming">
+                    <button class="topic-btn" type="button" onclick="playClickSound(); openJobsMenu()" aria-label="Jobs & Profession">
                         <img src="https://i.imgur.com/Y9TvZHi.jpeg" alt="Jobs & Profession">
                     </button>
                 </div>
+            </div>
+
+
+            <div id="jobs-menu-screen" class="card">
+                <h2 class="jobs-heading" id="jobs-menu-title">Jobs & Profession 👩‍⚕️</h2>
+                <p id="jobs-menu-desc">Choose an activity!</p>
+                <div class="transport-menu-grid">
+                    <button class="transport-menu-btn" onclick="playClickSound(); startJobsLearn()" aria-label="Jobs"><img src="https://i.imgur.com/Wfb2jD6.jpeg" alt="Jobs"></button>
+                    <button class="transport-menu-btn" onclick="playClickSound(); startJobsQuiz('choose')" aria-label="Choose the correct job"><img src="https://i.imgur.com/HKVlnKW.jpeg" alt="Choose the correct job"></button>
+                    <button class="transport-menu-btn" onclick="playClickSound(); startJobsQuiz('who')" aria-label="Who am I?"><img src="https://i.imgur.com/uT8eBj3.jpeg" alt="Who am I?"></button>
+                </div>
+                <button class="action-btn home-btn" onclick="playClickSound(); navigateTo('home-screen')">Back to Home 🏠</button>
+            </div>
+            <div id="jobs-learn-screen" class="card">
+                <h2 class="jobs-heading" id="jobs-learn-title">Jobs</h2>
+                <p id="jobs-progress"></p>
+                <div class="flashcard-box">
+                    <div class="flashcard-letter" id="jobs-letter"></div>
+                    <div class="flashcard-img-container"><img id="jobs-image" src="" alt="Job"></div>
+                    <div class="flashcard-text" id="jobs-caption"></div>
+                    <button class="sound-btn" onclick="speakCurrentJob()">🔊 Listen / Dengar</button>
+                </div>
+                <div class="flashcard-nav">
+                    <button class="action-btn" id="jobs-prev" onclick="playClickSound(); moveJobsLearn(-1)">⬅ Prev</button>
+                    <button class="action-btn home-btn" onclick="playClickSound(); openJobsMenu()">Back ↩️</button>
+                    <button class="action-btn" id="jobs-next" onclick="playClickSound(); moveJobsLearn(1)">Next ➡</button>
+                </div>
+            </div>
+            <div id="jobs-quiz-screen" class="card">
+                <h2 class="jobs-heading" id="jobs-quiz-title"></h2>
+                <p id="jobs-quiz-status"></p>
+                <div class="transport-guess-grid" id="jobs-quiz-grid"></div>
+                <button class="action-btn home-btn" onclick="playClickSound(); openJobsMenu()">Back ↩️</button>
+            </div>
+            <div class="jobs-pop" id="jobs-pop" hidden role="status" aria-live="polite">
+                <div class="jobs-pop-inner"><img id="jobs-pop-image" alt=""><strong id="jobs-pop-name"></strong></div>
             </div>
 
             <!-- ABC MODULE MENU SCREEN -->
@@ -5259,8 +5300,12 @@
                     <button class="body-menu-btn" onclick="playClickSound(); openMatchBodyCountScreen()" aria-label="Match the Body Part">
                         <img src="https://i.imgur.com/zFSPyNc.jpeg" alt="Match the Body Part">
                     </button>
-                    <button class="body-menu-btn" type="button" onclick="playClickSound(); startLabelBodyPart()" aria-label="Label the Body Part">
-                        <img src="https://i.imgur.com/a2fnp6s.jpeg" alt="Label the Body Part">
+                    <button class="body-menu-btn body-locked" type="button" aria-label="Label the Body Part - New adventure coming" aria-disabled="true" disabled style="position:relative;cursor:not-allowed;overflow:hidden;">
+                        <img src="https://i.imgur.com/a2fnp6s.jpeg" alt="Label the Body Part" style="filter:brightness(.58);">
+                        <span aria-hidden="true" style="position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(18,63,122,.72);color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;line-height:1.25;text-align:center;text-shadow:0 2px 4px rgba(0,0,0,.35);pointer-events:none;">
+                            <span style="font-size:2rem;line-height:1;">🔒</span>
+                            <span>New adventure coming</span>
+                        </span>
                     </button>
                 </div>
                 <button class="action-btn home-btn" id="body-menu-back" onclick="playClickSound(); navigateTo('home-screen')">Back to Home 🏠</button>
@@ -5319,28 +5364,11 @@
             <div id="label-body-screen" class="card">
                 <h2 id="label-body-title" style="color:#5E17EB;font-family:'Fredoka One',cursive;">Label the Body Part 🏷️</h2>
                 <p id="label-body-desc" style="font-weight:800;color:#333;margin:6px 0;">Drag each label into the correct box. You can also tap a label, then tap a box.</p>
-                <div class="body-progress">⭐ <span id="label-body-score">0</span> / 16</div>
-                <div class="label-body-board"><div class="label-stage" id="label-body-stage"><svg class="label-person-svg" viewBox="0 0 300 500" role="img" aria-label="Illustration of a child from hair to feet" xmlns="http://www.w3.org/2000/svg">
-<ellipse cx="150" cy="480" rx="83" ry="11" fill="#dde8f0"/>
-<path d="M120 269 L112 395 L106 451 M180 269 L188 395 L194 451" stroke="#e8a679" stroke-width="32" stroke-linecap="round" fill="none"/>
-<path d="M104 447 Q90 460 78 465 Q70 476 85 480 L123 480 Q130 475 121 459 Z M196 447 Q210 460 222 465 Q230 476 215 480 L177 480 Q170 475 179 459 Z" fill="#edac7d"/>
-<path d="M119 380 Q112 389 113 403 M181 380 Q188 389 187 403" stroke="#c98262" stroke-width="3" fill="none"/>
-<path d="M106 160 Q75 170 64 214 L48 263 M194 160 Q225 170 236 214 L252 263" stroke="#e9a878" stroke-width="25" stroke-linecap="round" fill="none"/>
-<path d="M64 214 L48 263 M236 214 L252 263" stroke="#c98262" stroke-width="2" fill="none"/>
-<path d="M48 255 L35 278 M48 255 L44 285 M48 255 L54 283 M252 255 L265 278 M252 255 L256 285 M252 255 L246 283" stroke="#e9a878" stroke-width="7" stroke-linecap="round"/>
-<path d="M130 129 L130 155 Q150 171 170 155 L170 129" fill="#edaf82"/>
-<path d="M103 165 Q112 151 129 151 Q150 171 171 151 Q189 153 198 165 L207 269 Q150 284 93 269 Z" fill="#ef83af" stroke="#d65f91" stroke-width="3"/>
-<path d="M95 268 Q150 281 205 268 L195 323 L153 323 L150 291 L147 323 L105 323 Z" fill="#255976"/>
-<ellipse cx="96" cy="87" rx="11" ry="19" fill="#e8a679"/><ellipse cx="204" cy="87" rx="11" ry="19" fill="#e8a679"/>
-<ellipse cx="150" cy="83" rx="55" ry="65" fill="#f3b487" stroke="#d99369" stroke-width="2"/>
-<path d="M94 80 Q77 15 139 13 Q191 -4 205 54 Q182 47 166 25 Q143 65 99 61 Z" fill="#78442d"/>
-<path d="M103 47 Q117 14 154 18 M174 17 Q194 35 197 54" fill="none" stroke="#9b5c38" stroke-width="8" stroke-linecap="round"/>
-<path d="M112 70 Q125 64 136 70 M164 70 Q176 64 188 70" stroke="#653a2f" stroke-width="4" fill="none" stroke-linecap="round"/>
-<ellipse cx="124" cy="83" rx="9" ry="6" fill="white"/><ellipse cx="176" cy="83" rx="9" ry="6" fill="white"/><circle cx="125" cy="83" r="4" fill="#243a4a"/><circle cx="175" cy="83" r="4" fill="#243a4a"/>
-<path d="M149 86 L144 105 Q150 110 157 105" fill="none" stroke="#bd765e" stroke-width="2"/>
-<circle cx="111" cy="103" r="8" fill="#f39d98" opacity=".6"/><circle cx="189" cy="103" r="8" fill="#f39d98" opacity=".6"/>
-<path d="M133 118 Q150 132 167 118 Q150 141 133 118" fill="#ac4a59" stroke="#9b4b4d" stroke-width="2"/>
-</svg><svg class="label-guides" viewBox="0 0 300 500" preserveAspectRatio="none" aria-hidden="true"><line x1="77" y1="40" x2="100.0" y2="36"/><circle cx="100.0" cy="36" r="3"/><line x1="77" y1="95" x2="123.5" y2="85"/><circle cx="123.5" cy="85" r="3"/><line x1="77" y1="150" x2="137.0" y2="70"/><circle cx="137.0" cy="70" r="3"/><line x1="77" y1="205" x2="130.0" y2="104"/><circle cx="130.0" cy="104" r="3"/><line x1="77" y1="260" x2="149.0" y2="134"/><circle cx="149.0" cy="134" r="3"/><line x1="77" y1="315" x2="142.5" y2="150"/><circle cx="142.5" cy="150" r="3"/><line x1="77" y1="370" x2="114.5" y2="209"/><circle cx="114.5" cy="209" r="3"/><line x1="77" y1="430" x2="105.5" y2="230"/><circle cx="105.5" cy="230" r="3"/><line x1="223" y1="40" x2="163.0" y2="83"/><circle cx="163.0" cy="83" r="3"/><line x1="223" y1="95" x2="150.5" y2="103"/><circle cx="150.5" cy="103" r="3"/><line x1="223" y1="150" x2="151.5" y2="121"/><circle cx="151.5" cy="121" r="3"/><line x1="223" y1="205" x2="153.5" y2="229"/><circle cx="153.5" cy="229" r="3"/><line x1="223" y1="260" x2="166.5" y2="335"/><circle cx="166.5" cy="335" r="3"/><line x1="223" y1="315" x2="168.0" y2="389"/><circle cx="168.0" cy="389" r="3"/><line x1="223" y1="370" x2="172.5" y2="426"/><circle cx="172.5" cy="426" r="3"/><line x1="223" y1="430" x2="175.5" y2="467"/><circle cx="175.5" cy="467" r="3"/></svg><div class="body-drop" data-part="hair" style="left:1%;top:4%" aria-label="hair answer box"></div><div class="body-drop" data-part="ear" style="left:1%;top:15%" aria-label="ear answer box"></div><div class="body-drop" data-part="eyebrow" style="left:1%;top:26%" aria-label="eyebrow answer box"></div><div class="body-drop" data-part="cheek" style="left:1%;top:37%" aria-label="cheek answer box"></div><div class="body-drop" data-part="chin" style="left:1%;top:48%" aria-label="chin answer box"></div><div class="body-drop" data-part="neck" style="left:1%;top:59%" aria-label="neck answer box"></div><div class="body-drop" data-part="arm" style="left:1%;top:70%" aria-label="arm answer box"></div><div class="body-drop" data-part="elbow" style="left:1%;top:82%" aria-label="elbow answer box"></div><div class="body-drop" data-part="eye" style="right:1%;top:4%" aria-label="eye answer box"></div><div class="body-drop" data-part="nose" style="right:1%;top:15%" aria-label="nose answer box"></div><div class="body-drop" data-part="mouth" style="right:1%;top:26%" aria-label="mouth answer box"></div><div class="body-drop" data-part="stomach" style="right:1%;top:37%" aria-label="stomach answer box"></div><div class="body-drop" data-part="thigh" style="right:1%;top:48%" aria-label="thigh answer box"></div><div class="body-drop" data-part="knee" style="right:1%;top:59%" aria-label="knee answer box"></div><div class="body-drop" data-part="calf" style="right:1%;top:70%" aria-label="calf answer box"></div><div class="body-drop" data-part="leg" style="right:1%;top:82%" aria-label="leg answer box"></div></div></div><div class="body-label-bank" id="body-label-bank"></div><button class="action-btn clear-btn" id="label-body-reset" onclick="playClickSound(); startLabelBodyPart()">Reset 🔄</button><button class="action-btn home-btn" onclick="playClickSound(); openBodyPartMenu()">Back ↩️</button>
+                <div class="body-progress">⭐ <span id="label-body-score">0</span> / 100</div>
+                <div class="label-body-board"><div class="label-stage" id="label-body-stage">
+                    <svg class="label-person-svg" viewBox="0 0 300 500" aria-label="Full body child illustration"><circle cx="150" cy="72" r="54" fill="#f6bd91"/><path d="M100 60 Q110 5 150 10 Q205 12 202 62 Q177 40 105 55" fill="#663b25"/><circle cx="130" cy="70" r="6" fill="#222"/><circle cx="170" cy="70" r="6" fill="#222"/><path d="M144 88 Q150 94 156 88" stroke="#c86d63" stroke-width="4" fill="none"/><path d="M130 105 Q150 120 170 105" stroke="#d54b54" stroke-width="4" fill="none"/><rect x="105" y="125" width="90" height="150" rx="40" fill="#f6bd91"/><path d="M108 145 L45 225" stroke="#f6bd91" stroke-width="28" stroke-linecap="round"/><path d="M192 145 L255 225" stroke="#f6bd91" stroke-width="28" stroke-linecap="round"/><circle cx="39" cy="232" r="17" fill="#f6bd91"/><circle cx="261" cy="232" r="17" fill="#f6bd91"/><rect x="105" y="250" width="90" height="65" rx="8" fill="#3478f6"/><path d="M125 305 L105 440" stroke="#f6bd91" stroke-width="34" stroke-linecap="round"/><path d="M175 305 L195 440" stroke="#f6bd91" stroke-width="34" stroke-linecap="round"/><ellipse cx="92" cy="456" rx="35" ry="14" fill="#f6bd91"/><ellipse cx="208" cy="456" rx="35" ry="14" fill="#f6bd91"/></svg>
+                    <div class="body-drop" data-part="head" style="left:2%;top:7%"></div><div class="body-drop" data-part="eye" style="right:2%;top:15%"></div><div class="body-drop" data-part="ear" style="left:2%;top:20%"></div><div class="body-drop" data-part="nose" style="right:2%;top:25%"></div><div class="body-drop" data-part="mouth" style="right:2%;top:34%"></div><div class="body-drop" data-part="arm" style="left:2%;top:43%"></div><div class="body-drop" data-part="hand" style="right:2%;top:48%"></div><div class="body-drop" data-part="leg" style="left:2%;top:70%"></div><div class="body-drop" data-part="knee" style="right:2%;top:72%"></div><div class="body-drop" data-part="foot" style="right:2%;top:88%"></div>
+                </div></div><div class="body-label-bank" id="body-label-bank"></div><button class="action-btn clear-btn" id="label-body-reset" onclick="playClickSound(); startLabelBodyPart()">Reset 🔄</button><button class="action-btn home-btn" onclick="playClickSound(); openBodyPartMenu()">Back ↩️</button>
             </div>
 
             <!-- ANIMAL MODULE MENU SCREEN -->
@@ -8852,14 +8880,11 @@
                 finishOrAdvanceChooseBody(3000);
             }
         }
-        const labelBodyIds=['hair','ear','eye','eyebrow','nose','cheek','chin','mouth','neck','arm','elbow','stomach','knee','leg','calf','thigh'];
-        const labelExtraNames={cheek:{en:'Cheek',ms:'Pipi'},chin:{en:'Chin',ms:'Dagu'},elbow:{en:'Elbow',ms:'Siku'},calf:{en:'Calf',ms:'Betis'},thigh:{en:'Thigh',ms:'Peha'}};
-        let selectedBodyLabel=null,labelBodyDone=new Set();
-        function labelBodyName(id){const p=bodyParts.find(x=>x.id===id)||labelExtraNames[id];return p?bodyText(p):id}
-        function startLabelBodyPart(){labelBodyDone=new Set();selectedBodyLabel=null;document.getElementById('label-body-score').innerText='0';document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>{z.textContent='';z.classList.remove('correct','over')});showScreen('label-body-screen');updateBodyLanguage();renderBodyLabelBank(false);setupBodyDropZones()}
-        function renderBodyLabelBank(preserve=false){const bank=document.getElementById('body-label-bank');if(!bank)return;bank.innerHTML='';bodyShuffle(labelBodyIds).forEach(id=>{if(preserve&&labelBodyDone.has(id))return;const d=document.createElement('div');d.className='body-drag-label';d.draggable=true;d.dataset.part=id;d.textContent=labelBodyName(id);d.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',id));d.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;const x=e.clientX,y=e.clientY;let ghost=null,moved=false;const move=ev=>{if(!moved&&Math.hypot(ev.clientX-x,ev.clientY-y)<9)return;if(!moved){moved=true;ghost=d.cloneNode(true);ghost.classList.add('ghost');document.body.appendChild(ghost);d.classList.add('dragging')}ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>z.classList.remove('over'));const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#label-body-screen .body-drop');if(target)target.classList.add('over')};const finish=ev=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',finish);window.removeEventListener('pointercancel',finish);if(ghost)ghost.remove();d.classList.remove('dragging');document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>z.classList.remove('over'));if(moved){const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#label-body-screen .body-drop');if(target)placeBodyLabel(id,target);e.preventDefault()}};window.addEventListener('pointermove',move);window.addEventListener('pointerup',finish,{once:true});window.addEventListener('pointercancel',finish,{once:true})});d.onclick=()=>{document.querySelectorAll('#label-body-screen .body-drag-label').forEach(x=>x.classList.remove('selected'));selectedBodyLabel=id;d.classList.add('selected')};bank.appendChild(d)});document.querySelectorAll('#label-body-screen .body-drop.correct').forEach(z=>z.textContent=labelBodyName(z.dataset.part))}
+        const labelBodyIds=['head','eye','ear','nose','mouth','arm','hand','leg','knee','foot'];let selectedBodyLabel=null,labelBodyDone=new Set();
+        function startLabelBodyPart(){labelBodyDone=new Set();selectedBodyLabel=null;document.getElementById('label-body-score').innerText='0';document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>{z.innerHTML='';z.classList.remove('correct','over')});showScreen('label-body-screen');updateBodyLanguage();renderBodyLabelBank(false);setupBodyDropZones()}
+        function renderBodyLabelBank(preserve=false){const bank=document.getElementById('body-label-bank');if(!bank)return;bank.innerHTML='';bodyShuffle(labelBodyIds).forEach(id=>{if(preserve&&labelBodyDone.has(id))return;const p=bodyParts.find(x=>x.id===id),d=document.createElement('div');d.className='body-drag-label';d.draggable=true;d.dataset.part=id;d.innerText=bodyText(p);d.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',id));d.onclick=()=>{document.querySelectorAll('.body-drag-label').forEach(x=>x.classList.remove('selected'));selectedBodyLabel=id;d.classList.add('selected')};bank.appendChild(d)})}
         function setupBodyDropZones(){document.querySelectorAll('#label-body-screen .body-drop').forEach(z=>{z.ondragover=e=>{e.preventDefault();z.classList.add('over')};z.ondragleave=()=>z.classList.remove('over');z.ondrop=e=>{e.preventDefault();z.classList.remove('over');placeBodyLabel(e.dataTransfer.getData('text/plain'),z)};z.onclick=()=>{if(selectedBodyLabel)placeBodyLabel(selectedBodyLabel,z)}})}
-        function placeBodyLabel(id,zone){if(!id||labelBodyDone.has(id)||zone.classList.contains('correct'))return;if(zone.dataset.part===id){playCorrectSound();labelBodyDone.add(id);zone.textContent=labelBodyName(id);zone.classList.add('correct');const el=document.querySelector(`#body-label-bank .body-drag-label[data-part="${id}"]`);if(el)el.remove();selectedBodyLabel=null;document.getElementById('label-body-score').innerText=labelBodyDone.size;if(labelBodyDone.size===labelBodyIds.length){if(window.saveScoreToFirebase)window.saveScoreToFirebase(currentGlobalLang==='ms'?'Label Anggota Badan':'Label the Body Part',100);setTimeout(()=>{alert(currentGlobalLang==='ms'?'Tahniah! Semua label betul! 🎉':'Excellent! All labels are correct! 🎉');openBodyPartMenu()},350)}}else{playWrongSound();zone.classList.add('over');setTimeout(()=>zone.classList.remove('over'),450)}}
+        function placeBodyLabel(id,zone){if(!id||labelBodyDone.has(id))return;if(zone.dataset.part===id){playCorrectSound();labelBodyDone.add(id);const p=bodyParts.find(x=>x.id===id);zone.innerText=bodyText(p);zone.classList.add('correct');const el=document.querySelector(`#body-label-bank .body-drag-label[data-part="${id}"]`);if(el)el.remove();selectedBodyLabel=null;document.getElementById('label-body-score').innerText=labelBodyDone.size*10;if(labelBodyDone.size===labelBodyIds.length){if(window.saveScoreToFirebase)window.saveScoreToFirebase(currentGlobalLang==='ms'?'Label Anggota Badan':'Label the Body Part',100);setTimeout(()=>alert(currentGlobalLang==='ms'?'Tahniah! Semua label betul! 🎉':'Excellent! All labels are correct! 🎉'),250)}}else{playWrongSound();zone.classList.add('over');setTimeout(()=>zone.classList.remove('over'),450)}}
 
         const lessonData = {
             numeric: {
@@ -8972,6 +8997,7 @@
                 'match-me-screen',
                 'sort-transport-screen',
                 'guess-transport-screen',
+                'jobs-quiz-screen',
                 'sort-food-screen'
             ]);
             document.body.classList.toggle('activity-bg-blur', activityScreens.has(screenId));
@@ -11136,6 +11162,87 @@ document.addEventListener('DOMContentLoaded', () => {
             if(window.saveScoreToFirebase)window.saveScoreToFirebase(currentGlobalLang==='ms'?'Teka Pengangkutan':'Guess Transport',pct);
             alert(currentGlobalLang==='ms'?`🎉 Selesai! Skor anda: ${guessTransportScore}/20 (${pct}%)`:`🎉 Finished! Your score: ${guessTransportScore}/20 (${pct}%)`);
             openTransportMenu();
+        }
+
+
+        // Jobs & Profession
+        const jobsData=[
+            ['doctor','Doktor','Doctor','Fyv8CVf'],['police','Polis','Police Officer','Q0eLi14'],['teacher','Guru','Teacher','MJWlTbX'],
+            ['chef','Chef','Chef','aSfI5EK'],['soldier','Tentera','Soldier','7XnkHwG'],['architect','Arkitek','Architect','dkXcL1v'],
+            ['pilot','Juruterbang','Pilot','2dDABFA'],['firefighter','Ahli Bomba','Firefighter','ioV0A7D'],['artist','Pelukis','Artist','XueDbsm'],
+            ['reporter','Wartawan','Reporter','d1sERsG'],['farmer','Petani','Farmer','w9ljsfb'],['lawyer','Peguam','Lawyer','cgH6zbQ'],
+            ['barber','Tukang Gunting Rambut','Barber','zRQmoI0'],['cashier','Juruwang','Cashier','5LEgfaj']
+        ].map(([id,ms,en,img])=>({id,ms,en,img:'https://i.imgur.com/'+img+'.jpeg'}));
+        const jobsName=j=>currentGlobalLang==='ms'?j.ms:j.en;
+        const jobsShuffle=a=>[...a].sort(()=>Math.random()-.5);
+        let jobsLearnIndex=0,jobsQuizMode='',jobsQuizOrder=[],jobsSet=0,jobsAnswered=0,jobsQuizToken=0,jobsTimer=0;
+        function openJobsMenu(){jobsQuizToken++;clearTimeout(jobsTimer);document.getElementById('jobs-pop').hidden=true;showScreen('jobs-menu-screen');document.getElementById('jobs-menu-title').textContent=currentGlobalLang==='ms'?'Pekerjaan & Profesion 👩‍⚕️':'Jobs & Profession 👩‍⚕️';document.getElementById('jobs-menu-desc').textContent=currentGlobalLang==='ms'?'Pilih aktiviti pekerjaan!':'Choose an activity!'}
+        function jobsSpeak(j){
+            if(!('speechSynthesis' in window))return;
+            speechSynthesis.cancel();
+            const u=new SpeechSynthesisUtterance(jobsName(j));u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.75;
+            speechSynthesis.speak(u);
+        }
+        function startJobsLearn(){jobsLearnIndex=0;showScreen('jobs-learn-screen');renderJobsLearn();speakCurrentJob()}
+        function renderJobsLearn(){
+            const j=jobsData[jobsLearnIndex];
+            document.getElementById('jobs-learn-title').textContent=currentGlobalLang==='ms'?'Kenali Pekerjaan':'Jobs';
+            document.getElementById('jobs-progress').textContent=(jobsLearnIndex+1)+' / '+jobsData.length;
+            document.getElementById('jobs-letter').textContent=jobsName(j).charAt(0);
+            document.getElementById('jobs-image').src=j.img;
+            document.getElementById('jobs-caption').textContent=jobsName(j);
+            document.getElementById('jobs-prev').style.display=jobsLearnIndex?'inline-block':'none';
+            document.getElementById('jobs-next').textContent=jobsLearnIndex===jobsData.length-1?(currentGlobalLang==='ms'?'Tamat 🏁':'Finish 🏁'):'Next ➡';
+        }
+        function speakCurrentJob(){jobsSpeak(jobsData[jobsLearnIndex])}
+        function moveJobsLearn(delta){if(delta>0&&jobsLearnIndex===jobsData.length-1){openJobsMenu();return}jobsLearnIndex=Math.max(0,jobsLearnIndex+delta);renderJobsLearn();speakCurrentJob()}
+        function startJobsQuiz(mode){
+            jobsQuizToken++;clearTimeout(jobsTimer);jobsQuizMode=mode;jobsQuizOrder=jobsShuffle(jobsData).slice(0,12);jobsSet=0;
+            showScreen('jobs-quiz-screen');renderJobsSet();
+        }
+        function renderJobsSet(){
+            const token=jobsQuizToken; jobsAnswered=0;
+            const grid=document.getElementById('jobs-quiz-grid');grid.replaceChildren();
+            document.getElementById('jobs-quiz-title').textContent=jobsQuizMode==='choose'?(currentGlobalLang==='ms'?'Pilih Pekerjaan Yang Betul':'Choose the Correct Job'):(currentGlobalLang==='ms'?'Siapakah Saya?':'Who Am I?');
+            document.getElementById('jobs-quiz-status').textContent=(currentGlobalLang==='ms'?'Set':'Set')+' '+(jobsSet+1)+'/3 · '+(currentGlobalLang==='ms'?'4 soalan':'4 questions');
+            jobsQuizOrder.slice(jobsSet*4,jobsSet*4+4).forEach(target=>{
+                const card=document.createElement('div');card.className='transport-guess-card '+(jobsQuizMode==='choose'?'jobs-choose-card':'jobs-who-card');
+                const options=jobsShuffle([target,...jobsShuffle(jobsData.filter(x=>x.id!==target.id)).slice(0,2)]);
+                if(jobsQuizMode==='choose'){
+                    const prompt=document.createElement('div');prompt.className='jobs-prompt';prompt.textContent=jobsName(target);card.appendChild(prompt);
+                    options.forEach(choice=>{
+                        const b=document.createElement('button');b.className='jobs-pick';b.setAttribute('aria-label',jobsName(choice));
+                        const img=document.createElement('img');img.src=choice.img;img.alt=jobsName(choice);b.appendChild(img);
+                        b.onclick=()=>answerJobs(card,target,choice,b,token);card.appendChild(b);
+                    });
+                }else{
+                    const img=document.createElement('img');img.className='transport-guess-img';img.src=target.img;img.alt=currentGlobalLang==='ms'?'Pekerjaan apakah ini?':'What job is this?';card.appendChild(img);
+                    const opts=document.createElement('div');opts.className='transport-guess-options';
+                    options.forEach(choice=>{
+                        const b=document.createElement('button');b.className='transport-guess-option';b.textContent='☐ '+jobsName(choice);
+                        b.onclick=()=>answerJobs(card,target,choice,b,token);opts.appendChild(b);
+                    });card.appendChild(opts);
+                }
+                grid.appendChild(card);
+            });
+        }
+        function answerJobs(card,target,choice,button,token){
+            if(token!==jobsQuizToken||card.classList.contains('answered'))return;
+            if(choice.id!==target.id){playWrongSound();button.classList.add('wrong');return}
+            card.classList.add('answered');button.classList.add('correct');playCorrectSound();jobsAnswered++;
+            const pop=document.getElementById('jobs-pop');document.getElementById('jobs-pop-image').src=target.img;document.getElementById('jobs-pop-name').textContent=jobsName(target);pop.hidden=false;
+            jobsSpeak(target);
+            jobsTimer=setTimeout(()=>{
+                if(token!==jobsQuizToken)return;
+                pop.hidden=true;
+                if(jobsAnswered===4){
+                    if(jobsSet===2){alert(currentGlobalLang==='ms'?'🎉 Selesai!':'🎉 Well done!');openJobsMenu()}
+                    else{jobsSet++;renderJobsSet()}
+                }else if(window.innerWidth<=768){
+                    const next=[...document.querySelectorAll('#jobs-quiz-grid .transport-guess-card')].find(el=>!el.classList.contains('answered'));
+                    if(next)next.scrollIntoView({behavior:'smooth',block:'center'});
+                }
+            },2300);
         }
 
     </script>
