@@ -8242,8 +8242,8 @@
         // Column arithmetic has its own session state; other Number activities are untouched.
         let columnMode='addition', columnQuestions=[], columnIndex=0, columnScore=0, columnLocked=false, columnTimer=null;
         const columnCopy={
-            en:{addition:'Addition ➕',subtraction:'Subtraction ➖',choose:'Choose the number of questions',back:'Back ↩️',question:'Question',instruction:'Start with the ones on the right, then answer the tens on the left.',carry:'Carry',ones:'Enter the ones result first.',tens:'Now enter the tens digit.',check:'Check ✅',fill:'Complete both answer boxes first.',well:'Well done! 🎉',wrong:'The correct answer is',correct:'Make a correction 🔄',next:'Next ➡',done:'All done! 🎉',score:'Score'},
-            ms:{addition:'Tambah ➕',subtraction:'Tolak ➖',choose:'Pilih bilangan soalan',back:'Kembali ↩️',question:'Soalan',instruction:'Jawab nilai sa di sebelah kanan dahulu, kemudian nilai puluh di sebelah kiri.',carry:'Bawa',ones:'Isi hasil nilai sa dahulu.',tens:'Sekarang isi digit nilai puluh.',check:'Semak ✅',fill:'Lengkapkan kedua-dua kotak jawapan dahulu.',well:'Syabas! 🎉',wrong:'Jawapan yang betul ialah',correct:'Buat pembetulan 🔄',next:'Seterusnya ➡',done:'Selesai! 🎉',score:'Skor'}
+            en:{addition:'Addition ➕',subtraction:'Subtraction ➖',choose:'Choose the number of questions',back:'Back ↩️',question:'Question',instruction:'Start with the ones on the right, then answer the tens on the left.',carry:'Carry',ones:'Enter the ones result first.',tens:'Now enter the tens digit.',check:'Check ✅',fill:'Complete both answer boxes first.',well:'Well done! 🎉',wrong:'The correct answer is',correct:'Make a correction 🔄',next:'Next ➡',done:'All done! 🎉',score:'Score',home:'Back to Home 🏠'},
+            ms:{addition:'Tambah ➕',subtraction:'Tolak ➖',choose:'Pilih bilangan soalan',back:'Kembali ↩️',question:'Soalan',instruction:'Jawab nilai sa di sebelah kanan dahulu, kemudian nilai puluh di sebelah kiri.',carry:'Bawa',ones:'Isi hasil nilai sa dahulu.',tens:'Sekarang isi digit nilai puluh.',check:'Semak ✅',fill:'Lengkapkan kedua-dua kotak jawapan dahulu.',well:'Syabas! 🎉',wrong:'Jawapan yang betul ialah',correct:'Buat pembetulan 🔄',next:'Seterusnya ➡',done:'Selesai! 🎉',score:'Skor',home:'Kembali ke Home 🏠'}
         };
         const columnText=()=>columnCopy[getNum123Lang()];
         function updateColumnLanguage(){
@@ -8331,14 +8331,18 @@
             const box=document.getElementById('column-modal-actions');box.replaceChildren();
             actions.forEach(([label,action])=>{const btn=document.createElement('button');btn.className='action-btn';btn.textContent=label;btn.onclick=action;box.appendChild(btn)});
             document.getElementById('column-modal').hidden=false;
+            // Read the feedback aloud in the currently selected language.
+            const spoken=answer ? `${title.replace(/[❌🎉]/g,'')}. ${answer}` : title.replace(/[🎉]/g,'');
+            speakText123(spoken,.8);
         }
         function retryColumnMath(){renderColumnMath();}
         function nextColumnMath(){
+            if(window.speechSynthesis)window.speechSynthesis.cancel();
             clearTimeout(columnTimer);document.getElementById('column-modal').hidden=true;
             if(++columnIndex<columnQuestions.length){renderColumnMath();return;}
             const t=columnText(),percent=Math.round(columnScore/columnQuestions.length*100);
             if(window.saveScoreToFirebase)window.saveScoreToFirebase(columnMode==='addition'?'Addition':'Subtraction',percent);
-            showColumnModal(t.done,`${t.score}: ${columnScore}/${columnQuestions.length}`,[[t.back,open123Menu]]);
+            showColumnModal(t.done,`${t.score}: ${columnScore}/${columnQuestions.length}`,[[t.back,()=>{document.getElementById('column-modal').hidden=true;if(window.speechSynthesis)window.speechSynthesis.cancel();open123Menu()}]]);
         }
         const numberWords123 = {
             en: ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen','Twenty'],
