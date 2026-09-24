@@ -4784,6 +4784,15 @@
             #jobs-quiz-screen.jobs-choose-mode .jobs-pick img{width:100%;height:clamp(145px,42vw,225px);object-fit:contain}
         }
 
+        /* Column arithmetic */
+        .column-board{width:min(100%,350px);margin:16px auto;padding:16px 28px;background:#fffaf0;border:4px solid #b9a4f7;border-radius:24px;box-shadow:0 9px 0 #ded2fb;color:#272052;font-family:Arial,sans-serif;font-weight:900}
+        .column-row,.column-carry-row{display:grid;grid-template-columns:repeat(3,1fr);align-items:center;text-align:center;gap:6px;min-height:64px;font-size:clamp(2rem,10vw,3.6rem)}
+        .column-carry-row{min-height:48px;font-size:1rem;color:#754ab3}.column-carry{font-size:1.7rem;border:2px dashed #ad94d5;border-radius:10px;background:#eee5ff}
+        .column-bottom{border-bottom:5px solid #272052}.column-answer{padding-top:10px}.column-answer input{width:100%;height:62px;border:3px solid #8360d7;border-radius:13px;text-align:center;font-size:2rem;font-weight:900;color:#272052;background:white;appearance:textfield}
+        .column-answer input:disabled{background:#f2edff}.column-answer input::-webkit-inner-spin-button,.column-answer input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+        .column-instruction,.column-hint{font-weight:800;color:#343051}.column-hint{min-height:28px}
+        .column-overlay[hidden]{display:none}.column-overlay{position:fixed;inset:0;background:rgba(28,19,55,.55);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px}
+        .column-dialog{width:min(100%,430px);padding:28px 20px;background:#fff8df;border:5px solid #ad83e5;border-radius:28px;text-align:center;box-shadow:0 16px 50px #22134266}.column-dialog h2{color:#572fa8;font-family:'Fredoka One',cursive}.column-dialog p{font-size:1.2rem;font-weight:800;color:#353052}.column-dialog .action-btn{margin:8px}
     </style>
 </head>
 <body class="login-mode">
@@ -5165,10 +5174,39 @@
                     <button class="num123-menu-btn" onclick="playClickSound(); openTakingAwayCountScreen()" aria-label="Taking Away">
                         <img src="https://i.imgur.com/JPautVP.jpeg" alt="Taking Away">
                     </button>
+                    <button class="num123-menu-btn" onclick="playClickSound(); openColumnMath('addition')" aria-label="Addition"><img src="https://i.imgur.com/CbOQujc.jpeg" alt="Addition"></button>
+                    <button class="num123-menu-btn" onclick="playClickSound(); openColumnMath('subtraction')" aria-label="Subtraction"><img src="https://i.imgur.com/HoZ9lCi.jpeg" alt="Subtraction"></button>
                 </div>
                 <button class="action-btn home-btn" id="num123-home-btn" onclick="playClickSound(); navigateTo('home-screen')">Back to Home 🏠</button>
             </div>
 
+            <!-- COLUMN ADDITION AND SUBTRACTION -->
+            <div id="column-count-screen" class="card">
+                <h2 id="column-count-title">Addition ➕</h2>
+                <p id="column-count-prompt" style="font-weight:900">Choose the number of questions</p>
+                <div class="question-count-grid">
+                    <button class="count-btn" onclick="startColumnMath(5)">5</button><button class="count-btn" onclick="startColumnMath(10)">10</button>
+                    <button class="count-btn" onclick="startColumnMath(15)">15</button><button class="count-btn" onclick="startColumnMath(20)">20</button>
+                </div>
+                <button class="action-btn home-btn" onclick="open123Menu()" id="column-count-back">Back ↩️</button>
+            </div>
+            <div id="column-math-screen" class="card">
+                <h2 id="column-math-title">Addition ➕</h2>
+                <div class="num-progress-pill" id="column-progress"></div>
+                <p id="column-instruction" class="column-instruction"></p>
+                <div class="column-board">
+                    <div class="column-carry-row"><span id="column-carry-label">Carry</span><span id="column-carry" class="column-carry">–</span><span></span></div>
+                    <div class="column-row"><span></span><span id="column-top-ten"></span><span id="column-top-one"></span></div>
+                    <div class="column-row column-bottom"><span id="column-sign"></span><span id="column-bottom-ten"></span><span id="column-bottom-one"></span></div>
+                    <div class="column-row column-answer"><span id="column-hundred">&nbsp;</span><input id="column-tens" type="number" inputmode="numeric" min="0" max="9" aria-label="Tens" disabled><input id="column-ones" type="number" inputmode="numeric" min="0" max="18" aria-label="Ones result" oninput="columnOnesChanged()"></div>
+                </div>
+                <p id="column-hint" class="column-hint"></p>
+                <button id="column-check" class="action-btn" onclick="checkColumnMath()">Check ✅</button>
+                <button class="action-btn home-btn" id="column-back" onclick="open123Menu()">Back ↩️</button>
+            </div>
+            <div id="column-modal" class="column-overlay" role="dialog" aria-modal="true" aria-labelledby="column-modal-title" hidden>
+                <div class="column-dialog"><h2 id="column-modal-title"></h2><p id="column-modal-answer"></p><div id="column-modal-actions"></div></div>
+            </div>
             <!-- 123 TRACING SCREEN -->
             <div id="num123-tracing-screen" class="card">
                 <h2 style="color:#ffff00;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #5E17EB;">123 Tracing ✏️</h2>
@@ -8199,6 +8237,94 @@
         /* =========================================================
            JAVASCRIPT MODUL 123
         ========================================================== */
+
+        // Column arithmetic has its own session state; other Number activities are untouched.
+        let columnMode='addition', columnQuestions=[], columnIndex=0, columnScore=0, columnLocked=false, columnTimer=null;
+        const columnCopy={
+            en:{addition:'Addition ➕',subtraction:'Subtraction ➖',choose:'Choose the number of questions',back:'Back ↩️',question:'Question',instruction:'Start with the ones on the right, then answer the tens on the left.',carry:'Carry',ones:'Enter the ones result first.',tens:'Now enter the tens digit.',check:'Check ✅',fill:'Complete both answer boxes first.',well:'Well done! 🎉',wrong:'The correct answer is',correct:'Make a correction 🔄',next:'Next ➡',done:'All done! 🎉',score:'Score'},
+            ms:{addition:'Tambah ➕',subtraction:'Tolak ➖',choose:'Pilih bilangan soalan',back:'Kembali ↩️',question:'Soalan',instruction:'Jawab nilai sa di sebelah kanan dahulu, kemudian nilai puluh di sebelah kiri.',carry:'Bawa',ones:'Isi hasil nilai sa dahulu.',tens:'Sekarang isi digit nilai puluh.',check:'Semak ✅',fill:'Lengkapkan kedua-dua kotak jawapan dahulu.',well:'Syabas! 🎉',wrong:'Jawapan yang betul ialah',correct:'Buat pembetulan 🔄',next:'Seterusnya ➡',done:'Selesai! 🎉',score:'Skor'}
+        };
+        const columnText=()=>columnCopy[getNum123Lang()];
+        function updateColumnLanguage(){
+            const t=columnText(), title=t[columnMode];
+            for(const id of ['column-count-title','column-math-title']) document.getElementById(id).textContent=title;
+            document.getElementById('column-count-prompt').textContent=t.choose;
+            document.getElementById('column-count-back').textContent=t.back;
+            document.getElementById('column-back').textContent=t.back;
+            document.getElementById('column-instruction').textContent=t.instruction;
+            document.getElementById('column-carry-label').textContent=t.carry;
+            document.getElementById('column-check').textContent=t.check;
+            if(columnQuestions.length) document.getElementById('column-progress').textContent=`${t.question} ${columnIndex+1} / ${columnQuestions.length} · ⭐ ${columnScore}`;
+        }
+        function openColumnMath(mode){
+            clearTimeout(columnTimer);document.getElementById('column-modal').hidden=true;
+            columnMode=mode;columnQuestions=[];updateColumnLanguage();showScreen('column-count-screen');
+        }
+        function startColumnMath(count){
+            const bank=[];
+            if(columnMode==='addition'){
+                for(let a=10;a<=89;a++)for(let b=1;b<=99;b++)if(a+b<=99 && (b<10||b>=10))bank.push({a,b});
+            }else{
+                for(let a=10;a<=99;a++)for(let b=1;b<=9;b++)if(a%10>=b)bank.push({a,b});
+            }
+            for(let i=bank.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bank[i],bank[j]]=[bank[j],bank[i]];}
+            columnQuestions=bank.slice(0,count);columnIndex=0;columnScore=0;
+            showScreen('column-math-screen');renderColumnMath();
+        }
+        function renderColumnMath(){
+            columnLocked=false;document.getElementById('column-modal').hidden=true;
+            const {a,b}=columnQuestions[columnIndex],t=columnText();
+            updateColumnLanguage();
+            document.getElementById('column-top-ten').textContent=Math.floor(a/10);
+            document.getElementById('column-top-one').textContent=a%10;
+            document.getElementById('column-bottom-ten').textContent=b>=10?Math.floor(b/10):'';
+            document.getElementById('column-bottom-one').textContent=b%10;
+            document.getElementById('column-sign').textContent=columnMode==='addition'?'+':'−';
+            document.getElementById('column-carry').textContent='–';
+            document.getElementById('column-hundred').innerHTML='&nbsp;';
+            const ones=document.getElementById('column-ones'),tens=document.getElementById('column-tens');
+            ones.value='';tens.value='';ones.disabled=false;tens.disabled=true;
+            document.getElementById('column-hint').textContent=t.ones;
+            document.getElementById('column-check').disabled=false;
+            document.getElementById('column-math-screen').scrollIntoView({block:'start'});
+        }
+        function columnOnesChanged(){
+            if(columnLocked)return;
+            const input=document.getElementById('column-ones'),raw=input.value;
+            const valid=/^\d{1,2}$/.test(raw)&&Number(raw)<=18;
+            const carry=columnMode==='addition' && valid ? Math.floor(Number(raw)/10):0;
+            document.getElementById('column-carry').textContent=carry||'–';
+            document.getElementById('column-tens').disabled=!valid;
+            document.getElementById('column-hint').textContent=valid?columnText().tens:columnText().ones;
+            if(valid && raw.length===2)document.getElementById('column-tens').focus();
+        }
+        function checkColumnMath(){
+            if(columnLocked)return;
+            const t=columnText(),ones=document.getElementById('column-ones'),tens=document.getElementById('column-tens');
+            if(tens.disabled || !/^\d$/.test(tens.value)) {document.getElementById('column-hint').textContent=t.fill;return;}
+            const {a,b}=columnQuestions[columnIndex],right=columnMode==='addition'?(a%10+b%10):(a%10-b%10),carry=Math.floor(Number(ones.value)/10);
+            const expected=columnMode==='addition'?a+b:a-b;
+            const entered=(Math.floor(a/10)+(columnMode==='addition'?Math.floor(b/10)+carry:0)>9?100:0)+Number(tens.value)*10+Number(ones.value)%10;
+            const correct=Number(ones.value)===right && entered===expected;
+            columnLocked=true;document.getElementById('column-check').disabled=true;
+            if(correct){columnScore++;showColumnModal(t.well,'',[]);columnTimer=setTimeout(nextColumnMath,1200);}
+            else showColumnModal('❌ '+t.wrong,`${a} ${columnMode==='addition'?'+':'−'} ${b} = ${expected}`,[[t.correct,retryColumnMath],[t.next,nextColumnMath]]);
+        }
+        function showColumnModal(title,answer,actions){
+            document.getElementById('column-modal-title').textContent=title;
+            document.getElementById('column-modal-answer').textContent=answer;
+            const box=document.getElementById('column-modal-actions');box.replaceChildren();
+            actions.forEach(([label,action])=>{const btn=document.createElement('button');btn.className='action-btn';btn.textContent=label;btn.onclick=action;box.appendChild(btn)});
+            document.getElementById('column-modal').hidden=false;
+        }
+        function retryColumnMath(){renderColumnMath();}
+        function nextColumnMath(){
+            clearTimeout(columnTimer);document.getElementById('column-modal').hidden=true;
+            if(++columnIndex<columnQuestions.length){renderColumnMath();return;}
+            const t=columnText(),percent=Math.round(columnScore/columnQuestions.length*100);
+            if(window.saveScoreToFirebase)window.saveScoreToFirebase(columnMode==='addition'?'Addition':'Subtraction',percent);
+            showColumnModal(t.done,`${t.score}: ${columnScore}/${columnQuestions.length}`,[[t.back,open123Menu]]);
+        }
         const numberWords123 = {
             en: ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen','Twenty'],
             ms: ['Sifar','Satu','Dua','Tiga','Empat','Lima','Enam','Tujuh','Lapan','Sembilan','Sepuluh','Sebelas','Dua belas','Tiga belas','Empat belas','Lima belas','Enam belas','Tujuh belas','Lapan belas','Sembilan belas','Dua puluh']
@@ -8249,6 +8375,7 @@
             if(document.getElementById('taking-away-count-screen')?.classList.contains('active')) openTakingAwayCountScreen();
             if(document.getElementById('taking-away-screen')?.classList.contains('active') && takeAwaySession.length) renderTakeAwayQuestion();
             if(document.getElementById('find123-screen')?.classList.contains('active') && find123Questions.length) renderFind123();
+            if(document.getElementById('column-count-screen')?.classList.contains('active') || document.getElementById('column-math-screen')?.classList.contains('active')) updateColumnLanguage();
         }
 
         function open123Menu(){ window.speechSynthesis && window.speechSynthesis.cancel(); updateNumberLanguage(); showScreen('num123-menu-screen'); }
@@ -9062,6 +9189,7 @@
                 'bijak-suku-kata-screen',
                 'bijak-suku-kata-2-screen',
                 'match123-screen',
+                'column-math-screen',
                 'lets-count-screen',
                 'find123-screen',
                 'pop-balloon-screen',
