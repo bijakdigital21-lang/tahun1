@@ -4594,26 +4594,25 @@
             }
             #sort-food-screen .transport-zone-title { font-size: .78rem !important; }
         }
-
-        /* Larger category names with muted picture hints inside sorting boxes. */
+        /* Large, soft category icons inside the answer boxes for these two sorting activities. */
         #sort-transport-screen .transport-sort-zone,
         #sort-food-screen .transport-sort-zone {
             position: relative;
-            overflow: hidden;
             isolation: isolate;
+            overflow: hidden;
         }
         #sort-transport-screen .transport-sort-zone::before,
         #sort-food-screen .transport-sort-zone::before {
             position: absolute;
             left: 50%;
-            top: 52%;
+            top: 53%;
             transform: translate(-50%, -50%);
-            font-size: clamp(4.5rem, 10vw, 8rem);
+            font-size: clamp(4.5rem, 10vw, 8.5rem);
             line-height: 1;
-            opacity: .15;
-            filter: blur(1.5px) grayscale(.3);
+            opacity: .18;
+            filter: blur(3px);
             pointer-events: none;
-            z-index: 0;
+            z-index: -1;
         }
         #sort-transport-screen [data-cat="land"]::before { content: "🚗"; }
         #sort-transport-screen [data-cat="air"]::before { content: "✈️"; }
@@ -4622,22 +4621,21 @@
         #sort-food-screen [data-cat="vegetable"]::before { content: "🥕"; }
         #sort-transport-screen .transport-zone-title,
         #sort-food-screen .transport-zone-title {
+            font-size: 1.5rem !important;
+            line-height: 1.15 !important;
             position: relative;
             z-index: 1;
-            font-size: 1.55rem !important;
-            line-height: 1.15 !important;
-            white-space: normal !important;
-            overflow-wrap: anywhere;
         }
-        #sort-transport-screen .transport-zone-items,
-        #sort-food-screen .transport-zone-items { position: relative; z-index: 1; }
         @media (max-width: 768px) {
-            #sort-transport-screen .transport-zone-title { font-size: clamp(1.05rem, 3.7vw, 1.4rem) !important; }
-            #sort-food-screen .transport-zone-title { font-size: clamp(1.15rem, 4vw, 1.5rem) !important; }
-            #sort-transport-screen .transport-sort-zone::before,
-            #sort-food-screen .transport-sort-zone::before { font-size: clamp(4rem, 17vw, 6rem); }
+            #sort-transport-screen .transport-zone-title { font-size: 1.05rem !important; }
+            #sort-food-screen .transport-zone-title { font-size: 1.2rem !important; }
+            #sort-transport-screen .transport-sort-zone::before { font-size: clamp(3.5rem, 13vw, 6rem); }
+            #sort-food-screen .transport-sort-zone::before { font-size: clamp(5rem, 19vw, 7rem); }
         }
-
+        @media (max-width: 430px) {
+            #sort-transport-screen .transport-zone-title { font-size: .91rem !important; }
+            #sort-food-screen .transport-zone-title { font-size: 1rem !important; }
+        }
         /* Teks yang terletak terus di atas background bercorak. */
         .home-intro-title,
         .home-intro-subtitle,
@@ -5802,8 +5800,8 @@
                 </div>
                 <div class="transport-sort-bank" id="food-sort-bank"></div>
                 <div class="transport-sort-zones" style="grid-template-columns:repeat(2,minmax(0,1fr));">
-                    <div class="transport-sort-zone food-sort-zone" data-cat="fruit"><div class="transport-zone-title" id="food-zone-fruit">Fruit</div><div class="transport-zone-items"></div></div>
-                    <div class="transport-sort-zone food-sort-zone" data-cat="vegetable"><div class="transport-zone-title" id="food-zone-vegetable">Vegetable</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone food-sort-zone" data-cat="fruit"><div class="transport-zone-title" id="food-zone-fruit">🍎 Fruit</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone food-sort-zone" data-cat="vegetable"><div class="transport-zone-title" id="food-zone-vegetable">🥕 Vegetable</div><div class="transport-zone-items"></div></div>
                 </div>
                 <div class="transport-feedback" id="sort-food-feedback"></div>
                 <button class="action-btn home-btn" id="sort-food-back" onclick="playClickSound(); openFoodMenu()">Back ↩️</button>
@@ -5863,9 +5861,9 @@
                 </div>
                 <div class="transport-sort-bank" id="transport-sort-bank"></div>
                 <div class="transport-sort-zones">
-                    <div class="transport-sort-zone" data-cat="land"><div class="transport-zone-title" id="transport-zone-land">Land</div><div class="transport-zone-items"></div></div>
-                    <div class="transport-sort-zone" data-cat="air"><div class="transport-zone-title" id="transport-zone-air">Air</div><div class="transport-zone-items"></div></div>
-                    <div class="transport-sort-zone" data-cat="water"><div class="transport-zone-title" id="transport-zone-water">Water</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone" data-cat="land"><div class="transport-zone-title" id="transport-zone-land">🚗 Land</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone" data-cat="air"><div class="transport-zone-title" id="transport-zone-air">✈️ Air</div><div class="transport-zone-items"></div></div>
+                    <div class="transport-sort-zone" data-cat="water"><div class="transport-zone-title" id="transport-zone-water">🚢 Water</div><div class="transport-zone-items"></div></div>
                 </div>
                 <div class="transport-feedback" id="sort-transport-feedback"></div>
                 <button class="action-btn" id="sort-transport-next" style="display:none;background:var(--primary-green);box-shadow:0 5px 0 #4d9d31;" onclick="playClickSound(); nextSortTransportSet()">Next Set ➡</button>
@@ -8463,7 +8461,9 @@
             const el=document.createElement('span'); el.className='addup-object'; el.textContent=fruit; el.dataset.q=q;
             el.onclick=()=>{
                 if(el.classList.contains('counted')) return;
-                el.classList.add('counted'); addUpCountState[q]=(addUpCountState[q]||0)+1;
+                el.classList.add('counted');
+                const total=addUpSets[addUpSetIndex][q][0]+addUpSets[addUpSetIndex][q][1];
+                addUpCountState[q]=((addUpCountState[q]||0)%total)+1;
                 speakText123(getNum123Words()[addUpCountState[q]] || String(addUpCountState[q]),.55);
                 setTimeout(()=>el.classList.remove('counted'),260);
             };
@@ -10765,8 +10765,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 'sort-food-title':ms?'Buah atau Sayur? 🍎🥕':'Fruit or Vegetable? 🍎🥕',
                 'sort-food-desc':ms?'Seret semua 4 gambar sebenar ke dalam kotak yang betul.':'Drag all 4 real pictures into the correct box.',
                 'sort-food-set-label':'Set','sort-food-left-label':ms?'Baki':'Left',
-                'food-zone-fruit':ms?'Buah':'Fruit',
-                'food-zone-vegetable':ms?'Sayur':'Vegetable',
+                'food-zone-fruit':ms?'🍎 Buah':'🍎 Fruit',
+                'food-zone-vegetable':ms?'🥕 Sayur':'🥕 Vegetable',
                 'sort-food-back':'Back ↩️'
             };
             Object.entries(map).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.innerText=value;});
@@ -10908,9 +10908,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 'sort-transport-desc': ms ? 'Seret semua 5 gambar kenderaan ke dalam kotak yang betul.' : 'Drag all 5 transport pictures into the correct box.',
                 'sort-transport-set-label': ms ? 'Set' : 'Set',
                 'sort-transport-left-label': ms ? 'Baki' : 'Left',
-                'transport-zone-land': ms ? 'Darat' : 'Land',
-                'transport-zone-air': ms ? 'Udara' : 'Air',
-                'transport-zone-water': ms ? 'Air' : 'Water',
+                'transport-zone-land': ms ? '🚗 Darat' : '🚗 Land',
+                'transport-zone-air': ms ? '✈️ Udara' : '✈️ Air',
+                'transport-zone-water': ms ? '🚢 Air' : '🚢 Water',
                 'sort-transport-next': ms ? 'Next Set ➡' : 'Next Set ➡',
                 'sort-transport-back': ms ? 'Back ↩️' : 'Back ↩️',
                 'guess-transport-title': ms ? 'Teka Pengangkutan ✅' : 'Guess the Transport ✅',
