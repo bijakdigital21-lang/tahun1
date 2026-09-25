@@ -5095,7 +5095,7 @@
         .matching-eyelet {
             position:absolute; top:50%; width:21px; height:21px;
             transform:translateY(-50%); border-radius:50%;
-            pointer-events:none; z-index:30;
+            pointer-events:auto; z-index:30;
             background:radial-gradient(circle at 48% 50%, #30251b 0 23%, #0e0d0b 27%,
                 #5a5852 33%, #f7f2e7 44%, #a5a29a 58%, #54514b 70%, #292521 83%);
             box-shadow:0 2px 4px rgba(0,0,0,.5),inset 0 1px 2px #fff9;
@@ -7541,13 +7541,7 @@
                 div.dataset.side = "left";
 
                 const audioBtn = div.querySelector('.match-animal-audio-btn');
-                audioBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
-                audioBtn.addEventListener('pointerup', (e) => e.stopPropagation());
-                audioBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    playMatchAnimalNameAudio(item);
-                });
+                bindMatchingAudio(audioBtn,()=>playMatchAnimalNameAudio(item));
 
                 leftCol.appendChild(div);
             });
@@ -7693,6 +7687,19 @@
             // Elak pelayar menganggap gerakan pertama sebagai scroll atau drag gambar.
             if(e.cancelable)e.preventDefault();
             captureMatchPointer(e);
+        }
+        function bindMatchingAudio(button, speak) {
+            let lastPointerAudio=0;
+            button.addEventListener('pointerdown',()=>{
+                lastPointerAudio=Date.now();
+                speak();
+                // Biarkan acara naik ke papan supaya sentuhan ini juga boleh diseret.
+            });
+            button.addEventListener('click',e=>{
+                e.preventDefault();e.stopPropagation();
+                // Klik papan kekunci masih menyebut perkataan; sentuhan tidak berganda.
+                if(Date.now()-lastPointerAudio>700)speak();
+            });
         }
         function syncMatchingEyelets(wrapper) {
             if(!wrapper)return;
@@ -9353,9 +9360,7 @@
                 div.dataset.key=c.en; div.dataset.side='left';
                 div.innerHTML=`<span class="match-colour-name">${colourName(c)}</span><button type="button" class="match-colour-audio-btn" aria-label="Listen">🔊</button>`;
                 const audio=div.querySelector('.match-colour-audio-btn');
-                audio.addEventListener('pointerdown',e=>e.stopPropagation());
-                audio.addEventListener('pointerup',e=>e.stopPropagation());
-                audio.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();speakColourText(colourName(c));});
+                bindMatchingAudio(audio,()=>speakColourText(colourName(c)));
                 left.appendChild(div);
             });
 
@@ -9480,7 +9485,7 @@
             document.getElementById('match-body-score').innerText=matchBodyScoreCount;
             document.getElementById('match-body-next-btn').style.display='none';
             const items=matchBodyGameData[currentMatchBodyPageIdx],left=document.getElementById('match-body-left-column'),right=document.getElementById('match-body-right-column');left.innerHTML='';right.innerHTML='';
-            bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';const name=bodyText(item);d.innerHTML=`<span class="match-body-name">${name}</span><button type="button" class="match-body-audio-btn" aria-label="Listen to ${name}" title="Listen / Dengar">🔊</button>`;d.dataset.id=item.id;d.dataset.side='left';const b=d.querySelector('.match-body-audio-btn');b.addEventListener('pointerdown',e=>e.stopPropagation());b.addEventListener('pointerup',e=>e.stopPropagation());b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();speakBody(bodyText(item))});left.appendChild(d)});
+            bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';const name=bodyText(item);d.innerHTML=`<span class="match-body-name">${name}</span><button type="button" class="match-body-audio-btn" aria-label="Listen to ${name}" title="Listen / Dengar">🔊</button>`;d.dataset.id=item.id;d.dataset.side='left';const b=d.querySelector('.match-body-audio-btn');bindMatchingAudio(b,()=>speakBody(bodyText(item)));left.appendChild(d)});
             bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';d.innerHTML=`<img src="${item.img}" alt="${bodyText(item)}">`;d.dataset.id=item.id;d.dataset.side='right';right.appendChild(d)});
             setTimeout(resizeBodyCanvas,50);
         }
@@ -11092,7 +11097,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             function pos(e,wrap){const r=wrap.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
             function down(e){
-                if(e.target.closest('.shape-match-audio-btn')) return;
                 const item=matchItemAtPointer(e,elements().wrap,'.shape-match-item[data-side]');
                 if(!item||item.classList.contains('matched')||!item.dataset.side)return;
                 beginMatchTouch(e);state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
@@ -11167,9 +11171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const name=shapeText(item);
                 d.innerHTML=`<span class="match-shape-name">${name}</span><button type="button" class="shape-match-audio-btn" aria-label="${currentGlobalLang==='ms'?'Dengar':'Listen'} ${name}" title="Listen / Dengar">🔊</button>`;
                 const audioBtn=d.querySelector('.shape-match-audio-btn');
-                audioBtn.addEventListener('pointerdown',e=>e.stopPropagation());
-                audioBtn.addEventListener('pointerup',e=>e.stopPropagation());
-                audioBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();speakShapeItem(item);});
+                bindMatchingAudio(audioBtn,()=>speakShapeItem(item));
                 l.appendChild(d);
             });
             shapeShuffle(items).forEach(item=>{
