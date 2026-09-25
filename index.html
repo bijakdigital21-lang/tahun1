@@ -7590,14 +7590,7 @@
         }
 
         function playMatchAnimalNameAudio(item) {
-            if (!item || !('speechSynthesis' in window)) return;
-
-            const textToSpeak = currentGlobalLang === 'en' ? item.en : item.bm;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
-            utterance.rate = 0.4;
-            window.speechSynthesis.speak(utterance);
+            if(item)speakMatchingLabel(currentGlobalLang==='en'?item.en:item.bm);
         }
 
         function handleAnimalPointerDown(e) {
@@ -7606,7 +7599,8 @@
 
             {
                 beginMatchTouch(e);
-                playClickSound();
+                if(target.dataset.side==='left')target._speakMatchingName?.();
+                else playClickSound();
                 activeDragAnimal = target;
                 isDraggingAnimal = true;
                 target.classList.add("selected");
@@ -7726,17 +7720,37 @@
         }
         function bindMatchingAudio(button, speak) {
             let lastPointerAudio=0;
+            button.parentElement._speakMatchingName=speak;
             button.addEventListener('pointerdown',e=>{
                 // Speaker hanya memainkan audio, tanpa memulakan suaian.
                 e.stopPropagation();
                 lastPointerAudio=Date.now();
                 speak();
             });
+            button.addEventListener('touchstart',e=>{
+                e.stopPropagation();
+                if(Date.now()-lastPointerAudio>500){lastPointerAudio=Date.now();speak()}
+            },{passive:true});
             button.addEventListener('click',e=>{
                 e.preventDefault();e.stopPropagation();
                 // Klik papan kekunci masih menyebut perkataan; sentuhan tidak berganda.
                 if(Date.now()-lastPointerAudio>700)speak();
             });
+        }
+        // Telefon memerlukan sebutan bermula ketika gesture sentuhan masih aktif.
+        let matchingUtterance=null;
+        function speakMatchingLabel(text){
+            if(!text || !('speechSynthesis' in window))return;
+            const synth=window.speechSynthesis;
+            if(synth.speaking || synth.pending)synth.cancel();
+            if(synth.paused)synth.resume();
+            const utterance=new SpeechSynthesisUtterance(text);
+            utterance.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';
+            utterance.rate=.7;
+            const voice=synth.getVoices().find(v=>v.lang.toLowerCase()===utterance.lang.toLowerCase());
+            if(voice)utterance.voice=voice;
+            matchingUtterance=utterance;
+            synth.speak(utterance);
         }
         function syncMatchingEyelets(wrapper) {
             if(!wrapper)return;
@@ -9397,7 +9411,7 @@
                 div.dataset.key=c.en; div.dataset.side='left';
                 div.innerHTML=`<span class="match-colour-name">${colourName(c)}</span><button type="button" class="match-colour-audio-btn" aria-label="Listen">🔊</button>`;
                 const audio=div.querySelector('.match-colour-audio-btn');
-                bindMatchingAudio(audio,()=>speakColourText(colourName(c)));
+                bindMatchingAudio(audio,()=>speakMatchingLabel(colourName(c)));
                 left.appendChild(div);
             });
 
@@ -9432,7 +9446,9 @@
             const target=matchItemAtPointer(e,document.getElementById('colour-match-wrapper'),'.match-item[data-side]');
             if(!target || target.classList.contains('matched') || !target.dataset.side) return;
             beginMatchTouch(e);
-            playClickSound(); activeDragColour=target; isDraggingColour=true; target.classList.add('selected');
+            if(target.dataset.side==='left')target._speakMatchingName?.();
+            else playClickSound();
+            activeDragColour=target; isDraggingColour=true; target.classList.add('selected');
             const r=document.getElementById('colour-match-wrapper').getBoundingClientRect();
             dragColourX=e.clientX-r.left; dragColourY=e.clientY-r.top; redrawColourCanvas();
         }
@@ -9522,11 +9538,11 @@
             document.getElementById('match-body-score').innerText=matchBodyScoreCount;
             document.getElementById('match-body-next-btn').style.display='none';
             const items=matchBodyGameData[currentMatchBodyPageIdx],left=document.getElementById('match-body-left-column'),right=document.getElementById('match-body-right-column');left.innerHTML='';right.innerHTML='';
-            bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';const name=bodyText(item);d.innerHTML=`<span class="match-body-name">${name}</span><button type="button" class="match-body-audio-btn" aria-label="Listen to ${name}" title="Listen / Dengar">🔊</button>`;d.dataset.id=item.id;d.dataset.side='left';const b=d.querySelector('.match-body-audio-btn');bindMatchingAudio(b,()=>speakBody(bodyText(item)));left.appendChild(d)});
+            bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';const name=bodyText(item);d.innerHTML=`<span class="match-body-name">${name}</span><button type="button" class="match-body-audio-btn" aria-label="Listen to ${name}" title="Listen / Dengar">🔊</button>`;d.dataset.id=item.id;d.dataset.side='left';const b=d.querySelector('.match-body-audio-btn');bindMatchingAudio(b,()=>speakMatchingLabel(bodyText(item)));left.appendChild(d)});
             bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';d.innerHTML=`<img src="${item.img}" alt="${bodyText(item)}">`;d.dataset.id=item.id;d.dataset.side='right';right.appendChild(d)});
             setTimeout(resizeBodyCanvas,50);
         }
-        function handleBodyPointerDown(e){const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||target.classList.contains('matched')||!target.dataset.side)return;beginMatchTouch(e);playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
+        function handleBodyPointerDown(e){const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||target.classList.contains('matched')||!target.dataset.side)return;beginMatchTouch(e);if(target.dataset.side==='left')target._speakMatchingName?.();else playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerMove(e){if(!isDraggingBody||!activeDragBody)return;e.preventDefault();const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerUp(e){
             if(!isDraggingBody||!activeDragBody)return;const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]',true);activeDragBody.classList.remove('selected');
@@ -11142,7 +11158,7 @@ document.addEventListener('DOMContentLoaded', () => {
             function down(e){
                 const item=matchItemAtPointer(e,elements().wrap,'.shape-match-item[data-side]');
                 if(!item||item.classList.contains('matched')||!item.dataset.side)return;
-                beginMatchTouch(e);state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
+                beginMatchTouch(e);if(item.dataset.side==='left')item._speakMatchingName?.();state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
             }
             function move(e){if(!state.drag)return;e.preventDefault();draw(pos(e,elements().wrap));}
             function up(e){
@@ -11214,7 +11230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const name=shapeText(item);
                 d.innerHTML=`<span class="match-shape-name">${name}</span><button type="button" class="shape-match-audio-btn" aria-label="${currentGlobalLang==='ms'?'Dengar':'Listen'} ${name}" title="Listen / Dengar">🔊</button>`;
                 const audioBtn=d.querySelector('.shape-match-audio-btn');
-                bindMatchingAudio(audioBtn,()=>speakShapeItem(item));
+                bindMatchingAudio(audioBtn,()=>speakMatchingLabel(shapeText(item)));
                 l.appendChild(d);
             });
             shapeShuffle(items).forEach(item=>{
