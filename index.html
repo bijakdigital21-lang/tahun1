@@ -5123,10 +5123,16 @@
         #match-body-game-screen #match-body-left-column .match-body-audio-btn,
         #match-shape-screen #match-shape-left .shape-match-audio-btn {
             position: absolute !important;
-            top: -18px;
+            top: -20px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 40;
+            width: 38px !important;
+            height: 38px !important;
+            min-width: 38px !important;
+            flex-basis: 38px !important;
+            font-size: 1.05rem !important;
+            touch-action: manipulation !important;
         }
         #match-animal-game-screen #match-animal-left-column .match-animal-name,
         #match-colour-screen #colour-match-left .match-colour-name,
@@ -5139,7 +5145,13 @@
             #match-animal-game-screen #match-animal-left-column .match-animal-audio-btn,
             #match-colour-screen #colour-match-left .match-colour-audio-btn,
             #match-body-game-screen #match-body-left-column .match-body-audio-btn,
-            #match-shape-screen #match-shape-left .shape-match-audio-btn { top: -17px; }
+            #match-shape-screen #match-shape-left .shape-match-audio-btn {
+                top: -19px;
+                width: 34px !important;
+                height: 34px !important;
+                min-width: 34px !important;
+                flex-basis: 34px !important;
+            }
             #match-animal-game-screen #match-animal-left-column .match-animal-name,
             #match-colour-screen #colour-match-left .match-colour-name,
             #match-body-game-screen #match-body-left-column .match-body-name,
@@ -7601,6 +7613,7 @@
         }
 
         function handleAnimalPointerDown(e) {
+            if (e.target.closest('.match-animal-audio-btn')) return;
             const target = matchItemAtPointer(e, document.getElementById('match-animal-wrapper'), '.match-item[data-side]');
             if (!target || target.classList.contains("matched")) return;
 
@@ -7725,16 +7738,27 @@
             captureMatchPointer(e);
         }
         function bindMatchingAudio(button, speak) {
-            let lastPointerAudio=0;
+            let lastTouchAudio=0;
             button.addEventListener('pointerdown',e=>{
+                // The speaker is separate from the matching gesture.
                 e.stopPropagation();
-                lastPointerAudio=Date.now();
-                speak();
             });
+            button.addEventListener('pointerup',e=>e.stopPropagation());
+            button.addEventListener('pointercancel',e=>e.stopPropagation());
+            button.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
+            button.addEventListener('touchend',e=>{
+                e.stopPropagation();
+                e.preventDefault();
+                lastTouchAudio=Date.now();
+                if(window.speechSynthesis?.paused)window.speechSynthesis.resume();
+                speak();
+            },{passive:false});
             button.addEventListener('click',e=>{
                 e.preventDefault();e.stopPropagation();
-                // Keyboard clicks speak; pointer clicks are already handled above.
-                if(Date.now()-lastPointerAudio>700)speak();
+                // Touchend already spoke on phones; click handles mouse and keyboard.
+                if(Date.now()-lastTouchAudio<700)return;
+                if(window.speechSynthesis?.paused)window.speechSynthesis.resume();
+                speak();
             });
         }
         function syncMatchingEyelets(wrapper) {
@@ -9428,6 +9452,7 @@
         }
 
         function handleColourPointerDown(e){
+            if(e.target.closest('.match-colour-audio-btn'))return;
             const target=matchItemAtPointer(e,document.getElementById('colour-match-wrapper'),'.match-item[data-side]');
             if(!target || target.classList.contains('matched') || !target.dataset.side) return;
             beginMatchTouch(e);
@@ -9525,7 +9550,7 @@
             bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';d.innerHTML=`<img src="${item.img}" alt="${bodyText(item)}">`;d.dataset.id=item.id;d.dataset.side='right';right.appendChild(d)});
             setTimeout(resizeBodyCanvas,50);
         }
-        function handleBodyPointerDown(e){const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||target.classList.contains('matched')||!target.dataset.side)return;beginMatchTouch(e);playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
+        function handleBodyPointerDown(e){if(e.target.closest('.match-body-audio-btn'))return;const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||target.classList.contains('matched')||!target.dataset.side)return;beginMatchTouch(e);playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerMove(e){if(!isDraggingBody||!activeDragBody)return;e.preventDefault();const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerUp(e){
             if(!isDraggingBody||!activeDragBody)return;const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]',true);activeDragBody.classList.remove('selected');
@@ -11139,6 +11164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             function pos(e,wrap){const r=wrap.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
             function down(e){
+                if(e.target.closest('.shape-match-audio-btn'))return;
                 const item=matchItemAtPointer(e,elements().wrap,'.shape-match-item[data-side]');
                 if(!item||item.classList.contains('matched')||!item.dataset.side)return;
                 beginMatchTouch(e);state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
