@@ -7634,39 +7634,52 @@
             redrawAnimalCanvas();
         }
 
-        // Lukis tali berjalin pada semua kanvas aktiviti suaian.
+        // Tali kapas berpilin yang nipis, digunakan oleh semua aktiviti Match.
         function drawMatchingRope(ctx, start, end, startItem, endItem) {
-            const a = {...start}, b = {...end};
-            const side = b.x >= a.x ? 1 : -1;
-            if (startItem) a.x += side * startItem.getBoundingClientRect().width / 2;
-            if (endItem) b.x -= side * endItem.getBoundingClientRect().width / 2;
-            const distance = Math.hypot(b.x-a.x, b.y-a.y);
-            if (distance < 2) return;
-            // Lengkungan lembut menyerupai tali yang ditarik antara dua papan.
-            const sag = Math.min(17, distance * .08);
-            const cx = (a.x+b.x)/2, cy = (a.y+b.y)/2 + sag;
-            const curve = t => {
-                const u = 1-t;
-                return {x:u*u*a.x+2*u*t*cx+t*t*b.x,
-                        y:u*u*a.y+2*u*t*cy+t*t*b.y};
-            };
-            const path = () => {ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.quadraticCurveTo(cx,cy,b.x,b.y)};
+            const a={...start}, b={...end};
+            const direction=b.x>=a.x?1:-1;
+            if(startItem)a.x+=direction*startItem.getBoundingClientRect().width/2;
+            if(endItem)b.x-=direction*endItem.getBoundingClientRect().width/2;
+            const distance=Math.hypot(b.x-a.x,b.y-a.y);
+            if(distance<2)return;
+            const sag=Math.min(13,distance*.055);
+            const cx=(a.x+b.x)/2, cy=(a.y+b.y)/2+sag;
+            function at(t){const u=1-t;return{x:u*u*a.x+2*u*t*cx+t*t*b.x,y:u*u*a.y+2*u*t*cy+t*t*b.y}}
+            function tangent(t){const x=2*((1-t)*(cx-a.x)+t*(b.x-cx)),y=2*((1-t)*(cy-a.y)+t*(b.y-cy));const d=Math.hypot(x,y)||1;return{x:x/d,y:y/d,nx:-y/d,ny:x/d}}
+            function path(){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.quadraticCurveTo(cx,cy,b.x,b.y)}
             ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
-            ctx.shadowColor='rgba(57,30,9,.45)';ctx.shadowBlur=5;ctx.shadowOffsetY=3;
-            path();ctx.strokeStyle='#664021';ctx.lineWidth=13;ctx.stroke();
+            // Sisi gelap, bayang dan tiga tona serat memberi isipadu tanpa menebalkan tali.
+            ctx.shadowColor='rgba(62,37,17,.38)';ctx.shadowBlur=3;ctx.shadowOffsetY=2;
+            path();ctx.strokeStyle='#69462b';ctx.lineWidth=9;ctx.stroke();
             ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-            path();ctx.strokeStyle='#ba8147';ctx.lineWidth=10.5;ctx.stroke();
-            path();ctx.strokeStyle='#e6bb7a';ctx.lineWidth=7;ctx.stroke();
-            // Serat berpintal: corak pendek melintasi lebar tali mengikut arahnya.
-            const segments=Math.max(1,Math.floor(distance/8));
-            for(let i=1;i<segments;i++){
-                const t=i/segments, p=curve(t), before=curve(Math.max(0,t-.005)), after=curve(Math.min(1,t+.005));
-                const angle=Math.atan2(after.y-before.y,after.x-before.x);
-                const nx=-Math.sin(angle), ny=Math.cos(angle), tx=Math.cos(angle), ty=Math.sin(angle);
+            path();ctx.strokeStyle='#b58350';ctx.lineWidth=7.4;ctx.stroke();
+            path();ctx.strokeStyle='#d6aa70';ctx.lineWidth=5.8;ctx.stroke();
+            // Setiap lilitan mengikuti arah tali termasuk pada sambungan yang bersilang.
+            const coils=Math.floor(distance/6);
+            for(let i=1;i<coils;i++){
+                const t=i/coils,p=at(t),v=tangent(t);
+                const shade=i%2?'rgba(113,67,31,.78)':'rgba(138,88,46,.72)';
                 ctx.beginPath();
-                ctx.moveTo(p.x-nx*4.2-tx*2.3,p.y-ny*4.2-ty*2.3);
-                ctx.lineTo(p.x+nx*4.2+tx*2.3,p.y+ny*4.2+ty*2.3);
-                ctx.strokeStyle=i%2?'#9b6639':'#f7d49a';ctx.lineWidth=1.8;ctx.stroke();
+                ctx.moveTo(p.x-v.nx*3-v.x*1.45,p.y-v.ny*3-v.y*1.45);
+                ctx.lineTo(p.x+v.nx*3+v.x*1.45,p.y+v.ny*3+v.y*1.45);
+                ctx.strokeStyle=shade;ctx.lineWidth=1.45;ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(p.x-v.nx*2.4+v.x*.2,p.y-v.ny*2.4+v.y*.2);
+                ctx.lineTo(p.x+v.nx*1.4+v.x*1.55,p.y+v.ny*1.4+v.y*1.55);
+                ctx.strokeStyle='rgba(255,229,178,.76)';ctx.lineWidth=.85;ctx.stroke();
+            }
+            // Benang halus yang berselang seli antara lilitan.
+            for(let strand=0;strand<2;strand++){
+                ctx.beginPath();
+                const steps=Math.min(120,Math.max(8,Math.ceil(distance/3)));
+                for(let i=0;i<=steps;i++){
+                    const t=i/steps,p=at(t),v=tangent(t);
+                    const offset=Math.sin(t*coils*Math.PI*2+strand*Math.PI)*1.15;
+                    const x=p.x+v.nx*offset,y=p.y+v.ny*offset;
+                    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+                }
+                ctx.strokeStyle=strand?'rgba(113,73,39,.26)':'rgba(255,239,207,.46)';
+                ctx.lineWidth=.65;ctx.stroke();
             }
             ctx.restore();
         }
