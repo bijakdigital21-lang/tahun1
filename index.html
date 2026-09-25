@@ -5095,7 +5095,7 @@
         .matching-eyelet {
             position:absolute; top:50%; width:21px; height:21px;
             transform:translateY(-50%); border-radius:50%;
-            pointer-events:auto; z-index:30;
+            pointer-events:none; z-index:30;
             background:radial-gradient(circle at 48% 50%, #30251b 0 23%, #0e0d0b 27%,
                 #5a5852 33%, #f7f2e7 44%, #a5a29a 58%, #54514b 70%, #292521 83%);
             box-shadow:0 2px 4px rgba(0,0,0,.5),inset 0 1px 2px #fff9;
@@ -5125,7 +5125,7 @@
             position: absolute !important;
             top: -13px !important;
             right: -10px !important;
-            z-index: 5 !important;
+            z-index: 40 !important;
             width: 34px !important;
             height: 34px !important;
             min-width: 34px !important;
@@ -7565,13 +7565,11 @@
                 const animalName = currentGlobalLang === 'en' ? item.en : item.bm;
                 div.innerHTML = `
                     <span class="match-animal-name">${animalName}</span>
-                    <button type="button" class="match-animal-audio-btn" aria-label="Listen to ${animalName}" title="Listen / Dengar">🔊</button>
                 `;
                 div.dataset.id = item.bm;
                 div.dataset.side = "left";
 
-                const audioBtn = div.querySelector('.match-animal-audio-btn');
-                bindMatchingAudio(audioBtn,()=>playMatchAnimalNameAudio(item));
+                div._speakMatchLabel = () => playMatchAnimalNameAudio(item);
 
                 leftCol.appendChild(div);
             });
@@ -7602,7 +7600,9 @@
 
         function handleAnimalPointerDown(e) {
             const target = matchItemAtPointer(e, document.getElementById('match-animal-wrapper'), '.match-item[data-side]');
-            if (!target || target.classList.contains("matched")) return;
+            if (!target) return;
+            target._speakMatchLabel?.();
+            if (target.classList.contains("matched")) return;
 
             {
                 beginMatchTouch(e);
@@ -7723,20 +7723,6 @@
             // Elak pelayar menganggap gerakan pertama sebagai scroll atau drag gambar.
             if(e.cancelable)e.preventDefault();
             captureMatchPointer(e);
-        }
-        function bindMatchingAudio(button, speak) {
-            let lastPointerAudio=0;
-            button.addEventListener('pointerdown',e=>{
-                // Speaker hanya memainkan audio, tanpa memulakan suaian.
-                e.stopPropagation();
-                lastPointerAudio=Date.now();
-                speak();
-            });
-            button.addEventListener('click',e=>{
-                e.preventDefault();e.stopPropagation();
-                // Klik papan kekunci masih menyebut perkataan; sentuhan tidak berganda.
-                if(Date.now()-lastPointerAudio>700)speak();
-            });
         }
         function syncMatchingEyelets(wrapper) {
             if(!wrapper)return;
@@ -9395,9 +9381,8 @@
                 const div=document.createElement('div');
                 div.className='match-item colour-word-item';
                 div.dataset.key=c.en; div.dataset.side='left';
-                div.innerHTML=`<span class="match-colour-name">${colourName(c)}</span><button type="button" class="match-colour-audio-btn" aria-label="Listen">🔊</button>`;
-                const audio=div.querySelector('.match-colour-audio-btn');
-                bindMatchingAudio(audio,()=>speakColourText(colourName(c)));
+                div.innerHTML=`<span class="match-colour-name">${colourName(c)}</span>`;
+                div._speakMatchLabel=()=>speakColourText(colourName(c));
                 left.appendChild(div);
             });
 
@@ -9430,7 +9415,9 @@
 
         function handleColourPointerDown(e){
             const target=matchItemAtPointer(e,document.getElementById('colour-match-wrapper'),'.match-item[data-side]');
-            if(!target || target.classList.contains('matched') || !target.dataset.side) return;
+            if(!target || !target.dataset.side) return;
+            target._speakMatchLabel?.();
+            if(target.classList.contains('matched'))return;
             beginMatchTouch(e);
             playClickSound(); activeDragColour=target; isDraggingColour=true; target.classList.add('selected');
             const r=document.getElementById('colour-match-wrapper').getBoundingClientRect();
@@ -9522,11 +9509,11 @@
             document.getElementById('match-body-score').innerText=matchBodyScoreCount;
             document.getElementById('match-body-next-btn').style.display='none';
             const items=matchBodyGameData[currentMatchBodyPageIdx],left=document.getElementById('match-body-left-column'),right=document.getElementById('match-body-right-column');left.innerHTML='';right.innerHTML='';
-            bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';const name=bodyText(item);d.innerHTML=`<span class="match-body-name">${name}</span><button type="button" class="match-body-audio-btn" aria-label="Listen to ${name}" title="Listen / Dengar">🔊</button>`;d.dataset.id=item.id;d.dataset.side='left';const b=d.querySelector('.match-body-audio-btn');bindMatchingAudio(b,()=>speakBody(bodyText(item)));left.appendChild(d)});
+            bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';const name=bodyText(item);d.innerHTML=`<span class="match-body-name">${name}</span>`;d.dataset.id=item.id;d.dataset.side='left';d._speakMatchLabel=()=>speakBody(bodyText(item));left.appendChild(d)});
             bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';d.innerHTML=`<img src="${item.img}" alt="${bodyText(item)}">`;d.dataset.id=item.id;d.dataset.side='right';right.appendChild(d)});
             setTimeout(resizeBodyCanvas,50);
         }
-        function handleBodyPointerDown(e){const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||target.classList.contains('matched')||!target.dataset.side)return;beginMatchTouch(e);playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
+        function handleBodyPointerDown(e){const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||!target.dataset.side)return;target._speakMatchLabel?.();if(target.classList.contains('matched'))return;beginMatchTouch(e);playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerMove(e){if(!isDraggingBody||!activeDragBody)return;e.preventDefault();const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerUp(e){
             if(!isDraggingBody||!activeDragBody)return;const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]',true);activeDragBody.classList.remove('selected');
@@ -11141,7 +11128,9 @@ document.addEventListener('DOMContentLoaded', () => {
             function pos(e,wrap){const r=wrap.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
             function down(e){
                 const item=matchItemAtPointer(e,elements().wrap,'.shape-match-item[data-side]');
-                if(!item||item.classList.contains('matched')||!item.dataset.side)return;
+                if(!item||!item.dataset.side)return;
+                item._speakMatchLabel?.();
+                if(item.classList.contains('matched'))return;
                 beginMatchTouch(e);state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
             }
             function move(e){if(!state.drag)return;e.preventDefault();draw(pos(e,elements().wrap));}
@@ -11212,9 +11201,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const d=document.createElement('div');
                 d.className='shape-match-item'; d.dataset.key=item.id; d.dataset.side='left';
                 const name=shapeText(item);
-                d.innerHTML=`<span class="match-shape-name">${name}</span><button type="button" class="shape-match-audio-btn" aria-label="${currentGlobalLang==='ms'?'Dengar':'Listen'} ${name}" title="Listen / Dengar">🔊</button>`;
-                const audioBtn=d.querySelector('.shape-match-audio-btn');
-                bindMatchingAudio(audioBtn,()=>speakShapeItem(item));
+                d.innerHTML=`<span class="match-shape-name">${name}</span>`;
+                d._speakMatchLabel=()=>speakShapeItem(item);
                 l.appendChild(d);
             });
             shapeShuffle(items).forEach(item=>{
