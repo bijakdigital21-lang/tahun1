@@ -5106,6 +5106,7 @@
             background:linear-gradient(#f0cc91,#ac7542 60%,#795033);
             box-shadow:0 1px 2px #1b130c;
         }
+        #match-game-screen .matching-eyelet { display:none; }
 
     </style>
 </head>
@@ -7692,25 +7693,25 @@
             function tangent(t){const x=2*((1-t)*(cx-a.x)+t*(b.x-cx)),y=2*((1-t)*(cy-a.y)+t*(b.y-cy));const d=Math.hypot(x,y)||1;return{x:x/d,y:y/d,nx:-y/d,ny:x/d}}
             function path(){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.quadraticCurveTo(cx,cy,b.x,b.y)}
             ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
-            // Sisi gelap, bayang dan tiga tona serat memberi isipadu tanpa menebalkan tali.
-            ctx.shadowColor='rgba(62,37,17,.38)';ctx.shadowBlur=3;ctx.shadowOffsetY=2;
-            path();ctx.strokeStyle='#69462b';ctx.lineWidth=9;ctx.stroke();
+            // Bayang lembut, sisi gelap dan teras warna kapas yang lebih nipis.
+            ctx.shadowColor='rgba(62,37,17,.35)';ctx.shadowBlur=2.4;ctx.shadowOffsetY=1.5;
+            path();ctx.strokeStyle='#684b32';ctx.lineWidth=7.5;ctx.stroke();
             ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-            path();ctx.strokeStyle='#b58350';ctx.lineWidth=7.4;ctx.stroke();
-            path();ctx.strokeStyle='#d6aa70';ctx.lineWidth=5.8;ctx.stroke();
-            // Setiap lilitan mengikuti arah tali termasuk pada sambungan yang bersilang.
-            const coils=Math.floor(distance/6);
+            path();ctx.strokeStyle='#a67a4e';ctx.lineWidth=6.3;ctx.stroke();
+            path();ctx.strokeStyle='#d1a66b';ctx.lineWidth=4.8;ctx.stroke();
+            // Jalur silang rapat mengikuti arah setiap lengkungan tali.
+            const coils=Math.max(1,Math.floor(distance/5.5));
             for(let i=1;i<coils;i++){
                 const t=i/coils,p=at(t),v=tangent(t);
-                const shade=i%2?'rgba(113,67,31,.78)':'rgba(138,88,46,.72)';
+                const shade=i%2?'rgba(104,66,36,.79)':'rgba(130,83,45,.72)';
                 ctx.beginPath();
-                ctx.moveTo(p.x-v.nx*3-v.x*1.45,p.y-v.ny*3-v.y*1.45);
-                ctx.lineTo(p.x+v.nx*3+v.x*1.45,p.y+v.ny*3+v.y*1.45);
-                ctx.strokeStyle=shade;ctx.lineWidth=1.45;ctx.stroke();
+                ctx.moveTo(p.x-v.nx*2.55-v.x*1.35,p.y-v.ny*2.55-v.y*1.35);
+                ctx.lineTo(p.x+v.nx*2.55+v.x*1.35,p.y+v.ny*2.55+v.y*1.35);
+                ctx.strokeStyle=shade;ctx.lineWidth=1.2;ctx.stroke();
                 ctx.beginPath();
-                ctx.moveTo(p.x-v.nx*2.4+v.x*.2,p.y-v.ny*2.4+v.y*.2);
-                ctx.lineTo(p.x+v.nx*1.4+v.x*1.55,p.y+v.ny*1.4+v.y*1.55);
-                ctx.strokeStyle='rgba(255,229,178,.76)';ctx.lineWidth=.85;ctx.stroke();
+                ctx.moveTo(p.x-v.nx*2+v.x*.2,p.y-v.ny*2+v.y*.2);
+                ctx.lineTo(p.x+v.nx*1.5+v.x*1.35,p.y+v.ny*1.5+v.y*1.35);
+                ctx.strokeStyle='rgba(255,229,183,.83)';ctx.lineWidth=.72;ctx.stroke();
             }
             // Benang halus yang berselang seli antara lilitan.
             for(let strand=0;strand<2;strand++){
@@ -7718,12 +7719,12 @@
                 const steps=Math.min(120,Math.max(8,Math.ceil(distance/3)));
                 for(let i=0;i<=steps;i++){
                     const t=i/steps,p=at(t),v=tangent(t);
-                    const offset=Math.sin(t*coils*Math.PI*2+strand*Math.PI)*1.15;
+                    const offset=Math.sin(t*coils*Math.PI*2+strand*Math.PI)*.92;
                     const x=p.x+v.nx*offset,y=p.y+v.ny*offset;
                     if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
                 }
-                ctx.strokeStyle=strand?'rgba(113,73,39,.26)':'rgba(255,239,207,.46)';
-                ctx.lineWidth=.65;ctx.stroke();
+                ctx.strokeStyle=strand?'rgba(98,65,37,.32)':'rgba(255,240,211,.56)';
+                ctx.lineWidth=.56;ctx.stroke();
             }
             ctx.restore();
         }
@@ -8383,19 +8384,20 @@
             if (!canvas) return;
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            syncMatchingEyelets(document.getElementById("match-wrapper"));
 
             completedLines.forEach(line => {
                 const p1 = getItemCenter(line.from);
                 const p2 = getItemCenter(line.to);
-
-                drawMatchingRope(ctx, p1, p2, line.from, line.to);
+                ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);
+                ctx.strokeStyle='#7ED957';ctx.lineWidth=6;ctx.lineCap='round';ctx.stroke();
             });
 
             if (isDragging && activeDragItem) {
                 const p1 = getItemCenter(activeDragItem);
 
-                drawMatchingRope(ctx, p1, {x:dragCurrentX, y:dragCurrentY}, activeDragItem, null);
+                ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(dragCurrentX,dragCurrentY);
+                ctx.strokeStyle='#FF66C4';ctx.lineWidth=5;ctx.lineCap='round';
+                ctx.setLineDash([8,6]);ctx.stroke();ctx.setLineDash([]);
             }
         }
 
