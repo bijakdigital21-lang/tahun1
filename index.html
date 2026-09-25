@@ -5107,6 +5107,14 @@
             box-shadow:0 1px 2px #1b130c;
         }
         #match-game-screen .matching-eyelet { display:none; }
+        /* Sentuhan pada foto, tulisan, papan dan tepinya terus memulakan suaian. */
+        .match-wrapper .match-item, .match-wrapper .match-item *,
+        .shape-match-wrapper .shape-match-item, .shape-match-wrapper .shape-match-item * {
+            touch-action:none !important;
+            user-select:none;
+            -webkit-user-select:none;
+            -webkit-user-drag:none;
+        }
 
     </style>
 </head>
@@ -7492,7 +7500,7 @@
             const wrapper = document.getElementById("match-animal-wrapper");
             if (!wrapper) return;
 
-            wrapper.addEventListener("pointerdown", handleAnimalPointerDown);
+            wrapper.addEventListener("pointerdown", handleAnimalPointerDown, {passive:false});
             wrapper.addEventListener("pointermove", handleAnimalPointerMove);
             wrapper.addEventListener("pointerup", handleAnimalPointerUp);
             wrapper.addEventListener("pointercancel", handleAnimalPointerUp);
@@ -7573,7 +7581,7 @@
             if (!target || target.classList.contains("matched")) return;
 
             {
-                captureMatchPointer(e);
+                beginMatchTouch(e);
                 playClickSound();
                 activeDragAnimal = target;
                 isDraggingAnimal = true;
@@ -7681,9 +7689,18 @@
         function captureMatchPointer(e) {
             if(e.currentTarget?.setPointerCapture)try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}
         }
+        function beginMatchTouch(e) {
+            // Elak pelayar menganggap gerakan pertama sebagai scroll atau drag gambar.
+            if(e.cancelable)e.preventDefault();
+            captureMatchPointer(e);
+        }
         function syncMatchingEyelets(wrapper) {
             if(!wrapper)return;
-            wrapper.querySelectorAll('.match-item[data-side], .shape-match-item[data-side]').forEach(item=>{
+            const items=wrapper.querySelectorAll('.match-item[data-side], .shape-match-item[data-side]');
+            const size=wrapper.clientWidth+'x'+wrapper.clientHeight;
+            if(items.length&&wrapper._matchingEyeletSize===size&&
+               items[0].querySelector(':scope > .matching-eyelet'))return;
+            items.forEach(item=>{
                 let eyelet=item.querySelector(':scope > .matching-eyelet');
                 if(!eyelet){eyelet=document.createElement('span');eyelet.className='matching-eyelet';eyelet.setAttribute('aria-hidden','true');item.appendChild(eyelet)}
                 const visual=matchingVisual(item).getBoundingClientRect(),box=item.getBoundingClientRect();
@@ -7691,6 +7708,7 @@
                 eyelet.style.left=(x-10.5)+'px';
                 eyelet.style.top=(visual.top-box.top+visual.height/2)+'px';
             });
+            wrapper._matchingEyeletSize=size;
         }
 
         // Tali kapas berpilin yang nipis, digunakan oleh semua aktiviti Match.
@@ -8252,7 +8270,7 @@
             const wrapper = document.getElementById("match-wrapper");
             if (!wrapper) return;
 
-            wrapper.addEventListener("pointerdown", handlePointerDown);
+            wrapper.addEventListener("pointerdown", handlePointerDown, {passive:false});
             wrapper.addEventListener("pointermove", handlePointerMove);
             wrapper.addEventListener("pointerup", handlePointerUp);
             wrapper.addEventListener("pointercancel", handlePointerUp);
@@ -8325,7 +8343,7 @@
             if (!target || target.classList.contains("matched")) return;
 
             {
-                captureMatchPointer(e);
+                beginMatchTouch(e);
                 playClickSound();
                 activeDragItem = target;
                 isDragging = true;
@@ -9313,7 +9331,7 @@
         function initMatchColourEvents(){
             const wrapper=document.getElementById('colour-match-wrapper');
             if(!wrapper || colourMatchEventsBound) return;
-            wrapper.addEventListener('pointerdown',handleColourPointerDown);
+            wrapper.addEventListener('pointerdown',handleColourPointerDown,{passive:false});
             wrapper.addEventListener('pointermove',handleColourPointerMove);
             wrapper.addEventListener('pointerup',handleColourPointerUp);
             wrapper.addEventListener('pointercancel',handleColourPointerUp);
@@ -9371,7 +9389,7 @@
         function handleColourPointerDown(e){
             const target=matchItemAtPointer(e,document.getElementById('colour-match-wrapper'),'.match-item[data-side]');
             if(!target || target.classList.contains('matched') || !target.dataset.side) return;
-            captureMatchPointer(e);
+            beginMatchTouch(e);
             playClickSound(); activeDragColour=target; isDraggingColour=true; target.classList.add('selected');
             const r=document.getElementById('colour-match-wrapper').getBoundingClientRect();
             dragColourX=e.clientX-r.left; dragColourY=e.clientY-r.top; redrawColourCanvas();
@@ -9453,7 +9471,7 @@
         }
         function resizeBodyCanvas(){const c=document.getElementById('match-body-canvas'),w=document.getElementById('match-body-wrapper');if(c&&w){c.width=w.clientWidth;c.height=w.clientHeight;redrawBodyCanvas()}}
         window.addEventListener('resize',resizeBodyCanvas);
-        function initMatchBodyEvents(){const w=document.getElementById('match-body-wrapper');if(!w||matchBodyEventsReady)return;matchBodyEventsReady=true;w.addEventListener('pointerdown',handleBodyPointerDown);w.addEventListener('pointermove',handleBodyPointerMove);w.addEventListener('pointerup',handleBodyPointerUp);w.addEventListener('pointercancel',handleBodyPointerUp);resizeBodyCanvas()}
+        function initMatchBodyEvents(){const w=document.getElementById('match-body-wrapper');if(!w||matchBodyEventsReady)return;matchBodyEventsReady=true;w.addEventListener('pointerdown',handleBodyPointerDown,{passive:false});w.addEventListener('pointermove',handleBodyPointerMove);w.addEventListener('pointerup',handleBodyPointerUp);w.addEventListener('pointercancel',handleBodyPointerUp);resizeBodyCanvas()}
         function loadMatchBodyPage(){
             if(!matchBodyGameData.length)return;
             matchedBodyPairsInPage=0;completedBodyLines=[];activeDragBody=null;isDraggingBody=false;
@@ -9466,7 +9484,7 @@
             bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';d.innerHTML=`<img src="${item.img}" alt="${bodyText(item)}">`;d.dataset.id=item.id;d.dataset.side='right';right.appendChild(d)});
             setTimeout(resizeBodyCanvas,50);
         }
-        function handleBodyPointerDown(e){const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||target.classList.contains('matched')||!target.dataset.side)return;captureMatchPointer(e);playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
+        function handleBodyPointerDown(e){const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||target.classList.contains('matched')||!target.dataset.side)return;beginMatchTouch(e);playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerMove(e){if(!isDraggingBody||!activeDragBody)return;e.preventDefault();const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerUp(e){
             if(!isDraggingBody||!activeDragBody)return;const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]',true);activeDragBody.classList.remove('selected');
@@ -11077,7 +11095,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(e.target.closest('.shape-match-audio-btn')) return;
                 const item=matchItemAtPointer(e,elements().wrap,'.shape-match-item[data-side]');
                 if(!item||item.classList.contains('matched')||!item.dataset.side)return;
-                e.preventDefault();captureMatchPointer(e);state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
+                beginMatchTouch(e);state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
             }
             function move(e){if(!state.drag)return;e.preventDefault();draw(pos(e,elements().wrap));}
             function up(e){
