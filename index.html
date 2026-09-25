@@ -7531,6 +7531,14 @@
             if (!wrapper) return;
 
             wrapper.addEventListener("pointerdown", handleAnimalPointerDown, {passive:false});
+            // The sign columns are visually shifted outside the wrapper. Capture
+            // their pointer events directly so tapping any part speaks the label.
+            ['match-animal-left-column','match-animal-right-column'].forEach(id => {
+                document.getElementById(id)?.addEventListener('pointerdown', e => {
+                    e.stopPropagation();
+                    handleAnimalPointerDown(e);
+                }, {passive:false});
+            });
             wrapper.addEventListener("pointermove", handleAnimalPointerMove);
             wrapper.addEventListener("pointerup", handleAnimalPointerUp);
             wrapper.addEventListener("pointercancel", handleAnimalPointerUp);
@@ -9362,6 +9370,11 @@
             const wrapper=document.getElementById('colour-match-wrapper');
             if(!wrapper || colourMatchEventsBound) return;
             wrapper.addEventListener('pointerdown',handleColourPointerDown,{passive:false});
+            ['colour-match-left','colour-match-right'].forEach(id=>{
+                document.getElementById(id)?.addEventListener('pointerdown',e=>{
+                    e.stopPropagation();handleColourPointerDown(e);
+                },{passive:false});
+            });
             wrapper.addEventListener('pointermove',handleColourPointerMove);
             wrapper.addEventListener('pointerup',handleColourPointerUp);
             wrapper.addEventListener('pointercancel',handleColourPointerUp);
@@ -9500,7 +9513,7 @@
         }
         function resizeBodyCanvas(){const c=document.getElementById('match-body-canvas'),w=document.getElementById('match-body-wrapper');if(c&&w){c.width=w.clientWidth;c.height=w.clientHeight;redrawBodyCanvas()}}
         window.addEventListener('resize',resizeBodyCanvas);
-        function initMatchBodyEvents(){const w=document.getElementById('match-body-wrapper');if(!w||matchBodyEventsReady)return;matchBodyEventsReady=true;w.addEventListener('pointerdown',handleBodyPointerDown,{passive:false});w.addEventListener('pointermove',handleBodyPointerMove);w.addEventListener('pointerup',handleBodyPointerUp);w.addEventListener('pointercancel',handleBodyPointerUp);resizeBodyCanvas()}
+        function initMatchBodyEvents(){const w=document.getElementById('match-body-wrapper');if(!w||matchBodyEventsReady)return;matchBodyEventsReady=true;w.addEventListener('pointerdown',handleBodyPointerDown,{passive:false});['match-body-left-column','match-body-right-column'].forEach(id=>{document.getElementById(id)?.addEventListener('pointerdown',e=>{e.stopPropagation();handleBodyPointerDown(e)},{passive:false})});w.addEventListener('pointermove',handleBodyPointerMove);w.addEventListener('pointerup',handleBodyPointerUp);w.addEventListener('pointercancel',handleBodyPointerUp);resizeBodyCanvas()}
         function loadMatchBodyPage(){
             if(!matchBodyGameData.length)return;
             matchedBodyPairsInPage=0;completedBodyLines=[];activeDragBody=null;isDraggingBody=false;
@@ -11153,6 +11166,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const {wrap}=elements();if(!wrap||state.ready)return;
                 state.ready=true;
                 wrap.addEventListener('pointerdown',down,{passive:false});
+                [cfg.leftId,cfg.rightId].forEach(id=>{
+                    document.getElementById(id)?.addEventListener('pointerdown',e=>{
+                        e.stopPropagation();down(e);
+                    },{passive:false});
+                });
                 wrap.addEventListener('pointermove',move,{passive:false});
                 wrap.addEventListener('pointerup',up,{passive:false});
                 wrap.addEventListener('pointercancel',up,{passive:false});
