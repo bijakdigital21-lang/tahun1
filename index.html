@@ -5107,6 +5107,7 @@
             box-shadow:0 1px 2px #1b130c;
         }
         #match-game-screen .matching-eyelet { display:none; }
+        #match-me-screen .matching-eyelet { display:none; }
         /* Sentuhan pada foto, tulisan, papan dan tepinya terus memulakan suaian. */
         .match-wrapper .match-item, .match-wrapper .match-item *,
         .shape-match-wrapper .shape-match-item, .shape-match-wrapper .shape-match-item * {
@@ -7661,6 +7662,12 @@
             return item.dataset.side==='right' && item.classList.contains('match-item')
                 ? item.querySelector('img, .match-colour-paint-can') || item : item;
         }
+        function matchingEdgeX(item, visual, direction) {
+            // Badan tong cat bermula lebih ke dalam daripada tepi kanvas SVG.
+            if(item.dataset.side==='right' && item.querySelector('.match-colour-paint-can'))
+                return direction>0 ? visual.left+visual.width*.18 : visual.right-visual.width*.18;
+            return direction>0 ? visual.left-1 : visual.right+1;
+        }
         // Terima sentuhan di seluruh kad dan sedikit di luar tepinya.
         function matchItemAtPointer(e, wrapper, selector, useHitElement=false) {
             if(!wrapper)return null;
@@ -7711,7 +7718,7 @@
                 let eyelet=item.querySelector(':scope > .matching-eyelet');
                 if(!eyelet){eyelet=document.createElement('span');eyelet.className='matching-eyelet';eyelet.setAttribute('aria-hidden','true');item.appendChild(eyelet)}
                 const visual=matchingVisual(item).getBoundingClientRect(),box=item.getBoundingClientRect();
-                const x=item.dataset.side==='left'?visual.right-box.left+1:visual.left-box.left-1;
+                const x=item.dataset.side==='left'?visual.right-box.left+1:matchingEdgeX(item,visual,1)-box.left;
                 eyelet.style.left=(x-10.5)+'px';
                 eyelet.style.top=(visual.top-box.top+visual.height/2)+'px';
             });
@@ -7729,7 +7736,7 @@
             }
             if(endItem){
                 const item=endItem.getBoundingClientRect(),visual=matchingVisual(endItem).getBoundingClientRect();
-                b.x+=(direction>0?visual.left:visual.right)-item.left-item.width/2-direction;
+                b.x+=matchingEdgeX(endItem,visual,direction)-item.left-item.width/2;
                 b.y+=visual.top+visual.height/2-item.top-item.height/2;
             }
             const distance=Math.hypot(b.x-a.x,b.y-a.y);
@@ -11085,14 +11092,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     canvas.style.width=w+'px';canvas.style.height=h+'px';
                 }
                 const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
-                syncMatchingEyelets(wrap);
+                if(cfg.useRope!==false)syncMatchingEyelets(wrap);
                 state.lines.forEach(line=>{
                     const a=document.querySelector(`#${cfg.leftId} .shape-match-item[data-key="${line.key}"]`);
                     const b=document.querySelector(`#${cfg.rightId} .shape-match-item[data-key="${line.key}"]`);
-                    if(a&&b)drawMatchingRope(ctx,point(a,wrap),point(b,wrap),a,b);
+                    if(a&&b){
+                        const p1=point(a,wrap),p2=point(b,wrap);
+                        if(cfg.useRope!==false)drawMatchingRope(ctx,p1,p2,a,b);
+                        else {ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle='#5E17EB';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke()}
+                    }
                 });
                 if(state.drag&&tempPoint){
-                    drawMatchingRope(ctx,point(state.drag,wrap),tempPoint,state.drag,null);
+                    const p1=point(state.drag,wrap);
+                    if(cfg.useRope!==false)drawMatchingRope(ctx,p1,tempPoint,state.drag,null);
+                    else {ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(tempPoint.x,tempPoint.y);ctx.strokeStyle='#FF66C4';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke()}
                 }
             }
             function pos(e,wrap){const r=wrap.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
@@ -11271,6 +11284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let matchMeSets=[],matchMeIndex=0,matchMeScore=0;
         const matchMeMatcher=createShapeMatcher({
             wrapperId:'match-me-wrapper',canvasId:'match-me-canvas',
+            useRope:false,
             leftId:'match-me-left',rightId:'match-me-right',
             onMatch:()=>{matchMeScore+=10;document.getElementById('match-me-score').innerText=matchMeScore;},
             onComplete:()=>{
