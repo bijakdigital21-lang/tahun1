@@ -5088,63 +5088,26 @@
                 margin-bottom: 3px !important;
             }
         }
-    
-        /* Gelang lubang pada setiap papan dan gambar dalam aktiviti suaian. */
-        .match-wrapper .match-item[data-side],
-        .shape-match-wrapper .shape-match-item[data-side] { position:relative; overflow:visible; }
-        .matching-eyelet {
-            position:absolute; top:50%; width:21px; height:21px;
-            transform:translateY(-50%); border-radius:50%;
-            pointer-events:auto; z-index:30;
-            background:radial-gradient(circle at 48% 50%, #30251b 0 23%, #0e0d0b 27%,
-                #5a5852 33%, #f7f2e7 44%, #a5a29a 58%, #54514b 70%, #292521 83%);
-            box-shadow:0 2px 4px rgba(0,0,0,.5),inset 0 1px 2px #fff9;
-        }
-        .matching-eyelet::after {
-            content:''; position:absolute; left:50%; top:50%; width:9px; height:6px;
-            transform:translate(-50%,-50%); border-radius:5px;
-            background:linear-gradient(#f0cc91,#ac7542 60%,#795033);
-            box-shadow:0 1px 2px #1b130c;
-        }
-        #match-game-screen .matching-eyelet { display:none; }
-        #match-me-screen .matching-eyelet { display:none; }
-        /* Sentuhan pada foto, tulisan, papan dan tepinya terus memulakan suaian. */
-        .match-wrapper .match-item, .match-wrapper .match-item *,
-        .shape-match-wrapper .shape-match-item, .shape-match-wrapper .shape-match-item * {
-            touch-action:none !important;
-            user-select:none;
-            -webkit-user-select:none;
-            -webkit-user-drag:none;
-        }
 
-        /* Speaker pada penjuru kanan atas keempat-empat papan kayu. */
-        #match-animal-game-screen #match-animal-left-column .match-animal-audio-btn,
-        #match-colour-screen #colour-match-left .match-colour-audio-btn,
-        #match-body-game-screen #match-body-left-column .match-body-audio-btn,
-        #match-shape-screen #match-shape-left .shape-match-audio-btn {
-            position: absolute !important;
-            top: -13px !important;
-            right: -10px !important;
-            z-index: 5 !important;
-            width: 34px !important;
-            height: 34px !important;
-            min-width: 34px !important;
-            flex: none !important;
-            font-size: 1rem !important;
-            touch-action: manipulation !important;
+        /* Rope eyelets on the four matching activities only. The eyelets do not
+           receive pointer events, so the existing drag and audio controls work. */
+        #match-animal-game-screen .rope-eyelet,
+        #match-colour-screen .rope-eyelet,
+        #match-body-game-screen .rope-eyelet,
+        #match-shape-screen .rope-eyelet {
+            position:absolute; top:50%; width:17px; height:17px;
+            transform:translate(-50%,-50%); border-radius:50%;
+            box-sizing:border-box; pointer-events:none; z-index:4;
+            border:3px solid #c28b48;
+            background:radial-gradient(circle at 55% 55%,#392518 0 38%,#24180f 55%,#51351d 70%);
+            box-shadow:inset 0 1px 2px #180e08,0 1px 3px #3c281b;
         }
-        @media (max-width: 768px) {
-            #match-animal-game-screen #match-animal-left-column .match-animal-audio-btn,
-            #match-colour-screen #colour-match-left .match-colour-audio-btn,
-            #match-body-game-screen #match-body-left-column .match-body-audio-btn,
-            #match-shape-screen #match-shape-left .shape-match-audio-btn {
-                top: -14px !important;
-                right: -8px !important;
-                width: 32px !important;
-                height: 32px !important;
-                min-width: 32px !important;
-                font-size: .95rem !important;
-            }
+        #match-shape-screen #match-shape-right .shape-match-item {overflow:visible;}
+        @media(max-width:560px){
+            #match-animal-game-screen .rope-eyelet,
+            #match-colour-screen .rope-eyelet,
+            #match-body-game-screen .rope-eyelet,
+            #match-shape-screen .rope-eyelet {width:14px;height:14px;border-width:2px;}
         }
     </style>
 </head>
@@ -7530,7 +7493,7 @@
             const wrapper = document.getElementById("match-animal-wrapper");
             if (!wrapper) return;
 
-            wrapper.addEventListener("pointerdown", handleAnimalPointerDown, {passive:false});
+            wrapper.addEventListener("pointerdown", handleAnimalPointerDown);
             wrapper.addEventListener("pointermove", handleAnimalPointerMove);
             wrapper.addEventListener("pointerup", handleAnimalPointerUp);
             wrapper.addEventListener("pointercancel", handleAnimalPointerUp);
@@ -7571,7 +7534,13 @@
                 div.dataset.side = "left";
 
                 const audioBtn = div.querySelector('.match-animal-audio-btn');
-                bindMatchingAudio(audioBtn,()=>playMatchAnimalNameAudio(item));
+                audioBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
+                audioBtn.addEventListener('pointerup', (e) => e.stopPropagation());
+                audioBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    playMatchAnimalNameAudio(item);
+                });
 
                 leftCol.appendChild(div);
             });
@@ -7590,17 +7559,22 @@
         }
 
         function playMatchAnimalNameAudio(item) {
-            if(item)speakMatchingLabel(currentGlobalLang==='en'?item.en:item.bm);
+            if (!item || !('speechSynthesis' in window)) return;
+
+            const textToSpeak = currentGlobalLang === 'en' ? item.en : item.bm;
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
+            utterance.rate = 0.4;
+            window.speechSynthesis.speak(utterance);
         }
 
         function handleAnimalPointerDown(e) {
-            const target = matchItemAtPointer(e, document.getElementById('match-animal-wrapper'), '.match-item[data-side]');
+            const target = e.target.closest('.match-item');
             if (!target || target.classList.contains("matched")) return;
 
             {
-                beginMatchTouch(e);
-                if(target.dataset.side==='left')target._speakMatchingName?.();
-                else playClickSound();
+                playClickSound();
                 activeDragAnimal = target;
                 isDraggingAnimal = true;
                 target.classList.add("selected");
@@ -7627,7 +7601,8 @@
         function handleAnimalPointerUp(e) {
             if (!isDraggingAnimal || !activeDragAnimal) return;
 
-            const targetRightItem = matchItemAtPointer(e, document.getElementById('match-animal-wrapper'), '.match-item[data-side]', true);
+            const elementUnderPointer = document.elementFromPoint(e.clientX, e.clientY);
+            const targetRightItem = elementUnderPointer ? elementUnderPointer.closest('.match-item') : null;
 
             activeDragAnimal.classList.remove("selected");
 
@@ -7680,172 +7655,48 @@
             redrawAnimalCanvas();
         }
 
-        // Gelang mengikut tepi sebenar gambar dan papan walaupun saiz skrin berubah.
-        function matchingVisual(item) {
-            return item.dataset.side==='right' && item.classList.contains('match-item')
-                ? item.querySelector('img, .match-colour-paint-can') || item : item;
-        }
-        function matchingEdgeX(item, visual, direction) {
-            // Badan tong cat bermula lebih ke dalam daripada tepi kanvas SVG.
-            if(item.dataset.side==='right' && item.querySelector('.match-colour-paint-can'))
-                return direction>0 ? visual.left+visual.width*.18 : visual.right-visual.width*.18;
-            return direction>0 ? visual.left-1 : visual.right+1;
-        }
-        // Terima sentuhan di seluruh kad dan sedikit di luar tepinya.
-        function matchItemAtPointer(e, wrapper, selector, useHitElement=false) {
-            if(!wrapper)return null;
-            const hit=useHitElement?document.elementFromPoint(e.clientX,e.clientY):e.target;
-            const direct=hit?.closest?.(selector);
-            if(direct&&wrapper.contains(direct))return direct;
-            let nearest=null,nearestDistance=Infinity;
-            wrapper.querySelectorAll(selector).forEach(item=>{
-                const r=item.getBoundingClientRect(),v=matchingVisual(item).getBoundingClientRect();
-                const left=Math.min(r.left,v.left)-16,right=Math.max(r.right,v.right)+16;
-                const top=Math.min(r.top,v.top)-12,bottom=Math.max(r.bottom,v.bottom)+12;
-                if(e.clientX<left||e.clientX>right||e.clientY<top||e.clientY>bottom)return;
-                const dx=Math.max(r.left-e.clientX,0,e.clientX-r.right);
-                const dy=Math.max(r.top-e.clientY,0,e.clientY-r.bottom);
-                const d=dx*dx+dy*dy;
-                if(d<nearestDistance){nearest=item;nearestDistance=d}
-            });
-            return nearest;
-        }
-        function captureMatchPointer(e) {
-            if(e.currentTarget?.setPointerCapture)try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}
-        }
-        function beginMatchTouch(e) {
-            // Elak pelayar menganggap gerakan pertama sebagai scroll atau drag gambar.
-            if(e.cancelable)e.preventDefault();
-            captureMatchPointer(e);
-        }
-        function bindMatchingAudio(button, speak) {
-            let lastPointerAudio=0;
-            button.parentElement._speakMatchingName=speak;
-            button.addEventListener('pointerdown',e=>{
-                // Speaker hanya memainkan audio, tanpa memulakan suaian.
-                e.stopPropagation();
-                lastPointerAudio=Date.now();
-                speak();
-            });
-            button.addEventListener('touchstart',e=>{
-                e.stopPropagation();
-                if(Date.now()-lastPointerAudio>500){lastPointerAudio=Date.now();speak()}
-            },{passive:true});
-            button.addEventListener('click',e=>{
-                e.preventDefault();e.stopPropagation();
-                // Klik papan kekunci masih menyebut perkataan; sentuhan tidak berganda.
-                if(Date.now()-lastPointerAudio>700)speak();
-            });
-        }
-        // Telefon memerlukan sebutan bermula ketika gesture sentuhan masih aktif.
-        let matchingUtterance=null;
-        function speakMatchingLabel(text){
-            if(!text || !('speechSynthesis' in window))return;
-            const synth=window.speechSynthesis;
-            if(synth.speaking || synth.pending)synth.cancel();
-            if(synth.paused)synth.resume();
-            const utterance=new SpeechSynthesisUtterance(text);
-            utterance.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';
-            utterance.rate=.7;
-            const voice=synth.getVoices().find(v=>v.lang.toLowerCase()===utterance.lang.toLowerCase());
-            if(voice)utterance.voice=voice;
-            matchingUtterance=utterance;
-            synth.speak(utterance);
-        }
-        function syncMatchingEyelets(wrapper) {
-            if(!wrapper)return;
-            const items=wrapper.querySelectorAll('.match-item[data-side], .shape-match-item[data-side]');
-            const size=wrapper.clientWidth+'x'+wrapper.clientHeight;
-            if(items.length&&wrapper._matchingEyeletSize===size&&
-               items[0].querySelector(':scope > .matching-eyelet'))return;
-            items.forEach(item=>{
-                let eyelet=item.querySelector(':scope > .matching-eyelet');
-                if(!eyelet){eyelet=document.createElement('span');eyelet.className='matching-eyelet';eyelet.setAttribute('aria-hidden','true');item.appendChild(eyelet)}
-                const visual=matchingVisual(item).getBoundingClientRect(),box=item.getBoundingClientRect();
-                const x=item.dataset.side==='left'?visual.right-box.left+1:matchingEdgeX(item,visual,1)-box.left;
-                eyelet.style.left=(x-10.5)+'px';
-                eyelet.style.top=(visual.top-box.top+visual.height/2)+'px';
-            });
-            wrapper._matchingEyeletSize=size;
-        }
 
-        // Tali kapas berpilin yang nipis, digunakan oleh semua aktiviti Match.
-        function drawMatchingRope(ctx, start, end, startItem, endItem) {
-            const a={...start}, b={...end};
-            const direction=b.x>=a.x?1:-1;
-            if(startItem){
-                const item=startItem.getBoundingClientRect(),visual=matchingVisual(startItem).getBoundingClientRect();
-                a.x+=(direction>0?visual.right:visual.left)-item.left-item.width/2+direction;
-                a.y+=visual.top+visual.height/2-item.top-item.height/2;
-            }
-            if(endItem){
-                const item=endItem.getBoundingClientRect(),visual=matchingVisual(endItem).getBoundingClientRect();
-                b.x+=matchingEdgeX(endItem,visual,direction)-item.left-item.width/2;
-                b.y+=visual.top+visual.height/2-item.top-item.height/2;
-            }
-            const distance=Math.hypot(b.x-a.x,b.y-a.y);
-            if(distance<2)return;
-            const sag=Math.min(13,distance*.055);
-            const cx=(a.x+b.x)/2, cy=(a.y+b.y)/2+sag;
-            function at(t){const u=1-t;return{x:u*u*a.x+2*u*t*cx+t*t*b.x,y:u*u*a.y+2*u*t*cy+t*t*b.y}}
-            function tangent(t){const x=2*((1-t)*(cx-a.x)+t*(b.x-cx)),y=2*((1-t)*(cy-a.y)+t*(b.y-cy));const d=Math.hypot(x,y)||1;return{x:x/d,y:y/d,nx:-y/d,ny:x/d}}
-            function path(){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.quadraticCurveTo(cx,cy,b.x,b.y)}
+        // Visual decoration shared by the four rope matching activities.
+        function ropeEyelet(item){
+            let hole=item.querySelector(':scope > .rope-eyelet');
+            if(!hole){hole=document.createElement('span');hole.className='rope-eyelet';hole.setAttribute('aria-hidden','true');item.appendChild(hole);}
+            const side=item.dataset.side;
+            // Picture and paint-can cards are wider than the artwork inside them.
+            const artwork=side==='right' && item.matches('.match-item')
+                ? item.querySelector('img, .match-colour-paint-can, .colour-swatch-chip') : null;
+            const box=item.getBoundingClientRect(), edge=artwork?artwork.getBoundingClientRect():box;
+            hole.style.left=(side==='left'?edge.right-box.left-3:edge.left-box.left+3)+'px';
+            hole.style.top=(edge.top+edge.height/2-box.top)+'px';
+            return hole;
+        }
+        function ropeAnchor(item,wrapper){
+            const h=ropeEyelet(item).getBoundingClientRect(),w=wrapper.getBoundingClientRect();
+            return{x:h.left+h.width/2-w.left,y:h.top+h.height/2-w.top};
+        }
+        function drawMatchRope(ctx,a,b,loose=false){
+            if(!a||!b)return;
+            const span=Math.abs(b.x-a.x),sag=Math.min(23,span*.10);
+            const path=()=>{ctx.beginPath();ctx.moveTo(a.x,a.y);
+                ctx.bezierCurveTo(a.x+(b.x-a.x)*.33,a.y+sag,b.x-(b.x-a.x)*.33,b.y+sag,b.x,b.y);};
             ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
-            // Bayang lembut, sisi gelap dan teras warna kapas yang lebih nipis.
-            ctx.shadowColor='rgba(62,37,17,.35)';ctx.shadowBlur=2.4;ctx.shadowOffsetY=1.5;
-            path();ctx.strokeStyle='#684b32';ctx.lineWidth=7.5;ctx.stroke();
+            ctx.shadowColor='rgba(54,31,14,.38)';ctx.shadowBlur=3;ctx.shadowOffsetY=3;
+            path();ctx.lineWidth=9;ctx.strokeStyle='#694521';ctx.stroke();
             ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-            path();ctx.strokeStyle='#a67a4e';ctx.lineWidth=6.3;ctx.stroke();
-            path();ctx.strokeStyle='#d1a66b';ctx.lineWidth=4.8;ctx.stroke();
-            // Jalur silang rapat mengikuti arah setiap lengkungan tali.
-            const coils=Math.max(1,Math.floor(distance/5.5));
-            for(let i=1;i<coils;i++){
-                const t=i/coils,p=at(t),v=tangent(t);
-                const shade=i%2?'rgba(104,66,36,.79)':'rgba(130,83,45,.72)';
-                ctx.beginPath();
-                ctx.moveTo(p.x-v.nx*2.55-v.x*1.35,p.y-v.ny*2.55-v.y*1.35);
-                ctx.lineTo(p.x+v.nx*2.55+v.x*1.35,p.y+v.ny*2.55+v.y*1.35);
-                ctx.strokeStyle=shade;ctx.lineWidth=1.2;ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(p.x-v.nx*2+v.x*.2,p.y-v.ny*2+v.y*.2);
-                ctx.lineTo(p.x+v.nx*1.5+v.x*1.35,p.y+v.ny*1.5+v.y*1.35);
-                ctx.strokeStyle='rgba(255,229,183,.83)';ctx.lineWidth=.72;ctx.stroke();
-            }
-            // Benang halus yang berselang seli antara lilitan.
-            for(let strand=0;strand<2;strand++){
-                ctx.beginPath();
-                const steps=Math.min(120,Math.max(8,Math.ceil(distance/3)));
-                for(let i=0;i<=steps;i++){
-                    const t=i/steps,p=at(t),v=tangent(t);
-                    const offset=Math.sin(t*coils*Math.PI*2+strand*Math.PI)*.92;
-                    const x=p.x+v.nx*offset,y=p.y+v.ny*offset;
-                    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
-                }
-                ctx.strokeStyle=strand?'rgba(98,65,37,.32)':'rgba(255,240,211,.56)';
-                ctx.lineWidth=.56;ctx.stroke();
-            }
+            path();ctx.lineWidth=6.5;ctx.strokeStyle='#bd8c50';ctx.stroke();
+            path();ctx.lineWidth=1.25;ctx.strokeStyle='#edcf90';ctx.setLineDash([4,4]);ctx.stroke();
+            ctx.setLineDash([]);
+            if(loose){ctx.beginPath();ctx.arc(b.x,b.y,4.5,0,Math.PI*2);ctx.fillStyle='#bd8c50';ctx.fill();}
             ctx.restore();
         }
 
         function redrawAnimalCanvas() {
-            const canvas = document.getElementById("match-animal-canvas");
-            if (!canvas) return;
-            const ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            syncMatchingEyelets(document.getElementById("match-animal-wrapper"));
-
-            completedAnimalLines.forEach(line => {
-                const p1 = getItemCenter(line.from);
-                const p2 = getItemCenter(line.to);
-
-                drawMatchingRope(ctx, p1, p2, line.from, line.to);
-            });
-
-            if (isDraggingAnimal && activeDragAnimal) {
-                const p1 = getItemCenter(activeDragAnimal);
-
-                drawMatchingRope(ctx, p1, {x:dragAnimalX, y:dragAnimalY}, activeDragAnimal, null);
-            }
+            const canvas=document.getElementById('match-animal-canvas'),wrapper=document.getElementById('match-animal-wrapper');
+            if(!canvas||!wrapper)return;
+            const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+            wrapper.querySelectorAll('.match-item[data-side]').forEach(ropeEyelet);
+            completedAnimalLines.forEach(line=>drawMatchRope(ctx,ropeAnchor(line.from,wrapper),ropeAnchor(line.to,wrapper)));
+            if(isDraggingAnimal&&activeDragAnimal)
+                drawMatchRope(ctx,ropeAnchor(activeDragAnimal,wrapper),{x:dragAnimalX,y:dragAnimalY},true);
         }
 
         function nextMatchAnimalPage() {
@@ -8328,7 +8179,7 @@
             const wrapper = document.getElementById("match-wrapper");
             if (!wrapper) return;
 
-            wrapper.addEventListener("pointerdown", handlePointerDown, {passive:false});
+            wrapper.addEventListener("pointerdown", handlePointerDown);
             wrapper.addEventListener("pointermove", handlePointerMove);
             wrapper.addEventListener("pointerup", handlePointerUp);
             wrapper.addEventListener("pointercancel", handlePointerUp);
@@ -8397,11 +8248,10 @@
         }
 
         function handlePointerDown(e) {
-            const target = matchItemAtPointer(e, document.getElementById('match-wrapper'), '.match-item[data-side]');
+            const target = e.target.closest('.match-item');
             if (!target || target.classList.contains("matched")) return;
 
             {
-                beginMatchTouch(e);
                 playClickSound();
                 activeDragItem = target;
                 isDragging = true;
@@ -8430,7 +8280,8 @@
         function handlePointerUp(e) {
             if (!isDragging || !activeDragItem) return;
 
-            const targetRightItem = matchItemAtPointer(e, document.getElementById('match-wrapper'), '.match-item[data-side]', true);
+            const elementUnderPointer = document.elementFromPoint(e.clientX, e.clientY);
+            const targetRightItem = elementUnderPointer ? elementUnderPointer.closest('.match-item') : null;
 
             activeDragItem.classList.remove("selected");
 
@@ -8486,16 +8337,28 @@
             completedLines.forEach(line => {
                 const p1 = getItemCenter(line.from);
                 const p2 = getItemCenter(line.to);
-                ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);
-                ctx.strokeStyle='#7ED957';ctx.lineWidth=6;ctx.lineCap='round';ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.strokeStyle = "#7ED957"; 
+                ctx.lineWidth = 6;
+                ctx.lineCap = "round";
+                ctx.stroke();
             });
 
             if (isDragging && activeDragItem) {
                 const p1 = getItemCenter(activeDragItem);
 
-                ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(dragCurrentX,dragCurrentY);
-                ctx.strokeStyle='#FF66C4';ctx.lineWidth=5;ctx.lineCap='round';
-                ctx.setLineDash([8,6]);ctx.stroke();ctx.setLineDash([]);
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(dragCurrentX, dragCurrentY);
+                ctx.strokeStyle = "#FF66C4"; 
+                ctx.lineWidth = 5;
+                ctx.lineCap = "round";
+                ctx.setLineDash([8, 6]);
+                ctx.stroke();
+                ctx.setLineDash([]);
             }
         }
 
@@ -9389,7 +9252,7 @@
         function initMatchColourEvents(){
             const wrapper=document.getElementById('colour-match-wrapper');
             if(!wrapper || colourMatchEventsBound) return;
-            wrapper.addEventListener('pointerdown',handleColourPointerDown,{passive:false});
+            wrapper.addEventListener('pointerdown',handleColourPointerDown);
             wrapper.addEventListener('pointermove',handleColourPointerMove);
             wrapper.addEventListener('pointerup',handleColourPointerUp);
             wrapper.addEventListener('pointercancel',handleColourPointerUp);
@@ -9411,7 +9274,9 @@
                 div.dataset.key=c.en; div.dataset.side='left';
                 div.innerHTML=`<span class="match-colour-name">${colourName(c)}</span><button type="button" class="match-colour-audio-btn" aria-label="Listen">🔊</button>`;
                 const audio=div.querySelector('.match-colour-audio-btn');
-                bindMatchingAudio(audio,()=>speakMatchingLabel(colourName(c)));
+                audio.addEventListener('pointerdown',e=>e.stopPropagation());
+                audio.addEventListener('pointerup',e=>e.stopPropagation());
+                audio.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();speakColourText(colourName(c));});
                 left.appendChild(div);
             });
 
@@ -9443,12 +9308,9 @@
         }
 
         function handleColourPointerDown(e){
-            const target=matchItemAtPointer(e,document.getElementById('colour-match-wrapper'),'.match-item[data-side]');
+            const target=e.target.closest('.match-item');
             if(!target || target.classList.contains('matched') || !target.dataset.side) return;
-            beginMatchTouch(e);
-            if(target.dataset.side==='left')target._speakMatchingName?.();
-            else playClickSound();
-            activeDragColour=target; isDraggingColour=true; target.classList.add('selected');
+            playClickSound(); activeDragColour=target; isDraggingColour=true; target.classList.add('selected');
             const r=document.getElementById('colour-match-wrapper').getBoundingClientRect();
             dragColourX=e.clientX-r.left; dragColourY=e.clientY-r.top; redrawColourCanvas();
         }
@@ -9459,7 +9321,8 @@
         }
         function handleColourPointerUp(e){
             if(!isDraggingColour||!activeDragColour)return;
-            const target=matchItemAtPointer(e,document.getElementById('colour-match-wrapper'),'.match-item[data-side]',true);
+            const under=document.elementFromPoint(e.clientX,e.clientY);
+            const target=under?under.closest('.match-item'):null;
             activeDragColour.classList.remove('selected');
             if(target && target.dataset.side!==activeDragColour.dataset.side && !target.classList.contains('matched')){
                 if(activeDragColour.dataset.key===target.dataset.key){
@@ -9476,11 +9339,13 @@
             activeDragColour=null; isDraggingColour=false; redrawColourCanvas();
         }
         function redrawColourCanvas(){
-            const canvas=document.getElementById('colour-match-canvas'); if(!canvas)return;
-            const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height);
-            syncMatchingEyelets(document.getElementById('colour-match-wrapper'));
-            completedColourLines.forEach(line=>drawMatchingRope(ctx,getItemCenter(line.from),getItemCenter(line.to),line.from,line.to));
-            if(isDraggingColour&&activeDragColour)drawMatchingRope(ctx,getItemCenter(activeDragColour),{x:dragColourX,y:dragColourY},activeDragColour,null);
+            const canvas=document.getElementById('colour-match-canvas'),wrapper=document.getElementById('colour-match-wrapper');
+            if(!canvas||!wrapper)return;
+            const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+            wrapper.querySelectorAll('.match-item[data-side]').forEach(ropeEyelet);
+            completedColourLines.forEach(line=>drawMatchRope(ctx,ropeAnchor(line.from,wrapper),ropeAnchor(line.to,wrapper)));
+            if(isDraggingColour&&activeDragColour)
+                drawMatchRope(ctx,ropeAnchor(activeDragColour,wrapper),{x:dragColourX,y:dragColourY},true);
         }
 
         let findColourOrder=[],findColourIndex=0,findColourScore=0,findColourLocked=false;
@@ -9529,7 +9394,7 @@
         }
         function resizeBodyCanvas(){const c=document.getElementById('match-body-canvas'),w=document.getElementById('match-body-wrapper');if(c&&w){c.width=w.clientWidth;c.height=w.clientHeight;redrawBodyCanvas()}}
         window.addEventListener('resize',resizeBodyCanvas);
-        function initMatchBodyEvents(){const w=document.getElementById('match-body-wrapper');if(!w||matchBodyEventsReady)return;matchBodyEventsReady=true;w.addEventListener('pointerdown',handleBodyPointerDown,{passive:false});w.addEventListener('pointermove',handleBodyPointerMove);w.addEventListener('pointerup',handleBodyPointerUp);w.addEventListener('pointercancel',handleBodyPointerUp);resizeBodyCanvas()}
+        function initMatchBodyEvents(){const w=document.getElementById('match-body-wrapper');if(!w||matchBodyEventsReady)return;matchBodyEventsReady=true;w.addEventListener('pointerdown',handleBodyPointerDown);w.addEventListener('pointermove',handleBodyPointerMove);w.addEventListener('pointerup',handleBodyPointerUp);w.addEventListener('pointercancel',handleBodyPointerUp);resizeBodyCanvas()}
         function loadMatchBodyPage(){
             if(!matchBodyGameData.length)return;
             matchedBodyPairsInPage=0;completedBodyLines=[];activeDragBody=null;isDraggingBody=false;
@@ -9538,14 +9403,14 @@
             document.getElementById('match-body-score').innerText=matchBodyScoreCount;
             document.getElementById('match-body-next-btn').style.display='none';
             const items=matchBodyGameData[currentMatchBodyPageIdx],left=document.getElementById('match-body-left-column'),right=document.getElementById('match-body-right-column');left.innerHTML='';right.innerHTML='';
-            bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';const name=bodyText(item);d.innerHTML=`<span class="match-body-name">${name}</span><button type="button" class="match-body-audio-btn" aria-label="Listen to ${name}" title="Listen / Dengar">🔊</button>`;d.dataset.id=item.id;d.dataset.side='left';const b=d.querySelector('.match-body-audio-btn');bindMatchingAudio(b,()=>speakMatchingLabel(bodyText(item)));left.appendChild(d)});
+            bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';const name=bodyText(item);d.innerHTML=`<span class="match-body-name">${name}</span><button type="button" class="match-body-audio-btn" aria-label="Listen to ${name}" title="Listen / Dengar">🔊</button>`;d.dataset.id=item.id;d.dataset.side='left';const b=d.querySelector('.match-body-audio-btn');b.addEventListener('pointerdown',e=>e.stopPropagation());b.addEventListener('pointerup',e=>e.stopPropagation());b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();speakBody(bodyText(item))});left.appendChild(d)});
             bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';d.innerHTML=`<img src="${item.img}" alt="${bodyText(item)}">`;d.dataset.id=item.id;d.dataset.side='right';right.appendChild(d)});
             setTimeout(resizeBodyCanvas,50);
         }
-        function handleBodyPointerDown(e){const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||target.classList.contains('matched')||!target.dataset.side)return;beginMatchTouch(e);if(target.dataset.side==='left')target._speakMatchingName?.();else playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
+        function handleBodyPointerDown(e){const target=e.target.closest('.match-item');if(!target||target.classList.contains('matched')||!target.dataset.side)return;playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerMove(e){if(!isDraggingBody||!activeDragBody)return;e.preventDefault();const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerUp(e){
-            if(!isDraggingBody||!activeDragBody)return;const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]',true);activeDragBody.classList.remove('selected');
+            if(!isDraggingBody||!activeDragBody)return;const under=document.elementFromPoint(e.clientX,e.clientY),target=under?under.closest('.match-item'):null;activeDragBody.classList.remove('selected');
             if(target&&target.dataset.side!==activeDragBody.dataset.side&&!target.classList.contains('matched')){
                 if(activeDragBody.dataset.id===target.dataset.id){playCorrectSound();matchBodyScoreCount+=10;document.getElementById('match-body-score').innerText=matchBodyScoreCount;activeDragBody.classList.add('matched');target.classList.add('matched');completedBodyLines.push({from:activeDragBody.dataset.side==='left'?activeDragBody:target,to:activeDragBody.dataset.side==='right'?activeDragBody:target});matchedBodyPairsInPage++;
                     if(matchedBodyPairsInPage===4){if(currentMatchBodyPageIdx<matchBodyPagesCount-1)setTimeout(nextMatchBodyPage,700);else setTimeout(()=>{if(window.saveScoreToFirebase)window.saveScoreToFirebase(currentGlobalLang==='ms'?'Padankan Anggota Badan':'Match Body Part',100);alert(currentGlobalLang==='ms'?'🌟 Hebat! Anda telah melengkapkan semua set padanan anggota badan!':'🌟 Amazing! You completed all body part match sets!');openBodyPartMenu()},500)}}
@@ -9554,7 +9419,16 @@
             activeDragBody=null;isDraggingBody=false;redrawBodyCanvas();
         }
         function getBodyItemCenter(el){const wrapper=document.getElementById('match-body-wrapper').getBoundingClientRect(),r=el.getBoundingClientRect();return{x:r.left-wrapper.left+r.width/2,y:r.top-wrapper.top+r.height/2}}
-        function redrawBodyCanvas(){const c=document.getElementById('match-body-canvas');if(!c)return;const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);syncMatchingEyelets(document.getElementById('match-body-wrapper'));completedBodyLines.forEach(line=>drawMatchingRope(ctx,getBodyItemCenter(line.from),getBodyItemCenter(line.to),line.from,line.to));if(isDraggingBody&&activeDragBody)drawMatchingRope(ctx,getBodyItemCenter(activeDragBody),{x:dragBodyX,y:dragBodyY},activeDragBody,null)}
+        function redrawBodyCanvas(){
+            const canvas=document.getElementById('match-body-canvas'),wrapper=document.getElementById('match-body-wrapper');
+            if(!canvas||!wrapper)return;
+            const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+            wrapper.querySelectorAll('.match-item[data-side]').forEach(ropeEyelet);
+            completedBodyLines.forEach(line=>drawMatchRope(ctx,ropeAnchor(line.from,wrapper),ropeAnchor(line.to,wrapper)));
+            if(isDraggingBody&&activeDragBody)
+                drawMatchRope(ctx,ropeAnchor(activeDragBody,wrapper),{x:dragBodyX,y:dragBodyY},true);
+        }
+
         function nextMatchBodyPage(){currentMatchBodyPageIdx++;loadMatchBodyPage()}
 
         let learnBodyIndex=0;function startLearnBodyPart(){learnBodyIndex=0;showScreen('learn-body-screen');updateBodyLanguage();renderLearnBodyPart();setTimeout(speakCurrentBodyPart,180)}
@@ -11138,33 +11012,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     canvas.style.width=w+'px';canvas.style.height=h+'px';
                 }
                 const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
-                if(cfg.useRope!==false)syncMatchingEyelets(wrap);
+                wrap.querySelectorAll('.shape-match-item[data-side]').forEach(ropeEyelet);
                 state.lines.forEach(line=>{
                     const a=document.querySelector(`#${cfg.leftId} .shape-match-item[data-key="${line.key}"]`);
                     const b=document.querySelector(`#${cfg.rightId} .shape-match-item[data-key="${line.key}"]`);
-                    if(a&&b){
-                        const p1=point(a,wrap),p2=point(b,wrap);
-                        if(cfg.useRope!==false)drawMatchingRope(ctx,p1,p2,a,b);
-                        else {ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle='#5E17EB';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke()}
-                    }
+                    if(a&&b)drawMatchRope(ctx,ropeAnchor(a,wrap),ropeAnchor(b,wrap));
                 });
-                if(state.drag&&tempPoint){
-                    const p1=point(state.drag,wrap);
-                    if(cfg.useRope!==false)drawMatchingRope(ctx,p1,tempPoint,state.drag,null);
-                    else {ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(tempPoint.x,tempPoint.y);ctx.strokeStyle='#FF66C4';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke()}
-                }
+                if(state.drag&&tempPoint)drawMatchRope(ctx,ropeAnchor(state.drag,wrap),tempPoint,true);
             }
             function pos(e,wrap){const r=wrap.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
             function down(e){
-                const item=matchItemAtPointer(e,elements().wrap,'.shape-match-item[data-side]');
+                if(e.target.closest('.shape-match-audio-btn')) return;
+                const item=e.target.closest('.shape-match-item');
                 if(!item||item.classList.contains('matched')||!item.dataset.side)return;
-                beginMatchTouch(e);if(item.dataset.side==='left')item._speakMatchingName?.();state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
+                e.preventDefault();state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
             }
             function move(e){if(!state.drag)return;e.preventDefault();draw(pos(e,elements().wrap));}
             function up(e){
                 if(!state.drag)return;e.preventDefault();
                 const left=state.drag;left.classList.remove('selected');
-                const target=matchItemAtPointer(e,elements().wrap,'.shape-match-item[data-side]',true);
+                const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.shape-match-item');
                 if(target&&target.dataset.side!==left.dataset.side&&!target.classList.contains('matched')&&target.dataset.key===left.dataset.key){
                     left.classList.add('matched');target.classList.add('matched');
                     state.lines.push({key:left.dataset.key});state.matched++;
@@ -11230,7 +11097,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const name=shapeText(item);
                 d.innerHTML=`<span class="match-shape-name">${name}</span><button type="button" class="shape-match-audio-btn" aria-label="${currentGlobalLang==='ms'?'Dengar':'Listen'} ${name}" title="Listen / Dengar">🔊</button>`;
                 const audioBtn=d.querySelector('.shape-match-audio-btn');
-                bindMatchingAudio(audioBtn,()=>speakMatchingLabel(shapeText(item)));
+                audioBtn.addEventListener('pointerdown',e=>e.stopPropagation());
+                audioBtn.addEventListener('pointerup',e=>e.stopPropagation());
+                audioBtn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();speakShapeItem(item);});
                 l.appendChild(d);
             });
             shapeShuffle(items).forEach(item=>{
@@ -11330,7 +11199,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let matchMeSets=[],matchMeIndex=0,matchMeScore=0;
         const matchMeMatcher=createShapeMatcher({
             wrapperId:'match-me-wrapper',canvasId:'match-me-canvas',
-            useRope:false,
             leftId:'match-me-left',rightId:'match-me-right',
             onMatch:()=>{matchMeScore+=10;document.getElementById('match-me-score').innerText=matchMeScore;},
             onComplete:()=>{
