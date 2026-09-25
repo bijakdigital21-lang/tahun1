@@ -5117,6 +5117,35 @@
             -webkit-user-drag:none;
         }
 
+        /* Speaker at the top centre of the four wooden matching signs. */
+        #match-animal-game-screen #match-animal-left-column .match-animal-audio-btn,
+        #match-colour-screen #colour-match-left .match-colour-audio-btn,
+        #match-body-game-screen #match-body-left-column .match-body-audio-btn,
+        #match-shape-screen #match-shape-left .shape-match-audio-btn {
+            position: absolute !important;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 40;
+        }
+        #match-animal-game-screen #match-animal-left-column .match-animal-name,
+        #match-colour-screen #colour-match-left .match-colour-name,
+        #match-body-game-screen #match-body-left-column .match-body-name,
+        #match-shape-screen #match-shape-left .match-shape-name {
+            text-align: center;
+            transform: none;
+        }
+        @media (max-width: 768px) {
+            #match-animal-game-screen #match-animal-left-column .match-animal-audio-btn,
+            #match-colour-screen #colour-match-left .match-colour-audio-btn,
+            #match-body-game-screen #match-body-left-column .match-body-audio-btn,
+            #match-shape-screen #match-shape-left .shape-match-audio-btn { top: -17px; }
+            #match-animal-game-screen #match-animal-left-column .match-animal-name,
+            #match-colour-screen #colour-match-left .match-colour-name,
+            #match-body-game-screen #match-body-left-column .match-body-name,
+            #match-shape-screen #match-shape-left .match-shape-name { transform: none; }
+        }
+
     </style>
 </head>
 <body class="login-mode">
@@ -7697,14 +7726,14 @@
         }
         function bindMatchingAudio(button, speak) {
             let lastPointerAudio=0;
-            button.addEventListener('pointerdown',()=>{
+            button.addEventListener('pointerdown',e=>{
+                e.stopPropagation();
                 lastPointerAudio=Date.now();
                 speak();
-                // Biarkan acara naik ke papan supaya sentuhan ini juga boleh diseret.
             });
             button.addEventListener('click',e=>{
                 e.preventDefault();e.stopPropagation();
-                // Klik papan kekunci masih menyebut perkataan; sentuhan tidak berganda.
+                // Keyboard clicks speak; pointer clicks are already handled above.
                 if(Date.now()-lastPointerAudio>700)speak();
             });
         }
