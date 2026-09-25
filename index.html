@@ -5117,35 +5117,6 @@
             -webkit-user-drag:none;
         }
 
-        /* Speaker pada penjuru kanan atas keempat-empat papan kayu. */
-        #match-animal-game-screen #match-animal-left-column .match-animal-audio-btn,
-        #match-colour-screen #colour-match-left .match-colour-audio-btn,
-        #match-body-game-screen #match-body-left-column .match-body-audio-btn,
-        #match-shape-screen #match-shape-left .shape-match-audio-btn {
-            position: absolute !important;
-            top: -13px !important;
-            right: -10px !important;
-            z-index: 5 !important;
-            width: 34px !important;
-            height: 34px !important;
-            min-width: 34px !important;
-            flex: none !important;
-            font-size: 1rem !important;
-            touch-action: manipulation !important;
-        }
-        @media (max-width: 768px) {
-            #match-animal-game-screen #match-animal-left-column .match-animal-audio-btn,
-            #match-colour-screen #colour-match-left .match-colour-audio-btn,
-            #match-body-game-screen #match-body-left-column .match-body-audio-btn,
-            #match-shape-screen #match-shape-left .shape-match-audio-btn {
-                top: -14px !important;
-                right: -8px !important;
-                width: 32px !important;
-                height: 32px !important;
-                min-width: 32px !important;
-                font-size: .95rem !important;
-            }
-        }
     </style>
 </head>
 <body class="login-mode">
@@ -7726,11 +7697,10 @@
         }
         function bindMatchingAudio(button, speak) {
             let lastPointerAudio=0;
-            button.addEventListener('pointerdown',e=>{
-                // Speaker hanya memainkan audio, tanpa memulakan suaian.
-                e.stopPropagation();
+            button.addEventListener('pointerdown',()=>{
                 lastPointerAudio=Date.now();
                 speak();
+                // Biarkan acara naik ke papan supaya sentuhan ini juga boleh diseret.
             });
             button.addEventListener('click',e=>{
                 e.preventDefault();e.stopPropagation();
