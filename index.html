@@ -1,30 +1,60 @@
+Sudah dibetulkan. Bila tekan **Reject**, semua maklumat disimpan dalam tab **Rejected**, kemudian disembunyikan daripada Pending pada pelayar itu. Akaun dan data Firebase kekal.
+
+**Rekod disimpan pada pelayar/peranti yang sama.** Butang **Muat Turun Semua Maklumat** menyediakan salinan fail JSON. Ujian simulasi penyimpanan dan kegagalan simpanan lulus.
+
+:chatgpt-content-reference{index="0"}[ index - 2026-09-25T161937.276.html](sandbox:/workspace/scratch/674a654caa2a/upload/index%20-%202026-09-25T161937.276.html)
+
+**Copy kod lengkap di bawah dan gantikan kod lama:**
+
+```html
 <!DOCTYPE html>
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Bijak Belajar</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
     </style>
-    
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-       (function(){
-          emailjs.init("fn_2mv2164kWUf8J7"); // Public Key anda
-       })();
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <script>
+        (function () {
+            emailjs.init("fn_2mv2164kWUf8J7");
+        })();
     </script>
 
-  <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, get, child, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
-        // 1. Firebase Config untuk Paparan Admin & Pending List (admin-f72e5)
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        import {
+            getDatabase,
+            ref,
+            set,
+            get,
+            child,
+            remove,
+            onValue
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
         const adminFirebaseConfig = {
             apiKey: "AIzaSyCxxEsifGhdkTj_3EOdjflPS__B_SKRSZY",
             authDomain: "admin-f72e5.firebaseapp.com",
@@ -35,7 +65,6 @@
             appId: "1:523370880023:web:883b422a9611abb2889052"
         };
 
-        // 2. Firebase Config untuk Target User / Grammar Hub (grammar-hub-6af80)
         const targetFirebaseConfig = {
             apiKey: "AIzaSyDXc06B8WLtqjkG0aScBHrd3L3M-n_5okc",
             authDomain: "grammar-hub-6af80.firebaseapp.com",
@@ -46,18 +75,16 @@
             appId: "1:1092171234032:web:7cc8efefb812993500e035"
         };
 
-        // Initialize Admin Firebase App (Primary)
         const adminApp = initializeApp(adminFirebaseConfig, "AdminApp");
         const adminAuth = getAuth(adminApp);
         const adminDb = getDatabase(adminApp);
 
-        // Initialize Target Grammar Hub Firebase App (Secondary)
         const targetApp = initializeApp(targetFirebaseConfig, "TargetApp");
         const targetAuth = getAuth(targetApp);
         const targetDb = getDatabase(targetApp);
 
-        // 2. Fungsi Admin Login (Menggunakan Admin Auth)
-        window.checkAdminLogin = async function() {
+        // LOG MASUK ADMIN
+        window.checkAdminLogin = async function () {
             const email = document.getElementById('admin_email').value;
             const pass = document.getElementById('admin_pass').value;
 
@@ -68,22 +95,28 @@
 
             try {
                 await signInWithEmailAndPassword(adminAuth, email, pass);
-                document.getElementById('login_section').classList.add('hidden');
-                document.getElementById('admin_dashboard').classList.remove('hidden');
-                
+
+                document.getElementById('login_section')
+                    .classList.add('hidden');
+
+                document.getElementById('admin_dashboard')
+                    .classList.remove('hidden');
+
                 initRealtimeListeners();
             } catch (error) {
                 console.error("Ralat Log Masuk:", error);
                 alert("Log Masuk Gagal: " + error.message);
             }
-        }
+        };
 
-        window.switchTab = function(tabName) {
+        // TUKAR TAB
+        window.switchTab = function (tabName) {
             const sections = {
                 pending: document.getElementById('section_pending'),
                 approved: document.getElementById('section_approved'),
                 rejected: document.getElementById('section_rejected')
             };
+
             const buttons = {
                 pending: document.getElementById('tab_pending_btn'),
                 approved: document.getElementById('tab_approved_btn'),
@@ -99,64 +132,194 @@
                     ? "px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white shadow"
                     : "px-4 py-2 text-xs font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300";
             });
+        };
+
+        // REKOD REJECT DISIMPAN DALAM PELAYAR
+        let pendingRecords = {};
+        let rejectedRecords = {};
+
+        function rejectStorageKey() {
+            const uid = adminAuth.currentUser?.uid;
+
+            if (!uid) {
+                throw new Error('Sila log masuk sebagai admin dahulu.');
+            }
+
+            return 'grammarhub:admin-f72e5:rejected:v1:' + uid;
         }
 
+        function readRejectedRecords() {
+            const raw = localStorage.getItem(rejectStorageKey());
+
+            if (!raw) return {};
+
+            const records = JSON.parse(raw);
+
+            if (
+                !records ||
+                typeof records !== 'object' ||
+                Array.isArray(records) ||
+                Object.values(records).some(record =>
+                    !record ||
+                    !record.information ||
+                    typeof record.information !== 'object'
+                )
+            ) {
+                throw new Error('Rekod Rejected dalam pelayar tidak sah.');
+            }
+
+            return records;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[char]));
+        }
+
+        function refreshRejectView() {
+            loadPendingTable(pendingRecords);
+            loadRejectedTable(rejectedRecords);
+        }
+
+        // BACA PENDING DAN APPROVED DARI FIREBASE.
+        // REJECTED DIBACA DARI SIMPANAN PELAYAR.
         function initRealtimeListeners() {
+            try {
+                rejectedRecords = readRejectedRecords();
+            } catch (error) {
+                alert(
+                    'Tidak dapat membaca simpanan Rejected: ' +
+                    error.message
+                );
+            }
+
+            loadRejectedTable(rejectedRecords);
+
             onValue(ref(adminDb, 'pending_users'), (snapshot) => {
-                const data = snapshot.val();
-                loadPendingTable(data);
+                pendingRecords = snapshot.val() || {};
+                loadPendingTable(pendingRecords);
             });
 
             onValue(ref(adminDb, 'approved_users'), (snapshot) => {
-                const data = snapshot.val();
-                loadApprovedTable(data);
-            });
-
-            onValue(ref(adminDb, 'rejected_users'), (snapshot) => {
-                const data = snapshot.val();
-                loadRejectedTable(data);
+                loadApprovedTable(snapshot.val());
             });
         }
 
+        // Selaraskan tab dalam pelayar yang sama.
+        window.addEventListener('storage', (event) => {
+            if (!adminAuth.currentUser) return;
+
+            if (
+                event.key !== null &&
+                event.key !== rejectStorageKey()
+            ) {
+                return;
+            }
+
+            try {
+                rejectedRecords = readRejectedRecords();
+                refreshRejectView();
+            } catch (error) {
+                alert(
+                    'Tidak dapat membaca simpanan Rejected: ' +
+                    error.message
+                );
+            }
+        });
+
+        // JADUAL PENDING
         function loadPendingTable(data) {
             const tbody = document.getElementById('pending_table_body');
             tbody.innerHTML = '';
 
-            if (!data || Object.keys(data).length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-slate-500">Tiada senarai menunggu.</td></tr>`;
+            // Rekod yang telah disimpan dalam Rejected
+            // disembunyikan daripada Pending pada pelayar ini.
+            const visible = Object.entries(data || {}).filter(([key]) =>
+                !Object.prototype.hasOwnProperty.call(rejectedRecords, key)
+            );
+
+            if (visible.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4"
+                            class="text-center py-4 text-slate-500">
+                            Tiada senarai menunggu.
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
-            Object.entries(data).forEach(([key, user]) => {
+            visible.forEach(([key, user]) => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-slate-100";
+
                 tr.innerHTML = `
                     <td class="py-3 px-4">
-                        <span class="font-semibold text-slate-800">${user.nama}</span><br>
-                        <span class="text-xs text-slate-500">${user.email} (${user.nofon})</span>
+                        <span class="font-semibold text-slate-800">
+                            ${user.nama}
+                        </span>
+                        <br>
+                        <span class="text-xs text-slate-500">
+                            ${user.email} (${user.nofon})
+                        </span>
                     </td>
+
                     <td class="py-3 px-4">
-                        <span class="font-medium text-blue-600">${user.reseller_nama || '-'}</span><br>
-                        <span class="text-xs text-slate-400">${user.reseller_email || ''} (${user.reseller_nofon || ''})</span>
+                        <span class="font-medium text-blue-600">
+                            ${user.reseller_nama || '-'}
+                        </span>
+                        <br>
+                        <span class="text-xs text-slate-400">
+                            ${user.reseller_email || ''}
+                            (${user.reseller_nofon || ''})
+                        </span>
                     </td>
-                    <td class="py-3 px-4 text-xs text-slate-500">${user.date}</td>
+
+                    <td class="py-3 px-4 text-xs text-slate-500">
+                        ${user.date}
+                    </td>
+
                     <td class="py-3 px-4 text-right">
                         <div class="inline-flex items-center space-x-3">
-                            <button onclick="approveUser('${key}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg shadow">Approve</button>
-                            <button onclick="rejectUser('${key}')" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-lg shadow">Reject</button>
+                            <button
+                                onclick="approveUser('${key}')"
+                                class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg shadow">
+                                Approve
+                            </button>
+
+                            <button
+                                onclick="rejectUser('${key}')"
+                                class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-lg shadow">
+                                Reject
+                            </button>
                         </div>
                     </td>
                 `;
+
                 tbody.appendChild(tr);
             });
         }
 
+        // JADUAL APPROVED
         function loadApprovedTable(data) {
             const tbody = document.getElementById('approved_table_body');
             tbody.innerHTML = '';
 
             if (!data || Object.keys(data).length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-slate-500">Tiada rekod yang telah diluluskan.</td></tr>`;
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4"
+                            class="text-center py-4 text-slate-500">
+                            Tiada rekod yang telah diluluskan.
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
@@ -167,7 +330,7 @@ Terima kasih kerana memilih Grammar Hub + KIDDORA ! 💙
 
 Kami sangat teruja untuk anda mula belajar, berlatih dan meneroka pelbagai bahan pembelajaran yang telah disediakan.
 
-📚 AKSES APLIKASI ANDA 
+📚 AKSES APLIKASI ANDA
 
 Grammar Hub:
 https://bijakdigital21-lang.github.io/Grammarhub./
@@ -196,8 +359,9 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
 
 💙 Selamat belajar!`;
 
-                let cleanPhone = user.nofon.replace(/\D/g,'');
-                if(cleanPhone.startsWith('0')) {
+                let cleanPhone = user.nofon.replace(/\D/g, '');
+
+                if (cleanPhone.startsWith('0')) {
                     cleanPhone = '6' + cleanPhone;
                 }
 
@@ -206,55 +370,166 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
 
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-slate-100";
+
                 tr.innerHTML = `
                     <td class="py-3 px-4 font-medium text-slate-800">
-                        ${user.nama}<br><span class="text-xs text-slate-400">${user.email}</span>
+                        ${user.nama}
+                        <br>
+                        <span class="text-xs text-slate-400">
+                            ${user.email}
+                        </span>
                     </td>
+
                     <td class="py-3 px-4">
-                        <span class="font-medium text-blue-600">${user.reseller_nama || '-'}</span>
+                        <span class="font-medium text-blue-600">
+                            ${user.reseller_nama || '-'}
+                        </span>
                     </td>
+
                     <td class="py-3 px-4">
-                        <a href="${waLink}" target="_blank" class="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-emerald-200 transition" title="Klik untuk hantar WhatsApp">
+                        <a
+                            href="${waLink}"
+                            target="_blank"
+                            class="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-emerald-200 transition"
+                            title="Klik untuk hantar WhatsApp">
                             📱 ${user.nofon} ↗
                         </a>
                     </td>
-                    <td class="py-3 px-4 text-xs text-slate-500">${user.date}</td>
+
+                    <td class="py-3 px-4 text-xs text-slate-500">
+                        ${user.date}
+                    </td>
                 `;
+
                 tbody.appendChild(tr);
             });
         }
 
+        // JADUAL REJECTED
         function loadRejectedTable(data) {
             const tbody = document.getElementById('rejected_table_body');
             tbody.innerHTML = '';
 
-            if (!data || Object.keys(data).length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-slate-500">Tiada rekod yang ditolak.</td></tr>`;
+            const entries = Object.entries(data || {}).sort((a, b) =>
+                String(b[1].rejectedAt).localeCompare(
+                    String(a[1].rejectedAt)
+                )
+            );
+
+            if (!entries.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4"
+                            class="text-center py-4 text-slate-500">
+                            Tiada rekod yang ditolak.
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
-            Object.values(data).reverse().forEach((user) => {
+            entries.forEach(([key, record]) => {
+                const user = record.information;
                 const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-100";
+
+                tr.className = 'border-b border-slate-100';
+
                 tr.innerHTML = `
                     <td class="py-3 px-4 font-medium text-slate-800">
-                        ${user.nama || '-'}<br><span class="text-xs text-slate-400">${user.email || '-'}</span>
+                        ${escapeHtml(user.nama || '-')}
+                        <br>
+
+                        <span class="text-xs text-slate-500">
+                            ${escapeHtml(user.email || '-')}
+                            <br>
+                            ${escapeHtml(user.nofon || '-')}
+                        </span>
+
+                        <details class="mt-2 text-xs font-normal">
+                            <summary class="cursor-pointer text-blue-600">
+                                Lihat semua maklumat
+                            </summary>
+
+                            <div class="mt-2 text-slate-500">
+                                ID: ${escapeHtml(key)}
+                            </div>
+
+                            <pre class="mt-2 whitespace-pre-wrap break-all bg-slate-50 p-2 rounded">${escapeHtml(JSON.stringify(user, null, 2))}</pre>
+                        </details>
                     </td>
+
                     <td class="py-3 px-4">
-                        <span class="font-medium text-blue-600">${user.reseller_nama || '-'}</span><br>
-                        <span class="text-xs text-slate-400">${user.reseller_email || ''}</span>
+                        <span class="font-medium text-blue-600">
+                            ${escapeHtml(user.reseller_nama || '-')}
+                        </span>
+                        <br>
+
+                        <span class="text-xs text-slate-400">
+                            ${escapeHtml(user.reseller_email || '')}
+                            <br>
+                            ${escapeHtml(user.reseller_nofon || '')}
+                        </span>
                     </td>
-                    <td class="py-3 px-4 text-xs text-slate-500">${user.date || '-'}</td>
-                    <td class="py-3 px-4 text-xs text-rose-600 font-medium">${user.rejectedAt ? new Date(user.rejectedAt).toLocaleString('ms-MY') : '-'}</td>
+
+                    <td class="py-3 px-4 text-xs text-slate-500">
+                        ${escapeHtml(user.date || '-')}
+                    </td>
+
+                    <td class="py-3 px-4 text-xs text-rose-600 font-medium">
+                        ${escapeHtml(
+                            new Date(record.rejectedAt)
+                                .toLocaleString('ms-MY')
+                        )}
+                    </td>
                 `;
+
                 tbody.appendChild(tr);
             });
         }
 
-        // 5. Proses Approve
-        // Akaun Firebase + rekod Approved ialah proses utama.
-        // EmailJS hanyalah notifikasi tambahan, jadi kegagalan EmailJS tidak akan membatalkan approval.
-        window.approveUser = async function(key) {
+        // MUAT TURUN SEMUA MAKLUMAT REJECTED
+        window.exportRejected = function () {
+            try {
+                const records = readRejectedRecords();
+
+                if (!Object.keys(records).length) {
+                    alert('Tiada rekod Rejected untuk dimuat turun.');
+                    return;
+                }
+
+                const blob = new Blob(
+                    [
+                        JSON.stringify({
+                            exportedAt: new Date().toISOString(),
+                            records
+                        }, null, 2)
+                    ],
+                    {
+                        type: 'application/json;charset=utf-8'
+                    }
+                );
+
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+
+                link.href = url;
+                link.download =
+                    'Rekod_Rejected_' +
+                    new Date().toISOString().slice(0, 10) +
+                    '.json';
+
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            } catch (error) {
+                alert('Tidak dapat eksport Rejected: ' + error.message);
+            }
+        };
+
+        // PROSES APPROVE
+        window.approveUser = async function (key) {
             const pendingRef = ref(adminDb, 'pending_users/' + key);
 
             try {
@@ -266,16 +541,25 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
                 }
 
                 const user = snapshot.val();
-                if (!confirm(`Adakah anda pasti untuk approve ${user.nama}?`)) return;
+
+                if (!confirm(
+                    `Adakah anda pasti untuk approve ${user.nama}?`
+                )) {
+                    return;
+                }
 
                 let accountStatus = 'created';
                 let firebaseUid = null;
 
-                // 1. Cipta akaun Grammar Hub.
-                // Jika percubaan lama sudah sempat cipta akaun tetapi EmailJS gagal,
-                // kita benarkan proses approval diteruskan tanpa mencipta akaun kedua.
+                // Cipta akaun Grammar Hub.
                 try {
-                    const userCredential = await createUserWithEmailAndPassword(targetAuth, user.email, user.password);
+                    const userCredential =
+                        await createUserWithEmailAndPassword(
+                            targetAuth,
+                            user.email,
+                            user.password
+                        );
+
                     firebaseUid = userCredential.user.uid;
 
                     await set(ref(targetDb, 'users/' + firebaseUid), {
@@ -288,15 +572,22 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
                         createdAt: new Date().toISOString()
                     });
                 } catch (authError) {
-                    if (authError && authError.code === 'auth/email-already-in-use') {
+                    if (
+                        authError &&
+                        authError.code === 'auth/email-already-in-use'
+                    ) {
                         accountStatus = 'already_exists';
-                        console.warn('Akaun sudah wujud. Approval diteruskan.', authError);
+
+                        console.warn(
+                            'Akaun sudah wujud. Approval diteruskan.',
+                            authError
+                        );
                     } else {
                         throw authError;
                     }
                 }
 
-                // 2. SIMPAN APPROVED DULU. Ini tidak bergantung pada EmailJS.
+                // Simpan rekod Approved dahulu.
                 const approvedData = {
                     ...user,
                     approvedAt: new Date().toISOString(),
@@ -305,15 +596,22 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
                     email_status: 'pending'
                 };
 
-                await set(ref(adminDb, 'approved_users/' + key), approvedData);
+                await set(
+                    ref(adminDb, 'approved_users/' + key),
+                    approvedData
+                );
+
                 await remove(pendingRef);
 
-                // 3. Cuba hantar EmailJS secara berasingan.
+                // Emel dihantar secara berasingan.
                 let emailSent = false;
                 let emailErrorMessage = '';
 
                 try {
-                    if (!window.emailjs || typeof emailjs.send !== 'function') {
+                    if (
+                        !window.emailjs ||
+                        typeof emailjs.send !== 'function'
+                    ) {
                         throw new Error('EmailJS tidak tersedia.');
                     }
 
@@ -323,163 +621,307 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
                         password: user.password
                     };
 
-                    await emailjs.send('service_hd5rpgc', 'template_9sh4gw2', templateParams);
+                    await emailjs.send(
+                        'service_hd5rpgc',
+                        'template_9sh4gw2',
+                        templateParams
+                    );
+
                     emailSent = true;
 
-                    await set(ref(adminDb, 'approved_users/' + key), {
-                        ...approvedData,
-                        email_status: 'sent',
-                        email_sent_at: new Date().toISOString()
-                    });
+                    await set(
+                        ref(adminDb, 'approved_users/' + key),
+                        {
+                            ...approvedData,
+                            email_status: 'sent',
+                            email_sent_at: new Date().toISOString()
+                        }
+                    );
                 } catch (emailError) {
-                    emailErrorMessage = emailError?.text || emailError?.message || String(emailError || 'EmailJS gagal');
-                    console.warn('Approval berjaya tetapi EmailJS gagal:', emailError);
+                    emailErrorMessage =
+                        emailError?.text ||
+                        emailError?.message ||
+                        String(emailError || 'EmailJS gagal');
 
-                    await set(ref(adminDb, 'approved_users/' + key), {
-                        ...approvedData,
-                        email_status: 'failed',
-                        email_error: emailErrorMessage
-                    });
+                    console.warn(
+                        'Approval berjaya tetapi EmailJS gagal:',
+                        emailError
+                    );
+
+                    await set(
+                        ref(adminDb, 'approved_users/' + key),
+                        {
+                            ...approvedData,
+                            email_status: 'failed',
+                            email_error: emailErrorMessage
+                        }
+                    );
                 }
 
                 if (emailSent) {
-                    alert(`Berjaya approve ${user.nama}! Akaun telah diproses dan emel berjaya dihantar.`);
+                    alert(
+                        `Berjaya approve ${user.nama}! Akaun telah diproses dan emel berjaya dihantar.`
+                    );
                 } else {
-                    alert(`Berjaya approve ${user.nama}!\n\nAkaun & rekod Approved telah disimpan.\nEmailJS tidak berjaya dihantar (kemungkinan kredit habis).\n\nGunakan butang WhatsApp di tab Approved untuk hantar maklumat login kepada customer.`);
+                    alert(
+                        `Berjaya approve ${user.nama}!\n\nAkaun & rekod Approved telah disimpan.\nEmailJS tidak berjaya dihantar (kemungkinan kredit habis).\n\nGunakan butang WhatsApp di tab Approved untuk hantar maklumat login kepada customer.`
+                    );
                 }
-
             } catch (error) {
                 console.error('Ralat approval:', error);
-                const message = error?.message || error?.code || String(error || 'Ralat tidak diketahui');
+
+                const message =
+                    error?.message ||
+                    error?.code ||
+                    String(error || 'Ralat tidak diketahui');
+
                 alert('Gagal memproses kelulusan: ' + message);
             }
-        }
+        };
 
-        // 6. Proses Reject: pindahkan ke rejected_users supaya rekod kekal tersimpan.
-        window.rejectUser = async function(key) {
+        // PROSES REJECT
+        // Salin semua maklumat ke simpanan pelayar sahaja.
+        // Tiada perubahan atau pemadaman data Firebase.
+        window.rejectUser = function (key) {
             try {
-                const pendingRef = ref(adminDb, 'pending_users/' + key);
-                const snapshot = await get(pendingRef);
+                const records = readRejectedRecords();
 
-                if (!snapshot.exists()) {
-                    alert('Data tidak dijumpai.');
+                // Elakkan rekod berganda.
+                if (
+                    Object.prototype.hasOwnProperty.call(records, key)
+                ) {
+                    rejectedRecords = records;
+                    refreshRejectView();
+                    window.switchTab('rejected');
                     return;
                 }
 
-                const user = snapshot.val();
-                if (!confirm(`Adakah anda pasti untuk REJECT permohonan daripada ${user.nama}?`)) return;
+                const user = pendingRecords[key];
 
-                const rejectedData = {
-                    ...user,
-                    rejectedAt: new Date().toISOString(),
-                    status: 'rejected'
+                if (!user) {
+                    alert(
+                        'Data permohonan tidak dijumpai. Sila muat semula senarai.'
+                    );
+                    return;
+                }
+
+                const nextRecords = {
+                    ...records,
+                    [key]: {
+                        information: JSON.parse(JSON.stringify(user)),
+                        rejectedAt: new Date().toISOString()
+                    }
                 };
 
-                // Simpan dahulu ke rejected_users, kemudian baru buang dari pending.
-                await set(ref(adminDb, 'rejected_users/' + key), rejectedData);
-                await remove(pendingRef);
+                // Simpan dahulu sebelum menyembunyikan daripada Pending.
+                // Jika penyimpanan gagal, paparan Pending kekal.
+                localStorage.setItem(
+                    rejectStorageKey(),
+                    JSON.stringify(nextRecords)
+                );
 
-                alert(`Permohonan ${user.nama} telah ditolak dan rekod masih disimpan di bahagian Rejected.`);
+                rejectedRecords = nextRecords;
+
+                refreshRejectView();
+                window.switchTab('rejected');
+
+                alert(
+                    'Semua maklumat ' +
+                    (user.nama || 'permohonan') +
+                    ' telah disimpan dalam Rejected pada pelayar ini.'
+                );
             } catch (error) {
-                console.error('Ralat reject:', error);
-                const message = error?.message || error?.code || String(error || 'Ralat tidak diketahui');
-                alert('Gagal menolak permohonan: ' + message);
+                console.error('Ralat simpan Rejected:', error);
+
+                alert(
+                    'Maklumat belum disimpan: ' +
+                    error.message +
+                    '\nPermohonan masih berada di Pending.'
+                );
             }
-        }
+        };
     </script>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4 relative bg-cover bg-center bg-no-repeat" style="background-image: url('https://i.imgur.com/H46KuIJ.jpeg');">
+
+<body
+    class="min-h-screen flex flex-col items-center justify-center p-4 relative bg-cover bg-center bg-no-repeat"
+    style="background-image: url('https://i.imgur.com/H46KuIJ.jpeg');">
 
     <div class="absolute inset-0 bg-black/40 z-0"></div>
 
     <div class="relative z-10 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden border border-white/25">
-        
+
         <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
-            <h3 class="font-bold text-lg">Admin Control Panel - Grammar Hub</h3>
+            <h3 class="font-bold text-lg">
+                Admin Control Panel - Grammar Hub
+            </h3>
         </div>
 
         <div class="p-6">
-            <div id="login_section" class="space-y-4 max-w-sm mx-auto py-12 text-center">
-                <h4 class="text-slate-700 font-medium text-lg">Log Masuk Admin</h4>
-                <input type="email" id="admin_email" placeholder="Email Admin" 
+
+            <!-- LOG MASUK -->
+            <div
+                id="login_section"
+                class="space-y-4 max-w-sm mx-auto py-12 text-center">
+
+                <h4 class="text-slate-700 font-medium text-lg">
+                    Log Masuk Admin
+                </h4>
+
+                <input
+                    type="email"
+                    id="admin_email"
+                    placeholder="Email Admin"
                     class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 focus:outline-none">
-                <input type="password" id="admin_pass" placeholder="Password" 
+
+                <input
+                    type="password"
+                    id="admin_pass"
+                    placeholder="Password"
                     class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-800 focus:outline-none">
-                <button onclick="checkAdminLogin()" class="w-full bg-slate-900 hover:bg-black text-white font-semibold py-2.5 rounded-lg transition shadow">
+
+                <button
+                    onclick="checkAdminLogin()"
+                    class="w-full bg-slate-900 hover:bg-black text-white font-semibold py-2.5 rounded-lg transition shadow">
                     Log Masuk
                 </button>
             </div>
 
+            <!-- DASHBOARD -->
             <div id="admin_dashboard" class="hidden space-y-4">
+
                 <div class="flex gap-2 border-b pb-3">
-                    <button id="tab_pending_btn" onclick="switchTab('pending')" class="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white shadow">
+                    <button
+                        id="tab_pending_btn"
+                        onclick="switchTab('pending')"
+                        class="px-4 py-2 text-xs font-bold rounded-lg bg-blue-600 text-white shadow">
                         Menunggu Kelulusan (Pending)
                     </button>
-                    <button id="tab_approved_btn" onclick="switchTab('approved')" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300">
+
+                    <button
+                        id="tab_approved_btn"
+                        onclick="switchTab('approved')"
+                        class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300">
                         Telah Diluluskan (Approved)
                     </button>
-                    <button id="tab_rejected_btn" onclick="switchTab('rejected')" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300">
+
+                    <button
+                        id="tab_rejected_btn"
+                        onclick="switchTab('rejected')"
+                        class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-200 text-slate-700 hover:bg-slate-300">
                         Ditolak (Rejected)
                     </button>
                 </div>
 
+                <!-- PENDING -->
                 <div id="section_pending" class="space-y-3">
-                    <h4 class="font-semibold text-slate-800 text-sm">Senarai Pendaftaran Baru (Customer & Reseller)</h4>
+                    <h4 class="font-semibold text-slate-800 text-sm">
+                        Senarai Pendaftaran Baru (Customer & Reseller)
+                    </h4>
+
                     <div class="overflow-x-auto max-h-[450px]">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-600 border-b border-slate-200">
-                                    <th class="py-2.5 px-4">Maklumat Customer</th>
-                                    <th class="py-2.5 px-4">Maklumat Reseller</th>
-                                    <th class="py-2.5 px-4">Tarikh Mohon</th>
-                                    <th class="py-2.5 px-4 text-right">Tindakan</th>
+                                    <th class="py-2.5 px-4">
+                                        Maklumat Customer
+                                    </th>
+                                    <th class="py-2.5 px-4">
+                                        Maklumat Reseller
+                                    </th>
+                                    <th class="py-2.5 px-4">
+                                        Tarikh Mohon
+                                    </th>
+                                    <th class="py-2.5 px-4 text-right">
+                                        Tindakan
+                                    </th>
                                 </tr>
                             </thead>
-                            <tbody id="pending_table_body">
-                                </tbody>
+
+                            <tbody id="pending_table_body"></tbody>
                         </table>
                     </div>
                 </div>
 
+                <!-- APPROVED -->
                 <div id="section_approved" class="space-y-3 hidden">
-                    <h4 class="font-semibold text-slate-800 text-sm">Rekod Pelanggan & Reseller Diluluskan</h4>
+                    <h4 class="font-semibold text-slate-800 text-sm">
+                        Rekod Pelanggan & Reseller Diluluskan
+                    </h4>
+
                     <div class="overflow-x-auto max-h-[450px]">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-600 border-b border-slate-200">
-                                    <th class="py-2.5 px-4">Customer</th>
-                                    <th class="py-2.5 px-4">Reseller Bertanggungjawab</th>
-                                    <th class="py-2.5 px-4">WhatsApp Customer</th>
-                                    <th class="py-2.5 px-4">Tarikh</th>
+                                    <th class="py-2.5 px-4">
+                                        Customer
+                                    </th>
+                                    <th class="py-2.5 px-4">
+                                        Reseller Bertanggungjawab
+                                    </th>
+                                    <th class="py-2.5 px-4">
+                                        WhatsApp Customer
+                                    </th>
+                                    <th class="py-2.5 px-4">
+                                        Tarikh
+                                    </th>
                                 </tr>
                             </thead>
-                            <tbody id="approved_table_body">
-                                </tbody>
+
+                            <tbody id="approved_table_body"></tbody>
                         </table>
                     </div>
                 </div>
 
-
+                <!-- REJECTED -->
                 <div id="section_rejected" class="space-y-3 hidden">
-                    <h4 class="font-semibold text-slate-800 text-sm">Rekod Permohonan Ditolak</h4>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h4 class="font-semibold text-slate-800 text-sm">
+                            Rekod Permohonan Ditolak
+                        </h4>
+
+                        <button
+                            onclick="exportRejected()"
+                            class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-2 rounded-lg">
+                            Muat Turun Semua Maklumat
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-slate-500">
+                        Disimpan pada pelayar dan peranti ini sahaja.
+                        Muat turun salinan sebelum memadam data pelayar.
+                        Akaun dan data Firebase kekal; permohonan
+                        disembunyikan daripada Pending pada pelayar ini.
+                    </p>
+
                     <div class="overflow-x-auto max-h-[450px]">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead>
                                 <tr class="bg-rose-50 text-slate-600 border-b border-rose-100">
-                                    <th class="py-2.5 px-4">Customer</th>
-                                    <th class="py-2.5 px-4">Reseller Bertanggungjawab</th>
-                                    <th class="py-2.5 px-4">Tarikh Mohon</th>
-                                    <th class="py-2.5 px-4">Tarikh Reject</th>
+                                    <th class="py-2.5 px-4">
+                                        Customer
+                                    </th>
+                                    <th class="py-2.5 px-4">
+                                        Reseller Bertanggungjawab
+                                    </th>
+                                    <th class="py-2.5 px-4">
+                                        Tarikh Mohon
+                                    </th>
+                                    <th class="py-2.5 px-4">
+                                        Tarikh Reject
+                                    </th>
                                 </tr>
                             </thead>
+
                             <tbody id="rejected_table_body"></tbody>
                         </table>
                     </div>
                 </div>
+
             </div>
         </div>
-
     </div>
-
 </body>
 </html>
+```
