@@ -7569,10 +7569,11 @@
         }
 
         function handleAnimalPointerDown(e) {
-            const target = e.target.closest('.match-item');
+            const target = matchItemAtPointer(e, document.getElementById('match-animal-wrapper'), '.match-item[data-side]');
             if (!target || target.classList.contains("matched")) return;
 
             {
+                captureMatchPointer(e);
                 playClickSound();
                 activeDragAnimal = target;
                 isDraggingAnimal = true;
@@ -7600,8 +7601,7 @@
         function handleAnimalPointerUp(e) {
             if (!isDraggingAnimal || !activeDragAnimal) return;
 
-            const elementUnderPointer = document.elementFromPoint(e.clientX, e.clientY);
-            const targetRightItem = elementUnderPointer ? elementUnderPointer.closest('.match-item') : null;
+            const targetRightItem = matchItemAtPointer(e, document.getElementById('match-animal-wrapper'), '.match-item[data-side]', true);
 
             activeDragAnimal.classList.remove("selected");
 
@@ -7658,6 +7658,28 @@
         function matchingVisual(item) {
             return item.dataset.side==='right' && item.classList.contains('match-item')
                 ? item.querySelector('img, .match-colour-paint-can') || item : item;
+        }
+        // Terima sentuhan di seluruh kad dan sedikit di luar tepinya.
+        function matchItemAtPointer(e, wrapper, selector, useHitElement=false) {
+            if(!wrapper)return null;
+            const hit=useHitElement?document.elementFromPoint(e.clientX,e.clientY):e.target;
+            const direct=hit?.closest?.(selector);
+            if(direct&&wrapper.contains(direct))return direct;
+            let nearest=null,nearestDistance=Infinity;
+            wrapper.querySelectorAll(selector).forEach(item=>{
+                const r=item.getBoundingClientRect(),v=matchingVisual(item).getBoundingClientRect();
+                const left=Math.min(r.left,v.left)-16,right=Math.max(r.right,v.right)+16;
+                const top=Math.min(r.top,v.top)-12,bottom=Math.max(r.bottom,v.bottom)+12;
+                if(e.clientX<left||e.clientX>right||e.clientY<top||e.clientY>bottom)return;
+                const dx=Math.max(r.left-e.clientX,0,e.clientX-r.right);
+                const dy=Math.max(r.top-e.clientY,0,e.clientY-r.bottom);
+                const d=dx*dx+dy*dy;
+                if(d<nearestDistance){nearest=item;nearestDistance=d}
+            });
+            return nearest;
+        }
+        function captureMatchPointer(e) {
+            if(e.currentTarget?.setPointerCapture)try{e.currentTarget.setPointerCapture(e.pointerId)}catch(_){}
         }
         function syncMatchingEyelets(wrapper) {
             if(!wrapper)return;
@@ -8299,10 +8321,11 @@
         }
 
         function handlePointerDown(e) {
-            const target = e.target.closest('.match-item');
+            const target = matchItemAtPointer(e, document.getElementById('match-wrapper'), '.match-item[data-side]');
             if (!target || target.classList.contains("matched")) return;
 
             {
+                captureMatchPointer(e);
                 playClickSound();
                 activeDragItem = target;
                 isDragging = true;
@@ -8331,8 +8354,7 @@
         function handlePointerUp(e) {
             if (!isDragging || !activeDragItem) return;
 
-            const elementUnderPointer = document.elementFromPoint(e.clientX, e.clientY);
-            const targetRightItem = elementUnderPointer ? elementUnderPointer.closest('.match-item') : null;
+            const targetRightItem = matchItemAtPointer(e, document.getElementById('match-wrapper'), '.match-item[data-side]', true);
 
             activeDragItem.classList.remove("selected");
 
@@ -9347,8 +9369,9 @@
         }
 
         function handleColourPointerDown(e){
-            const target=e.target.closest('.match-item');
+            const target=matchItemAtPointer(e,document.getElementById('colour-match-wrapper'),'.match-item[data-side]');
             if(!target || target.classList.contains('matched') || !target.dataset.side) return;
+            captureMatchPointer(e);
             playClickSound(); activeDragColour=target; isDraggingColour=true; target.classList.add('selected');
             const r=document.getElementById('colour-match-wrapper').getBoundingClientRect();
             dragColourX=e.clientX-r.left; dragColourY=e.clientY-r.top; redrawColourCanvas();
@@ -9360,8 +9383,7 @@
         }
         function handleColourPointerUp(e){
             if(!isDraggingColour||!activeDragColour)return;
-            const under=document.elementFromPoint(e.clientX,e.clientY);
-            const target=under?under.closest('.match-item'):null;
+            const target=matchItemAtPointer(e,document.getElementById('colour-match-wrapper'),'.match-item[data-side]',true);
             activeDragColour.classList.remove('selected');
             if(target && target.dataset.side!==activeDragColour.dataset.side && !target.classList.contains('matched')){
                 if(activeDragColour.dataset.key===target.dataset.key){
@@ -9444,10 +9466,10 @@
             bodyShuffle(items).forEach(item=>{const d=document.createElement('div');d.className='match-item';d.innerHTML=`<img src="${item.img}" alt="${bodyText(item)}">`;d.dataset.id=item.id;d.dataset.side='right';right.appendChild(d)});
             setTimeout(resizeBodyCanvas,50);
         }
-        function handleBodyPointerDown(e){const target=e.target.closest('.match-item');if(!target||target.classList.contains('matched')||!target.dataset.side)return;playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
+        function handleBodyPointerDown(e){const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]');if(!target||target.classList.contains('matched')||!target.dataset.side)return;captureMatchPointer(e);playClickSound();activeDragBody=target;isDraggingBody=true;target.classList.add('selected');const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerMove(e){if(!isDraggingBody||!activeDragBody)return;e.preventDefault();const r=document.getElementById('match-body-wrapper').getBoundingClientRect();dragBodyX=e.clientX-r.left;dragBodyY=e.clientY-r.top;redrawBodyCanvas()}
         function handleBodyPointerUp(e){
-            if(!isDraggingBody||!activeDragBody)return;const under=document.elementFromPoint(e.clientX,e.clientY),target=under?under.closest('.match-item'):null;activeDragBody.classList.remove('selected');
+            if(!isDraggingBody||!activeDragBody)return;const target=matchItemAtPointer(e,document.getElementById('match-body-wrapper'),'.match-item[data-side]',true);activeDragBody.classList.remove('selected');
             if(target&&target.dataset.side!==activeDragBody.dataset.side&&!target.classList.contains('matched')){
                 if(activeDragBody.dataset.id===target.dataset.id){playCorrectSound();matchBodyScoreCount+=10;document.getElementById('match-body-score').innerText=matchBodyScoreCount;activeDragBody.classList.add('matched');target.classList.add('matched');completedBodyLines.push({from:activeDragBody.dataset.side==='left'?activeDragBody:target,to:activeDragBody.dataset.side==='right'?activeDragBody:target});matchedBodyPairsInPage++;
                     if(matchedBodyPairsInPage===4){if(currentMatchBodyPageIdx<matchBodyPagesCount-1)setTimeout(nextMatchBodyPage,700);else setTimeout(()=>{if(window.saveScoreToFirebase)window.saveScoreToFirebase(currentGlobalLang==='ms'?'Padankan Anggota Badan':'Match Body Part',100);alert(currentGlobalLang==='ms'?'🌟 Hebat! Anda telah melengkapkan semua set padanan anggota badan!':'🌟 Amazing! You completed all body part match sets!');openBodyPartMenu()},500)}}
@@ -11053,15 +11075,15 @@ document.addEventListener('DOMContentLoaded', () => {
             function pos(e,wrap){const r=wrap.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
             function down(e){
                 if(e.target.closest('.shape-match-audio-btn')) return;
-                const item=e.target.closest('.shape-match-item');
+                const item=matchItemAtPointer(e,elements().wrap,'.shape-match-item[data-side]');
                 if(!item||item.classList.contains('matched')||!item.dataset.side)return;
-                e.preventDefault();state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
+                e.preventDefault();captureMatchPointer(e);state.drag=item;item.classList.add('selected');draw(pos(e,elements().wrap));
             }
             function move(e){if(!state.drag)return;e.preventDefault();draw(pos(e,elements().wrap));}
             function up(e){
                 if(!state.drag)return;e.preventDefault();
                 const left=state.drag;left.classList.remove('selected');
-                const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.shape-match-item');
+                const target=matchItemAtPointer(e,elements().wrap,'.shape-match-item[data-side]',true);
                 if(target&&target.dataset.side!==left.dataset.side&&!target.classList.contains('matched')&&target.dataset.key===left.dataset.key){
                     left.classList.add('matched');target.classList.add('matched');
                     state.lines.push({key:left.dataset.key});state.matched++;
