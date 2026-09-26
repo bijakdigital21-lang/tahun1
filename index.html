@@ -9362,8 +9362,8 @@
         // CHOO-CHOO ABC - five unique letter sequences, three gaps in each train.
         let chooABCQuestions=[],chooABCIndex=0,chooABCFilled=new Set(),chooABCScore=0,chooABCDrag=null,chooABCFloat=null,chooABCAdvancing=false,chooABCSession=0,chooABCRetryVoice=null;
         function chooABCText(){return getNum123Lang()==='ms'?{
-            question:'Soalan',instruction:'Seret huruf ke gerabak kosong mengikut turutan.',back:'Back ↩️',correct:'Betul!',wrong:'ah ah cuba lagi',done:'Hebat! Semua 5 kereta api ABC berjaya dilengkapkan! 🎉'
-        }:{question:'Question',instruction:'Drag the letters into the empty carriages in order.',back:'Back ↩️',correct:'Correct!',wrong:'ah ah try again',done:'Amazing! You completed all 5 ABC trains! 🎉'};}
+            question:'Soalan',instruction:'Seret huruf ke gerabak kosong mengikut turutan.',back:'Back ↩️',correct:'Betul!',wrong:'cuba lagi',done:'Hebat! Semua 5 kereta api ABC berjaya dilengkapkan! 🎉'
+        }:{question:'Question',instruction:'Drag the letters into the empty carriages in order.',back:'Back ↩️',correct:'Correct!',wrong:'try again',done:'Amazing! You completed all 5 ABC trains! 🎉'};}
         function startChooABC(){
             window.speechSynthesis?.cancel();
             chooABCSession++;chooABCQuestions=shuffle123(Array.from({length:22},(_,i)=>i)).slice(0,5).map(start=>({start,empty:shuffle123([0,1,2,3,4]).slice(0,3)}));
