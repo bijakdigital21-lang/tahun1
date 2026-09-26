@@ -4942,12 +4942,94 @@
             #match-shape-screen #match-shape-left .match-shape-name { transform: none; }
         }
 
+        /* Keep gestures inside game pieces on Android and iOS home screen mode. */
+        .match-wrapper .match-item, .match-wrapper .match-item *,
+        #match-animal-wrapper .match-item, #match-body-wrapper .match-item,
+        #match-colour-wrapper .match-item, #match-shape-wrapper .match-item,
+        .paint-tube, .paint-tube *, .apple-item, .apple-item *,
+        .shape-match-wrapper .match-item, .shape-match-wrapper .match-item *,
+        .suku2-choice, .suku2-choice *,
+        .takeaway-object, .takeaway-answer, .num123-draggable,
+        .transport-sort-item, .food-sort-item {
+            touch-action: none !important;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        #kiddora-load-error {
+            display:none; position:fixed; z-index:100000; left:12px; right:12px;
+            top:max(12px, env(safe-area-inset-top)); max-width:540px;
+            margin:auto; padding:16px; border-radius:16px; background:#fff7df;
+            color:#24334a; box-shadow:0 8px 28px #0004; font:700 15px/1.4 Arial,sans-serif;
+        }
+        #kiddora-load-error button { margin-top:10px; padding:10px 16px; border:0;
+            border-radius:10px; background:#35a8f4; color:white; font:inherit; }
+
+        /* One responsive grid and square button size for home modules and all topic menus. */
+        .topic-grid, .abc-menu-grid, .num123-menu-grid, .colour-menu-grid,
+        .body-menu-grid, .shape-menu-grid, .transport-menu-grid,
+        #transport-menu-screen .transport-menu-grid {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr)) !important;
+            gap: 15px !important;
+            justify-content: stretch !important;
+            margin: 20px 0 !important;
+        }
+        .topic-grid > .topic-btn,
+        .abc-menu-grid > .abc-image-btn,
+        .num123-menu-grid > .num123-menu-btn,
+        .colour-menu-grid > .colour-menu-btn,
+        .body-menu-grid > .body-menu-btn,
+        .shape-menu-grid > .shape-menu-btn,
+        .transport-menu-grid > .transport-menu-btn,
+        #transport-menu-screen .transport-menu-btn {
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            height: auto !important;
+            aspect-ratio: 1 / 1 !important;
+            justify-self: stretch !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+        }
+        .topic-grid > .topic-btn img,
+        .abc-menu-grid > .abc-image-btn img,
+        .num123-menu-grid > .num123-menu-btn img,
+        .colour-menu-grid > .colour-menu-btn img,
+        .body-menu-grid > .body-menu-btn img,
+        .shape-menu-grid > .shape-menu-btn img,
+        .transport-menu-grid > .transport-menu-btn img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* The left navigation is a drawer at every viewport width. */
+        .mobile-toggle { display: block; }
+        .sidebar { left: 0; transform: translateX(-105%); transition: transform .3s ease; }
+        .sidebar.open { left: 0; transform: translateX(0); }
+        .main-content { margin-left: 0; padding-top: 70px; }
+        .sidebar-overlay {
+            position: fixed; inset: 0; z-index: 99;
+            background: rgba(0,0,0,.45);
+            opacity: 0; visibility: hidden; pointer-events: none;
+            transition: opacity .3s ease, visibility .3s ease;
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; pointer-events: auto; }
+        @media (max-width: 768px) {
+            .sidebar, .sidebar.open { left: 0; }
+        }
+        @media (max-width: 430px) {
+            .topic-grid, .abc-menu-grid, .num123-menu-grid, .colour-menu-grid,
+            .body-menu-grid, .shape-menu-grid, .transport-menu-grid,
+            #transport-menu-screen .transport-menu-grid { gap: 12px !important; }
+        }
     </style>
 </head>
 <body class="login-mode">
 
     <!-- MOBILE TOGGLE BUTTON -->
-    <button class="mobile-toggle" id="mobile-toggle-btn" onclick="toggleSidebar(event)">☰</button>
+    <button class="mobile-toggle" id="mobile-toggle-btn" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false" onclick="toggleSidebar(event)">☰</button>
 
     <!-- BACKGROUND MUSIC: IKON SPEAKER SENTIASA ADA PADA SETIAP PAPARAN -->
     <button id="bg-music-toggle" type="button" aria-label="Turn background music on or off" title="Background Music" onclick="toggleBgMusic()">🔊</button>
@@ -4960,7 +5042,6 @@
         <div class="sidebar-title">KIDDORA</div>
         <div class="sidebar-subtitle">Kids Education App</div>
         <!-- OVERLAY / BACKDROP SKRIN BELAKANG -->
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
         <!-- BUTTON PILIHAN BAHASA -->
         <div class="sidebar-language-container">
@@ -4998,6 +5079,7 @@
     </div>
 
     <!-- MAIN CONTENT AREA -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="main-content">
         <div class="container">
 
@@ -6268,6 +6350,34 @@
         </div>
     </div>
 
+    <div id="kiddora-load-error" role="alert" aria-live="assertive">
+      <span id="kiddora-load-error-text"></span><br>
+      <button type="button" onclick="location.reload()">Cuba semula / Retry</button>
+    </div>
+    <script>
+      (function () {
+        let ready = false;
+        window.kiddoraStartupReady = function () {
+          ready = true;
+          document.getElementById('kiddora-load-error').style.display = 'none';
+        };
+        window.kiddoraStartupError = function (message) {
+          const box = document.getElementById('kiddora-load-error');
+          document.getElementById('kiddora-load-error-text').textContent = message;
+          box.style.display = 'block';
+          if (typeof window.showScreen === 'function') window.showScreen('login-screen');
+        };
+        setTimeout(function () {
+          if (!ready) window.kiddoraStartupError(
+            'KIDDORA belum berjaya dimuatkan. Semak sambungan internet, kemudian cuba semula. / KIDDORA could not load. Check your connection and retry.');
+        }, 12000);
+        window.addEventListener('error', function (e) {
+          if (e.target && e.target.tagName === 'SCRIPT' && e.target.type === 'module') {
+            window.kiddoraStartupError('Sambungan untuk membuka KIDDORA gagal. Cuba semula apabila internet stabil.');
+          }
+        }, true);
+      })();
+    </script>
     <!-- FIREBASE SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -6302,6 +6412,7 @@
             appId: "1:1092171234032:web:7cc8efefb812993500e035"
         };
         const app = initializeApp(firebaseConfig);
+        window.kiddoraStartupReady();
         const auth = getAuth(app);
         const db = getDatabase(app);
 
@@ -6482,6 +6593,7 @@
                 }
             } catch (err) {
                 console.error("Error fetching profiles:", err);
+                window.kiddoraStartupError('Profil tidak dapat dimuatkan. Semak internet dan cuba semula. / Could not load profile. Check your connection and retry.');
             }
         }
 
@@ -8156,7 +8268,10 @@
             wrapper.addEventListener("pointerdown", handlePointerDown, {passive:false});
             wrapper.addEventListener("pointermove", handlePointerMove);
             wrapper.addEventListener("pointerup", handlePointerUp);
-            wrapper.addEventListener("pointercancel", handlePointerUp);
+            wrapper.addEventListener("pointercancel", () => {
+                if (activeDragItem) activeDragItem.classList.remove("selected");
+                activeDragItem = null; isDragging = false; redrawCanvas();
+            });
             resizeCanvas();
         }
 
@@ -9897,10 +10012,14 @@ function toggleSidebar(event) {
     if (event) event.stopPropagation(); // Elak event bertaut
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
-    
-    sidebar.classList.toggle('open');
-    if (overlay) {
-        overlay.classList.toggle('active');
+    if (!sidebar) return;
+    const isOpen = sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('active', isOpen);
+    const toggle = document.getElementById('mobile-toggle-btn');
+    if (toggle) {
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+        toggle.textContent = isOpen ? '✕' : '☰';
     }
 }
 
@@ -9911,7 +10030,16 @@ function closeSidebar() {
     
     if (sidebar) sidebar.classList.remove('open');
     if (overlay) overlay.classList.remove('active');
+    const toggle = document.getElementById('mobile-toggle-btn');
+    if (toggle) {
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open menu');
+        toggle.textContent = '☰';
+    }
 }
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeSidebar();
+});
 
 // Alternatif tambahan: Boleh juga tutup sidebar apabila pengguna menekan kawasan .main-content
 document.addEventListener('DOMContentLoaded', () => {
