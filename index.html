@@ -4965,15 +4965,17 @@
         #kiddora-load-error button { margin-top:10px; padding:10px 16px; border:0;
             border-radius:10px; background:#35a8f4; color:white; font:inherit; }
 
-        /* One responsive grid and square button size for home modules and all topic menus. */
+        /* Home modules and every topic menu share the same track count and button size. */
         .topic-grid, .abc-menu-grid, .num123-menu-grid, .colour-menu-grid,
         .body-menu-grid, .shape-menu-grid, .transport-menu-grid,
         #transport-menu-screen .transport-menu-grid {
             display: grid !important;
-            grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr)) !important;
+            width: 100% !important;
+            max-width: 685px !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
             gap: 15px !important;
             justify-content: stretch !important;
-            margin: 20px 0 !important;
+            margin: 20px auto !important;
         }
         .topic-grid > .topic-btn,
         .abc-menu-grid > .abc-image-btn,
@@ -5018,6 +5020,12 @@
         .sidebar-overlay.active { opacity: 1; visibility: visible; pointer-events: auto; }
         @media (max-width: 768px) {
             .sidebar, .sidebar.open { left: 0; }
+            .topic-grid, .abc-menu-grid, .num123-menu-grid, .colour-menu-grid,
+            .body-menu-grid, .shape-menu-grid, .transport-menu-grid,
+            #transport-menu-screen .transport-menu-grid {
+                max-width: 335px !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
         }
         @media (max-width: 430px) {
             .topic-grid, .abc-menu-grid, .num123-menu-grid, .colour-menu-grid,
