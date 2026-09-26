@@ -1119,7 +1119,7 @@
             border: 0; padding: 0; border-radius: 46%; background: transparent; z-index: 0;
             color: white; font: 900 clamp(1rem, 3.7vw, 3.1rem)/1 Arial, sans-serif;
             text-shadow: 0 2px 3px rgba(80,0,0,.65); cursor: pointer;
-            pointer-events: auto; touch-action: manipulation; user-select: none;
+            pointer-events: auto; touch-action: none; user-select: none;
             display: flex; align-items: center; justify-content: center;
             transition: opacity .24s ease, filter .18s ease;
         }
@@ -1138,11 +1138,29 @@
             justify-content: center; gap: 2px; padding: 1% 3% 2%; pointer-events: none;
         }
         #find-letter-screen .basket-apple {
-            width: 23%; aspect-ratio: 1; border-radius: 45%; display: grid; place-items: center;
-            color: white; font: 900 clamp(.7rem, 2vw, 1.4rem)/1 Arial, sans-serif;
-            text-shadow: 0 1px 2px #64100c;
-            background: radial-gradient(circle at 30% 20%, #ff6255, #e32718 60%, #9e130b);
-            box-shadow: 0 2px 4px rgba(0,0,0,.3); animation: popIn .3s ease;
+            width: 23%; aspect-ratio: 1; display: grid; place-items: center;
+            font: clamp(1rem, 3vw, 2rem)/1 Arial, sans-serif;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); animation: popIn .3s ease;
+        }
+        #find-letter-screen .basket-area.find-drop-ready { filter: drop-shadow(0 0 10px #ffe75c); }
+        .find-apple-drag {
+            position: fixed !important; z-index: 10001 !important; margin: 0 !important;
+            transform: none !important; pointer-events: none !important;
+            display: grid; place-items: center; border: 0; border-radius: 44%;
+            background: radial-gradient(circle at 30% 20%, #f75742, #df2015 58%, #ac100c);
+            color: white; font: 900 clamp(1rem, 4vw, 3rem)/1 Arial, sans-serif;
+            text-shadow: 0 2px 3px #74100f;
+            box-shadow: 0 8px 12px rgba(0,0,0,.35);
+        }
+        #find-letter-screen .find-complete-overlay {
+            position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center;
+            background: rgba(23,49,35,.5); backdrop-filter: blur(4px);
+        }
+        #find-letter-screen .find-complete-message {
+            padding: 28px 38px; border: 5px solid #ffcc4a; border-radius: 28px;
+            background: #fff9df; color: #3b762c; box-shadow: 0 14px 34px rgba(0,0,0,.27);
+            font: 900 clamp(1.8rem, 7vw, 3.2rem)/1.2 Arial, sans-serif;
+            text-align: center; animation: popIn .3s ease;
         }
         @media (max-width: 768px) {
             #find-letter-screen { width: 100%; margin-left: 0; transform: none; padding: 0; }
@@ -8320,6 +8338,8 @@
         let findScoreCount = 0;
         let targetFindLetter = "A";
         let targetApplesRemaining = 0;
+        let findAdvanceTimer = null;
+        let findRoundCompleting = false;
 
         function startFindLetterModule() {
             findCurrentRound = 1;
@@ -8329,6 +8349,9 @@
         }
 
         function loadFindRound() {
+            clearTimeout(findAdvanceTimer);
+            document.querySelector('#find-letter-screen .find-complete-overlay')?.remove();
+            findRoundCompleting = false;
             let randomIdx = Math.floor(Math.random() * alphabetList.length);
             targetFindLetter = alphabetList[randomIdx];
 
@@ -8376,7 +8399,7 @@
                 apple.setAttribute("aria-label", letter);
                 apple.style.left = photoAppleCenters[index][0] + "%";
                 apple.style.top = photoAppleCenters[index][1] + "%";
-                apple.onclick = () => handleAppleClick(apple, letter);
+                apple.addEventListener('pointerdown', event => startFindAppleDrag(event, apple, letter));
                 applesContainer.appendChild(apple);
             });
         }
@@ -8387,14 +8410,82 @@
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(textToSpeak);
                 utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
-                utterance.rate = 0.3;
+                utterance.rate = 0.72;
                 utterance.pitch = 1.1;
                 window.speechSynthesis.speak(utterance);
             }
         }
 
+        function startFindAppleDrag(event, apple, letter) {
+            if (findRoundCompleting || apple.classList.contains('collected')) return;
+            event.preventDefault();
+            apple.setPointerCapture(event.pointerId);
+            const rect = apple.getBoundingClientRect();
+            const ghost = apple.cloneNode(true);
+            ghost.classList.add('find-apple-drag');
+            ghost.style.width = rect.width + 'px';
+            ghost.style.height = rect.height + 'px';
+            document.body.appendChild(ghost);
+            const basket = document.getElementById('basket-area-container');
+            let active = true;
+            const move = e => {
+                if (!active) return;
+                ghost.style.left = (e.clientX - rect.width / 2) + 'px';
+                ghost.style.top = (e.clientY - rect.height / 2) + 'px';
+                basket.classList.toggle('find-drop-ready', isFindBasketDrop(e.clientX, e.clientY));
+            };
+            const end = e => {
+                if (!active) return;
+                active = false;
+                apple.removeEventListener('pointermove', move);
+                apple.removeEventListener('pointerup', end);
+                apple.removeEventListener('pointercancel', cancel);
+                basket.classList.remove('find-drop-ready');
+                ghost.remove();
+                if (e.type === 'pointerup' && isFindBasketDrop(e.clientX, e.clientY)) {
+                    handleAppleClick(apple, letter);
+                }
+            };
+            const cancel = e => end(e);
+            apple.addEventListener('pointermove', move);
+            apple.addEventListener('pointerup', end);
+            apple.addEventListener('pointercancel', cancel);
+            move(event);
+        }
+
+        function isFindBasketDrop(x, y) {
+            const tree = document.querySelector('#find-letter-screen .apple-tree-container').getBoundingClientRect();
+            const relativeX = (x - tree.left) / tree.width;
+            const relativeY = (y - tree.top) / tree.height;
+            return relativeX >= .12 && relativeX <= .46 && relativeY >= .77 && relativeY <= .96;
+        }
+
+        function showFindRoundComplete() {
+            if (findRoundCompleting) return;
+            findRoundCompleting = true;
+            const overlay = document.createElement('div');
+            overlay.className = 'find-complete-overlay';
+            overlay.innerHTML = '<div class="find-complete-message" role="status"></div>';
+            const praise = currentGlobalLang === 'en' ? 'Great job!' : 'Hebat!';
+            overlay.firstElementChild.textContent = '🌟 ' + praise + ' 🍎';
+            document.getElementById('find-letter-screen').appendChild(overlay);
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(praise);
+                utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
+                utterance.rate = .85;
+                window.speechSynthesis.speak(utterance);
+            }
+            findAdvanceTimer = setTimeout(() => {
+                overlay.remove();
+                if (!document.getElementById('find-letter-screen').classList.contains('active')) return;
+                if (findCurrentRound < totalFindRounds) nextFindRound();
+                else openABCMenu();
+            }, 2000);
+        }
+
         function handleAppleClick(appleElement, letter) {
-            if (appleElement.classList.contains("collected")) return;
+            if (findRoundCompleting || appleElement.classList.contains("collected")) return;
 
             if (letter === targetFindLetter) {
                 playCorrectSound();
@@ -8406,21 +8497,12 @@
                 let basketContainer = document.getElementById("basket-area-container");
                 let basketApple = document.createElement("div");
                 basketApple.className = "basket-apple";
-                basketApple.innerText = letter;
+                basketApple.innerText = "🍎";
                 basketContainer.appendChild(basketApple);
 
                 targetApplesRemaining--;
 
-                if (targetApplesRemaining === 0) {
-                    if (findCurrentRound < totalFindRounds) {
-                        document.getElementById("find-next-round-btn").style.display = "inline-block";
-                    } else {
-                        setTimeout(() => {
-                            alert(currentGlobalLang === 'en' ? "🌟 Amazing! You completed all find letter missions!" : "🌟 Tahniah! Anda telah berjaya menghabiskan semua misi mencari huruf!");
-                            navigateTo('home-screen');
-                        }, 600);
-                    }
-                }
+                if (targetApplesRemaining === 0) showFindRoundComplete();
             } else {
                 playWrongSound();
                 appleElement.style.filter = "grayscale(1) brightness(.6)";
