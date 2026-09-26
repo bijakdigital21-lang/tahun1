@@ -9240,8 +9240,8 @@
         // CHOO CHOO 123 - five unique number sequences, three gaps in each train.
         let chooQuestions=[],chooIndex=0,chooFilled=new Set(),chooScore=0,chooDrag=null,chooFloat=null,chooAdvancing=false,chooSession=0,chooRetryVoice=null;
         function chooText(){return getNum123Lang()==='ms'?{
-            question:'Soalan',instruction:'Seret nombor ke gerabak kosong mengikut turutan.',back:'Back ↩️',correct:'Betul!',wrong:'Ah ah, cuba lagi',done:'Hebat! Semua 5 kereta api berjaya dilengkapkan! 🎉'
-        }:{question:'Question',instruction:'Drag the numbers into the empty carriages in order.',back:'Back ↩️',correct:'Correct!',wrong:'Ahh ah, try again',done:'Amazing! You completed all 5 trains! 🎉'};}
+            question:'Soalan',instruction:'Seret nombor ke gerabak kosong mengikut turutan.',back:'Back ↩️',correct:'Betul!',wrong:'cuba lagi',done:'Hebat! Semua 5 kereta api berjaya dilengkapkan! 🎉'
+        }:{question:'Question',instruction:'Drag the numbers into the empty carriages in order.',back:'Back ↩️',correct:'Correct!',wrong:'try again',done:'Amazing! You completed all 5 trains! 🎉'};}
         function startChoo123(){
             window.speechSynthesis?.cancel();
             chooSession++;chooQuestions=shuffle123(Array.from({length:16},(_,i)=>i+1)).slice(0,5).map(start=>({start,empty:shuffle123([0,1,2,3,4]).slice(0,3)}));
