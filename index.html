@@ -4786,18 +4786,16 @@
 .complete-animal-row { height:clamp(130px,17vh,160px); display:flex; align-items:center; min-width:0; }
 .complete-animal-left { justify-content:flex-start; }
 .complete-animal-right { justify-content:flex-end; }
-.complete-animal-half { position:relative; flex:none; width:clamp(135px,16vw,165px); height:clamp(125px,17vh,155px); overflow:hidden; border:3px solid #69c9ec; background:#fffef2; touch-action:none; user-select:none; -webkit-user-select:none; }
-.complete-animal-left .complete-animal-half { border-radius:16px 0 0 16px; border-right:2px dashed #ff9a3d; }
-.complete-animal-right .complete-animal-half { border-radius:0 16px 16px 0; border-left:2px dashed #ff9a3d; cursor:grab; box-shadow:0 4px 0 #d3af69; }
-.complete-animal-half .complete-animal-art { position:absolute; left:0; top:0; width:200%; height:100%; object-fit:contain; pointer-events:none; }
-.complete-animal-half[data-side="right"] .complete-animal-art { left:-100%; }
-.complete-animal-half.matched { border-color:#46bd64; background:#e8ffe3; }
-.complete-animal-half.wrong { background:#ffb2ad; }
+.complete-animal-half { --animal-piece:clamp(135px,16vw,165px); position:relative; flex:none; width:calc(var(--animal-piece) * 1.2); height:clamp(125px,17vh,155px); overflow:hidden; background:transparent; touch-action:none; user-select:none; -webkit-user-select:none; }
+.complete-animal-half[data-side="left"] { clip-path:url(#complete-animal-left-cut); }
+.complete-animal-half[data-side="right"] { clip-path:url(#complete-animal-right-cut); cursor:grab; }
+.complete-animal-half .complete-animal-art { position:absolute; left:0; top:0; width:calc(var(--animal-piece) * 2); height:100%; object-fit:contain; pointer-events:none; max-width:none; }
+.complete-animal-half[data-side="right"] .complete-animal-art { left:calc(var(--animal-piece) * -.8); }
+.complete-animal-half.wrong { opacity:.5; }
 .complete-animal-half.dragging { opacity:.45; }
 .complete-animal-left.complete-animal-combined { justify-content:flex-start; }
-.complete-animal-combined .complete-animal-half { border-color:#46bd64; background:#e8ffe3; box-shadow:none; cursor:default; }
-.complete-animal-combined .complete-animal-half:first-child { border-right:0; }
-.complete-animal-combined .complete-animal-half:last-child { border-left:0; border-radius:0 16px 16px 0; }
+.complete-animal-combined .complete-animal-half { cursor:default; }
+.complete-animal-combined .complete-animal-half:last-child { margin-left:calc(var(--animal-piece) * -.4); }
 .complete-animal-ghost { position:fixed; z-index:10005; pointer-events:none; transform:translate(-50%,-50%); filter:drop-shadow(0 7px 7px #0005); }
 .complete-animal-pop { position:fixed; inset:0; background:rgba(28,39,89,.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:10010; display:flex; align-items:center; justify-content:center; padding:16px; }
 .complete-animal-pop-card { width:min(350px,90vw); padding:20px; border-radius:25px; background:#fff9db; border:5px solid #ffce58; text-align:center; box-shadow:0 15px 35px #0004; }
@@ -4809,7 +4807,7 @@
  .complete-animal-board { gap:clamp(48px,14vw,64px); }
  .complete-animal-column { gap:8px; }
  .complete-animal-row { height:clamp(90px,13vh,115px); }
- .complete-animal-half { width:clamp(83px,25vw,110px); height:clamp(86px,13vh,112px); }
+ .complete-animal-half { --animal-piece:clamp(83px,25vw,110px); height:clamp(86px,13vh,112px); }
  .complete-animal-half .complete-animal-art { font-size:clamp(68px,19vw,88px); }
 }
 
@@ -5995,6 +5993,16 @@
 
             <!-- COMPLETE THE ANIMAL: 22 unique animal pictures across five sets -->
             <div id="complete-animal-screen" class="card">
+                <svg aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden">
+                    <defs>
+                        <clipPath id="complete-animal-left-cut" clipPathUnits="objectBoundingBox">
+                            <path d="M0 0 H.833333 V.35 C.833333 .4 .89 .4 .925 .4 C1 .4 1 .6 .925 .6 C.89 .6 .833333 .6 .833333 .65 V1 H0 Z"/>
+                        </clipPath>
+                        <clipPath id="complete-animal-right-cut" clipPathUnits="objectBoundingBox">
+                            <path d="M.166667 0 H1 V1 H.166667 V.65 C.166667 .6 .223334 .6 .258334 .6 C.333334 .6 .333334 .4 .258334 .4 C.223334 .4 .166667 .4 .166667 .35 Z"/>
+                        </clipPath>
+                    </defs>
+                </svg>
                 <h2 id="complete-animal-title" style="color:#5E17EB;font-family:'Fredoka One',cursive;">Complete the Animal 🐾</h2>
                 <p id="complete-animal-instruction">Drag the right half to complete the animal on the left.</p>
                 <p><span id="complete-animal-set-label">Set</span> <span id="complete-animal-set">1</span>/5 · <span id="complete-animal-matched">0</span>/<span id="complete-animal-set-size">5</span></p>
