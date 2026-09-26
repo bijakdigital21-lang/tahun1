@@ -3436,6 +3436,37 @@
         .addup-answer-tile.dragging { opacity:.35; }
         .addup-floating { position:fixed; z-index:99999; transform:translate(-50%,-50%); width:72px; height:72px; border:3px solid #263238; border-radius:13px; background:white; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:2.4rem; pointer-events:none; box-shadow:0 10px 24px rgba(0,0,0,.24); }
         .addup-status { min-height:28px; font-weight:900; color:#5E17EB; margin-top:8px; }
+        /* Choo Choo 123: a five-carriage train inspired by the supplied picture. */
+        #choo123-screen{width:min(98vw,1000px);margin-left:50%;transform:translateX(-50%)}
+        .choo-board{position:relative;overflow:hidden;background:linear-gradient(#6bc9ff 0 53%,#7cc55e 53% 83%,#56ab42 83%);border:5px solid #fff;border-radius:26px;padding:20px 8px 24px;margin:14px auto;box-shadow:0 10px 28px #0003}
+        .choo-board:before{content:'☁️       ☁️       ☀️';position:absolute;top:5px;left:0;width:100%;font-size:clamp(18px,4vw,35px);letter-spacing:3vw;opacity:.88;pointer-events:none}
+        .choo-instruction{position:relative;z-index:1;margin:4px auto 35px;padding:7px 12px;width:max-content;max-width:96%;background:#fffdf0;border-radius:14px;color:#24416d;font-weight:900;box-shadow:0 3px 8px #0002}
+        .choo-train{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:0;width:100%;height:clamp(105px,19vw,200px);padding-bottom:13px}
+        .choo-train:after{content:'';position:absolute;bottom:5px;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,#62402b 0 26px,#b9824b 26px 36px);border-top:4px solid #58565b;border-bottom:4px solid #58565b;z-index:0}
+        .choo-engine{position:relative;flex:0 0 20%;height:80%;z-index:1;filter:drop-shadow(2px 3px 2px #0005)}
+        .choo-engine-body{position:absolute;bottom:13%;left:2%;right:0;height:60%;border:3px solid #813128;border-radius:35% 28% 12% 15%;background:linear-gradient(110deg,#f34833 55%,#d52625 56%)}
+        .choo-engine-body:before{content:'';position:absolute;right:6%;top:-22%;width:38%;height:72%;border:3px solid #173f83;border-radius:12px 14px 2px 2px;background:#1079c7;box-shadow:inset 0 0 0 5px #ffcf31}
+        .choo-engine-body:after{content:'● ᴗ ●';position:absolute;left:2%;top:18%;display:grid;place-items:center;width:46%;height:65%;border:3px solid #16549e;border-radius:50%;background:#e7f5fc;color:#192331;font-size:clamp(11px,2.3vw,25px);white-space:nowrap}
+        .choo-chimney{position:absolute;bottom:70%;left:22%;width:20%;height:28%;border:3px solid #13518b;border-radius:3px 3px 8px 8px;background:#178cdc;z-index:2}
+        .choo-chimney:before{content:'';position:absolute;top:-8px;left:-25%;width:145%;height:8px;border-radius:8px;background:#ffcc26;border:2px solid #503d18}
+        .choo-wheel,.choo-carriage:before,.choo-carriage:after{position:absolute;bottom:1%;width:clamp(11px,2.3vw,24px);aspect-ratio:1;border:3px solid #153d61;border-radius:50%;background:#fac027;box-shadow:inset 0 0 0 3px #2c83c0;z-index:3}
+        .choo-wheel.one{left:16%}.choo-wheel.two{right:12%}
+        .choo-carriage{--paint:#ed4338;position:relative;flex:1 1 16%;min-width:0;height:67%;margin-left:1%;border:3px solid #73402b;border-radius:15% 15% 10% 10%;background:var(--paint);box-shadow:inset 0 -9px 0 #e9aa32,0 3px 4px #0004;z-index:1}
+        .choo-carriage:nth-child(3){--paint:#f9ad1f}.choo-carriage:nth-child(4){--paint:#59b746}.choo-carriage:nth-child(5){--paint:#9749ca}.choo-carriage:nth-child(6){--paint:#ef7599}
+        .choo-carriage:before,.choo-carriage:after{content:'';bottom:-13%;left:10%}.choo-carriage:after{left:auto;right:10%}
+        .choo-carriage-window{position:absolute;inset:16% 7% 25%;display:grid;place-items:center;background:#fff9df;border:3px solid #f6cb5d;border-radius:10px;font-family:'Fredoka One',cursive;font-size:clamp(21px,5vw,58px);color:#1476cf;text-shadow:1px 2px 0 #fff;line-height:1}
+        .choo-carriage:nth-child(odd) .choo-carriage-window{color:#e84642}
+        .choo-drop{border:3px dashed #6077ac;background:#fffdf7;cursor:default;touch-action:none}
+        .choo-drop.hovered{background:#dff7ff;border-color:#1666b5;transform:scale(1.05)}
+        .choo-drop.wrong{background:#ffe0e0;border-color:#ee4646;animation:choo-shake .25s}
+        .choo-drop.correct{border:3px solid #60b84b;background:#e6ffd9}
+        @keyframes choo-shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+        .choo-bank{display:flex;justify-content:center;gap:15px;min-height:96px;margin:15px auto 4px;padding:12px;border:4px dashed #59c5dd;border-radius:20px;background:#f2fcff}
+        .choo-tile{width:70px;height:70px;display:grid;place-items:center;border:3px solid #26446b;border-radius:14px;background:#fff;font-family:'Fredoka One',cursive;font-size:2.4rem;color:#185eab;box-shadow:0 5px 8px #0002;touch-action:none;user-select:none;cursor:grab}
+        .choo-tile.used{opacity:.28;pointer-events:none}.choo-tile.dragging{opacity:.35}
+        .choo-float{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-50%)}
+        .choo-status{min-height:30px;font-weight:900;color:#5e17eb}
+        @media(max-width:600px){#choo123-screen{width:calc(100vw - 8px);padding-left:0;padding-right:0}.choo-board{padding:13px 2px 17px}.choo-instruction{font-size:.83rem;margin-bottom:22px}.choo-train{height:125px}.choo-carriage{border-width:2px}.choo-carriage-window{inset:18% 3% 26%;border-width:2px;border-radius:5px;font-size:clamp(20px,7vw,32px)}.choo-drop{border-width:2px}.choo-wheel,.choo-carriage:before,.choo-carriage:after{width:12px;border-width:2px}.choo-bank{gap:10px}.choo-tile{width:64px;height:64px}}
         @media(max-width:600px){
             #add-them-up-screen{width:calc(100vw - 8px);padding-left:0;padding-right:0;}
             .addup-board{padding:11px 7px;border-radius:22px;}
@@ -5520,6 +5551,9 @@
                     <button class="num123-menu-btn" onclick="playClickSound(); startAddThemUp()" aria-label="Add Them Up">
                         <img src="https://i.imgur.com/2HkHYvL.jpeg" alt="Add Them Up">
                     </button>
+                    <button class="num123-menu-btn" onclick="playClickSound(); startChoo123()" aria-label="Choo Choo 123">
+                        <img src="https://i.imgur.com/1ue9Ka8.jpeg" alt="Choo Choo 123">
+                    </button>
                     <button class="num123-menu-btn" onclick="playClickSound(); openTakingAwayCountScreen()" aria-label="Taking Away">
                         <img src="https://i.imgur.com/JPautVP.jpeg" alt="Taking Away">
                     </button>
@@ -5638,6 +5672,19 @@
                     <div class="addup-status" id="addup-status"></div>
                 </div>
                 <button class="action-btn home-btn" id="addup-back-btn" onclick="playClickSound(); open123Menu()">Back ↩️</button>
+            </div>
+
+            <!-- CHOO CHOO 123 -->
+            <div id="choo123-screen" class="card">
+                <h2 style="color:#5E17EB;font-family:'Fredoka One',cursive;">🚂 Choo Choo 123</h2>
+                <div class="num-progress-pill"><span id="choo-progress">Question 1 / 5</span> · ⭐ <span id="choo-score">0</span></div>
+                <div class="choo-board">
+                    <p class="choo-instruction" id="choo-instruction">Drag the numbers into the empty carriages in order.</p>
+                    <div class="choo-train" id="choo-train"></div>
+                </div>
+                <div class="choo-bank" id="choo-bank"></div>
+                <div class="choo-status" id="choo-status" role="status" aria-live="polite"></div>
+                <button class="action-btn home-btn" id="choo-back-btn" onclick="playClickSound(); open123Menu()">Back ↩️</button>
             </div>
 
             <!-- TAKING AWAY QUESTION COUNT -->
@@ -8917,6 +8964,7 @@
             if(document.getElementById('match123-screen')?.classList.contains('active') && match123Questions.length) renderMatch123();
             if(document.getElementById('lets-count-screen')?.classList.contains('active') && count123Questions.length) renderCount123();
             if(document.getElementById('add-them-up-screen')?.classList.contains('active') && addUpSets.length) renderAddUpSet();
+            if(document.getElementById('choo123-screen')?.classList.contains('active')) updateChoo123Language();
             if(document.getElementById('taking-away-count-screen')?.classList.contains('active')) openTakingAwayCountScreen();
             if(document.getElementById('taking-away-screen')?.classList.contains('active') && takeAwaySession.length) renderTakeAwayQuestion();
             if(document.getElementById('find123-screen')?.classList.contains('active') && find123Questions.length) renderFind123();
@@ -9198,6 +9246,86 @@
                 }
             } else {
                 zone.classList.add('wrong'); document.getElementById('addup-status').textContent=t.wrong; speakText123(t.wrong,.7); setTimeout(()=>zone.classList.remove('wrong'),500);
+            }
+        }
+
+        // CHOO CHOO 123 - five unique number sequences, three gaps in each train.
+        let chooQuestions=[],chooIndex=0,chooFilled=new Set(),chooScore=0,chooDrag=null,chooFloat=null,chooAdvancing=false,chooSession=0;
+        function chooText(){return getNum123Lang()==='ms'?{
+            question:'Soalan',instruction:'Seret nombor ke gerabak kosong mengikut turutan.',back:'Back ↩️',correct:'Betul!',wrong:'Ahh ah, try again',done:'Hebat! Semua 5 kereta api berjaya dilengkapkan! 🎉'
+        }:{question:'Question',instruction:'Drag the numbers into the empty carriages in order.',back:'Back ↩️',correct:'Correct!',wrong:'Ahh ah, try again',done:'Amazing! You completed all 5 trains! 🎉'};}
+        function startChoo123(){
+            window.speechSynthesis?.cancel();
+            chooSession++;chooQuestions=shuffle123(Array.from({length:16},(_,i)=>i+1)).slice(0,5).map(start=>({start,empty:shuffle123([0,1,2,3,4]).slice(0,3)}));
+            chooIndex=0;chooScore=0;showScreen('choo123-screen');renderChoo123();
+        }
+        function updateChoo123Language(){
+            const t=chooText();
+            document.getElementById('choo-progress').textContent=`${t.question} ${chooIndex+1} / 5`;
+            document.getElementById('choo-instruction').textContent=t.instruction;
+            document.getElementById('choo-back-btn').textContent=t.back;
+        }
+        function renderChoo123(){
+            cleanupChooDrag();chooFilled=new Set();chooAdvancing=false;
+            const q=chooQuestions[chooIndex],train=document.getElementById('choo-train'),bank=document.getElementById('choo-bank');
+            train.innerHTML='<div class="choo-engine" aria-hidden="true"><div class="choo-chimney"></div><div class="choo-engine-body"></div><span class="choo-wheel one"></span><span class="choo-wheel two"></span></div>';
+            for(let i=0;i<5;i++){
+                const carriage=document.createElement('div');carriage.className='choo-carriage';
+                const windowBox=document.createElement('div');windowBox.className='choo-carriage-window';
+                if(q.empty.includes(i)){
+                    windowBox.classList.add('choo-drop');windowBox.dataset.answer=String(q.start+i);
+                    windowBox.setAttribute('aria-label',getNum123Lang()==='ms'?`Gerabak ${i+1}, kosong`:`Carriage ${i+1}, empty`);
+                }else windowBox.textContent=q.start+i;
+                carriage.appendChild(windowBox);train.appendChild(carriage);
+            }
+            bank.innerHTML='';
+            shuffle123(q.empty.map(i=>q.start+i)).forEach(value=>{
+                const tile=document.createElement('div');tile.className='choo-tile';tile.textContent=value;tile.dataset.value=String(value);
+                tile.setAttribute('role','button');tile.setAttribute('aria-label',String(value));installChooDrag(tile);bank.appendChild(tile);
+            });
+            document.getElementById('choo-score').textContent=chooScore;
+            document.getElementById('choo-status').textContent='';updateChoo123Language();
+        }
+        function installChooDrag(tile){
+            tile.onpointerdown=e=>{
+                if(chooAdvancing||tile.classList.contains('used'))return;
+                e.preventDefault();chooDrag={tile,id:e.pointerId};tile.setPointerCapture?.(e.pointerId);tile.classList.add('dragging');
+                chooFloat=document.createElement('div');chooFloat.className='choo-tile choo-float';chooFloat.textContent=tile.dataset.value;document.body.appendChild(chooFloat);moveChooFloat(e);
+            };
+            tile.onpointermove=e=>{
+                if(chooDrag?.tile!==tile||chooDrag.id!==e.pointerId)return;
+                e.preventDefault();moveChooFloat(e);
+                document.querySelectorAll('#choo-train .choo-drop').forEach(z=>z.classList.remove('hovered'));
+                const zone=document.elementFromPoint(e.clientX,e.clientY)?.closest('#choo-train .choo-drop');
+                if(zone&&!zone.classList.contains('correct'))zone.classList.add('hovered');
+            };
+            tile.onpointerup=e=>{
+                if(chooDrag?.tile!==tile||chooDrag.id!==e.pointerId)return;
+                e.preventDefault();const zone=document.elementFromPoint(e.clientX,e.clientY)?.closest('#choo-train .choo-drop');cleanupChooDrag();if(zone)dropChooAnswer(tile,zone);
+            };
+            tile.onpointercancel=()=>{if(chooDrag?.tile===tile)cleanupChooDrag();};
+        }
+        function moveChooFloat(e){if(chooFloat){chooFloat.style.left=e.clientX+'px';chooFloat.style.top=e.clientY+'px';}}
+        function cleanupChooDrag(){chooDrag?.tile?.classList.remove('dragging');chooDrag=null;chooFloat?.remove();chooFloat=null;document.querySelectorAll('#choo-train .choo-drop.hovered').forEach(z=>z.classList.remove('hovered'));}
+        function dropChooAnswer(tile,zone){
+            if(chooAdvancing||zone.classList.contains('correct')||tile.classList.contains('used'))return;
+            const value=+tile.dataset.value,t=chooText(),status=document.getElementById('choo-status');
+            if(value!==+zone.dataset.answer){
+                zone.classList.add('wrong');status.textContent=t.wrong;
+                // The tile stays in the bank and the feedback is spoken in English as requested.
+                if('speechSynthesis' in window){speechSynthesis.cancel();const retry=new SpeechSynthesisUtterance(t.wrong);retry.lang='en-US';retry.rate=.75;speechSynthesis.speak(retry);}
+                setTimeout(()=>zone.classList.remove('wrong'),500);return;
+            }
+            zone.textContent=value;zone.classList.add('correct');tile.classList.add('used');chooFilled.add(value);
+            status.textContent=t.correct;speakText123(String(value),.7);
+            if(chooFilled.size===3){
+                chooAdvancing=true;chooScore+=20;document.getElementById('choo-score').textContent=chooScore;
+                const session=chooSession;
+                setTimeout(()=>{
+                    if(session!==chooSession||!document.getElementById('choo123-screen').classList.contains('active'))return;
+                    if(chooIndex<4){chooIndex++;renderChoo123();}
+                    else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Choo Choo 123',chooScore);alert(t.done);open123Menu();}
+                },1000);
             }
         }
 
@@ -12050,7 +12178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'bijak-suku-kata-screen':'abc','complete-abc-screen':'abc','spell-it-right-screen':'abc','abc-tracing-screen':'abc',
     'match-count-screen':'abc','match-game-screen':'abc','find-letter-screen':'abc','abc-flashcard-screen':'abc',
     'lesson-screen':'abc','count-selection-screen':'abc','quiz-screen':'abc','result-screen':'abc',
-    'column-math-screen':'number','column-count-screen':'number','num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','taking-away-count-screen':'number','taking-away-screen':'number','find123-screen':'number',
+    'column-math-screen':'number','column-count-screen':'number','num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','choo123-screen':'number','taking-away-count-screen':'number','taking-away-screen':'number','find123-screen':'number',
     'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','match-paint-screen':'colour','find-colour-screen':'colour',
     'learn-body-screen':'body','choose-body-screen':'body','match-body-count-screen':'body','match-body-game-screen':'body','label-body-screen':'body',
     'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','complete-animal-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
