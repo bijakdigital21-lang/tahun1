@@ -4595,21 +4595,26 @@
         #match-crayon-screen h2{color:#5e17eb;font-family:'Fredoka One',cursive;margin:4px 0}
         #crayon-instruction{font-weight:800;color:#334155}
         .crayon-stage{width:min(100%,670px);margin:12px auto;padding:clamp(66px,10vw,82px) clamp(12px,3vw,24px) clamp(18px,3vw,28px);box-sizing:border-box;background:linear-gradient(135deg,#fff5df,#f7dfbd);border:4px solid #e5b872;border-radius:25px;box-shadow:inset 0 2px 12px #fff9,0 9px 19px #6b493940}
-        .crayon-box{position:relative;width:min(100%,375px);height:clamp(210px,30vw,265px);margin:auto;background:linear-gradient(90deg,#593317,#945b2b 8%,#6b3b1d 48%,#9d6737 93%,#4d2c16);border:5px solid #bf7c30;border-radius:12px 12px 7px 7px;box-shadow:inset 0 8px 14px #321300ad,inset 7px 0 8px #2b140063,inset -7px 0 8px #2b140063,0 9px 0 #875320,0 16px 22px #49311880;box-sizing:border-box;overflow:visible}
-        .crayon-box:before{content:'';position:absolute;left:-5px;right:-5px;top:-14%;height:26%;z-index:1;background:linear-gradient(170deg,#fff0a6,#f5cd67 55%,#ce8f37);border:4px solid #bd7b29;border-radius:12px 12px 3px 3px;box-shadow:inset 0 4px #fff8,inset 0 -5px 8px #9b5e2b80;pointer-events:none}
+        .crayon-box{position:relative;width:min(100%,375px);height:clamp(210px,30vw,265px);margin:auto;background:repeating-linear-gradient(12deg,#fff1 0 1px,transparent 1px 5px),radial-gradient(ellipse at 50% 95%,#bd7c37 0,#7a4726 50%,#4b2615 100%);border:5px solid #be873e;border-radius:12px 12px 7px 7px;box-shadow:inset 0 10px 18px #291208b8,inset 8px 0 9px #2b140087,inset -8px 0 9px #2b140087,0 9px 0 #875320,0 16px 22px #49311880;box-sizing:border-box;overflow:visible}
+        .crayon-box:before{content:'';position:absolute;left:-5px;right:-5px;top:-16%;height:29%;z-index:1;background:repeating-linear-gradient(8deg,#fff2 0 1px,transparent 1px 5px),linear-gradient(170deg,#fff4b7,#f6cf70 50%,#bb752d);border:4px solid #bd7b29;border-radius:12px 12px 3px 3px;box-shadow:inset 0 4px #fff8,inset 0 -7px 9px #8b4c2580,0 3px 4px #351b104f;clip-path:polygon(3% 0,97% 0,100% 100%,0 100%);pointer-events:none}
+        .crayon-box:after{content:'';position:absolute;left:2%;right:2%;top:11%;height:4px;background:linear-gradient(#2b130e80,#ffe4a94f);border-radius:50%;z-index:1;pointer-events:none}
+        .crayon-box-side{position:absolute;top:11%;bottom:39%;width:8%;z-index:1;background:linear-gradient(90deg,#5a2c18,#d69a4c 53%,#75401d);box-shadow:inset 0 4px 5px #210d0677;pointer-events:none}
+        .crayon-box-side.left{left:0;clip-path:polygon(0 0,100% 11%,100% 100%,0 100%)}
+        .crayon-box-side.right{right:0;transform:scaleX(-1);clip-path:polygon(0 0,100% 11%,100% 100%,0 100%)}
         .crayon-slot-row{position:absolute;top:8%;bottom:0;left:5%;right:5%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;z-index:2}
         .crayon-slot{position:relative;min-width:0;display:flex;align-items:flex-start;justify-content:center;box-sizing:border-box;touch-action:none}
         .crayon-slot.over{outline:4px solid #fff;box-shadow:0 0 15px #fff}
         .crayon-slot.wrong{animation:paintShake .28s}
         .crayon-slot .crayon-stick{position:absolute;top:26%;height:67%;width:min(92%,61px);z-index:2;pointer-events:none;animation:paintSuccessPop .2s both}
-        .crayon-box-front{position:absolute;left:-3px;right:-3px;bottom:-2px;height:45%;z-index:4;background:linear-gradient(96deg,#d48a35,#ffe99a 8%,#f4cb66 49%,#fbe29a 92%,#bd7832);border:3px solid #bd7b29;border-top:6px solid #a56b2e;border-radius:2px 2px 5px 5px;box-shadow:inset 0 3px 5px #fff8,inset 0 -7px 10px #a9663270,0 -5px 10px #3a170081;pointer-events:none}
-        .crayon-front-colours{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;height:69%;padding:12px 5% 0;box-sizing:border-box}
+        .crayon-box-front{position:absolute;left:-3px;right:-3px;bottom:-2px;height:45%;z-index:4;background:repeating-linear-gradient(7deg,#fff2 0 1px,transparent 1px 5px),linear-gradient(96deg,#c57a31,#ffe99a 8%,#f4cb66 49%,#fbe29a 92%,#b36f2f);border:3px solid #bd7b29;border-top:6px solid #a56b2e;border-radius:2px 2px 5px 5px;box-shadow:inset 0 3px 5px #fff8,inset 0 -7px 10px #a9663270,0 -5px 10px #3a170081;pointer-events:none}
+        .crayon-box-front:before{content:'';position:absolute;inset:5px 7px 8px;border:2px solid #fff6;border-radius:4px;box-shadow:inset 0 0 0 1px #ad713a4a;pointer-events:none}
+        .crayon-box-front:after{content:'';position:absolute;left:4%;right:4%;bottom:4%;height:18%;background:linear-gradient(105deg,#da6690,#e687a2 48%,#bc597e);clip-path:polygon(0 15%,9% 39%,20% 70%,34% 56%,49% 33%,63% 60%,77% 85%,90% 41%,100% 0,100% 100%,0 100%);opacity:.9;pointer-events:none}
+        .crayon-front-colours{position:relative;z-index:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;height:69%;padding:12px 5% 0;box-sizing:border-box}
         .crayon-front-colours span{height:100%;margin:0 4%;border-radius:5px;box-shadow:inset 2px 2px 3px #fff9,inset -2px -2px 3px #0002;border:2px solid #fff9}
         .crayon-bank{min-height:140px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:clamp(7px,2vw,19px);padding:20px 5px 5px}
-        .crayon-stick{--crayon:#e33;width:clamp(41px,9vw,62px);height:clamp(105px,22vw,145px);position:relative;display:block;background:linear-gradient(90deg,#0002,#fff8 20%,#ffffff22 48%,transparent 70%,#0002 100%),var(--crayon);border:1px solid #0003;border-radius:7px 7px 5px 5px;box-shadow:inset 2px 0 3px #fff8,inset -2px 0 3px #0003,4px 6px 5px #3a2a2877;box-sizing:border-box}
-        .crayon-stick:before{content:'';position:absolute;bottom:calc(100% - 1px);left:1px;right:1px;height:31%;background:linear-gradient(90deg,#0003,#fff8 28%,#ffffff22 48%,#0002 100%),var(--crayon);clip-path:polygon(50% 0,68% 10%,100% 100%,0 100%,32% 10%);filter:brightness(1.1)}
-        .crayon-stick:after{content:'';position:absolute;top:24%;left:-1px;right:-1px;height:38%;background:linear-gradient(90deg,#0002,#fff7 20%,#ffffff22 48%,#0002),linear-gradient(180deg,#fff1dc 0 10%,var(--crayon) 10% 84%,#fff1dc 84%);border-block:3px solid #f7e4cd;box-shadow:0 1px 2px #0003,inset 0 1px 2px #fff9;opacity:.98}
-        .crayon-bank .crayon-stick{border:0;cursor:grab;touch-action:none;user-select:none;margin-top:25px;transform:rotate(var(--tilt))}
+        .crayon-stick{width:clamp(41px,9vw,62px);height:clamp(105px,22vw,145px);position:relative;display:block;filter:drop-shadow(3px 5px 3px #3a2a2877);box-sizing:border-box}
+        .crayon-stick svg{display:block;width:100%;height:100%;overflow:visible;pointer-events:none}
+        .crayon-bank .crayon-stick{cursor:grab;touch-action:none;user-select:none;margin-top:25px;transform:rotate(var(--tilt))}
         .crayon-bank .crayon-stick:active{cursor:grabbing}
         .crayon-bank .crayon-stick.selected{outline:4px solid #5e17eb;outline-offset:5px}
         .crayon-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-60%);opacity:.9;margin:0!important}
@@ -5732,6 +5737,7 @@
                 <p id="crayon-instruction">Drag each crayon into the box above its matching colour.</p>
                 <div class="crayon-stage">
                     <div class="crayon-box" aria-label="Crayon box with five colour slots">
+                        <span class="crayon-box-side left" aria-hidden="true"></span><span class="crayon-box-side right" aria-hidden="true"></span>
                         <div id="crayon-slots" class="crayon-slot-row"></div>
                         <div class="crayon-box-front"><div id="crayon-front-colours" class="crayon-front-colours"></div></div>
                     </div>
@@ -9722,7 +9728,7 @@
         function startMatchCrayon(){
             if(crayonTimer){clearTimeout(crayonTimer);crayonTimer=null}
             document.querySelector('.crayon-success-pop')?.remove();
-            const pool=colourItems.filter(c=>!['Black','White','Brown'].includes(c.en)),used=new Set();
+            const pool=colourItems,used=new Set(); // Exactly the same colour palette as Match the Paint.
             crayonSets=[];
             while(crayonSets.length<5){
                 const colours=shuffleCrayons(pool).slice(0,5),key=colours.map(c=>c.en).sort().join('|');
@@ -9733,7 +9739,22 @@
         }
         function makeCrayon(colour){
             const stick=document.createElement('span');stick.className='crayon-stick';
-            stick.style.setProperty('--crayon',colour.hex);
+            const hex=colour.hex;
+            stick.innerHTML=`<svg viewBox="0 0 70 180" aria-hidden="true" focusable="false">
+                <path d="M35 4 Q39 4 42 12 L61 54 H9 L28 12 Q31 4 35 4Z" fill="${hex}" stroke="#46362c" stroke-opacity=".35" stroke-width="1.5"/>
+                <path d="M35 5 L18 51 H29 L38 11Z" fill="#fff" opacity=".27"/>
+                <path d="M49 29 L60 53 H53 L43 19Z" fill="#000" opacity=".14"/>
+                <path d="M10 52 H60 V164 Q60 173 52 175 H18 Q10 173 10 164Z" fill="${hex}" stroke="#44362a" stroke-opacity=".38" stroke-width="1.5"/>
+                <path d="M15 53 H24 V168 H18 Q15 168 15 164Z" fill="#fff" opacity=".24"/>
+                <path d="M55 53 H59 V164 Q59 171 54 172 H51Z" fill="#000" opacity=".13"/>
+                <path d="M10 58 H60 M10 160 H60" fill="none" stroke="#fff" stroke-opacity=".68" stroke-width="3"/>
+                <path d="M10 83 H60 V139 H10Z" fill="#fff9ef" stroke="#584433" stroke-opacity=".28" stroke-width="1.5"/>
+                <path d="M11 94 H59 V128 H11Z" fill="${hex}"/>
+                <path d="M14 95 H20 V127 H14Z" fill="#fff" opacity=".34"/>
+                <path d="M52 95 H58 V127 H52Z" fill="#000" opacity=".12"/>
+                <path d="M14 84 H21 V139 H14Z" fill="#fff" opacity=".25"/>
+                <path d="M18 175 Q35 179 52 175" fill="none" stroke="#34251a" stroke-opacity=".34" stroke-width="2"/>
+            </svg>`;
             return stick;
         }
         function refreshCrayonLanguage(){
