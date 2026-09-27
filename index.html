@@ -2234,6 +2234,9 @@
         .colour-menu-btn:hover{transform:translateY(-3px);box-shadow:0 9px 0 #4a15b8,0 12px 25px rgba(0,0,0,.2)}
         .colour-menu-btn:hover img{transform:scale(1.04)}
         .colour-menu-btn:active{transform:translateY(3px);box-shadow:0 3px 0 #4a15b8}
+        #colour-menu-screen .crayon-topic-button{position:relative;background:linear-gradient(145deg,#ffe6a4,#ffb6d7);border:3px solid #f29c48;box-sizing:border-box}
+        #colour-menu-screen .crayon-topic-button img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+        #colour-menu-screen .crayon-topic-label{position:absolute;z-index:1;left:4px;right:4px;bottom:6px;padding:5px 3px;border-radius:10px;background:#fff8e9;color:#5e17eb;font:900 clamp(.7rem,2.4vw,1rem) 'Quicksand',sans-serif;line-height:1.1;box-shadow:0 2px 7px #0007;pointer-events:none}
         .colour-board{background:#fff8df;border:3px solid #ffd768;border-radius:24px;padding:20px;margin:18px auto;max-width:650px;box-shadow:0 8px 20px rgba(0,0,0,.10)}
         .colour-progress{display:inline-block;background:rgba(255,255,255,.94);border:2px solid var(--primary-purple);border-radius:999px;padding:7px 14px;font-weight:900;margin:8px 0}
         .learn-colour-swatch{width:min(62vw,290px);height:min(62vw,290px);max-height:290px;margin:14px auto;border:6px solid white;border-radius:28px;box-shadow:0 8px 22px rgba(0,0,0,.20)}
@@ -4587,6 +4590,32 @@
         @media(max-width:600px){#match-paint-screen{padding:8px 0 12px}#match-paint-screen #match-paint-board.paint-board{padding:10px 7px;gap:8px 5px;border-width:3px;border-radius:18px}.paint-tube{width:100%;height:clamp(90px,17vh,145px)}}
         @media(max-height:710px){.paint-tube{height:clamp(85px,19vh,135px)}.paint-target{height:clamp(38px,7vh,62px)}#match-paint-screen #match-paint-board.paint-board{gap:6px 8px;padding:10px}}
 
+        /* Match the Crayon: five labelled slots in a yellow crayon box. */
+        #match-crayon-screen{width:100%;max-width:850px;box-sizing:border-box}
+        #match-crayon-screen h2{color:#5e17eb;font-family:'Fredoka One',cursive;margin:4px 0}
+        #crayon-instruction{font-weight:800;color:#334155}
+        .crayon-stage{width:min(100%,670px);margin:12px auto;padding:clamp(12px,3vw,24px);box-sizing:border-box;background:#fff3da;border:4px solid #e5b872;border-radius:25px}
+        .crayon-box{position:relative;width:100%;height:clamp(205px,39vw,300px);background:linear-gradient(#d2a65e 0 8%,#83531e 9%,#a16b2d 47%,#dc9e43 48%,#f9d56c 52%);border:5px solid #c58a35;border-radius:17px 17px 13px 13px;box-shadow:0 10px 0 #9a662b,0 15px 20px #6b493970;box-sizing:border-box;overflow:hidden}
+        .crayon-slot-row{position:absolute;inset:3% 3% 0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(3px,1.5vw,10px);z-index:2}
+        .crayon-slot{position:relative;min-width:0;border:2px dashed #fff8c8;border-radius:12px;display:flex;align-items:flex-start;justify-content:center;padding-top:6px;box-sizing:border-box;touch-action:none}
+        .crayon-slot.over{outline:4px solid #fff;box-shadow:0 0 15px #fff}
+        .crayon-slot.wrong{animation:paintShake .28s}
+        .crayon-label{position:relative;z-index:5;max-width:100%;box-sizing:border-box;padding:4px 2px;border-radius:8px;background:#fff8e5;border:2px solid currentColor;text-align:center;font-weight:900;font-size:clamp(.65rem,2.5vw,1rem);line-height:1.1;overflow-wrap:anywhere;box-shadow:0 2px 4px #42290066}
+        .crayon-slot .crayon-stick{position:absolute;top:29%;height:58%;width:min(70%,58px);z-index:2;pointer-events:none;animation:paintSuccessPop .2s both}
+        .crayon-box-front{position:absolute;left:0;right:0;bottom:0;height:43%;z-index:4;background:linear-gradient(145deg,#ffe695,#f5c85d 55%,#e8ad4b);border-top:5px solid #ba7d2f;box-shadow:0 -4px 9px #633a1480;pointer-events:none}
+        .crayon-front-colours{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(3px,1.5vw,10px);height:65%;padding:9px 3% 0;box-sizing:border-box}
+        .crayon-front-colours span{border-radius:8px;box-shadow:inset 0 2px 6px #0002;border:2px solid #fff8}
+        .crayon-bank{min-height:140px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:clamp(7px,2vw,19px);padding:20px 5px 5px}
+        .crayon-stick{--crayon:#e33;width:clamp(41px,9vw,62px);height:clamp(105px,22vw,145px);position:relative;display:block;background:linear-gradient(90deg,#0003,transparent 22%,#fff6 48%,transparent 75%,#0004),var(--crayon);border:2px solid #0003;border-radius:10px 10px 7px 7px;box-shadow:3px 5px 5px #3a2a2855;box-sizing:border-box}
+        .crayon-stick:before{content:'';position:absolute;bottom:calc(100% - 2px);left:2px;right:2px;height:28%;background:var(--crayon);clip-path:polygon(50% 0,100% 100%,0 100%);filter:brightness(1.08)}
+        .crayon-stick:after{content:'';position:absolute;top:30%;left:0;right:0;height:9%;background:#ffffff55;border-block:2px solid #0002}
+        .crayon-bank .crayon-stick{border:0;cursor:grab;touch-action:none;user-select:none;margin-top:25px;transform:rotate(var(--tilt))}
+        .crayon-bank .crayon-stick:active{cursor:grabbing}
+        .crayon-bank .crayon-stick.selected{outline:4px solid #5e17eb;outline-offset:5px}
+        .crayon-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-60%);opacity:.9;margin:0!important}
+        .crayon-feedback{min-height:1.4em;color:#6b3085;font-weight:900}
+        @media(max-width:450px){.crayon-stage{padding:10px 5px}.crayon-box{height:205px}.crayon-slot-row{gap:2px;left:2%;right:2%}.crayon-front-colours{gap:2px;padding-inline:2%}.crayon-label{font-size:.63rem;padding:3px 1px}.crayon-bank{gap:7px}}
+
 /* Complete the Animal: large halves on opposite sides, same spacing as Match the Animal. */
 #complete-animal-screen { width:min(98vw,1080px); max-width:none; margin-left:50%; transform:translateX(-50%); }
 .complete-animal-board { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(55px,18vw,260px); width:100%; margin:14px auto; }
@@ -5637,7 +5666,9 @@
             <div id="colour-menu-screen" class="card">
                 <h2 id="colour-menu-title" style="color:#FFDE59;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #5E17EB;">Colour Module 🎨</h2>
                 <p id="colour-menu-desc" style="color:#111;font-weight:800;margin-top:5px;">Choose a fun colour activity!</p>
+                <button type="button" onclick="playClickSound(); startMatchCrayon()" style="display:block;width:min(100%,335px);margin:10px auto 16px;padding:13px 16px;border:3px solid #9f47ca;border-radius:17px;background:#fff0b5;color:#572987;font:900 1.12rem 'Quicksand',sans-serif;box-shadow:0 5px 0 #9f47ca;cursor:pointer;">🖍️ Match the Crayon — Play</button>
                 <div class="colour-menu-grid">
+                    <button class="colour-menu-btn crayon-topic-button" type="button" onclick="playClickSound(); startMatchCrayon()" aria-label="Match the Crayon"><img src="https://i.imgur.com/HkmOQcW.jpeg" alt="" onerror="this.style.display='none'"><span class="crayon-topic-label">Match the Crayon 🖍️</span></button>
                     <button class="colour-menu-btn" onclick="playClickSound(); startLearnColour()" aria-label="Learn Colour"><img src="https://i.imgur.com/IDy8xfB.jpeg" alt="Learn Colour"></button>
                     <button class="colour-menu-btn" onclick="playClickSound(); startPopBalloon()" aria-label="Pop the Balloon"><img src="https://i.imgur.com/8IJqqXN.jpeg" alt="Pop the Balloon"></button>
                     <button class="colour-menu-btn" onclick="playClickSound(); startMatchColour()" aria-label="Match the Colour"><img src="https://i.imgur.com/gcLU4jh.jpeg" alt="Match the Colour"></button>
@@ -5693,6 +5724,21 @@
                 <p id="match-paint-instruction">Drag a paint tube onto another tube to swap their places and match the colours below.</p>
                 <div id="match-paint-board" class="paint-board" style="background:#ffebbd;border:4px solid #dfa45c;border-radius:26px;box-shadow:0 8px 0 #c88d49,0 16px 28px #725b4460"></div>
                 <p id="match-paint-feedback" aria-live="polite"></p>
+                <button class="action-btn home-btn" onclick="playClickSound(); openColourMenu()">Back ↩️</button>
+            </div>
+
+            <div id="match-crayon-screen" class="card">
+                <h2 id="crayon-title">Match the Crayon 🖍️</h2>
+                <div class="colour-progress" id="crayon-progress">Question 1 / 5</div>
+                <p id="crayon-instruction">Drag each crayon into the box below its matching colour label.</p>
+                <div class="crayon-stage">
+                    <div class="crayon-box" aria-label="Crayon box with five colour slots">
+                        <div id="crayon-slots" class="crayon-slot-row"></div>
+                        <div class="crayon-box-front"><div id="crayon-front-colours" class="crayon-front-colours"></div></div>
+                    </div>
+                    <div id="crayon-bank" class="crayon-bank" aria-label="Crayons to match"></div>
+                </div>
+                <p id="crayon-feedback" class="crayon-feedback" aria-live="polite"></p>
                 <button class="action-btn home-btn" onclick="playClickSound(); openColourMenu()">Back ↩️</button>
             </div>
 
@@ -9658,11 +9704,126 @@
             set('pop-balloon-title','Pop the Balloon 🎈','Pecahkan Belon 🎈'); set('pop-balloon-listen','🔊 Listen','🔊 Dengar'); set('pop-balloon-back','Back ↩️','Back ↩️');
             set('match-colour-title','Match the Colour 🎨','Suaikan Warna 🎨'); set('match-colour-instruction','Tap a colour word, then match it with the correct colour.','Tekan perkataan warna, kemudian suaikan dengan warna yang betul.'); set('match-colour-back','Back ↩️','Back ↩️');
             set('match-paint-title','Match the Paint 🎨','Suaikan Cat 🎨'); set('match-paint-instruction','Drag a paint tube onto another tube to swap their places and match the colours below.','Seret satu tiub cat ke tiub lain untuk bertukar tempat dan susun mengikut warna di bawah.');
+            set('crayon-title','Match the Crayon 🖍️','Padankan Krayon 🖍️'); set('crayon-instruction','Drag each crayon into the box below its matching colour label.','Seret setiap krayon ke dalam kotak mengikut label warna yang betul.');
             set('find-colour-title','Find the Colour 🔎','Cari Warna 🔎'); set('find-colour-listen','🔊 Listen','🔊 Dengar'); set('find-colour-back','Back ↩️','Back ↩️');
             if(document.getElementById('learn-colour-screen')?.classList.contains('active')) renderLearnColour();
             if(document.getElementById('pop-balloon-screen')?.classList.contains('active')) renderPopBalloon();
             if(document.getElementById('match-colour-screen')?.classList.contains('active')) renderMatchColourSet();
+            if(document.getElementById('match-crayon-screen')?.classList.contains('active')&&crayonSets.length) refreshCrayonLanguage();
             if(document.getElementById('find-colour-screen')?.classList.contains('active')) renderFindColour();
+        }
+
+        // Five distinct colour combinations, shuffled anew for each session.
+        let crayonSets=[],crayonSetIndex=0,crayonMatched=new Set(),crayonSelected=null,crayonLocked=false,crayonTimer=null;
+        function shuffleCrayons(items){
+            const result=[...items];
+            for(let i=result.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]]}
+            return result;
+        }
+        function startMatchCrayon(){
+            if(crayonTimer){clearTimeout(crayonTimer);crayonTimer=null}
+            document.querySelector('.crayon-success-pop')?.remove();
+            const pool=colourItems.filter(c=>!['Black','White'].includes(c.en)),used=new Set();
+            crayonSets=[];
+            while(crayonSets.length<5){
+                const colours=shuffleCrayons(pool).slice(0,5),key=colours.map(c=>c.en).sort().join('|');
+                if(!used.has(key)){used.add(key);crayonSets.push(shuffleCrayons(colours))}
+            }
+            crayonSets=shuffleCrayons(crayonSets);crayonSetIndex=0;
+            showScreen('match-crayon-screen');updateColourLanguage();renderCrayonSet();
+        }
+        function makeCrayon(colour){
+            const stick=document.createElement('span');stick.className='crayon-stick';
+            stick.style.setProperty('--crayon',colour.hex);
+            return stick;
+        }
+        function refreshCrayonLanguage(){
+            document.getElementById('crayon-progress').textContent=`${currentGlobalLang==='ms'?'Soalan':'Question'} ${crayonSetIndex+1} / 5`;
+            document.querySelectorAll('#crayon-slots .crayon-slot').forEach(slot=>{
+                const colour=colourItems.find(c=>c.en===slot.dataset.colour);
+                if(colour)slot.querySelector('.crayon-label').textContent=colourName(colour);
+            });
+            document.querySelectorAll('#crayon-bank .crayon-stick').forEach(stick=>{
+                const colour=colourItems.find(c=>c.en===stick.dataset.colour);
+                if(colour)stick.setAttribute('aria-label',`${colourName(colour)} crayon`);
+            });
+        }
+        function renderCrayonSet(){
+            if(!document.getElementById('match-crayon-screen').classList.contains('active'))return;
+            crayonMatched=new Set();crayonSelected=null;crayonLocked=false;
+            const colours=crayonSets[crayonSetIndex],slots=document.getElementById('crayon-slots');
+            const front=document.getElementById('crayon-front-colours'),bank=document.getElementById('crayon-bank');
+            slots.replaceChildren();front.replaceChildren();bank.replaceChildren();
+            document.getElementById('crayon-feedback').textContent='';
+            document.getElementById('crayon-progress').textContent=`${currentGlobalLang==='ms'?'Soalan':'Question'} ${crayonSetIndex+1} / 5`;
+            colours.forEach(colour=>{
+                const slot=document.createElement('div');slot.className='crayon-slot';slot.dataset.colour=colour.en;
+                slot.setAttribute('role','button');slot.tabIndex=0;
+                const label=document.createElement('span');label.className='crayon-label';label.style.color=colour.hex;
+                label.textContent=colourName(colour);slot.appendChild(label);
+                slot.addEventListener('click',()=>{if(crayonSelected)dropCrayon(crayonSelected,slot)});
+                slot.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&crayonSelected){e.preventDefault();dropCrayon(crayonSelected,slot)}});
+                slots.appendChild(slot);
+                const swatch=document.createElement('span');swatch.style.background=colour.hex;front.appendChild(swatch);
+            });
+            shuffleCrayons(colours).forEach((colour,index)=>{
+                const stick=makeCrayon(colour);stick.dataset.colour=colour.en;
+                stick.style.setProperty('--tilt',[-13,8,-5,14,-9][index]+'deg');
+                stick.setAttribute('role','button');stick.tabIndex=0;
+                stick.setAttribute('aria-label',`${colourName(colour)} crayon`);
+                stick.addEventListener('pointerdown',e=>beginCrayonDrag(e,stick));
+                stick.addEventListener('click',()=>selectCrayon(stick));
+                stick.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectCrayon(stick)}});
+                bank.appendChild(stick);
+            });
+        }
+        function selectCrayon(stick){
+            if(crayonLocked||!stick.isConnected)return;
+            document.querySelectorAll('#crayon-bank .crayon-stick').forEach(s=>s.classList.remove('selected'));
+            crayonSelected=stick.dataset.colour;stick.classList.add('selected');
+        }
+        function beginCrayonDrag(e,stick){
+            if(crayonLocked||e.button!==0)return;
+            e.preventDefault();const startX=e.clientX,startY=e.clientY,colour=stick.dataset.colour;
+            const ghost=stick.cloneNode(true);ghost.className='crayon-stick crayon-ghost';
+            ghost.style.width=Math.round(stick.getBoundingClientRect().width)+'px';
+            ghost.style.height=Math.round(stick.getBoundingClientRect().height)+'px';
+            document.body.appendChild(ghost);stick.style.opacity='.3';
+            const move=ev=>{
+                ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';
+                const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.crayon-slot');
+                document.querySelectorAll('#crayon-slots .crayon-slot').forEach(s=>s.classList.toggle('over',s===target));
+            };
+            const clean=()=>{stick.removeEventListener('pointermove',move);stick.removeEventListener('pointerup',end);stick.removeEventListener('pointercancel',cancel);stick.style.opacity='';ghost.remove();document.querySelectorAll('#crayon-slots .crayon-slot').forEach(s=>s.classList.remove('over'))};
+            const end=ev=>{const slot=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#crayon-slots .crayon-slot');clean();if(slot)dropCrayon(colour,slot);else if(Math.hypot(ev.clientX-startX,ev.clientY-startY)<12)selectCrayon(stick)};
+            const cancel=()=>clean();
+            stick.setPointerCapture(e.pointerId);stick.addEventListener('pointermove',move);stick.addEventListener('pointerup',end);stick.addEventListener('pointercancel',cancel);move(e);
+        }
+        function dropCrayon(colour,slot){
+            if(crayonLocked||!colour||crayonMatched.has(colour)||!slot?.isConnected)return;
+            if(slot.dataset.colour!==colour){
+                slot.classList.remove('wrong');void slot.offsetWidth;slot.classList.add('wrong');
+                playWrongSound();document.getElementById('crayon-feedback').textContent=currentGlobalLang==='ms'?'Cuba lagi!':'Try again!';
+                return; // The crayon stays outside the box.
+            }
+            crayonMatched.add(colour);crayonSelected=null;
+            document.querySelectorAll('#crayon-bank .crayon-stick').forEach(s=>{if(s.dataset.colour===colour)s.remove()});
+            const item=crayonSets[crayonSetIndex].find(c=>c.en===colour);
+            slot.appendChild(makeCrayon(item));playCorrectSound();
+            document.getElementById('crayon-feedback').textContent='';
+            if(crayonMatched.size===5){
+                crayonLocked=true;
+                const pop=document.createElement('div');pop.className='paint-success-pop crayon-success-pop';
+                const message=document.createElement('span');message.textContent=currentGlobalLang==='ms'?'Betul!':'Correct!';pop.appendChild(message);
+                document.body.appendChild(pop);
+                crayonTimer=setTimeout(()=>{
+                    pop.remove();crayonTimer=null;
+                    if(!document.getElementById('match-crayon-screen').classList.contains('active'))return;
+                    crayonSetIndex++;
+                    if(crayonSetIndex<5)renderCrayonSet();
+                    else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Match the Crayon',100);openColourMenu()}
+                },2000);
+            }
         }
 
 
@@ -10116,6 +10277,7 @@
                 'pop-balloon-screen',
                 'match-colour-screen',
                 'match-paint-screen',
+                'match-crayon-screen',
                 'find-colour-screen',
                 'match-animal-game-screen',
                 'complete-animal-screen',
@@ -12436,7 +12598,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'match-count-screen':'abc','match-game-screen':'abc','find-letter-screen':'abc','abc-flashcard-screen':'abc',
     'lesson-screen':'abc','count-selection-screen':'abc','quiz-screen':'abc','result-screen':'abc',
     'column-math-screen':'number','column-count-screen':'number','num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','choo123-screen':'number','taking-away-count-screen':'number','taking-away-screen':'number','find123-screen':'number',
-    'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','match-paint-screen':'colour','find-colour-screen':'colour',
+    'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','match-paint-screen':'colour','match-crayon-screen':'colour','find-colour-screen':'colour',
     'learn-body-screen':'body','choose-body-screen':'body','match-body-count-screen':'body','match-body-game-screen':'body','label-body-screen':'body',
     'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','complete-animal-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
     'learn-shape-screen':'shape','match-shape-screen':'shape','draw-shape-screen':'shape','match-me-screen':'shape',
