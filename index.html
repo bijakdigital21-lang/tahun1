@@ -39,7 +39,7 @@
 
         body {
             font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://i.imgur.com/NRwOH8q.jpeg') no-repeat center center fixed;
+            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://i.imgur.com/HWt89iS.jpeg') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-dark);
             min-height: 100vh;
@@ -68,7 +68,7 @@
             pointer-events: none;
             background:
                 linear-gradient(rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.20)),
-                url('https://i.imgur.com/NRwOH8q.jpeg') no-repeat center center;
+                url('https://i.imgur.com/HWt89iS.jpeg') no-repeat center center;
             background-size: cover;
             filter: blur(6px);
             transform: scale(1.04);
@@ -92,7 +92,7 @@
                 z-index: -1;
                 pointer-events: none;
                 background: linear-gradient(rgba(0, 0, 0, .2), rgba(0, 0, 0, .2)),
-                    url('https://i.imgur.com/NRwOH8q.jpeg') center center / 100% 100% no-repeat;
+                    url('https://i.imgur.com/HWt89iS.jpeg') center center / 100% 100% no-repeat;
             }
         }
 
@@ -3241,6 +3241,10 @@
         .choo-board{overflow:hidden;background:#fff7df;border:4px solid #fff;border-radius:25px;padding:12px 8px 14px;margin:14px auto;box-shadow:0 10px 28px #0003}
         .choo-instruction{margin:3px auto 10px;color:#24416d;font-weight:900}
         .choo-train{position:relative;width:100%;height:clamp(245px,48vw,530px);overflow:hidden;border-radius:17px;touch-action:none}
+        .choo-train.choo-depart > *{animation:choo-drive-left 1.1s ease-in forwards;pointer-events:none}
+        .choo-train.choo-arrive > *{animation:choo-drive-in 1s ease-out both}
+        @keyframes choo-drive-left{from{transform:translateX(0)}to{transform:translateX(-110%)}}
+        @keyframes choo-drive-in{from{transform:translateX(110%)}to{transform:translateX(0)}}
         .choo-train-art{display:block;width:100%;height:100%;object-fit:fill;user-select:none;-webkit-user-drag:none;pointer-events:none}
         .choo-panel{position:absolute;top:44.7%;width:11.1%;height:17.5%;display:grid;place-items:center;box-sizing:border-box;border:0;border-radius:9px;background:transparent;color:#146bd0;font-family:'Fredoka One',cursive;font-size:clamp(19px,4.9vw,54px);font-weight:900;line-height:1;text-shadow:1px 2px #fff,2px 3px #315b9340;touch-action:none;user-select:none;z-index:2}
         .choo-panel:nth-child(2){left:28.8%}.choo-panel:nth-child(3){left:43.2%}.choo-panel:nth-child(4){left:57.4%}.choo-panel:nth-child(5){left:71.8%}.choo-panel:nth-child(6){left:86.1%}
@@ -9314,9 +9318,10 @@
             document.getElementById('choo-instruction').textContent=t.instruction;
             document.getElementById('choo-back-btn').textContent=t.back;
         }
-        function renderChoo123(){
+        function renderChoo123(arriving=false){
             cleanupChooDrag();chooFilled=new Set();chooAdvancing=false;
             const q=chooQuestions[chooIndex],train=document.getElementById('choo-train'),bank=document.getElementById('choo-bank');
+            train.classList.remove('choo-depart','choo-arrive');
             train.innerHTML='';
             const artwork=document.createElement('img');artwork.className='choo-train-art';artwork.alt='Realistic toy train with five carriages';artwork.draggable=false;
             artwork.src=CHOO_TRAIN_ART;train.appendChild(artwork);
@@ -9335,6 +9340,10 @@
             });
             document.getElementById('choo-score').textContent=chooScore;
             document.getElementById('choo-status').textContent='';updateChoo123Language();
+            if(arriving){
+                chooAdvancing=true;train.classList.add('choo-arrive');
+                setTimeout(()=>{if(train.classList.contains('choo-arrive'))chooAdvancing=false;},1000);
+            }
         }
         function installChooDrag(tile){
             tile.onpointerdown=e=>{
@@ -9388,9 +9397,14 @@
                 const session=chooSession;
                 setTimeout(()=>{
                     if(session!==chooSession||!document.getElementById('choo123-screen').classList.contains('active'))return;
-                    if(chooIndex<4){chooIndex++;renderChoo123();}
-                    else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Choo Choo 123',chooScore);alert(t.done);open123Menu();}
-                },1000);
+                    document.getElementById('choo-train').classList.add('choo-depart');
+                    document.getElementById('choo-train').classList.remove('choo-arrive');
+                    setTimeout(()=>{
+                        if(session!==chooSession||!document.getElementById('choo123-screen').classList.contains('active'))return;
+                        if(chooIndex<4){chooIndex++;renderChoo123(true);}
+                        else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Choo Choo 123',chooScore);alert(t.done);open123Menu();}
+                    },1150);
+                },450);
             }
         }
 
@@ -9418,9 +9432,10 @@
             document.getElementById('chooabc-instruction').textContent=t.instruction;
             document.getElementById('chooabc-back-btn').textContent=t.back;
         }
-        function renderChooABC(){
+        function renderChooABC(arriving=false){
             cleanupChooABCDrag();chooABCFilled=new Set();chooABCAdvancing=false;
             const q=chooABCQuestions[chooABCIndex],train=document.getElementById('chooabc-train'),bank=document.getElementById('chooabc-bank');
+            train.classList.remove('choo-depart','choo-arrive');
             train.innerHTML='';
             const artwork=document.createElement('img');artwork.className='choo-train-art';artwork.alt='Realistic toy train with five carriages';artwork.draggable=false;
             artwork.src=CHOO_TRAIN_ART;train.appendChild(artwork);
@@ -9439,6 +9454,10 @@
             });
             document.getElementById('chooabc-score').textContent=chooABCScore;
             document.getElementById('chooabc-status').textContent='';updateChooABCLanguage();
+            if(arriving){
+                chooABCAdvancing=true;train.classList.add('choo-arrive');
+                setTimeout(()=>{if(train.classList.contains('choo-arrive'))chooABCAdvancing=false;},1000);
+            }
         }
         function installChooABCDrag(tile){
             tile.onpointerdown=e=>{
@@ -9492,9 +9511,14 @@
                 const session=chooABCSession;
                 setTimeout(()=>{
                     if(session!==chooABCSession||!document.getElementById('chooabc-screen').classList.contains('active'))return;
-                    if(chooABCIndex<4){chooABCIndex++;renderChooABC();}
-                    else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Choo-Choo ABC',chooABCScore);alert(t.done);openABCMenu();}
-                },1000);
+                    document.getElementById('chooabc-train').classList.add('choo-depart');
+                    document.getElementById('chooabc-train').classList.remove('choo-arrive');
+                    setTimeout(()=>{
+                        if(session!==chooABCSession||!document.getElementById('chooabc-screen').classList.contains('active'))return;
+                        if(chooABCIndex<4){chooABCIndex++;renderChooABC(true);}
+                        else{if(window.saveScoreToFirebase)window.saveScoreToFirebase('Choo-Choo ABC',chooABCScore);alert(t.done);openABCMenu();}
+                    },1150);
+                },450);
             }
         }
 
