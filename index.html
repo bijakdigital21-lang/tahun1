@@ -50,6 +50,12 @@
         }
 
 
+        /* Gambar ini hanya dipaparkan ketika halaman Home aktif. */
+        body.home-mode {
+            background: url('https://i.imgur.com/HWt89iS.jpeg') no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+
         /* =========================================================
            BLUR BACKGROUND UNTUK PAPARAN AKTIVITI / LATIHAN SAHAJA
            Kandungan aktiviti kekal tajam; hanya gambar paling belakang dikaburkan.
@@ -76,7 +82,7 @@
 
         .sidebar {
             width: 250px;
-            background-color: var(--sidebar-bg);
+            background: linear-gradient(180deg, #31cdf3 0%, #13acd7 100%);
             backdrop-filter: blur(8px);
             color: var(--sidebar-text);
             display: flex;
@@ -10049,6 +10055,7 @@
             ]);
             document.body.classList.toggle('activity-bg-blur', activityScreens.has(screenId));
             document.body.classList.toggle('login-mode', screenId === 'login-screen');
+            document.body.classList.toggle('home-mode', screenId === 'home-screen');
 
             closeSidebar();
         }
