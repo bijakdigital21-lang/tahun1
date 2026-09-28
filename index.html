@@ -4623,6 +4623,31 @@
         #pair-socks-feedback{min-height:1.3em;color:#723d82;font-weight:900;margin:3px}
         @media(max-width:600px){.main-content:has(#pair-socks-screen.active){padding-top:55px}#pair-socks-screen{padding:5px 0 12px}.socks-board{padding:0}.socks-line{min-height:clamp(182px,50vw,230px);margin-bottom:4px;gap:0;padding-left:0;padding-right:0}.sock-place{height:clamp(174px,48vw,220px)}.sock-place .sock-art{width:165%;max-height:220px}}
 
+        /* Fit the complete activity, including Back, within one stable viewport. */
+        html:has(#pair-socks-screen.active),body:has(#pair-socks-screen.active){height:100vh;height:100svh;overflow:hidden !important;overscroll-behavior:none}
+        .main-content:has(#pair-socks-screen.active){height:100vh;height:100svh;min-height:0;box-sizing:border-box;padding-top:70px;padding-bottom:0;overflow:hidden}
+        .container:has(#pair-socks-screen.active){height:100%;min-height:0;overflow:hidden}
+        #pair-socks-screen.card.active{display:flex;flex-direction:column;height:100%;min-height:0;padding:3px 0 max(8px,env(safe-area-inset-bottom));overflow:hidden;animation:none}
+        #pair-socks-screen h2{flex:none;font-size:clamp(1.12rem,4vw,1.7rem);line-height:1.1;margin:1px 0 3px}
+        #pair-socks-screen .colour-progress{flex:none;margin:2px auto;padding:3px 10px;font-size:.87rem}
+        #pair-socks-instruction{flex:none;max-width:95%;font-size:clamp(.72rem,2.6vw,.95rem);line-height:1.15;margin:3px auto}
+        #pair-socks-screen .socks-board{flex:1;min-height:0;display:grid;grid-template-rows:repeat(3,minmax(0,1fr));margin:2px auto}
+        #pair-socks-screen .socks-line{height:100%;min-height:0;margin:0;padding:12px 0 0;gap:0}
+        #pair-socks-screen .sock-pair{height:100%;min-height:0}
+        #pair-socks-screen .sock-place{height:100%;min-height:0;padding:0}
+        #pair-socks-screen .sock-place .sock-art{height:calc(100% - 13px);width:auto;max-width:130%;max-height:175px}
+        #pair-socks-feedback{flex:none;min-height:1em;font-size:.78rem;line-height:1;margin:0}
+        #pair-socks-screen > .home-btn{flex:none;align-self:center;margin:3px auto 5px;padding:8px 20px;font-size:.9rem}
+        @media(max-width:600px){
+            .main-content:has(#pair-socks-screen.active){padding-top:55px}
+            #pair-socks-screen.card.active{padding:2px 0 max(7px,env(safe-area-inset-bottom))}
+            #pair-socks-screen .sock-place .sock-art{max-width:138%;max-height:155px}
+        }
+        @media(max-height:680px){
+            #pair-socks-screen .sock-place .sock-art{max-height:130px}
+            #pair-socks-screen > .home-btn{padding:6px 18px}
+        }
+
         /* Match the Crayon: close-fitting crayons behind the front of a paper box. */
         .container:has(#match-crayon-screen.active){max-width:1000px}
         #match-crayon-screen{width:100%;max-width:none;box-sizing:border-box}
@@ -13030,5 +13055,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </html>
 
     
-
-  
