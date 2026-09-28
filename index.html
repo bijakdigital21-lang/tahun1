@@ -12724,6 +12724,138 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 
+<style>
+#topic-image-loader { position:fixed; inset:0; z-index:100000; background:rgba(19,27,65,.72); display:none; align-items:center; justify-content:center; padding:18px; }
+#topic-image-loader.open { display:flex; }
+#topic-image-loader .loading-card { position:relative; width:min(420px,100%); padding:28px 25px 24px; border-radius:28px; background:linear-gradient(165deg,#0e60ee 0%,#5b2bce 47%,#fff 48%,#fff 100%); box-shadow:0 18px 55px #06144380; text-align:center; font-family:inherit; color:#253369; }
+#topic-image-loader .monster { height:154px; width:154px; display:block; margin:0 auto 9px; animation:monster-hop .75s ease-in-out infinite alternate; filter:drop-shadow(0 8px 5px #1528685c); }
+@keyframes monster-hop { from { transform:translateY(9px) scaleX(1.04) scaleY(.96) } to { transform:translateY(-15px) scaleX(.97) scaleY(1.03) } }
+#topic-image-loader .loader-title { margin:4px 0 7px; font-size:clamp(20px,5vw,26px); font-weight:900; }
+#topic-image-loader .loader-detail { margin:0 0 14px; font-size:14px; font-weight:650; }
+#topic-image-loader .loader-track { height:24px; border:5px solid #d4befb; background:#d0b6f8; border-radius:25px; overflow:hidden; }
+#topic-image-loader .loader-fill { height:100%; width:0; border-radius:25px; background:linear-gradient(90deg,#1458fe,#7043ef); transition:width .2s ease; }
+#topic-image-loader .loader-count { font-weight:800; margin-top:9px; font-size:13px; }
+#topic-image-loader .loader-actions { display:none; gap:8px; justify-content:center; margin-top:15px; flex-wrap:wrap; }
+#topic-image-loader .loader-actions button { background:#2357db; border:0; border-radius:12px; color:white; padding:9px 15px; font:inherit; font-weight:700; cursor:pointer; }
+#topic-image-loader .loader-actions .loader-continue { background:#edf0ff; color:#293c8b; }
+@media (prefers-reduced-motion:reduce) { #topic-image-loader .monster { animation:none } }
+</style>
+<div id="topic-image-loader" role="dialog" aria-modal="true" aria-live="polite" aria-labelledby="topic-loader-title">
+  <div class="loading-card">
+    <svg class="monster" viewBox="0 0 180 180" role="img" aria-label="Blue jumping monster" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="89" cy="165" rx="55" ry="8" fill="#252d7b" opacity=".25"/>
+      <path d="M49 66 Q38 36 53 24 Q65 39 71 48 Q91 36 111 47 Q117 31 135 26 Q139 48 126 69 Q145 89 135 127 Q129 150 105 154 L70 154 Q43 147 39 123 Q32 87 49 66Z" fill="#28a8f6" stroke="#0a69c9" stroke-width="5"/>
+      <path d="M45 104 Q16 87 17 110 Q22 123 42 122 M135 104 Q165 85 163 107 Q160 124 138 122" fill="#28a8f6" stroke="#0a69c9" stroke-width="5"/>
+      <path d="M67 151 L59 166 L80 164 L83 152 M101 152 L105 165 L124 165 L114 147" fill="#178ee8" stroke="#0a69c9" stroke-width="4"/>
+      <ellipse cx="69" cy="86" rx="15" ry="19" fill="white"/><ellipse cx="109" cy="86" rx="15" ry="19" fill="white"/>
+      <circle cx="72" cy="88" r="6" fill="#203056"/><circle cx="107" cy="88" r="6" fill="#203056"/>
+      <path d="M64 113 Q90 142 116 112 Q94 120 64 113Z" fill="#1b3167" stroke="#1160ae" stroke-width="3"/>
+      <path d="M76 117 L81 128 L87 119 M98 119 L105 128 L109 117" fill="white"/>
+      <ellipse cx="49" cy="107" rx="9" ry="5" fill="#ff93d5" opacity=".7"/><ellipse cx="129" cy="107" rx="9" ry="5" fill="#ff93d5" opacity=".7"/>
+    </svg>
+    <h2 class="loader-title" id="topic-loader-title">Loading pictures...</h2>
+    <p class="loader-detail" id="topic-loader-detail">Getting the activity ready</p>
+    <div class="loader-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="topic-loader-progress"><div class="loader-fill" id="topic-loader-fill"></div></div>
+    <div class="loader-count" id="topic-loader-count">0 / 0</div>
+    <div class="loader-actions" id="topic-loader-actions"><button type="button" id="topic-loader-retry">Try again</button><button type="button" class="loader-continue" id="topic-loader-continue">Open activity</button></div>
+  </div>
+</div>
+<script>
+(function () {
+  const overlay=document.getElementById('topic-image-loader');
+  const title=document.getElementById('topic-loader-title');
+  const detail=document.getElementById('topic-loader-detail');
+  const fill=document.getElementById('topic-loader-fill');
+  const count=document.getElementById('topic-loader-count');
+  const progress=document.getElementById('topic-loader-progress');
+  const actions=document.getElementById('topic-loader-actions');
+  const imageCache=new Map();
+  let generation=0, failed=[];
+  const lang=()=>typeof currentGlobalLang!=='undefined' && currentGlobalLang==='ms';
+  const all=(items)=>items.flat(Infinity).map(item=>typeof item==='string'?item:(item?.img||item?.image||item?.[0])).filter(url=>typeof url==='string' && /^https?:\/\//i.test(url));
+  function sourcesFor(id){
+    // Use the images selected for this session; learning screens use their full category.
+    switch(id){
+      case 'learn-animal-flash-screen': return all(currentLearnAnimalList);
+      case 'match-animal-game-screen': return all(matchAnimalGameData);
+      case 'find-animal-game-screen': return all(findAnimalQuestionsList.flatMap(q=>q.options||[]));
+      case 'complete-animal-screen': return all(completeAnimalQuestions);
+      case 'learn-body-screen': case 'choose-body-screen': case 'match-body-game-screen': return all(bodyParts);
+      case 'learn-food-screen': return all(currentLearnFoodList);
+      case 'sort-food-screen': return all(sortFoodSets);
+      case 'learn-transport-flash-screen': return all(currentLearnTransportList);
+      case 'sort-transport-screen': return all(sortTransportSets);
+      case 'guess-transport-screen': return all(guessTransportSets);
+      case 'jobs-learn-screen': case 'jobs-quiz-screen': return all(jobsData);
+      case 'spell-it-right-screen': return all(spellSessionWords);
+      case 'bijak-suku-kata-screen': case 'bijak-suku-kata-2-screen': return all(sukuWords);
+      case 'learn-shape-screen': case 'match-shape-screen': case 'draw-shape-screen': case 'match-me-screen': return all(shapeDatabase);
+      default: return [];
+    }
+  }
+  const topicScreens=new Set(['learn-animal-flash-screen','match-animal-game-screen','find-animal-game-screen','complete-animal-screen','learn-body-screen','choose-body-screen','match-body-game-screen','label-body-screen','learn-food-screen','sort-food-screen','learn-transport-flash-screen','sort-transport-screen','guess-transport-screen','jobs-learn-screen','jobs-quiz-screen','spell-it-right-screen','bijak-suku-kata-screen','bijak-suku-kata-2-screen','learn-shape-screen','match-shape-screen','draw-shape-screen','match-me-screen']);
+  function loadImage(url){
+    if(imageCache.has(url))return imageCache.get(url);
+    const promise=new Promise((resolve,reject)=>{
+      const image=new Image(); image.decoding='async'; image.referrerPolicy='no-referrer';
+      image.onload=()=>{Promise.resolve(image.decode?.()).catch(()=>{}).then(()=>resolve(image));};
+      image.onerror=()=>reject(new Error('Image failed'));
+      image.src=url;
+    });
+    imageCache.set(url,promise);
+    promise.catch(()=>imageCache.delete(url));
+    return promise;
+  }
+  function close(){generation++;overlay.classList.remove('open');actions.style.display='none';}
+  async function preload(urls, token){
+    failed=[];let done=0,next=0;
+    const update=()=>{let pct=Math.round(100*done/urls.length);fill.style.width=pct+'%';progress.setAttribute('aria-valuenow',String(pct));count.textContent=done+' / '+urls.length;};
+    update();
+    async function worker(){
+      while(next<urls.length && token===generation){
+        const url=urls[next++];
+        try{await loadImage(url)}catch(e){failed.push(url)}
+        if(token!==generation)return;
+        done++;update();
+      }
+    }
+    await Promise.all(Array.from({length:Math.min(8,urls.length)},worker));
+    if(token!==generation)return;
+    if(failed.length){
+      title.textContent=lang()?'Ada gambar belum berjaya dimuat':'Some pictures could not load';
+      detail.textContent=lang()?'Semak internet dan cuba lagi.':'Check your connection and try again.';
+      actions.style.display='flex';
+    } else close();
+  }
+  const originalShowScreen=window.showScreen;
+  if(typeof originalShowScreen!=='function')return;
+  window.showScreen=function(id){
+    const previous=document.querySelector('.card.active')?.id;
+    if(previous!==id){generation++;overlay.classList.remove('open');actions.style.display='none';}
+    const result=originalShowScreen.apply(this,arguments);
+    if(previous===id || !topicScreens.has(id))return result;
+    const token=generation;
+    // Game start functions populate their session data immediately after showScreen.
+    queueMicrotask(()=>{
+      if(token!==generation || !document.getElementById(id)?.classList.contains('active'))return;
+      let urls=[];
+      try { urls=sourcesFor(id); } catch(e) { /* An empty session can still show its own screen. */ }
+      document.querySelectorAll('#'+id+' img').forEach(img=>{if(img.src)urls.push(img.src)});
+      urls=[...new Set(urls.filter(url=>/^https?:\/\//i.test(url)))];
+      if(!urls.length)return;
+      title.textContent=lang()?'Gambar sedang dimuat...':'Loading pictures...';
+      detail.textContent=lang()?'Monster sedang sediakan aktiviti!':'The monster is getting your activity ready!';
+      document.getElementById('topic-loader-retry').textContent=lang()?'Cuba lagi':'Try again';
+      document.getElementById('topic-loader-continue').textContent=lang()?'Buka aktiviti':'Open activity';
+      fill.style.width='0%';count.textContent='0 / '+urls.length;overlay.classList.add('open');
+      preload(urls,token);
+    });
+    return result;
+  };
+  document.getElementById('topic-loader-retry').onclick=()=>{const urls=[...failed];actions.style.display='none';title.textContent=lang()?'Gambar sedang dimuat...':'Loading pictures...';detail.textContent=lang()?'Sila tunggu sebentar':'Please wait';preload(urls,generation)};
+  document.getElementById('topic-loader-continue').onclick=close;
+})();
+</script>
 </body>
 </html>
 
