@@ -4603,7 +4603,8 @@
         .main-content:has(#pair-socks-screen.active){padding-left:0;padding-right:0}
         .container:has(#pair-socks-screen.active){max-width:none;width:100%;padding:0}
         #pair-socks-screen{width:100%;max-width:none;box-sizing:border-box;padding:12px 0 18px;background:transparent}
-        #pair-socks-screen.card,#pair-socks-board.socks-board{background:transparent !important;box-shadow:none !important}
+        #pair-socks-screen.card{background:transparent !important;box-shadow:none !important}
+        #pair-socks-board.socks-board{width:min(96%,920px);padding:7px 9px;background:#fff2d2 !important;border-radius:20px;box-shadow:none !important;overflow:hidden}
         #pair-socks-screen h2{font-family:'Fredoka One',cursive;color:#5e17eb;margin:4px 0}
         #pair-socks-instruction{font-weight:800;color:#334155;margin:7px auto}
         .socks-board{width:100%;margin:5px auto;padding:0;box-sizing:border-box;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
@@ -4635,16 +4636,16 @@
         #pair-socks-screen .socks-line{height:100%;min-height:0;margin:0;padding:12px 0 0;gap:0}
         #pair-socks-screen .sock-pair{height:100%;min-height:0}
         #pair-socks-screen .sock-place{height:100%;min-height:0;padding:0}
-        #pair-socks-screen .sock-place .sock-art{height:calc(100% - 13px);width:auto;max-width:130%;max-height:175px}
+        #pair-socks-screen .sock-place .sock-art{height:calc(100% - 22px);width:auto;max-width:125%;max-height:160px}
         #pair-socks-feedback{flex:none;min-height:1em;font-size:.78rem;line-height:1;margin:0}
         #pair-socks-screen > .home-btn{flex:none;align-self:center;margin:3px auto 5px;padding:8px 20px;font-size:.9rem}
         @media(max-width:600px){
             .main-content:has(#pair-socks-screen.active){padding-top:55px}
             #pair-socks-screen.card.active{padding:2px 0 max(7px,env(safe-area-inset-bottom))}
-            #pair-socks-screen .sock-place .sock-art{max-width:138%;max-height:155px}
+            #pair-socks-screen .sock-place .sock-art{max-width:128%;max-height:142px}
         }
         @media(max-height:680px){
-            #pair-socks-screen .sock-place .sock-art{max-height:130px}
+            #pair-socks-screen .sock-place .sock-art{max-height:120px}
             #pair-socks-screen > .home-btn{padding:6px 18px}
         }
 
