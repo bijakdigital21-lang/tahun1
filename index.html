@@ -4613,13 +4613,13 @@
         .sock-place{position:relative;z-index:2;display:grid;place-items:start center;min-width:0;height:clamp(145px,24vw,220px);border:2px solid transparent;border-radius:16px;touch-action:none;cursor:grab}
         .sock-place:active{cursor:grabbing}
         .sock-place.over,.sock-place.selected,.sock-place.paired{border-color:transparent;background:transparent}
-        .sock-place.over .sock-art,.sock-place.selected .sock-art{filter:drop-shadow(0 0 9px #ffffff) drop-shadow(2px 6px 3px #594b416b)}
-        .sock-place.paired .sock-art{filter:drop-shadow(0 0 6px #8bf090) drop-shadow(2px 6px 3px #594b416b)}
+        .sock-place.over .sock-art,.sock-place.selected .sock-art{filter:brightness(1.22) saturate(1.18) drop-shadow(0 0 9px #ffffff) drop-shadow(2px 6px 3px #594b416b)}
+        .sock-place.paired .sock-art{filter:brightness(1.22) saturate(1.18) drop-shadow(0 0 6px #8bf090) drop-shadow(2px 6px 3px #594b416b)}
         .sock-place.wrong{animation:paintShake .28s}
-        .sock-art{width:min(130%,150px);height:auto;max-height:210px;display:block;overflow:visible;filter:drop-shadow(3px 7px 3px #594b416b);pointer-events:none;user-select:none}
+        .sock-art{width:min(130%,150px);height:auto;max-height:210px;display:block;overflow:visible;filter:brightness(1.22) saturate(1.18) drop-shadow(3px 7px 3px #594b416b);pointer-events:none;user-select:none}
         .sock-place:nth-child(1) .sock-art{transform:translateX(12%) rotate(-3deg)}
         .sock-place:nth-child(2) .sock-art{transform:translateX(-12%) rotate(3deg)}
-        .sock-art.sock-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-38%);width:var(--sock-drag-width,88px);height:var(--sock-drag-height,140px);max-height:none;opacity:1;filter:drop-shadow(4px 8px 4px #594b4180)}
+        .sock-art.sock-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-38%);width:var(--sock-drag-width,88px);height:var(--sock-drag-height,140px);max-height:none;opacity:1;filter:brightness(1.22) saturate(1.18) drop-shadow(4px 8px 4px #594b4180)}
         #pair-socks-feedback{min-height:1.3em;color:#723d82;font-weight:900;margin:3px}
         @media(max-width:600px){.main-content:has(#pair-socks-screen.active){padding-top:55px}#pair-socks-screen{padding:5px 0 12px}.socks-board{padding:0}.socks-line{min-height:clamp(182px,50vw,230px);margin-bottom:4px;gap:0;padding-left:0;padding-right:0}.sock-place{height:clamp(174px,48vw,220px)}.sock-place .sock-art{width:165%;max-height:220px}}
 
@@ -9841,10 +9841,10 @@
             return `<svg class="sock-art" viewBox="0 0 90 175" aria-hidden="true"><g transform="scale(1 1.25)"><defs>
                 <clipPath id="sock-clip-${unique}"><path d="${sockShape}"/></clipPath>
                 <linearGradient id="sock-shade-${unique}" x1="0" y1="0" x2="1" y2=".12"><stop offset="0" stop-color="${style.dark}"/><stop offset=".22" stop-color="${style.base}"/><stop offset=".57" stop-color="${style.base}"/><stop offset="1" stop-color="${style.dark}"/></linearGradient>
-                <pattern id="sock-knit-${unique}" width="5" height="6" patternUnits="userSpaceOnUse"><path d="M0 0l2.5 3L5 0M0 3l2.5 3L5 3" fill="none" stroke="${style.dark}" stroke-width=".55" opacity=".34"/></pattern>
+                <pattern id="sock-knit-${unique}" width="5" height="6" patternUnits="userSpaceOnUse"><path d="M0 0l2.5 3L5 0M0 3l2.5 3L5 3" fill="none" stroke="${style.dark}" stroke-width=".55" opacity=".20"/></pattern>
                 </defs>
                 <path d="${sockShape}" fill="url(#sock-shade-${unique})" stroke="${style.dark}" stroke-width="1.8"/>
-                <g clip-path="url(#sock-clip-${unique})"><g fill="${style.dark}" opacity=".72">${marks}</g><path d="M12 12h75v122H12z" fill="url(#sock-knit-${unique})"/><path d="M30 32q4 26 1 48" fill="none" stroke="#fff" stroke-opacity=".23" stroke-width="3"/></g>
+                <g clip-path="url(#sock-clip-${unique})"><g fill="${style.dark}" opacity=".55">${marks}</g><path d="M12 12h75v122H12z" fill="url(#sock-knit-${unique})"/><path d="M30 32q4 26 1 48" fill="none" stroke="#fff" stroke-opacity=".23" stroke-width="3"/></g>
                 <path d="M24 15h39v15H24z" fill="${style.dark}"/><path d="M25 22h37M25 26h37" stroke="${style.base}" stroke-opacity=".6" stroke-width="1.4"/>
                 <path d="M17 86 Q28 83 38 95 L39 109 Q29 118 19 107 Q11 97 17 86 Z M59 130 Q67 133 75 128 Q81 123 77 116 L70 107 Q67 121 59 130 Z" fill="${style.dark}" opacity=".76"/>
                 <path d="M17 96q4 9 13 14M62 130q9 1 14-8" fill="none" stroke="${style.base}" stroke-opacity=".48" stroke-width="1.5"/>
