@@ -4591,11 +4591,19 @@
         @media(max-height:710px){.paint-tube{height:clamp(85px,19vh,135px)}.paint-target{height:clamp(38px,7vh,62px)}#match-paint-screen #match-paint-board.paint-board{gap:6px 8px;padding:10px}}
 
         /* Pair the Socks: eighteen monochrome patterned socks, three close pairs per line. */
-        body:has(#pair-socks-screen.active){background:#e5d18b !important}
-        body.activity-bg-blur:has(#pair-socks-screen.active)::before{inset:0;background:#e5d18b;filter:none;transform:none}
+        /* Explicitly keep this activity on the shared blurred app background. */
+        body.activity-bg-blur:has(#pair-socks-screen.active){background:transparent !important}
+        body.activity-bg-blur:has(#pair-socks-screen.active)::before{
+            inset:-18px;
+            background:linear-gradient(rgba(0,0,0,.20),rgba(0,0,0,.20)),url('https://i.imgur.com/HWt89iS.jpeg') no-repeat center center;
+            background-size:cover;
+            filter:blur(6px);
+            transform:scale(1.04);
+        }
         .main-content:has(#pair-socks-screen.active){padding-left:0;padding-right:0}
         .container:has(#pair-socks-screen.active){max-width:none;width:100%;padding:0}
         #pair-socks-screen{width:100%;max-width:none;box-sizing:border-box;padding:12px 0 18px;background:transparent}
+        #pair-socks-screen.card,#pair-socks-board.socks-board{background:transparent !important;box-shadow:none !important}
         #pair-socks-screen h2{font-family:'Fredoka One',cursive;color:#5e17eb;margin:4px 0}
         #pair-socks-instruction{font-weight:800;color:#334155;margin:7px auto}
         .socks-board{width:100%;margin:5px auto;padding:0;box-sizing:border-box;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
