@@ -4601,15 +4601,16 @@
         .sock-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));min-width:0;gap:0}
         .sock-place{position:relative;z-index:2;display:grid;place-items:start center;min-width:0;height:clamp(145px,24vw,220px);border:2px solid transparent;border-radius:16px;touch-action:none;cursor:grab}
         .sock-place:active{cursor:grabbing}
-        .sock-place.over,.sock-place.selected{border-color:#5e17eb;background:#ffffff75}
-        .sock-place.paired{background:#c6f4c273;border-color:#52af63}
+        .sock-place.over,.sock-place.selected,.sock-place.paired{border-color:transparent;background:transparent}
+        .sock-place.over .sock-art,.sock-place.selected .sock-art{filter:drop-shadow(0 0 9px #ffffff) drop-shadow(2px 6px 3px #594b416b)}
+        .sock-place.paired .sock-art{filter:drop-shadow(0 0 6px #8bf090) drop-shadow(2px 6px 3px #594b416b)}
         .sock-place.wrong{animation:paintShake .28s}
         .sock-art{width:min(130%,150px);height:auto;max-height:210px;display:block;overflow:visible;filter:drop-shadow(3px 7px 3px #594b416b);pointer-events:none;user-select:none}
         .sock-place:nth-child(1) .sock-art{transform:translateX(12%) rotate(-3deg)}
         .sock-place:nth-child(2) .sock-art{transform:translateX(-12%) rotate(3deg)}
-        .sock-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-38%);width:88px;height:140px;opacity:.88}
+        .sock-art.sock-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-38%);width:var(--sock-drag-width,88px);height:var(--sock-drag-height,140px);max-height:none;opacity:1;filter:drop-shadow(4px 8px 4px #594b4180)}
         #pair-socks-feedback{min-height:1.3em;color:#723d82;font-weight:900;margin:3px}
-        @media(max-width:600px){.socks-board{padding:10px 3px 12px}.socks-line{min-height:clamp(140px,36vw,185px);margin-bottom:7px}.sock-place{height:clamp(132px,34vw,175px)}.sock-art{width:135%;max-height:175px}}
+        @media(max-width:600px){.socks-board{padding:10px 1px 12px}.socks-line{min-height:clamp(172px,47vw,215px);margin-bottom:8px}.sock-place{height:clamp(163px,45vw,205px)}.sock-place .sock-art{width:155%;max-height:205px}}
 
         /* Match the Crayon: close-fitting crayons behind the front of a paper box. */
         .container:has(#match-crayon-screen.active){max-width:1000px}
@@ -9776,15 +9777,15 @@
 
         // Pair the Socks: nine single-hue knit patterns, eighteen socks, three distinct sets.
         const sockStyles=[
-            {name:'Red',ms:'Merah',base:'#f47783',dark:'#b83650',pattern:'dots'},
-            {name:'Blue',ms:'Biru',base:'#74b8e5',dark:'#27629d',pattern:'stripes'},
-            {name:'Green',ms:'Hijau',base:'#8dcf84',dark:'#357a52',pattern:'diamonds'},
-            {name:'Purple',ms:'Ungu',base:'#bba1df',dark:'#7555a2',pattern:'stars'},
-            {name:'Orange',ms:'Oren',base:'#f4b36e',dark:'#bc6c2d',pattern:'hearts'},
-            {name:'Yellow',ms:'Kuning',base:'#f6d876',dark:'#ad8628',pattern:'checks'},
-            {name:'Pink',ms:'Merah Jambu',base:'#eba2ce',dark:'#a74e83',pattern:'waves'},
-            {name:'Brown',ms:'Coklat',base:'#b88a69',dark:'#705039',pattern:'crosses'},
-            {name:'Teal',ms:'Biru Hijau',base:'#7ec9bc',dark:'#368577',pattern:'chevrons'}
+            {name:'Red',ms:'Merah',base:'#ff8192',dark:'#d83f61',pattern:'dots'},
+            {name:'Blue',ms:'Biru',base:'#70c5ff',dark:'#347ed3',pattern:'stripes'},
+            {name:'Green',ms:'Hijau',base:'#8fea93',dark:'#41a65e',pattern:'diamonds'},
+            {name:'Purple',ms:'Ungu',base:'#cca6f7',dark:'#865fc0',pattern:'stars'},
+            {name:'Orange',ms:'Oren',base:'#ffc17c',dark:'#d87b2f',pattern:'hearts'},
+            {name:'Yellow',ms:'Kuning',base:'#ffe781',dark:'#b28c28',pattern:'checks'},
+            {name:'Pink',ms:'Merah Jambu',base:'#ffb2df',dark:'#c45d9c',pattern:'waves'},
+            {name:'Brown',ms:'Coklat',base:'#d7a47f',dark:'#966646',pattern:'crosses'},
+            {name:'Teal',ms:'Biru Hijau',base:'#78e2d2',dark:'#278f81',pattern:'chevrons'}
         ];
         const sockShape='M25 15 H62 V70 C62 82 66 89 74 95 Q82 103 77 112 Q72 120 58 123 L41 128 Q27 129 20 116 L15 106 Q11 97 18 89 L25 78 Z';
         let sockOrder=[],sockSet=0,sockSelected=-1,sockLocked=false,sockTimer=null,sockPop=null,sockIgnoreClickUntil=0,sockUsedSets=new Set();
@@ -9800,7 +9801,7 @@
             if(style.pattern==='waves')for(let y=38;y<128;y+=17)marks+=`<path d="M18 ${y}q10-10 20 0t20 0t20 0" fill="none" stroke="${style.dark}" stroke-width="4"/>`;
             if(style.pattern==='crosses')for(let y=37;y<126;y+=21)for(let x=30;x<78;x+=22)marks+=`<path d="M${x-5} ${y}h10m-5-5v10" fill="none" stroke="${style.dark}" stroke-width="3"/>`;
             if(style.pattern==='chevrons')for(let y=35;y<128;y+=18)marks+=`<path d="M18 ${y}l12 8 12-8 12 8 12-8 12 8" fill="none" stroke="${style.dark}" stroke-width="4"/>`;
-            return `<svg class="sock-art" viewBox="0 0 90 140" aria-hidden="true"><defs>
+            return `<svg class="sock-art" viewBox="0 0 90 175" aria-hidden="true"><g transform="scale(1 1.25)"><defs>
                 <clipPath id="sock-clip-${unique}"><path d="${sockShape}"/></clipPath>
                 <linearGradient id="sock-shade-${unique}" x1="0" y1="0" x2="1" y2=".12"><stop offset="0" stop-color="${style.dark}"/><stop offset=".22" stop-color="${style.base}"/><stop offset=".57" stop-color="${style.base}"/><stop offset="1" stop-color="${style.dark}"/></linearGradient>
                 <pattern id="sock-knit-${unique}" width="5" height="6" patternUnits="userSpaceOnUse"><path d="M0 0l2.5 3L5 0M0 3l2.5 3L5 3" fill="none" stroke="${style.dark}" stroke-width=".55" opacity=".34"/></pattern>
@@ -9810,7 +9811,7 @@
                 <path d="M24 15h39v15H24z" fill="${style.dark}"/><path d="M25 22h37M25 26h37" stroke="${style.base}" stroke-opacity=".6" stroke-width="1.4"/>
                 <path d="M17 96q12-5 20 5l-5 20q-11-3-15-15zM52 124q9-3 15-8l9-16q5 10-4 19-8 7-20 8z" fill="${style.dark}" opacity=".76"/>
                 <path d="M18 106q7 10 15 14M53 125q12-4 19-13" fill="none" stroke="${style.base}" stroke-opacity=".48" stroke-width="1.5"/>
-                <rect x="38" y="1" width="12" height="29" rx="5" fill="#694536" transform="rotate(-12 44 16)"/><path d="M39 7h9" stroke="#a67a57" stroke-width="2"/></svg>`;
+                <rect x="38" y="1" width="12" height="29" rx="5" fill="#694536" transform="rotate(-12 44 16)"/><path d="M39 7h9" stroke="#a67a57" stroke-width="2"/></g></svg>`;
         }
         function stopPairSocks(){if(sockTimer){clearTimeout(sockTimer);sockTimer=null}sockPop?.remove();sockPop=null;sockLocked=false}
         function refreshPairSocksLanguage(){document.getElementById('pair-socks-progress').textContent=`${currentGlobalLang==='ms'?'Set':'Set'} ${sockSet+1} / 3`}
@@ -9862,9 +9863,14 @@
         function beginSockDrag(e,place){
             if(sockLocked||sockPairIsDone(+place.dataset.index)||e.button!==0)return;
             e.preventDefault();const startX=e.clientX,startY=e.clientY,from=+place.dataset.index;
-            const ghost=place.querySelector('svg').cloneNode(true);ghost.classList.add('sock-ghost');document.body.appendChild(ghost);
+            const original=place.querySelector('svg');
+            const size=original.getBoundingClientRect();
+            const ghost=original.cloneNode(true);ghost.classList.add('sock-ghost');
+            ghost.style.setProperty('--sock-drag-width',`${size.width}px`);
+            ghost.style.setProperty('--sock-drag-height',`${size.height}px`);
+            document.body.appendChild(ghost);original.style.visibility='hidden';
             const move=ev=>{ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';document.querySelectorAll('#pair-socks-board .sock-place').forEach(p=>p.classList.toggle('over',p===document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.sock-place')))};
-            const clean=()=>{place.removeEventListener('pointermove',move);place.removeEventListener('pointerup',end);place.removeEventListener('pointercancel',cancel);ghost.remove();document.querySelectorAll('#pair-socks-board .sock-place.over').forEach(p=>p.classList.remove('over'))};
+            const clean=()=>{place.removeEventListener('pointermove',move);place.removeEventListener('pointerup',end);place.removeEventListener('pointercancel',cancel);original.style.visibility='';ghost.remove();document.querySelectorAll('#pair-socks-board .sock-place.over').forEach(p=>p.classList.remove('over'))};
             const end=ev=>{const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#pair-socks-board .sock-place');const moved=Math.hypot(ev.clientX-startX,ev.clientY-startY)>10;clean();if(moved){sockIgnoreClickUntil=Date.now()+300;if(target)swapSocks(from,+target.dataset.index)}};
             const cancel=()=>clean();place.setPointerCapture(e.pointerId);place.addEventListener('pointermove',move);place.addEventListener('pointerup',end);place.addEventListener('pointercancel',cancel);move(e);
         }
