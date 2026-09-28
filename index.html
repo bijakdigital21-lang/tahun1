@@ -4621,7 +4621,7 @@
         .crayon-bank .crayon-stick:hover,.crayon-bank .crayon-stick.selected{z-index:20}
         .crayon-bank .crayon-stick:active{cursor:grabbing}
         .crayon-bank .crayon-stick.selected{outline:4px solid #5e17eb;outline-offset:5px}
-        .crayon-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-60%);opacity:.9;margin:0!important}
+        .crayon-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-60%) rotate(var(--tilt));opacity:.9;margin:0!important}
         .crayon-feedback{min-height:1.4em;color:#6b3085;font-weight:900}
         @media(max-width:450px){#match-crayon-screen{padding:8px 3px}.crayon-stage{padding:30px 5px 20px}.crayon-bank{height:225px}}
         /* The photographic empty carton is embedded below as one self-contained asset. */
@@ -9849,8 +9849,8 @@
             if(crayonLocked||e.button!==0)return;
             e.preventDefault();const startX=e.clientX,startY=e.clientY,colour=stick.dataset.colour;
             const ghost=stick.cloneNode(true);ghost.className='crayon-stick crayon-ghost';
-            ghost.style.width=Math.round(stick.getBoundingClientRect().width)+'px';
-            ghost.style.height=Math.round(stick.getBoundingClientRect().height)+'px';
+            ghost.style.width=stick.offsetWidth+'px';
+            ghost.style.height=stick.offsetHeight+'px';
             document.body.appendChild(ghost);stick.style.opacity='.3';
             const move=ev=>{
                 ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';
