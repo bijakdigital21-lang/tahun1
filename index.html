@@ -4590,6 +4590,27 @@
         @media(max-width:600px){#match-paint-screen{padding:8px 0 12px}#match-paint-screen #match-paint-board.paint-board{padding:10px 7px;gap:8px 5px;border-width:3px;border-radius:18px}.paint-tube{width:100%;height:clamp(90px,17vh,145px)}}
         @media(max-height:710px){.paint-tube{height:clamp(85px,19vh,135px)}.paint-target{height:clamp(38px,7vh,62px)}#match-paint-screen #match-paint-board.paint-board{gap:6px 8px;padding:10px}}
 
+        /* Pair the Socks: eighteen monochrome patterned socks, three close pairs per line. */
+        .container:has(#pair-socks-screen.active){max-width:1000px}
+        #pair-socks-screen{width:100%;max-width:none;box-sizing:border-box}
+        #pair-socks-screen h2{font-family:'Fredoka One',cursive;color:#5e17eb;margin:4px 0}
+        #pair-socks-instruction{font-weight:800;color:#334155;margin:7px auto}
+        .socks-board{width:min(100%,850px);margin:12px auto;padding:18px clamp(7px,2vw,18px) 22px;box-sizing:border-box;background:linear-gradient(#f9e6a7,#f9ecc6);border:4px solid #d7b777;border-radius:24px;box-shadow:0 9px 0 #b3945f,0 16px 25px #66543b45;overflow:hidden}
+        .socks-line{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1px,1vw,8px);margin:4px 0 12px;padding:14px 2px 0;min-height:clamp(155px,26vw,240px);box-sizing:border-box}
+        .socks-line:before{content:'';position:absolute;left:-20px;right:-20px;top:14px;height:4px;background:#866345;box-shadow:0 2px 3px #65442d60;z-index:1}
+        .sock-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));min-width:0;gap:0}
+        .sock-place{position:relative;z-index:2;display:grid;place-items:start center;min-width:0;height:clamp(145px,24vw,220px);border:2px solid transparent;border-radius:16px;touch-action:none;cursor:grab}
+        .sock-place:active{cursor:grabbing}
+        .sock-place.over,.sock-place.selected{border-color:#5e17eb;background:#ffffff75}
+        .sock-place.paired{background:#c6f4c273;border-color:#52af63}
+        .sock-place.wrong{animation:paintShake .28s}
+        .sock-art{width:min(130%,150px);height:auto;max-height:210px;display:block;overflow:visible;filter:drop-shadow(3px 7px 3px #594b416b);pointer-events:none;user-select:none}
+        .sock-place:nth-child(1) .sock-art{transform:translateX(12%) rotate(-3deg)}
+        .sock-place:nth-child(2) .sock-art{transform:translateX(-12%) rotate(3deg)}
+        .sock-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-38%);width:88px;height:140px;opacity:.88}
+        #pair-socks-feedback{min-height:1.3em;color:#723d82;font-weight:900;margin:3px}
+        @media(max-width:600px){.socks-board{padding:10px 3px 12px}.socks-line{min-height:clamp(140px,36vw,185px);margin-bottom:7px}.sock-place{height:clamp(132px,34vw,175px)}.sock-art{width:135%;max-height:175px}}
+
         /* Match the Crayon: close-fitting crayons behind the front of a paper box. */
         .container:has(#match-crayon-screen.active){max-width:1000px}
         #match-crayon-screen{width:100%;max-width:none;box-sizing:border-box}
@@ -5694,6 +5715,7 @@
                 <h2 id="colour-menu-title" style="color:#FFDE59;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #5E17EB;">Colour Module 🎨</h2>
                 <p id="colour-menu-desc" style="color:#111;font-weight:800;margin-top:5px;">Choose a fun colour activity!</p>
                 <div class="colour-menu-grid">
+                    <button class="colour-menu-btn" type="button" onclick="playClickSound(); startPairSocks()" aria-label="Pair the Socks"><img src="https://i.imgur.com/Gu8qUZX.jpeg" alt="Pair the Socks" onerror="this.style.display='none'"></button>
                     <button class="colour-menu-btn crayon-topic-button" type="button" onclick="playClickSound(); startMatchCrayon()" aria-label="Match the Crayon"><img src="https://i.imgur.com/HkmOQcW.jpeg" alt="" onerror="this.style.display='none'"></button>
                     <button class="colour-menu-btn" onclick="playClickSound(); startLearnColour()" aria-label="Learn Colour"><img src="https://i.imgur.com/IDy8xfB.jpeg" alt="Learn Colour"></button>
                     <button class="colour-menu-btn" onclick="playClickSound(); startPopBalloon()" aria-label="Pop the Balloon"><img src="https://i.imgur.com/8IJqqXN.jpeg" alt="Pop the Balloon"></button>
@@ -5750,6 +5772,15 @@
                 <p id="match-paint-instruction">Drag a paint tube onto another tube to swap their places and match the colours below.</p>
                 <div id="match-paint-board" class="paint-board" style="background:#ffebbd;border:4px solid #dfa45c;border-radius:26px;box-shadow:0 8px 0 #c88d49,0 16px 28px #725b4460"></div>
                 <p id="match-paint-feedback" aria-live="polite"></p>
+                <button class="action-btn home-btn" onclick="playClickSound(); openColourMenu()">Back ↩️</button>
+            </div>
+
+            <div id="pair-socks-screen" class="card">
+                <h2 id="pair-socks-title">Pair the Socks 🧦</h2>
+                <div class="colour-progress" id="pair-socks-progress">Set 1 / 3</div>
+                <p id="pair-socks-instruction">Drag a sock onto another sock to swap them. Match all nine pairs!</p>
+                <div id="pair-socks-board" class="socks-board" aria-label="Eighteen socks hanging on three clotheslines"></div>
+                <p id="pair-socks-feedback" aria-live="polite"></p>
                 <button class="action-btn home-btn" onclick="playClickSound(); openColourMenu()">Back ↩️</button>
             </div>
 
@@ -9723,7 +9754,7 @@
         const colourShuffle = a => [...a].sort(()=>Math.random()-.5);
         const colourName = c => currentGlobalLang==='ms' ? c.ms : c.en;
         function speakColourText(text){ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US'; u.rate=.75; speechSynthesis.speak(u); }
-        function openColourMenu(){ showScreen('colour-menu-screen'); updateColourLanguage(); }
+        function openColourMenu(){ stopPairSocks(); showScreen('colour-menu-screen'); updateColourLanguage(); }
         function updateColourLanguage(){
             const ms=currentGlobalLang==='ms';
             const set=(id,en,bm)=>{const e=document.getElementById(id);if(e)e.innerText=ms?bm:en};
@@ -9732,13 +9763,128 @@
             set('pop-balloon-title','Pop the Balloon 🎈','Pecahkan Belon 🎈'); set('pop-balloon-listen','🔊 Listen','🔊 Dengar'); set('pop-balloon-back','Back ↩️','Back ↩️');
             set('match-colour-title','Match the Colour 🎨','Suaikan Warna 🎨'); set('match-colour-instruction','Tap a colour word, then match it with the correct colour.','Tekan perkataan warna, kemudian suaikan dengan warna yang betul.'); set('match-colour-back','Back ↩️','Back ↩️');
             set('match-paint-title','Match the Paint 🎨','Suaikan Cat 🎨'); set('match-paint-instruction','Drag a paint tube onto another tube to swap their places and match the colours below.','Seret satu tiub cat ke tiub lain untuk bertukar tempat dan susun mengikut warna di bawah.');
+            set('pair-socks-title','Pair the Socks 🧦','Padankan Stokin 🧦'); set('pair-socks-instruction','Drag a sock onto another sock to swap them. Match all nine pairs!','Seret stokin ke stokin lain untuk tukar tempat. Padankan kesembilan pasangan!');
             set('crayon-title','Match the Crayon 🖍️','Padankan Krayon 🖍️'); set('crayon-instruction','Drag each crayon into the box above its matching colour.','Seret setiap krayon ke dalam kotak di atas warna yang sepadan.');
             set('find-colour-title','Find the Colour 🔎','Cari Warna 🔎'); set('find-colour-listen','🔊 Listen','🔊 Dengar'); set('find-colour-back','Back ↩️','Back ↩️');
             if(document.getElementById('learn-colour-screen')?.classList.contains('active')) renderLearnColour();
             if(document.getElementById('pop-balloon-screen')?.classList.contains('active')) renderPopBalloon();
             if(document.getElementById('match-colour-screen')?.classList.contains('active')) renderMatchColourSet();
             if(document.getElementById('match-crayon-screen')?.classList.contains('active')&&crayonSets.length) refreshCrayonLanguage();
+            if(document.getElementById('pair-socks-screen')?.classList.contains('active')) refreshPairSocksLanguage();
             if(document.getElementById('find-colour-screen')?.classList.contains('active')) renderFindColour();
+        }
+
+        // Pair the Socks: nine single-hue knit patterns, eighteen socks, three distinct sets.
+        const sockStyles=[
+            {name:'Red',ms:'Merah',base:'#f47783',dark:'#b83650',pattern:'dots'},
+            {name:'Blue',ms:'Biru',base:'#74b8e5',dark:'#27629d',pattern:'stripes'},
+            {name:'Green',ms:'Hijau',base:'#8dcf84',dark:'#357a52',pattern:'diamonds'},
+            {name:'Purple',ms:'Ungu',base:'#bba1df',dark:'#7555a2',pattern:'stars'},
+            {name:'Orange',ms:'Oren',base:'#f4b36e',dark:'#bc6c2d',pattern:'hearts'},
+            {name:'Yellow',ms:'Kuning',base:'#f6d876',dark:'#ad8628',pattern:'checks'},
+            {name:'Pink',ms:'Merah Jambu',base:'#eba2ce',dark:'#a74e83',pattern:'waves'},
+            {name:'Brown',ms:'Coklat',base:'#b88a69',dark:'#705039',pattern:'crosses'},
+            {name:'Teal',ms:'Biru Hijau',base:'#7ec9bc',dark:'#368577',pattern:'chevrons'}
+        ];
+        const sockShape='M25 15 H62 V70 C62 82 66 89 74 95 Q82 103 77 112 Q72 120 58 123 L41 128 Q27 129 20 116 L15 106 Q11 97 18 89 L25 78 Z';
+        let sockOrder=[],sockSet=0,sockSelected=-1,sockLocked=false,sockTimer=null,sockPop=null,sockIgnoreClickUntil=0,sockUsedSets=new Set();
+        function sockShuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+        function sockSvg(style,unique){
+            let marks='';
+            if(style.pattern==='dots')for(let y=35;y<122;y+=21)for(let x=24+(y%2?7:0);x<78;x+=21)marks+=`<circle cx="${x}" cy="${y}" r="4.4"/>`;
+            if(style.pattern==='stripes')for(let x=20;x<85;x+=14)marks+=`<path d="M${x} 20 v110" stroke="${style.dark}" stroke-width="6"/>`;
+            if(style.pattern==='diamonds')for(let y=36;y<125;y+=25)for(let x=29;x<78;x+=22)marks+=`<path d="M${x} ${y-7}l7 9-7 9-7-9z"/>`;
+            if(style.pattern==='stars')for(let y=38;y<126;y+=27)for(let x=29+(y%3)*5;x<78;x+=27)marks+=`<path d="M${x} ${y-8}l2.5 6 6.5.4-5 4 1.7 6-6.2-3.4-6.2 3.4 1.7-6-5-4 6.5-.4z"/>`;
+            if(style.pattern==='hearts')for(let y=40;y<120;y+=26)for(let x=29;x<78;x+=27)marks+=`<path d="M${x} ${y+7}q-13-8-7-15 5-4 7 2 4-6 8-2 6 7-8 15z"/>`;
+            if(style.pattern==='checks')for(let y=28;y<128;y+=20)for(let x=23;x<83;x+=20)marks+=`<rect x="${x}" y="${y}" width="10" height="10" rx="1"/>`;
+            if(style.pattern==='waves')for(let y=38;y<128;y+=17)marks+=`<path d="M18 ${y}q10-10 20 0t20 0t20 0" fill="none" stroke="${style.dark}" stroke-width="4"/>`;
+            if(style.pattern==='crosses')for(let y=37;y<126;y+=21)for(let x=30;x<78;x+=22)marks+=`<path d="M${x-5} ${y}h10m-5-5v10" fill="none" stroke="${style.dark}" stroke-width="3"/>`;
+            if(style.pattern==='chevrons')for(let y=35;y<128;y+=18)marks+=`<path d="M18 ${y}l12 8 12-8 12 8 12-8 12 8" fill="none" stroke="${style.dark}" stroke-width="4"/>`;
+            return `<svg class="sock-art" viewBox="0 0 90 140" aria-hidden="true"><defs>
+                <clipPath id="sock-clip-${unique}"><path d="${sockShape}"/></clipPath>
+                <linearGradient id="sock-shade-${unique}" x1="0" y1="0" x2="1" y2=".12"><stop offset="0" stop-color="${style.dark}"/><stop offset=".22" stop-color="${style.base}"/><stop offset=".57" stop-color="${style.base}"/><stop offset="1" stop-color="${style.dark}"/></linearGradient>
+                <pattern id="sock-knit-${unique}" width="5" height="6" patternUnits="userSpaceOnUse"><path d="M0 0l2.5 3L5 0M0 3l2.5 3L5 3" fill="none" stroke="${style.dark}" stroke-width=".55" opacity=".34"/></pattern>
+                </defs>
+                <path d="${sockShape}" fill="url(#sock-shade-${unique})" stroke="${style.dark}" stroke-width="1.8"/>
+                <g clip-path="url(#sock-clip-${unique})"><g fill="${style.dark}" opacity=".72">${marks}</g><path d="M12 12h75v122H12z" fill="url(#sock-knit-${unique})"/><path d="M30 32q4 26 1 48" fill="none" stroke="#fff" stroke-opacity=".23" stroke-width="3"/></g>
+                <path d="M24 15h39v15H24z" fill="${style.dark}"/><path d="M25 22h37M25 26h37" stroke="${style.base}" stroke-opacity=".6" stroke-width="1.4"/>
+                <path d="M17 96q12-5 20 5l-5 20q-11-3-15-15zM52 124q9-3 15-8l9-16q5 10-4 19-8 7-20 8z" fill="${style.dark}" opacity=".76"/>
+                <path d="M18 106q7 10 15 14M53 125q12-4 19-13" fill="none" stroke="${style.base}" stroke-opacity=".48" stroke-width="1.5"/>
+                <rect x="38" y="1" width="12" height="29" rx="5" fill="#694536" transform="rotate(-12 44 16)"/><path d="M39 7h9" stroke="#a67a57" stroke-width="2"/></svg>`;
+        }
+        function stopPairSocks(){if(sockTimer){clearTimeout(sockTimer);sockTimer=null}sockPop?.remove();sockPop=null;sockLocked=false}
+        function refreshPairSocksLanguage(){document.getElementById('pair-socks-progress').textContent=`${currentGlobalLang==='ms'?'Set':'Set'} ${sockSet+1} / 3`}
+        function startPairSocks(){stopPairSocks();sockSet=0;sockUsedSets=new Set();showScreen('pair-socks-screen');updateColourLanguage();newSockSet()}
+        function newSockSet(){
+            sockLocked=false;sockSelected=-1;document.getElementById('pair-socks-feedback').textContent='';
+            // Even positions are anchors; the nine odd positions are a derangement.
+            let anchors,loose,key;
+            do{
+                anchors=sockShuffle(sockStyles.map((_,i)=>i));
+                do{loose=sockShuffle(anchors)}while(loose.some((c,i)=>c===anchors[i]));
+                key=anchors.flatMap((c,i)=>[c,loose[i]]).join(',');
+            }while(sockUsedSets.has(key));
+            sockUsedSets.add(key);
+            sockOrder=anchors.flatMap((c,i)=>[c,loose[i]]);
+            refreshPairSocksLanguage();renderSocks();
+        }
+        function renderSocks(){
+            const board=document.getElementById('pair-socks-board');board.replaceChildren();
+            for(let row=0;row<3;row++){
+                const line=document.createElement('div');line.className='socks-line';
+                for(let pair=0;pair<3;pair++){
+                    const pairBox=document.createElement('div');pairBox.className='sock-pair';
+                    for(let side=0;side<2;side++){
+                    const i=row*6+pair*2+side,style=sockStyles[sockOrder[i]];
+                    const place=document.createElement('div');place.className='sock-place';place.dataset.index=i;
+                    if(sockOrder[i-(i%2)]===sockOrder[i-(i%2)+1])place.classList.add('paired');
+                    if(sockSelected===i)place.classList.add('selected');
+                    place.setAttribute('role','button');place.tabIndex=0;
+                    place.setAttribute('aria-label',`${currentGlobalLang==='ms'?style.ms:style.name} ${currentGlobalLang==='ms'?'stokin':'sock'}, ${i+1}`);
+                    place.innerHTML=sockSvg(style,`${sockSet}-${i}`);
+                    place.addEventListener('pointerdown',e=>beginSockDrag(e,place));
+                    place.addEventListener('click',()=>{if(Date.now()>=sockIgnoreClickUntil)chooseSock(i)});
+                    place.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();chooseSock(i)}});
+                    pairBox.appendChild(place);
+                    }
+                    line.appendChild(pairBox);
+                }
+                board.appendChild(line);
+            }
+        }
+        function sockPairIsDone(index){const first=index-(index%2);return sockOrder[first]===sockOrder[first+1]}
+        function chooseSock(index){
+            if(sockLocked||sockPairIsDone(index))return;
+            if(sockSelected<0){sockSelected=index;renderSocks();return}
+            const from=sockSelected;sockSelected=-1;
+            if(from!==index)swapSocks(from,index);else renderSocks();
+        }
+        function beginSockDrag(e,place){
+            if(sockLocked||sockPairIsDone(+place.dataset.index)||e.button!==0)return;
+            e.preventDefault();const startX=e.clientX,startY=e.clientY,from=+place.dataset.index;
+            const ghost=place.querySelector('svg').cloneNode(true);ghost.classList.add('sock-ghost');document.body.appendChild(ghost);
+            const move=ev=>{ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';document.querySelectorAll('#pair-socks-board .sock-place').forEach(p=>p.classList.toggle('over',p===document.elementFromPoint(ev.clientX,ev.clientY)?.closest('.sock-place')))};
+            const clean=()=>{place.removeEventListener('pointermove',move);place.removeEventListener('pointerup',end);place.removeEventListener('pointercancel',cancel);ghost.remove();document.querySelectorAll('#pair-socks-board .sock-place.over').forEach(p=>p.classList.remove('over'))};
+            const end=ev=>{const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('#pair-socks-board .sock-place');const moved=Math.hypot(ev.clientX-startX,ev.clientY-startY)>10;clean();if(moved){sockIgnoreClickUntil=Date.now()+300;if(target)swapSocks(from,+target.dataset.index)}};
+            const cancel=()=>clean();place.setPointerCapture(e.pointerId);place.addEventListener('pointermove',move);place.addEventListener('pointerup',end);place.addEventListener('pointercancel',cancel);move(e);
+        }
+        function swapSocks(from,to){
+            if(sockLocked||from===to||sockPairIsDone(from)||sockPairIsDone(to))return;
+            [sockOrder[from],sockOrder[to]]=[sockOrder[to],sockOrder[from]];playClickSound();renderSocks();
+            if(Array.from({length:9},(_,i)=>sockOrder[2*i]===sockOrder[2*i+1]).every(Boolean))finishSockSet();
+        }
+        function sockVoice(words){if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(words);u.lang='en-US';u.rate=.82;speechSynthesis.speak(u)}
+        function sockPopup(words){sockPop?.remove();sockPop=document.createElement('div');sockPop.className='paint-success-pop sock-success-pop';sockPop.setAttribute('role','status');const label=document.createElement('span');label.textContent=words;sockPop.appendChild(label);document.body.appendChild(sockPop);sockVoice(words.replace(/[!🌟🎉]/g,''))}
+        function finishSockSet(){
+            sockLocked=true;playCorrectSound();sockPopup('Correct! 🌟');
+            sockTimer=setTimeout(()=>{
+                sockTimer=null;sockPop?.remove();sockPop=null;
+                if(!document.getElementById('pair-socks-screen').classList.contains('active'))return;
+                if(sockSet<2){sockSet++;newSockSet();return}
+                sockPopup('All Done! 🎉');
+                if(window.saveScoreToFirebase)window.saveScoreToFirebase('Pair the Socks',100);
+                sockTimer=setTimeout(()=>{sockTimer=null;if(document.getElementById('pair-socks-screen').classList.contains('active'))openColourMenu()},2000);
+            },2000);
         }
 
         // Five distinct colour combinations, shuffled anew for each session.
@@ -10346,6 +10492,7 @@
                 'match-colour-screen',
                 'match-paint-screen',
                 'match-crayon-screen',
+                'pair-socks-screen',
                 'find-colour-screen',
                 'match-animal-game-screen',
                 'complete-animal-screen',
@@ -12666,7 +12813,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'match-count-screen':'abc','match-game-screen':'abc','find-letter-screen':'abc','abc-flashcard-screen':'abc',
     'lesson-screen':'abc','count-selection-screen':'abc','quiz-screen':'abc','result-screen':'abc',
     'column-math-screen':'number','column-count-screen':'number','num123-tracing-screen':'number','learn123-screen':'number','match123-screen':'number','lets-count-screen':'number','add-them-up-screen':'number','choo123-screen':'number','taking-away-count-screen':'number','taking-away-screen':'number','find123-screen':'number',
-    'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','match-paint-screen':'colour','match-crayon-screen':'colour','find-colour-screen':'colour',
+    'learn-colour-screen':'colour','pop-balloon-screen':'colour','match-colour-screen':'colour','match-paint-screen':'colour','match-crayon-screen':'colour','pair-socks-screen':'colour','find-colour-screen':'colour',
     'learn-body-screen':'body','choose-body-screen':'body','match-body-count-screen':'body','match-body-game-screen':'body','label-body-screen':'body',
     'learn-animal-cat-screen':'animal','learn-animal-flash-screen':'animal','match-animal-count-screen':'animal','match-animal-game-screen':'animal','complete-animal-screen':'animal','find-animal-count-screen':'animal','find-animal-game-screen':'animal',
     'learn-shape-screen':'shape','match-shape-screen':'shape','draw-shape-screen':'shape','match-me-screen':'shape',
