@@ -4591,11 +4591,14 @@
         @media(max-height:710px){.paint-tube{height:clamp(85px,19vh,135px)}.paint-target{height:clamp(38px,7vh,62px)}#match-paint-screen #match-paint-board.paint-board{gap:6px 8px;padding:10px}}
 
         /* Pair the Socks: eighteen monochrome patterned socks, three close pairs per line. */
-        .container:has(#pair-socks-screen.active){max-width:1000px}
-        #pair-socks-screen{width:100%;max-width:none;box-sizing:border-box}
+        body:has(#pair-socks-screen.active){background:#e5d18b !important}
+        body.activity-bg-blur:has(#pair-socks-screen.active)::before{inset:0;background:#e5d18b;filter:none;transform:none}
+        .main-content:has(#pair-socks-screen.active){padding-left:0;padding-right:0}
+        .container:has(#pair-socks-screen.active){max-width:none;width:100%;padding:0}
+        #pair-socks-screen{width:100%;max-width:none;box-sizing:border-box;padding:12px 0 18px;background:transparent}
         #pair-socks-screen h2{font-family:'Fredoka One',cursive;color:#5e17eb;margin:4px 0}
         #pair-socks-instruction{font-weight:800;color:#334155;margin:7px auto}
-        .socks-board{width:min(100%,850px);margin:12px auto;padding:18px clamp(7px,2vw,18px) 22px;box-sizing:border-box;background:linear-gradient(#f9e6a7,#f9ecc6);border:4px solid #d7b777;border-radius:24px;box-shadow:0 9px 0 #b3945f,0 16px 25px #66543b45;overflow:hidden}
+        .socks-board{width:100%;margin:5px auto;padding:0;box-sizing:border-box;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
         .socks-line{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1px,1vw,8px);margin:4px 0 12px;padding:14px 2px 0;min-height:clamp(155px,26vw,240px);box-sizing:border-box}
         .socks-line:before{content:'';position:absolute;left:-20px;right:-20px;top:14px;height:4px;background:#866345;box-shadow:0 2px 3px #65442d60;z-index:1}
         .sock-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));min-width:0;gap:0}
@@ -4610,7 +4613,7 @@
         .sock-place:nth-child(2) .sock-art{transform:translateX(-12%) rotate(3deg)}
         .sock-art.sock-ghost{position:fixed;z-index:99999;pointer-events:none;transform:translate(-50%,-38%);width:var(--sock-drag-width,88px);height:var(--sock-drag-height,140px);max-height:none;opacity:1;filter:drop-shadow(4px 8px 4px #594b4180)}
         #pair-socks-feedback{min-height:1.3em;color:#723d82;font-weight:900;margin:3px}
-        @media(max-width:600px){.socks-board{padding:10px 1px 12px}.socks-line{min-height:clamp(172px,47vw,215px);margin-bottom:8px}.sock-place{height:clamp(163px,45vw,205px)}.sock-place .sock-art{width:155%;max-height:205px}}
+        @media(max-width:600px){.main-content:has(#pair-socks-screen.active){padding-top:55px}#pair-socks-screen{padding:5px 0 12px}.socks-board{padding:0}.socks-line{min-height:clamp(182px,50vw,230px);margin-bottom:4px;gap:0;padding-left:0;padding-right:0}.sock-place{height:clamp(174px,48vw,220px)}.sock-place .sock-art{width:165%;max-height:220px}}
 
         /* Match the Crayon: close-fitting crayons behind the front of a paper box. */
         .container:has(#match-crayon-screen.active){max-width:1000px}
