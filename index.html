@@ -6657,6 +6657,7 @@
                 document.getElementById("nav-menu").style.display = "flex";
                 document.getElementById("acc-email-val").innerText = user.email;
                 await fetchProfiles();
+                window.playLoginWelcomeAudio();
             } else {
                 window.currentUserAuth = null;
                 window.activeProfile = "";
@@ -6696,7 +6697,6 @@
             window.prepareLoginWelcomeAudio();
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                window.playLoginWelcomeAudio();
             } catch (error) {
                 window.stopLoginWelcomeAudio();
                 alert("Login failed: " + error.message);
@@ -7114,6 +7114,14 @@
         let loginWelcomeBufferPromise = null;
         let loginWelcomeSource = null;
         let loginWelcomeAudioToken = 0;
+        let loginWelcomePendingGesture = false;
+        function replayWelcomeOnGesture() {
+            if (!loginWelcomePendingGesture) return;
+            loginWelcomePendingGesture = false;
+            window.playLoginWelcomeAudio();
+        }
+        document.addEventListener('pointerdown', replayWelcomeOnGesture, {capture: true});
+        document.addEventListener('keydown', replayWelcomeOnGesture, {capture: true});
         window.prepareLoginWelcomeAudio = function() {
             const audio = document.getElementById('login-welcome-audio');
             audio.pause();
@@ -7134,6 +7142,7 @@
         };
         window.stopLoginWelcomeAudio = function() {
             loginWelcomeAudioToken++;
+            loginWelcomePendingGesture = false;
             if (loginWelcomeSource) {
                 try { loginWelcomeSource.stop(); } catch (error) {}
                 loginWelcomeSource = null;
@@ -7146,6 +7155,7 @@
         };
         window.playLoginWelcomeAudio = async function() {
             const token = ++loginWelcomeAudioToken;
+            loginWelcomePendingGesture = false;
             const audio = document.getElementById('login-welcome-audio');
             audio.currentTime = 0;
             audio.loop = false;
@@ -7168,8 +7178,11 @@
                     source.onended = () => { if (loginWelcomeSource === source) loginWelcomeSource = null; };
                     loginWelcomeSource = source;
                     source.start();
+                    return;
                 }
             } catch (error) { console.warn('Welcome audio could not play:', error); }
+            // A restored session after refresh has no fresh user gesture. Retry on first tap.
+            if (token === loginWelcomeAudioToken) loginWelcomePendingGesture = true;
         };
 
         function playClickSound() {
