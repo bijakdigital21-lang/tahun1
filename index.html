@@ -5307,7 +5307,7 @@
                         <button type="button" id="forgot-password-btn" class="forgot-password-btn" onclick="playClickSound(); handleForgotPassword()">Forgot password?</button>
                     </div>
                     <p id="forgot-password-status" class="forgot-password-status" role="status" aria-live="polite"></p>
-                    <button class="login-submit" onclick="playClickSound(); prepareLoginWelcomeAudio(); handleLogin()">Log in</button>
+                    <button class="login-submit" onclick="playClickSound(); handleLogin()">Log in</button>
                 </div>
             </div>
 
@@ -6693,10 +6693,12 @@
                 return;
             }
 
+            window.prepareLoginWelcomeAudio();
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 window.playLoginWelcomeAudio();
             } catch (error) {
+                window.stopLoginWelcomeAudio();
                 alert("Login failed: " + error.message);
             }
         };
@@ -7107,15 +7109,23 @@
             speechSynthesis.speak(voice);
         }
 
-        // The Log in button unlocks audio on mobile before Firebase finishes its request.
+        // Begin a silent audio stream during the actual Log in tap. Browsers can
+        // otherwise block sound when the Firebase request finishes asynchronously.
         let loginWelcomeBufferPromise = null;
         let loginWelcomeSource = null;
         let loginWelcomeAudioToken = 0;
         window.prepareLoginWelcomeAudio = function() {
+            const audio = document.getElementById('login-welcome-audio');
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = 0;
+            audio.loop = true;
+            audio.play().catch(() => {});
+
+            // The click sound already unlocks this context; keep it as a fallback.
             const ctx = getSoundContext();
             if (ctx && ctx.state !== 'running') ctx.resume().catch(() => {});
             if (!loginWelcomeBufferPromise && ctx) {
-                const audio = document.getElementById('login-welcome-audio');
                 loginWelcomeBufferPromise = fetch(audio.src)
                     .then(response => response.arrayBuffer())
                     .then(bytes => ctx.decodeAudioData(bytes))
@@ -7130,17 +7140,27 @@
             }
             const audio = document.getElementById('login-welcome-audio');
             audio.pause();
+            audio.loop = false;
             audio.currentTime = 0;
+            audio.volume = 1;
         };
         window.playLoginWelcomeAudio = async function() {
             const token = ++loginWelcomeAudioToken;
             const audio = document.getElementById('login-welcome-audio');
+            audio.currentTime = 0;
+            audio.loop = false;
+            audio.volume = 1;
+            if (!audio.paused) return; // The silent stream is now audible.
             try {
-                window.prepareLoginWelcomeAudio();
+                await audio.play();
+                return;
+            } catch (error) { console.warn('Welcome media playback was blocked:', error); }
+            // Recover with the audio context unlocked by the Log in tap.
+            try {
                 const buffer = await loginWelcomeBufferPromise;
                 if (token !== loginWelcomeAudioToken) return;
                 const ctx = getSoundContext();
-                if (ctx && ctx.state === 'running') {
+                if (buffer && ctx && ctx.state === 'running') {
                     if (loginWelcomeSource) loginWelcomeSource.stop();
                     const source = ctx.createBufferSource();
                     source.buffer = buffer;
@@ -7148,14 +7168,8 @@
                     source.onended = () => { if (loginWelcomeSource === source) loginWelcomeSource = null; };
                     loginWelcomeSource = source;
                     source.start();
-                    return;
                 }
-            } catch (error) { console.warn('Welcome audio could not use Web Audio:', error); }
-            // Some browsers suspend Web Audio after an asynchronous sign in.
-            if (token === loginWelcomeAudioToken) {
-                audio.currentTime = 0;
-                audio.play().catch(error => console.warn('Welcome audio could not play:', error));
-            }
+            } catch (error) { console.warn('Welcome audio could not play:', error); }
         };
 
         function playClickSound() {
