@@ -7100,13 +7100,30 @@
                 }
             });
         }
+        // Keep every English spoken prompt on one consistent, youthful voice.
+        // The recorded login greeting is a separate MP3 and remains as supplied.
+        function speakKiddoraUtterance(utterance) {
+            const synth = window.speechSynthesis;
+            if (!synth || !utterance) return;
+            if (/^en(?:-|$)/i.test(utterance.lang || '')) {
+                const englishVoices = synth.getVoices().filter(v => /^en(?:-|$)/i.test(v.lang));
+                const preferredNames = [/child|kid|young/i, /jenny|aria|zira|samantha|karen/i, /google us english/i];
+                const preferred = preferredNames.map(pattern => englishVoices.find(v => pattern.test(v.name))).find(Boolean);
+                utterance.voice = preferred || englishVoices.find(v => /^en-US$/i.test(v.lang)) || englishVoices[0] || null;
+                utterance.pitch = 1.32;
+                utterance.rate = Math.max(0.78, Math.min(1.05, utterance.rate || 1));
+            }
+            synth.speak(utterance);
+        }
+        if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
+
         function announceAllDone() {
             playCompletionApplause();
             if(!('speechSynthesis' in window))return;
             speechSynthesis.cancel();
             const voice=new SpeechSynthesisUtterance('All done');
             voice.lang='en-US';voice.rate=.8;voice.pitch=1.05;
-            speechSynthesis.speak(voice);
+            speakKiddoraUtterance(voice);
         }
 
         // Begin a silent audio stream during the actual Log in tap. Browsers can
@@ -7736,7 +7753,7 @@
                 const utterance = new SpeechSynthesisUtterance(textToSpeak);
                 utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
                 utterance.rate = 0.4;
-                window.speechSynthesis.speak(utterance);
+                speakKiddoraUtterance(utterance);
             }
         }
 
@@ -7878,7 +7895,7 @@
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
             utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
             utterance.rate = 0.4;
-            window.speechSynthesis.speak(utterance);
+            speakKiddoraUtterance(utterance);
         }
 
         function handleAnimalPointerDown(e) {
@@ -8365,7 +8382,7 @@
                         else scheduleFinish(2800);
                     };
                     if(synth.paused)synth.resume();
-                    synth.speak(utterance);
+                    speakKiddoraUtterance(utterance);
                     // Some browsers silently drop a queued utterance after cancel().
                     completeAnimalSpeechWatchdog=setTimeout(()=>{
                         if(attempt!==speechAttempt || popupClosed || speechStarted)return;
@@ -8460,7 +8477,7 @@
                 const utterance = new SpeechSynthesisUtterance(textToSpeak);
                 utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
                 utterance.rate = 0.4;
-                window.speechSynthesis.speak(utterance);
+                speakKiddoraUtterance(utterance);
             }
         }
 
@@ -8866,7 +8883,7 @@
                 utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
                 utterance.rate = 0.72;
                 utterance.pitch = 1.1;
-                window.speechSynthesis.speak(utterance);
+                speakKiddoraUtterance(utterance);
             }
         }
 
@@ -8929,7 +8946,7 @@
                 const utterance = new SpeechSynthesisUtterance(praise);
                 utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
                 utterance.rate = .85;
-                window.speechSynthesis.speak(utterance);
+                speakKiddoraUtterance(utterance);
             }
             findAdvanceTimer = setTimeout(() => {
                 overlay.remove();
@@ -9089,7 +9106,7 @@
                 utterance.lang = currentGlobalLang === 'en' ? 'en-US' : 'ms-MY';
                 utterance.rate = 0.3;
                 utterance.pitch = 1.1;
-                window.speechSynthesis.speak(utterance);
+                speakKiddoraUtterance(utterance);
             }
         }
 
@@ -9287,7 +9304,7 @@
             document.getElementById('learn123-listen-btn').textContent=t.listen;
             document.getElementById('learn123-back-btn').textContent=t.back;
         }
-        function speakText123(text, rate=.65){ if(!('speechSynthesis' in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=getNum123Lang()==='ms'?'ms-MY':'en-US'; u.rate=rate; u.pitch=1.08; speechSynthesis.speak(u); }
+        function speakText123(text, rate=.65){ if(!('speechSynthesis' in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=getNum123Lang()==='ms'?'ms-MY':'en-US'; u.rate=rate; u.pitch=1.08; speakKiddoraUtterance(u); }
         function speakLearn123(){ const words=getNum123Words(); speakText123(`${learn123Index}. ${words[learn123Index]}`,.55); }
         function nextLearn123(){ const t=getNum123Text(); if(learn123Index<20){learn123Index++;renderLearn123();speakLearn123();}else{alert(t.learnDone);open123Menu();} }
         function prevLearn123(){ if(learn123Index>1){learn123Index--;renderLearn123();speakLearn123();} }
@@ -9664,7 +9681,7 @@
                 chooRetryVoice=new SpeechSynthesisUtterance(message);
                 chooRetryVoice.lang=getNum123Lang()==='ms'?'ms-MY':'en-US';
                 chooRetryVoice.rate=.78;chooRetryVoice.volume=1;
-                speechSynthesis.speak(chooRetryVoice);
+                speakKiddoraUtterance(chooRetryVoice);
                 speechSynthesis.resume();
             }catch(error){console.warn('Choo Choo voice could not play:',error);}
         }
@@ -9786,7 +9803,7 @@
                 chooABCRetryVoice=new SpeechSynthesisUtterance(message);
                 chooABCRetryVoice.lang=getNum123Lang()==='ms'?'ms-MY':'en-US';
                 chooABCRetryVoice.rate=.78;chooABCRetryVoice.volume=1;
-                speechSynthesis.speak(chooABCRetryVoice);
+                speakKiddoraUtterance(chooABCRetryVoice);
                 speechSynthesis.resume();
             }catch(error){console.warn('Choo-Choo ABC voice could not play:',error);}
         }
@@ -9903,7 +9920,7 @@
         ];
         const colourShuffle = a => [...a].sort(()=>Math.random()-.5);
         const colourName = c => currentGlobalLang==='ms' ? c.ms : c.en;
-        function speakColourText(text){ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US'; u.rate=.75; speechSynthesis.speak(u); }
+        function speakColourText(text){ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US'; u.rate=.75; speakKiddoraUtterance(u); }
         function openColourMenu(){ stopPairSocks(); showScreen('colour-menu-screen'); updateColourLanguage(); }
         function updateColourLanguage(){
             const ms=currentGlobalLang==='ms';
@@ -10044,7 +10061,7 @@
             [sockOrder[from],sockOrder[to]]=[sockOrder[to],sockOrder[from]];playClickSound();renderSocks();
             if(Array.from({length:9},(_,i)=>sockOrder[2*i]===sockOrder[2*i+1]).every(Boolean))finishSockSet();
         }
-        function sockVoice(words){if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(words);u.lang='en-US';u.rate=.82;speechSynthesis.speak(u)}
+        function sockVoice(words){if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(words);u.lang='en-US';u.rate=.82;speakKiddoraUtterance(u)}
         function sockPopup(words){sockPop?.remove();sockPop=document.createElement('div');sockPop.className='paint-success-pop sock-success-pop';sockPop.setAttribute('role','status');const label=document.createElement('span');label.textContent=words;sockPop.appendChild(label);document.body.appendChild(sockPop);sockVoice(words.replace(/[!🌟🎉]/g,''))}
         function finishSockSet(){
             sockLocked=true;playCorrectSound();sockPopup('Correct! 🌟');
@@ -10430,7 +10447,7 @@
         ];
         const bodyShuffle=a=>[...a].sort(()=>Math.random()-.5);
         function bodyText(item){return currentGlobalLang==='ms'?item.ms:item.en}
-        function speakBody(text){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.72;speechSynthesis.speak(u)}
+        function speakBody(text){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.72;speakKiddoraUtterance(u)}
         function updateBodyLanguage(){const ms=currentGlobalLang==='ms',set=(id,en,bm)=>{const e=document.getElementById(id);if(e)e.innerText=ms?bm:en};set('body-menu-title','Body Part Module 🧒','Modul Anggota Badan 🧒');set('body-menu-desc','Choose a body part activity!','Pilih aktiviti anggota badan!');set('body-learn-menu-text','Learn the Body Part','Belajar Anggota Badan');set('body-choose-menu-text','Choose the Body Part','Pilih Anggota Badan');set('body-label-menu-text','Label the Body Part','Label Anggota Badan');set('match-body-count-title','Match the Body Part 🧩','Padankan Anggota Badan 🧩');set('match-body-count-desc','Select how many pages/sets you want to play:','Pilih berapa halaman/set yang mahu dimainkan:');set('match-body-count-back','Back ↩️','Back ↩️');set('match-body-header-title','Match Body Part','Padankan Anggota Badan');set('match-body-page-label','Page','Halaman');set('match-body-score-label','Score','Skor');set('match-body-instruction','Drag a line from the body part name to the correct picture!','Tarik garis dari nama anggota badan ke gambar yang betul!');set('match-body-back','Back ↩️','Back ↩️');set('body-menu-back','Back to Home 🏠','Back to Home 🏠');set('learn-body-title','Learn the Body Part 🧒','Belajar Anggota Badan 🧒');set('body-learn-listen','🔊 Listen','🔊 Dengar');set('choose-body-title','Choose the Body Part 🔎','Pilih Anggota Badan 🔎');set('choose-body-listen','🔊 Listen','🔊 Dengar');set('label-body-title','Label the Body Part 🏷️','Label Anggota Badan 🏷️');set('label-body-desc','Drag each label into the correct box. You can also tap a label, then tap a box.','Seret setiap label ke kotak yang betul. Boleh juga tekan label, kemudian tekan kotak.');set('label-body-reset','Reset 🔄','Mula Semula 🔄');if(document.getElementById('learn-body-screen')?.classList.contains('active'))renderLearnBodyPart();if(document.getElementById('choose-body-screen')?.classList.contains('active')&&chooseBodyOrder.length)renderChooseBody();if(document.getElementById('label-body-screen')?.classList.contains('active'))renderBodyLabelBank(true);if(document.getElementById('match-body-game-screen')?.classList.contains('active')&&matchBodyGameData.length)loadMatchBodyPage()}
         function openBodyPartMenu(){window.speechSynthesis?.cancel();updateBodyLanguage();showScreen('body-part-menu-screen')}
 
@@ -10927,7 +10944,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 utter.volume = 1;
                 utter.onend = () => callback && callback();
                 utter.onerror = () => callback && callback();
-                synth.speak(utter);
+                speakKiddoraUtterance(utter);
             }
 
             // Spell huruf sahaja. Gunakan lowercase untuk elakkan TTS menyebut
@@ -11038,7 +11055,7 @@ document.addEventListener('DOMContentLoaded', () => {
             utter.rate = 0.72;
             utter.pitch = 1.05;
             window.speechSynthesis.cancel();
-            window.speechSynthesis.speak(utter);
+            speakKiddoraUtterance(utter);
         }
 
         function resetCurrentSpellAttempt() {
@@ -12043,7 +12060,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const u=new SpeechSynthesisUtterance(shapeText(item));
             u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';
             u.rate=.55;
-            speechSynthesis.speak(u);
+            speakKiddoraUtterance(u);
         }
         function speakCurrentShape(){
             speakShapeItem(shapeDatabase[learnShapeIndex]);
@@ -12376,7 +12393,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         function playFoodSound(){
             const item=currentLearnFoodList[currentLearnFoodIdx];if(!item||!('speechSynthesis'in window))return;
-            speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(foodName(item));u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.72;speechSynthesis.speak(u);
+            speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(foodName(item));u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.72;speakKiddoraUtterance(u);
         }
         function prevFoodFlash(){if(currentLearnFoodIdx>0){currentLearnFoodIdx--;renderFoodFlashcard(true);}}
         function nextFoodFlash(){
@@ -12568,7 +12585,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.speechSynthesis.cancel();
                 const u=new SpeechSynthesisUtterance(transportName(item));
                 u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=.72;
-                window.speechSynthesis.speak(u);
+                speakKiddoraUtterance(u);
             }
         }
         function prevTransportFlash(){ if(currentLearnTransportIdx>0){currentLearnTransportIdx--;renderTransportFlashcard(true);} }
@@ -12892,7 +12909,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(!('speechSynthesis' in window))return;
             speechSynthesis.cancel();
             const u=new SpeechSynthesisUtterance(jobsName(j));u.lang=currentGlobalLang==='ms'?'ms-MY':'en-US';u.rate=rate;
-            speechSynthesis.speak(u);
+            speakKiddoraUtterance(u);
         }
         function startJobsLearn(){jobsLearnIndex=0;showScreen('jobs-learn-screen');renderJobsLearn();speakCurrentJob()}
         function renderJobsLearn(){
