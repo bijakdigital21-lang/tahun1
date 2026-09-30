@@ -3128,12 +3128,14 @@
             border: 0;
             padding: 5px;
         }
-        #login-screen .forgot-password-row { text-align: center; margin: 12px 0 0; }
+        #login-screen .forgot-password-row { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 4px 0 0; }
+        #login-screen .login-field:has(#login-password) { margin-bottom: 6px; }
+        #login-screen .forgot-password-status:empty { display: none; }
         #login-screen .forgot-password-btn {
             border: 2px solid #19afd5; border-radius: 15px;
             background: #e5faff; color: #096d91;
-            font: 700 1rem 'Quicksand', sans-serif; cursor: pointer;
-            padding: 11px 18px; min-height: 44px;
+            font: 700 .82rem 'Quicksand', sans-serif; cursor: pointer;
+            padding: 7px 11px; min-height: 34px;
         }
         #login-screen .forgot-password-btn:disabled { opacity: .6; cursor: wait; }
         #login-screen .forgot-password-status {
@@ -3146,7 +3148,7 @@
         #login-screen .login-submit {
             min-width: 210px;
             height: 60px;
-            margin: 24px auto 0;
+            margin: 12px auto 20px;
             padding: 0 34px;
             border: 0;
             border-radius: 22px;
@@ -5312,12 +5314,11 @@
                     <p id="signup-status" class="forgot-password-status" role="status" aria-live="polite"></p>
                     <div class="forgot-password-row">
                         <button type="button" id="forgot-password-btn" class="forgot-password-btn" onclick="playClickSound(); handleForgotPassword()">Forgot password?</button>
+                        <button type="button" id="signup-toggle-btn" class="forgot-password-btn" onclick="playClickSound(); toggleSignupMode()">Sign Up</button>
                     </div>
                     <p id="forgot-password-status" class="forgot-password-status" role="status" aria-live="polite"></p>
                     <button type="button" id="login-submit-btn" class="login-submit" onclick="playClickSound(); submitLoginForm()">Log in</button>
-                    <div class="forgot-password-row" style="margin-bottom:20px;">
-                        <button type="button" id="signup-toggle-btn" class="forgot-password-btn" onclick="playClickSound(); toggleSignupMode()">New here? Sign Up</button>
-                    </div>
+
                 </div>
             </div>
 
@@ -6662,18 +6663,37 @@
         window.activeProfile = "";
         window.userProfiles = [];
 
+        let profileRequestVersion = 0;
+        let profileOwnerUid = null;
+        let authSessionVersion = 0;
+        function resetProfileSession() {
+            profileRequestVersion++;
+            profileOwnerUid = null;
+            window.activeProfile = '';
+            window.userProfiles = [];
+            document.getElementById('home-greeting').innerText = currentGlobalLang === 'ms' ? 'Hai! 👋' : 'Hi! 👋';
+            document.getElementById('active-profile-val').innerText = '-';
+            document.getElementById('profile-selection-list').innerHTML = '';
+            document.getElementById('manage-profiles-list').innerHTML = '';
+            document.getElementById('new-profile-name').value = '';
+            document.getElementById('score-records-body').innerHTML = '';
+        }
         onAuthStateChanged(auth, async (user) => {
+            const session = ++authSessionVersion;
+            resetProfileSession();
+            window.currentUserAuth = user || null;
             if (user) {
-                window.currentUserAuth = user;
-                document.getElementById("nav-menu").style.display = "flex";
-                document.getElementById("acc-email-val").innerText = user.email;
+                document.getElementById('nav-menu').style.display = 'none';
+                document.getElementById('acc-email-val').innerText = user.email;
+                showScreen('profile-selection-screen');
                 await fetchProfiles();
+                if (session !== authSessionVersion || auth.currentUser?.uid !== user.uid) return;
+                document.getElementById('nav-menu').style.display = 'flex';
                 window.playLoginWelcomeAudio();
             } else {
-                window.currentUserAuth = null;
-                window.activeProfile = "";
-                document.getElementById("nav-menu").style.display = "none";
-                showScreen("login-screen");
+                document.getElementById('nav-menu').style.display = 'none';
+                document.getElementById('acc-email-val').innerText = '';
+                showScreen('login-screen');
             }
         });
 
@@ -6702,7 +6722,7 @@
             const ms = document.documentElement.lang === 'ms';
             document.getElementById('login-title').textContent = signupMode ? (ms ? 'Daftar akaun' : 'Sign Up') : (ms ? 'Log masuk' : 'Log in');
             document.getElementById('login-submit-btn').textContent = signupBusy ? (ms ? 'Sedang mendaftar...' : 'Creating account...') : signupMode ? (ms ? 'Daftar akaun' : 'Sign Up') : (ms ? 'Log masuk' : 'Log in');
-            document.getElementById('signup-toggle-btn').textContent = signupMode ? (ms ? 'Sudah ada akaun? Log masuk' : 'Already have an account? Log in') : (ms ? 'Pengguna baharu? Daftar akaun' : 'New here? Sign Up');
+            document.getElementById('signup-toggle-btn').textContent = signupMode ? (ms ? 'Log masuk' : 'Log in') : (ms ? 'Daftar akaun' : 'Sign Up');
             const confirm = document.getElementById('signup-confirm-password');
             confirm.placeholder = ms ? 'Sahkan kata laluan' : 'Confirm password';
             confirm.setAttribute('aria-label', confirm.placeholder);
@@ -6711,7 +6731,7 @@
             if (signupBusy) return;
             signupMode = !signupMode;
             document.getElementById('signup-confirm-field').hidden = !signupMode;
-            document.getElementById('forgot-password-btn').parentElement.hidden = signupMode;
+            document.getElementById('forgot-password-btn').hidden = signupMode;
             document.getElementById('login-password').autocomplete = signupMode ? 'new-password' : 'current-password';
             document.getElementById('signup-confirm-password').value = '';
             document.getElementById('signup-status').textContent = '';
@@ -6747,6 +6767,7 @@
             document.getElementById('signup-toggle-btn').disabled = true;
             window.updateSignupLanguage();
             status.textContent = ms ? 'Sedang mencipta akaun...' : 'Creating your account...';
+            resetProfileSession();
             window.prepareLoginWelcomeAudio();
             try {
                 // Firebase creates the account and signs in; the existing auth listener opens the app.
@@ -6756,7 +6777,7 @@
                 document.getElementById('signup-confirm-password').value = '';
                 signupMode = false;
                 document.getElementById('signup-confirm-field').hidden = true;
-                document.getElementById('forgot-password-btn').parentElement.hidden = false;
+                document.getElementById('forgot-password-btn').hidden = false;
                 document.getElementById('login-password').autocomplete = 'current-password';
             } catch (error) {
                 window.stopLoginWelcomeAudio();
@@ -6874,19 +6895,26 @@
         async function fetchProfiles() {
             if (!window.currentUserAuth) return;
             const uid = window.currentUserAuth.uid;
+            const requestVersion = ++profileRequestVersion;
+            const isCurrent = () => requestVersion === profileRequestVersion && window.currentUserAuth?.uid === uid && auth.currentUser?.uid === uid;
             const dbRef = ref(db);
             
             try {
                 const snapshot = await get(child(dbRef, `users/${uid}/profiles`));
+                // A response from a previous account must never restore its profile.
+                if (!isCurrent()) return;
+                profileOwnerUid = uid;
                 const listContainer = document.getElementById("profile-selection-list");
                 const manageContainer = document.getElementById("manage-profiles-list");
                 
                 listContainer.innerHTML = "";
                 if (manageContainer) manageContainer.innerHTML = "";
 
-                if (snapshot.exists()) {
-                    const profilesObj = snapshot.val();
-                    window.userProfiles = Object.entries(profilesObj);
+                const profilesObj = snapshot.exists() ? snapshot.val() : null;
+                const validProfiles = profilesObj && typeof profilesObj === 'object'
+                    ? Object.entries(profilesObj).filter(([, name]) => typeof name === 'string' && name.trim()) : [];
+                if (validProfiles.length > 0) {
+                    window.userProfiles = validProfiles;
 
                     // KIDDORA kini hanya menggunakan SATU profile.
                     // Jika data lama mempunyai lebih daripada satu profile, profile pertama
@@ -6899,7 +6927,7 @@
                     btn.style.width = "100%";
                     btn.style.margin = "8px 0";
                     btn.innerText = `👤 ${activeProfileName}`;
-                    btn.onclick = () => selectProfile(activeProfileName);
+                    btn.onclick = () => { if (isCurrent()) selectProfile(activeProfileName, uid); };
                     listContainer.appendChild(btn);
 
                     if (manageContainer) {
@@ -6941,7 +6969,7 @@
                     }
 
                     // Sudah pernah create profile: terus masuk Home setiap kali login.
-                    selectProfile(activeProfileName);
+                    selectProfile(activeProfileName, uid);
                 } else {
                     // Belum pernah create profile: barulah tunjuk "Who is Learning Today?".
                     window.userProfiles = [];
@@ -6951,6 +6979,8 @@
                     showScreen("profile-selection-screen");
                 }
             } catch (err) {
+                if (!isCurrent()) return;
+                resetProfileSession();
                 console.error("Error fetching profiles:", err);
                 window.kiddoraStartupError('Profil tidak dapat dimuatkan. Semak internet dan cuba semula. / Could not load profile. Check your connection and retry.');
             }
@@ -6966,9 +6996,6 @@
 
             try {
                 await set(ref(db, `users/${uid}/profiles/${profileId}`), trimmedName);
-                if (window.activeProfile === oldName) {
-                    selectProfile(trimmedName);
-                }
                 alert("Profile name updated successfully! 🎉");
                 await fetchProfiles();
             } catch (err) {
@@ -7027,7 +7054,9 @@
             }
         };
 
-        function selectProfile(profileName) {
+        function selectProfile(profileName, ownerUid = profileOwnerUid) {
+            if (!ownerUid || ownerUid !== profileOwnerUid || window.currentUserAuth?.uid !== ownerUid || auth.currentUser?.uid !== ownerUid) return;
+            if (!window.userProfiles.some(([, name]) => name === profileName)) return;
             window.activeProfile = profileName;
             const greetingPrefix = currentGlobalLang === 'en' ? "Hi" : "Hai";
             document.getElementById("home-greeting").innerText = `${greetingPrefix} ${profileName}! 👋`;
