@@ -32,14 +32,8 @@
 
         import {
             getAuth,
-            signInWithEmailAndPassword,
-            createUserWithEmailAndPassword
+            signInWithEmailAndPassword
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        import {
-            getFunctions,
-            httpsCallable
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
 
         import {
             getDatabase,
@@ -48,10 +42,11 @@
             get,
             child,
             remove,
-            onValue,
-            runTransaction,
-            update
+            onValue
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        import { getFunctions, httpsCallable }
+            from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
 
         const adminFirebaseConfig = {
             apiKey: "AIzaSyCxxEsifGhdkTj_3EOdjflPS__B_SKRSZY",
@@ -76,11 +71,10 @@
         const adminApp = initializeApp(adminFirebaseConfig, "AdminApp");
         const adminAuth = getAuth(adminApp);
         const adminDb = getDatabase(adminApp);
-        const adminFunctions = getFunctions(adminApp, 'asia-southeast1');
 
-        const targetApp = initializeApp(targetFirebaseConfig, "TargetApp");
-        const targetAuth = getAuth(targetApp);
-        const targetDb = getDatabase(targetApp);
+        const backendFunctions = getFunctions(adminApp, 'asia-southeast1');
+        const approvePending = httpsCallable(backendFunctions, 'approvePending');
+        const rejectPending = httpsCallable(backendFunctions, 'rejectPending');
 
         // LOG MASUK ADMIN
         window.checkAdminLogin = async function () {
@@ -133,13 +127,14 @@
             });
         };
 
-        // REKOD REJECT DISIMPAN DALAM PELAYAR
+        // Rekod lama pelayar digabung dengan Rejected daripada backend.
         let pendingRecords = {};
         let rejectedRecords = {};
-        let approvedRecords = {};
-        const approvalTimers = new Map();
-        const processingKeys = new Set();
+        let serverRejectedRecords = {};
         let listenersStarted = false;
+        function mergeRejectedRecords() {
+            rejectedRecords = { ...readRejectedRecords(), ...serverRejectedRecords };
+        }
 
         function rejectStorageKey() {
             const uid = adminAuth.currentUser?.uid;
@@ -189,24 +184,8 @@
             loadRejectedTable(rejectedRecords);
         }
 
-        function schedulePendingApprovals() {
-            for (const [key, timer] of approvalTimers) {
-                if (!pendingRecords[key] || rejectedRecords[key]) {
-                    clearTimeout(timer);
-                    approvalTimers.delete(key);
-                }
-            }
-            for (const key of Object.keys(pendingRecords)) {
-                if (rejectedRecords[key] || approvalTimers.has(key) || processingKeys.has(key)) continue;
-                approvalTimers.set(key, setTimeout(() => {
-                    approvalTimers.delete(key);
-                    processApproval(key, false);
-                }, 5000));
-            }
-        }
-
         // BACA PENDING DAN APPROVED DARI FIREBASE.
-        // REJECTED DIBACA DARI SIMPANAN PELAYAR.
+        // REJECTED baharu dibaca daripada Firebase.
         function initRealtimeListeners() {
             if (listenersStarted) return;
             listenersStarted = true;
@@ -220,28 +199,20 @@
             }
 
             loadRejectedTable(rejectedRecords);
+            onValue(ref(adminDb, 'rejected_users'), snapshot => {
+                serverRejectedRecords = snapshot.val() || {};
+                mergeRejectedRecords();
+                refreshRejectView();
+            }, error => alert('Tidak dapat membaca Rejected: ' + error.message));
 
             onValue(ref(adminDb, 'pending_users'), (snapshot) => {
                 pendingRecords = snapshot.val() || {};
                 loadPendingTable(pendingRecords);
-                schedulePendingApprovals();
             });
 
             onValue(ref(adminDb, 'approved_users'), (snapshot) => {
-                approvedRecords = snapshot.val() || {};
-                loadApprovedTable(approvedRecords);
+                loadApprovedTable(snapshot.val());
             });
-
-            onValue(ref(adminDb, 'rejected_users'), (snapshot) => {
-                rejectedRecords = { ...readLocalRejectedSafely(), ...(snapshot.val() || {}) };
-                refreshRejectView();
-                schedulePendingApprovals();
-            });
-        }
-
-        function readLocalRejectedSafely() {
-            try { return readRejectedRecords(); }
-            catch (error) { console.warn('Rekod tempatan tidak dapat dibaca:', error); return {}; }
         }
 
         // Selaraskan tab dalam pelayar yang sama.
@@ -256,7 +227,7 @@
             }
 
             try {
-                rejectedRecords = { ...readLocalRejectedSafely(), ...rejectedRecords };
+                mergeRejectedRecords();
                 refreshRejectView();
             } catch (error) {
                 alert(
@@ -357,7 +328,7 @@
                 return;
             }
 
-            Object.entries(data).reverse().forEach(([key, user]) => {
+            Object.values(data).reverse().forEach((user) => {
                 const rawMsg = `🎉 TERIMA KASIH ATAS PEMBELIAN ANDA!
 
 Terima kasih kerana memilih Grammar Hub + KIDDORA ! 💙
@@ -393,7 +364,7 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
 
 💙 Selamat belajar!`;
 
-                let cleanPhone = user.nofon.replace(/\D/g, '');
+                let cleanPhone = String(user.nofon || '').replace(/\D/g, '');
 
                 if (cleanPhone.startsWith('0')) {
                     cleanPhone = '6' + cleanPhone;
@@ -432,20 +403,12 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
 
                     <td class="py-3 px-4 text-xs text-slate-500">
                         ${escapeHtml(user.date || '-')}
-                        <div class="mt-2">
-                            <span class="text-xs font-semibold ${user.account_disabled ? 'text-rose-600' : 'text-emerald-600'}">
-                                ${user.account_disabled ? 'Akaun disabled' : 'Akaun aktif'}
-                            </span>
-                            ${!user.account_disabled ? `<button type="button" data-disable-key="${escapeHtml(key)}" class="ml-2 bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-lg">Disable account</button>` : ''}
-                        </div>
+                        <div class="mt-1 text-xs">Email: ${escapeHtml(user.email_status || '-') }</div>
                     </td>
                 `;
 
                 tbody.appendChild(tr);
             });
-            tbody.querySelectorAll('[data-disable-key]').forEach(button =>
-                button.addEventListener('click', () => window.disableAccount(button.dataset.disableKey))
-            );
         }
 
         // JADUAL REJECTED
@@ -571,155 +534,31 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
             }
         };
 
-        // Pemprosesan berlaku selepas rekod berada dalam Pending selama 5 saat
-        // semasa panel admin ini terbuka. Transaksi mengelakkan dua tab memproses
-        // rekod yang sama serentak.
-        async function processApproval(key, manual = false) {
-            if (processingKeys.has(key) || rejectedRecords[key]) return;
-            processingKeys.add(key);
-            const pendingRef = ref(adminDb, 'pending_users/' + key);
-            const claimId = crypto.randomUUID();
-            let claimed = false;
-
-            try {
-                const result = await runTransaction(pendingRef, current => {
-                    if (!current) return;
-                    const existing = current._processing;
-                    if (existing && Date.now() - existing.at < 120000) return;
-                    return { ...current, _processing: { by: claimId, at: Date.now() } };
-                }, { applyLocally: false });
-                if (!result.committed) return;
-                claimed = true;
-                const user = result.snapshot.val();
-                const { _processing, ...userData } = user;
-                if (!user.email || !user.password) {
-                    throw new Error('Email atau password permohonan tiada.');
-                }
-
-                // Firebase Auth ialah sumber sebenar untuk semakan email berganda.
-                let firebaseUid;
-                try {
-                    const credential = await createUserWithEmailAndPassword(
-                        targetAuth, user.email.trim(), user.password
-                    );
-                    firebaseUid = credential.user.uid;
-                } catch (error) {
-                    if (error.code === 'auth/email-already-in-use') {
-                        await set(ref(adminDb, 'rejected_users/' + key), {
-                            information: userData,
-                            rejectedAt: new Date().toISOString(),
-                            reason: 'Email sudah mempunyai akaun Firebase'
-                        });
-                        await remove(pendingRef);
-                        if (manual) alert('Email sudah wujud dalam Firebase. Permohonan dipindahkan ke Rejected.');
-                        return;
-                    }
-                    throw error;
-                }
-
-                await set(ref(targetDb, 'users/' + firebaseUid), {
-                    nama: user.nama,
-                    email: user.email,
-                    nofon: user.nofon,
-                    reseller_nama: user.reseller_nama || '',
-                    reseller_email: user.reseller_email || '',
-                    reseller_nofon: user.reseller_nofon || '',
-                    createdAt: new Date().toISOString()
-                });
-
-                const approvedRef = ref(adminDb, 'approved_users/' + key);
-                await set(approvedRef, {
-                    ...userData,
-                    approvedAt: new Date().toISOString(),
-                    account_status: 'created',
-                    firebase_uid: firebaseUid,
-                    account_disabled: false,
-                    email_status: 'pending'
-                });
-                await remove(pendingRef);
-
-                try {
-                    if (!window.emailjs || typeof emailjs.send !== 'function') {
-                        throw new Error('EmailJS tidak tersedia.');
-                    }
-                    await emailjs.send('service_hd5rpgc', 'template_9sh4gw2', {
-                        to_name: user.nama,
-                        to_email: user.email,
-                        password: user.password
-                    });
-                    await update(approvedRef, {
-                        email_status: 'sent',
-                        email_sent_at: new Date().toISOString()
-                    });
-                    if (manual) alert('Akaun berjaya dicipta dan email dihantar.');
-                } catch (emailError) {
-                    console.warn('EmailJS gagal:', emailError);
-                    await update(approvedRef, {
-                        email_status: 'failed',
-                        email_error: String(emailError?.text || emailError?.message || emailError)
-                    });
-                    if (manual) alert('Akaun diluluskan tetapi email gagal dihantar. Gunakan butang WhatsApp di Approved.');
-                }
-            } catch (error) {
-                console.error('Ralat approval:', error);
-                if (manual) alert('Gagal memproses kelulusan: ' + (error.message || error));
-            } finally {
-                if (claimed) {
-                    try {
-                        await runTransaction(pendingRef, current => {
-                            if (!current || current._processing?.by !== claimId) return;
-                            const { _processing, ...original } = current;
-                            return original;
-                        }, { applyLocally: false });
-                    } catch (error) { console.warn('Gagal lepaskan kunci pemprosesan:', error); }
-                }
-                processingKeys.delete(key);
-            }
-        }
-
+        // Kedua-dua tindakan manual menggunakan backend yang sama dengan auto approve.
         window.approveUser = async function (key) {
             const user = pendingRecords[key];
-            if (!user || !confirm(`Adakah anda pasti untuk approve ${user.nama}?`)) return;
-            clearTimeout(approvalTimers.get(key));
-            approvalTimers.delete(key);
-            await processApproval(key, true);
+            if (!user) return alert('Data tidak dijumpai.');
+            if (!confirm(`Adakah anda pasti untuk approve ${user.nama}?`)) return;
+            try {
+                const { data } = await approvePending({ key });
+                if (data.status === 'rejected') {
+                    alert('Permohonan dipindahkan ke Rejected: ' + data.reason);
+                } else if (data.status === 'approved') {
+                    alert('Berjaya approve! Akaun diproses dan email dihantar.');
+                } else alert('Permohonan telah diproses. Muat semula senarai.');
+            } catch (error) {
+                alert('Proses belum lengkap: ' + error.message +
+                    '\nSemak Approved / email. Pastikan backend Firebase sudah dipasang.');
+            }
         };
-
         window.rejectUser = async function (key) {
-            const user = pendingRecords[key];
-            if (!user || processingKeys.has(key)) return;
-            if (!confirm(`Reject permohonan ${user.nama}?`)) return;
-            clearTimeout(approvalTimers.get(key));
-            approvalTimers.delete(key);
             try {
-                await set(ref(adminDb, 'rejected_users/' + key), {
-                    information: user,
-                    rejectedAt: new Date().toISOString(),
-                    reason: 'Ditolak oleh admin'
-                });
-                await remove(ref(adminDb, 'pending_users/' + key));
-                window.switchTab('rejected');
-            } catch (error) {
-                alert('Gagal memindahkan permohonan ke Rejected: ' + error.message);
-                schedulePendingApprovals();
-            }
-        };
-
-        window.disableAccount = async function (key) {
-            const user = approvedRecords[key];
-            if (!user || !user.firebase_uid) {
-                alert('UID Firebase tidak tersedia untuk akaun ini.');
-                return;
-            }
-            if (!confirm(`Disable akaun ${user.email}? Pengguna tidak boleh log masuk lagi.`)) return;
-            try {
-                const disable = httpsCallable(adminFunctions, 'disableApprovedAccount');
-                await disable({ key });
-                alert('Akaun Firebase Authentication berjaya di-disable.');
-            } catch (error) {
-                console.error('Gagal disable akaun:', error);
-                alert('Gagal disable akaun: ' + (error.message || error));
-            }
+                const { data } = await rejectPending({ key });
+                if (data.status === 'rejected') {
+                    window.switchTab('rejected');
+                    alert('Semua maklumat telah dipindahkan ke Rejected.');
+                } else alert('Permohonan telah diproses. Muat semula senarai.');
+            } catch (error) { alert('Gagal reject: ' + error.message); }
         };
     </script>
 </head>
@@ -844,7 +683,7 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
                                         WhatsApp Customer
                                     </th>
                                     <th class="py-2.5 px-4">
-                                        Tarikh / Akaun
+                                        Tarikh
                                     </th>
                                 </tr>
                             </thead>
@@ -870,8 +709,9 @@ Hubungi kami melalui WhatsApp dan kami sedia membantu.
                     </div>
 
                     <p class="text-xs text-slate-500">
-                        Rekod baharu disimpan dalam Firebase. Rekod lama yang disimpan
-                        pada pelayar ini masih dipaparkan dan boleh dieksport.
+                        Rekod Rejected baharu disimpan dalam Firebase dan boleh
+                        dilihat pada semua peranti admin. Rekod lama dalam pelayar
+                        ini juga dikekalkan. Email yang sudah berdaftar ditolak automatik.
                     </p>
 
                     <div class="overflow-x-auto max-h-[450px]">
