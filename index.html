@@ -7167,6 +7167,16 @@
         }
         document.addEventListener('pointerdown', replayWelcomeOnGesture, {capture: true});
         document.addEventListener('keydown', replayWelcomeOnGesture, {capture: true});
+        // Background music starts only after the KIDDORA intro has finished.
+        function onLoginWelcomeFinished() {
+            if (window.startBgMusicAfterIntro) window.startBgMusicAfterIntro();
+        }
+        (function() {
+            const introAudio = document.getElementById('login-welcome-audio');
+            introAudio.addEventListener('ended', () => {
+                if (!introAudio.loop) onLoginWelcomeFinished();
+            });
+        })();
         window.prepareLoginWelcomeAudio = function() {
             const audio = document.getElementById('login-welcome-audio');
             audio.pause();
@@ -7186,6 +7196,7 @@
             }
         };
         window.stopLoginWelcomeAudio = function() {
+            if (window.resetBgMusicForIntro) window.resetBgMusicForIntro();
             loginWelcomeAudioToken++;
             loginWelcomePendingGesture = false;
             if (loginWelcomeSource) {
@@ -7220,7 +7231,12 @@
                     const source = ctx.createBufferSource();
                     source.buffer = buffer;
                     source.connect(ctx.destination);
-                    source.onended = () => { if (loginWelcomeSource === source) loginWelcomeSource = null; };
+                    source.onended = () => {
+                        if (loginWelcomeSource === source) {
+                            loginWelcomeSource = null;
+                            if (token === loginWelcomeAudioToken) onLoginWelcomeFinished();
+                        }
+                    };
                     loginWelcomeSource = source;
                     source.start();
                     return;
@@ -10796,6 +10812,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // KONTROL BACKGROUND MUSIC KANAK-KANAK
         // ==========================================
         let isMusicPlaying = false;
+        let bgMusicIntroDone = false;   // muzik latar tunggu audio intro KIDDORA habis dulu
+        let bgMusicMutedByUser = false; // hormati pilihan 🔇 pengguna
         const bgAudio = document.getElementById('bg-music-player');
         const bgToggleBtn = document.getElementById('bg-music-toggle');
 
@@ -10817,6 +10835,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (bgAudio.paused) {
                 bgAudio.play().then(() => {
                     isMusicPlaying = true;
+                    bgMusicMutedByUser = false;
                     if (bgToggleBtn) {
                         bgToggleBtn.innerText = "🔊";
                         bgToggleBtn.setAttribute('aria-label', 'Turn background music off');
@@ -10828,6 +10847,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 bgAudio.pause();
                 isMusicPlaying = false;
+                bgMusicMutedByUser = true;
                 if (bgToggleBtn) {
                     bgToggleBtn.innerText = "🔇";
                     bgToggleBtn.setAttribute('aria-label', 'Turn background music on');
@@ -10839,7 +10859,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Memulakan muzik secara automatik sebaik sahaja pengguna menekan apa-apa pada skrin/app
         // (Sebab browser moden menyekat audio autoplay sebelum ada sentuhan pengguna)
         function enableAutoplayOnFirstTouch() {
-            if (bgAudio && bgAudio.paused && !isMusicPlaying) {
+            // Tunggu audio intro KIDDORA habis; startBgMusicAfterIntro() akan mulakan muzik.
+            if (!bgMusicIntroDone) return;
+            window.removeEventListener('click', enableAutoplayOnFirstTouch);
+            window.removeEventListener('touchstart', enableAutoplayOnFirstTouch);
+            if (bgAudio && bgAudio.paused && !isMusicPlaying && !bgMusicMutedByUser) {
                 bgAudio.play().then(() => {
                     isMusicPlaying = true;
                     if (bgToggleBtn) {
@@ -10849,9 +10873,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }).catch(() => {});
             }
-            window.removeEventListener('click', enableAutoplayOnFirstTouch);
-            window.removeEventListener('touchstart', enableAutoplayOnFirstTouch);
         }
+
+        // Dipanggil sebaik sahaja audio intro KIDDORA selesai dimainkan.
+        window.startBgMusicAfterIntro = function() {
+            bgMusicIntroDone = true;
+            if (!bgAudio || bgMusicMutedByUser || isMusicPlaying) return;
+            bgAudio.currentTime = 0;
+            bgAudio.play().then(() => {
+                isMusicPlaying = true;
+                if (bgToggleBtn) {
+                    bgToggleBtn.innerText = "🔊";
+                    bgToggleBtn.setAttribute('aria-label', 'Turn background music off');
+                    bgToggleBtn.title = 'Music ON';
+                }
+            }).catch(() => {
+                // Pelayar sekat audio: mula pada sentuhan seterusnya.
+                window.addEventListener('click', enableAutoplayOnFirstTouch);
+                window.addEventListener('touchstart', enableAutoplayOnFirstTouch);
+            });
+        };
+
+        // Log keluar / log masuk gagal: hentikan muzik, tunggu intro seterusnya.
+        window.resetBgMusicForIntro = function() {
+            bgMusicIntroDone = false;
+            if (bgAudio) bgAudio.pause();
+            isMusicPlaying = false;
+        };
 
 
 
