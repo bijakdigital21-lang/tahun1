@@ -3128,14 +3128,12 @@
             border: 0;
             padding: 5px;
         }
-        #login-screen .forgot-password-row { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 4px 0 0; }
-        #login-screen .login-field:has(#login-password) { margin-bottom: 6px; }
-        #login-screen .forgot-password-status:empty { display: none; }
+        #login-screen .forgot-password-row { text-align: center; margin: 12px 0 0; }
         #login-screen .forgot-password-btn {
             border: 2px solid #19afd5; border-radius: 15px;
             background: #e5faff; color: #096d91;
-            font: 700 .82rem 'Quicksand', sans-serif; cursor: pointer;
-            padding: 7px 11px; min-height: 34px;
+            font: 700 1rem 'Quicksand', sans-serif; cursor: pointer;
+            padding: 11px 18px; min-height: 44px;
         }
         #login-screen .forgot-password-btn:disabled { opacity: .6; cursor: wait; }
         #login-screen .forgot-password-status {
@@ -3143,12 +3141,10 @@
             font-size: .88rem; font-weight: 700; line-height: 1.35;
         }
         #login-screen .forgot-password-status.error { color: #b42318; }
-        #login-screen [hidden] { display: none !important; }
-        #login-screen .login-submit:disabled { opacity: .65; cursor: wait; }
         #login-screen .login-submit {
             min-width: 210px;
             height: 60px;
-            margin: 12px auto 20px;
+            margin: 24px auto 0;
             padding: 0 34px;
             border: 0;
             border-radius: 22px;
@@ -5295,7 +5291,7 @@
                 </div>
 
                 <div class="login-form-area">
-                    <h1 id="login-title" class="login-title">Log in</h1>
+                    <h1 class="login-title">Log in</h1>
 
                     <div class="login-field">
                         <input type="email" id="login-email" class="form-input" placeholder="Email" autocomplete="email" aria-label="Email">
@@ -5307,18 +5303,11 @@
                         <button type="button" class="login-field-icon password-toggle" aria-label="Show or hide password" onclick="toggleLoginPassword()">◉</button>
                     </div>
 
-                    <div id="signup-confirm-field" class="login-field" hidden>
-                        <input type="password" id="signup-confirm-password" class="form-input" placeholder="Confirm password" autocomplete="new-password" aria-label="Confirm password">
-                        <span class="login-field-icon">🔒</span>
-                    </div>
-                    <p id="signup-status" class="forgot-password-status" role="status" aria-live="polite"></p>
                     <div class="forgot-password-row">
                         <button type="button" id="forgot-password-btn" class="forgot-password-btn" onclick="playClickSound(); handleForgotPassword()">Forgot password?</button>
-                        <button type="button" id="signup-toggle-btn" class="forgot-password-btn" onclick="playClickSound(); toggleSignupMode()">Sign Up</button>
                     </div>
                     <p id="forgot-password-status" class="forgot-password-status" role="status" aria-live="polite"></p>
-                    <button type="button" id="login-submit-btn" class="login-submit" onclick="playClickSound(); submitLoginForm()">Log in</button>
-
+                    <button class="login-submit" onclick="playClickSound(); handleLogin()">Log in</button>
                 </div>
             </div>
 
@@ -5377,6 +5366,9 @@
                     <button class="topic-btn" type="button" onclick="playClickSound(); openJobsMenu()" aria-label="Jobs & Profession">
                         <img src="https://i.imgur.com/8Ydw8ml.jpeg" alt="Jobs & Profession">
                     </button>
+                    <button class="topic-btn" type="button" onclick="playClickSound(); openColouringMenu()" aria-label="Colouring">
+                        <img src="https://i.imgur.com/62E4TZU.jpeg" alt="Colouring">
+                    </button>
                 </div>
             </div>
 
@@ -5414,6 +5406,44 @@
             <div class="jobs-pop" id="jobs-pop" hidden role="status" aria-live="polite">
                 <div class="jobs-pop-inner"><img id="jobs-pop-image" alt=""><strong id="jobs-pop-name"></strong></div>
             </div>
+
+            <!-- COLOURING MODULE (added) -->
+            <div id="colouring-menu-screen" class="card">
+                <h2 class="clr-heading" id="clr-menu-title">Colouring 🖍️</h2>
+                <p class="clr-sub" id="clr-menu-desc">Choose a theme to colour!</p>
+                <div class="clr-grid" id="clr-theme-grid"></div>
+                <button class="action-btn home-btn" id="clr-menu-back" type="button" onclick="playClickSound(); navigateTo('home-screen')">Back to Home 🏠</button>
+            </div>
+            <div id="colouring-pick-screen" class="card">
+                <h2 class="clr-heading" id="clr-pick-title"></h2>
+                <p class="clr-sub" id="clr-pick-desc">Choose a picture!</p>
+                <div class="clr-grid clr-pic-grid" id="clr-pic-grid"></div>
+                <button class="action-btn home-btn" type="button" onclick="playClickSound(); openColouringMenu()">Back ↩️</button>
+            </div>
+            <div id="colouring-draw-screen" class="card">
+                <h2 class="clr-heading" id="clr-draw-title"></h2>
+                <div class="clr-tools" role="toolbar" aria-label="Colouring tools">
+                    <button type="button" class="clr-tool active" data-tool="brush"><span>🖌️</span><b id="clr-t-brush">Brush</b></button>
+                    <button type="button" class="clr-tool" data-tool="fill"><span>🪣</span><b id="clr-t-fill">Tap-Fill</b></button>
+                    <button type="button" class="clr-tool" data-tool="eraser"><span>🧽</span><b id="clr-t-eraser">Eraser</b></button>
+                </div>
+                <div class="clr-sizes" id="clr-sizes" aria-label="Brush size">
+                    <button type="button" class="clr-size" data-size="0" aria-label="Small"><i style="width:8px;height:8px"></i></button>
+                    <button type="button" class="clr-size active" data-size="1" aria-label="Medium"><i style="width:15px;height:15px"></i></button>
+                    <button type="button" class="clr-size" data-size="2" aria-label="Large"><i style="width:24px;height:24px"></i></button>
+                </div>
+                <div class="clr-palette" id="clr-palette" aria-label="Colours"></div>
+                <div class="clr-stage" id="clr-stage">
+                    <canvas id="clr-paint" width="800" height="800"></canvas>
+                    <canvas id="clr-lines" width="800" height="800"></canvas>
+                </div>
+                <div class="clr-actions">
+                    <button type="button" class="action-btn" id="clr-undo">↶ Undo</button>
+                    <button type="button" class="action-btn" id="clr-clear">🗑️ Clear</button>
+                    <button type="button" class="action-btn home-btn" id="clr-draw-back">Back ↩️</button>
+                </div>
+            </div>
+            <!-- END COLOURING MODULE -->
 
             <!-- ABC MODULE MENU SCREEN -->
             <div id="abc-menu-screen" class="card">
@@ -6625,7 +6655,6 @@
         import { 
             getAuth, 
             signInWithEmailAndPassword, 
-            createUserWithEmailAndPassword,
             sendPasswordResetEmail,
             signOut, 
             onAuthStateChanged,
@@ -6663,37 +6692,18 @@
         window.activeProfile = "";
         window.userProfiles = [];
 
-        let profileRequestVersion = 0;
-        let profileOwnerUid = null;
-        let authSessionVersion = 0;
-        function resetProfileSession() {
-            profileRequestVersion++;
-            profileOwnerUid = null;
-            window.activeProfile = '';
-            window.userProfiles = [];
-            document.getElementById('home-greeting').innerText = currentGlobalLang === 'ms' ? 'Hai! 👋' : 'Hi! 👋';
-            document.getElementById('active-profile-val').innerText = '-';
-            document.getElementById('profile-selection-list').innerHTML = '';
-            document.getElementById('manage-profiles-list').innerHTML = '';
-            document.getElementById('new-profile-name').value = '';
-            document.getElementById('score-records-body').innerHTML = '';
-        }
         onAuthStateChanged(auth, async (user) => {
-            const session = ++authSessionVersion;
-            resetProfileSession();
-            window.currentUserAuth = user || null;
             if (user) {
-                document.getElementById('nav-menu').style.display = 'none';
-                document.getElementById('acc-email-val').innerText = user.email;
-                showScreen('profile-selection-screen');
+                window.currentUserAuth = user;
+                document.getElementById("nav-menu").style.display = "flex";
+                document.getElementById("acc-email-val").innerText = user.email;
                 await fetchProfiles();
-                if (session !== authSessionVersion || auth.currentUser?.uid !== user.uid) return;
-                document.getElementById('nav-menu').style.display = 'flex';
                 window.playLoginWelcomeAudio();
             } else {
-                document.getElementById('nav-menu').style.display = 'none';
-                document.getElementById('acc-email-val').innerText = '';
-                showScreen('login-screen');
+                window.currentUserAuth = null;
+                window.activeProfile = "";
+                document.getElementById("nav-menu").style.display = "none";
+                showScreen("login-screen");
             }
         });
 
@@ -6716,92 +6726,9 @@
             }
         };
 
-        let signupMode = false;
-        let signupBusy = false;
-        window.updateSignupLanguage = function() {
-            const ms = document.documentElement.lang === 'ms';
-            document.getElementById('login-title').textContent = signupMode ? (ms ? 'Daftar akaun' : 'Sign Up') : (ms ? 'Log masuk' : 'Log in');
-            document.getElementById('login-submit-btn').textContent = signupBusy ? (ms ? 'Sedang mendaftar...' : 'Creating account...') : signupMode ? (ms ? 'Daftar akaun' : 'Sign Up') : (ms ? 'Log masuk' : 'Log in');
-            document.getElementById('signup-toggle-btn').textContent = signupMode ? (ms ? 'Log masuk' : 'Log in') : (ms ? 'Daftar akaun' : 'Sign Up');
-            const confirm = document.getElementById('signup-confirm-password');
-            confirm.placeholder = ms ? 'Sahkan kata laluan' : 'Confirm password';
-            confirm.setAttribute('aria-label', confirm.placeholder);
-        };
-        window.toggleSignupMode = function() {
-            if (signupBusy) return;
-            signupMode = !signupMode;
-            document.getElementById('signup-confirm-field').hidden = !signupMode;
-            document.getElementById('forgot-password-btn').hidden = signupMode;
-            document.getElementById('login-password').autocomplete = signupMode ? 'new-password' : 'current-password';
-            document.getElementById('signup-confirm-password').value = '';
-            document.getElementById('signup-status').textContent = '';
-            document.getElementById('forgot-password-status').textContent = '';
-            window.updateSignupLanguage();
-        };
-        window.submitLoginForm = function() {
-            if (signupBusy) return;
-            return signupMode ? window.handleSignup() : window.handleLogin();
-        };
-        window.handleSignup = async function() {
-            if (signupBusy) return;
-            const emailInput = document.getElementById('login-email');
-            const email = emailInput.value.trim();
-            const password = document.getElementById('login-password').value;
-            const confirm = document.getElementById('signup-confirm-password').value;
-            const status = document.getElementById('signup-status');
-            const ms = document.documentElement.lang === 'ms';
-            status.classList.remove('error');
-            const fail = message => { status.textContent = message; status.classList.add('error'); };
-            if (!email || !emailInput.checkValidity()) {
-                fail(ms ? 'Masukkan alamat e-mel yang sah.' : 'Enter a valid email address.');
-                emailInput.focus(); return;
-            }
-            if (password.length < 6) {
-                fail(ms ? 'Kata laluan mesti sekurang-kurangnya 6 aksara.' : 'Password must contain at least 6 characters.'); return;
-            }
-            if (password !== confirm) {
-                fail(ms ? 'Kata laluan tidak sepadan.' : 'Passwords do not match.'); return;
-            }
-            signupBusy = true;
-            document.getElementById('login-submit-btn').disabled = true;
-            document.getElementById('signup-toggle-btn').disabled = true;
-            window.updateSignupLanguage();
-            status.textContent = ms ? 'Sedang mencipta akaun...' : 'Creating your account...';
-            resetProfileSession();
-            window.prepareLoginWelcomeAudio();
-            try {
-                // Firebase creates the account and signs in; the existing auth listener opens the app.
-                await createUserWithEmailAndPassword(auth, email, password);
-                status.textContent = ms ? 'Akaun berjaya dicipta! Anda telah log masuk.' : 'Account created! You are now logged in.';
-                document.getElementById('login-password').value = '';
-                document.getElementById('signup-confirm-password').value = '';
-                signupMode = false;
-                document.getElementById('signup-confirm-field').hidden = true;
-                document.getElementById('forgot-password-btn').hidden = false;
-                document.getElementById('login-password').autocomplete = 'current-password';
-            } catch (error) {
-                window.stopLoginWelcomeAudio();
-                const messages = {
-                    'auth/email-already-in-use': ms ? 'E-mel ini sudah berdaftar. Sila log masuk atau gunakan Lupa kata laluan.' : 'This email is already registered. Log in or use Forgot password.',
-                    'auth/invalid-email': ms ? 'Alamat e-mel tidak sah.' : 'Invalid email address.',
-                    'auth/weak-password': ms ? 'Kata laluan terlalu lemah. Gunakan kata laluan yang lebih kuat.' : 'Password is too weak. Choose a stronger password.',
-                    'auth/password-does-not-meet-requirements': ms ? 'Kata laluan tidak memenuhi syarat. Gunakan kata laluan yang lebih kuat.' : 'Password does not meet the requirements. Choose a stronger password.',
-                    'auth/network-request-failed': ms ? 'Semak sambungan internet dan cuba lagi.' : 'Check your internet connection and try again.',
-                    'auth/too-many-requests': ms ? 'Terlalu banyak percubaan. Cuba lagi sebentar nanti.' : 'Too many attempts. Please try again later.',
-                    'auth/operation-not-allowed': ms ? 'Pendaftaran belum diaktifkan. Sila hubungi pentadbir.' : 'Registration is not enabled. Please contact the administrator.'
-                };
-                fail(messages[error.code] || (ms ? 'Pendaftaran gagal. Sila cuba lagi.' : 'Sign up failed. Please try again.'));
-            } finally {
-                signupBusy = false;
-                document.getElementById('login-submit-btn').disabled = false;
-                document.getElementById('signup-toggle-btn').disabled = false;
-                window.updateSignupLanguage();
-            }
-        };
-
         window.handleLogin = async function() {
             const email = document.getElementById("login-email").value.trim();
-            const password = document.getElementById("login-password").value;
+            const password = document.getElementById("login-password").value.trim();
 
             if (!email || !password) {
                 alert("Please fill in both email and password.");
@@ -6895,26 +6822,19 @@
         async function fetchProfiles() {
             if (!window.currentUserAuth) return;
             const uid = window.currentUserAuth.uid;
-            const requestVersion = ++profileRequestVersion;
-            const isCurrent = () => requestVersion === profileRequestVersion && window.currentUserAuth?.uid === uid && auth.currentUser?.uid === uid;
             const dbRef = ref(db);
             
             try {
                 const snapshot = await get(child(dbRef, `users/${uid}/profiles`));
-                // A response from a previous account must never restore its profile.
-                if (!isCurrent()) return;
-                profileOwnerUid = uid;
                 const listContainer = document.getElementById("profile-selection-list");
                 const manageContainer = document.getElementById("manage-profiles-list");
                 
                 listContainer.innerHTML = "";
                 if (manageContainer) manageContainer.innerHTML = "";
 
-                const profilesObj = snapshot.exists() ? snapshot.val() : null;
-                const validProfiles = profilesObj && typeof profilesObj === 'object'
-                    ? Object.entries(profilesObj).filter(([, name]) => typeof name === 'string' && name.trim()) : [];
-                if (validProfiles.length > 0) {
-                    window.userProfiles = validProfiles;
+                if (snapshot.exists()) {
+                    const profilesObj = snapshot.val();
+                    window.userProfiles = Object.entries(profilesObj);
 
                     // KIDDORA kini hanya menggunakan SATU profile.
                     // Jika data lama mempunyai lebih daripada satu profile, profile pertama
@@ -6927,7 +6847,7 @@
                     btn.style.width = "100%";
                     btn.style.margin = "8px 0";
                     btn.innerText = `👤 ${activeProfileName}`;
-                    btn.onclick = () => { if (isCurrent()) selectProfile(activeProfileName, uid); };
+                    btn.onclick = () => selectProfile(activeProfileName);
                     listContainer.appendChild(btn);
 
                     if (manageContainer) {
@@ -6969,7 +6889,7 @@
                     }
 
                     // Sudah pernah create profile: terus masuk Home setiap kali login.
-                    selectProfile(activeProfileName, uid);
+                    selectProfile(activeProfileName);
                 } else {
                     // Belum pernah create profile: barulah tunjuk "Who is Learning Today?".
                     window.userProfiles = [];
@@ -6979,8 +6899,6 @@
                     showScreen("profile-selection-screen");
                 }
             } catch (err) {
-                if (!isCurrent()) return;
-                resetProfileSession();
                 console.error("Error fetching profiles:", err);
                 window.kiddoraStartupError('Profil tidak dapat dimuatkan. Semak internet dan cuba semula. / Could not load profile. Check your connection and retry.');
             }
@@ -6996,6 +6914,9 @@
 
             try {
                 await set(ref(db, `users/${uid}/profiles/${profileId}`), trimmedName);
+                if (window.activeProfile === oldName) {
+                    selectProfile(trimmedName);
+                }
                 alert("Profile name updated successfully! 🎉");
                 await fetchProfiles();
             } catch (err) {
@@ -7054,9 +6975,7 @@
             }
         };
 
-        function selectProfile(profileName, ownerUid = profileOwnerUid) {
-            if (!ownerUid || ownerUid !== profileOwnerUid || window.currentUserAuth?.uid !== ownerUid || auth.currentUser?.uid !== ownerUid) return;
-            if (!window.userProfiles.some(([, name]) => name === profileName)) return;
+        function selectProfile(profileName) {
             window.activeProfile = profileName;
             const greetingPrefix = currentGlobalLang === 'en' ? "Hi" : "Hai";
             document.getElementById("home-greeting").innerText = `${greetingPrefix} ${profileName}! 👋`;
@@ -7373,7 +7292,6 @@
             currentGlobalLang = (lang === 'ms' ? 'ms' : 'en');
             if(typeof updateCompleteAnimalLanguage === 'function') updateCompleteAnimalLanguage();
             document.documentElement.lang = currentGlobalLang === 'ms' ? 'ms' : 'en';
-            if (window.updateSignupLanguage) window.updateSignupLanguage();
             document.getElementById('forgot-password-btn').textContent = currentGlobalLang === 'ms' ? 'Lupa kata laluan?' : 'Forgot password?';
             setTimeout(()=>{ if(typeof updateColourLanguage === 'function') updateColourLanguage(); if(typeof updateBodyLanguage === 'function') updateBodyLanguage(); if(typeof updateShapeLanguage === 'function') updateShapeLanguage(); if(typeof updateTransportLanguage === 'function') updateTransportLanguage(); if(typeof updateFoodLanguage === 'function') updateFoodLanguage(); if(typeof updateJobsLanguage === 'function') updateJobsLanguage(); if(typeof updateInstallTutorialLanguage === 'function') updateInstallTutorialLanguage(); if(typeof updateBijakSukuKataLanguage === 'function') updateBijakSukuKataLanguage(); },0);
             
@@ -13305,6 +13223,579 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('topic-loader-continue').onclick=close;
 })();
 </script>
+<!-- COLOURING MODULE (added): styles + logic, self-contained -->
+<style>
+.clr-heading{color:#FFDE59;font-family:'Fredoka One',cursive;text-shadow:2px 2px 0 #5E17EB;margin:0 0 4px}
+.clr-sub{color:#222;font-weight:800;margin:4px 0 10px}
+.clr-grid{display:grid;width:100%;max-width:685px;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:20px auto}
+.clr-card{position:relative;aspect-ratio:1/1;width:100%;min-width:0;padding:8px;border:4px solid var(--clr,#5E17EB);border-radius:20px;background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 8px 0 rgba(44,62,80,.32),0 12px 22px rgba(0,0,0,.22);transition:transform .2s ease;box-sizing:border-box;font-family:'Fredoka One',cursive}
+.clr-card:hover{transform:translateY(-5px)}
+.clr-card:active{transform:translateY(2px)}
+.clr-card canvas{width:72%;height:auto;aspect-ratio:1/1;display:block;pointer-events:none}
+.clr-card b{font-weight:400;font-size:clamp(.8rem,2.6vw,1.05rem);color:#123F7A;line-height:1.1;text-align:center}
+.clr-card .clr-emoji{position:absolute;top:6px;left:8px;font-size:1.3rem}
+.clr-tools{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0 8px}
+.clr-tool{display:flex;align-items:center;gap:6px;padding:9px 16px;border:3px solid #5E17EB;border-radius:16px;background:#fff;color:#5E17EB;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;box-shadow:0 4px 0 rgba(44,62,80,.3)}
+.clr-tool b{font-weight:400}
+.clr-tool span{font-size:1.3rem}
+.clr-tool.active{background:#5E17EB;color:#fff;transform:translateY(2px);box-shadow:0 2px 0 rgba(44,62,80,.3)}
+.clr-sizes{display:flex;gap:8px;justify-content:center;margin:0 0 8px}
+.clr-sizes.hidden{visibility:hidden}
+.clr-size{width:42px;height:42px;border-radius:50%;border:3px solid #cbd5e1;background:#fff;display:grid;place-items:center;cursor:pointer}
+.clr-size i{display:block;border-radius:50%;background:#123F7A}
+.clr-size.active{border-color:#5E17EB;box-shadow:0 0 0 3px #FFDE59}
+.clr-palette{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:600px;margin:0 auto 10px}
+.clr-swatch{width:36px;height:36px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.35);cursor:pointer;padding:0}
+.clr-swatch.active{transform:scale(1.18);border-color:#222;box-shadow:0 0 0 3px #FFDE59,0 2px 6px rgba(0,0,0,.4)}
+.clr-stage{position:relative;width:min(100%,560px,62vh);aspect-ratio:1/1;margin:0 auto;border-radius:18px;overflow:hidden;background:#fff;border:5px solid #5E17EB;box-shadow:0 8px 22px rgba(0,0,0,.25);touch-action:none;-webkit-user-select:none;user-select:none;cursor:crosshair}
+.clr-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#clr-lines{pointer-events:none}
+.clr-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.clr-actions .action-btn{margin:0}
+@media (max-width:768px){.clr-grid{max-width:335px;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.clr-stage{width:min(100%,560px)}.clr-swatch{width:31px;height:31px}.clr-tool{padding:8px 11px;font-size:.92rem}}
+</style>
+<script>
+(function(){
+  /* ---------- line-art drawings (400 x 400 space) ----------
+     shape: [type, ...args, f]  f: undefined = white fill, 'd' = dark fill, 'n' = no fill; trailing number = stroke width */
+  const e=(cx,cy,rx,ry,f)=>['e',cx,cy,rx,ry,f], c=(cx,cy,r,f)=>['e',cx,cy,r,r,f];
+  const r=(x,y,w,h,rad,f)=>['r',x,y,w,h,rad||0,f], p=(d,f)=>['p',d,f], g=(pts,f)=>['g',pts,f];
+  const dot=(cx,cy,rad)=>c(cx,cy,rad,'d');
+  function scallop(cx,cy,rad,n,amp){
+    let d='';
+    for(let i=0;i<=n;i++){
+      const a=i/n*Math.PI*2, x=cx+rad*Math.cos(a), y=cy+rad*Math.sin(a);
+      if(!i){d+='M'+x.toFixed(1)+' '+y.toFixed(1);continue;}
+      const m=(i-.5)/n*Math.PI*2;
+      d+=' Q'+(cx+(rad+amp*2)*Math.cos(m)).toFixed(1)+' '+(cy+(rad+amp*2)*Math.sin(m)).toFixed(1)+' '+x.toFixed(1)+' '+y.toFixed(1);
+    }
+    return d+' Z';
+  }
+  function star(cx,cy,R,ri,n){
+    const pts=[];
+    for(let i=0;i<n*2;i++){const a=-Math.PI/2+i*Math.PI/n, rr=i%2?ri:R; pts.push(+(cx+rr*Math.cos(a)).toFixed(1),+(cy+rr*Math.sin(a)).toFixed(1));}
+    return pts;
+  }
+  const cloud=(x,y)=>p(`M${x-60} ${y+25} Q${x-78} ${y-5} ${x-40} ${y-10} Q${x-30} ${y-45} ${x} ${y-35} Q${x+30} ${y-50} ${x+45} ${y-15} Q${x+80} ${y-10} ${x+60} ${y+25} Z`);
+  function flower(x,y){
+    const out=[p(`M${x} ${y+10} L${x} 365`,'n')];
+    for(let i=0;i<5;i++){const a=-Math.PI/2+i*Math.PI*2/5; out.push(c(x+14*Math.cos(a),y+14*Math.sin(a),11));}
+    out.push(c(x,y,8)); return out;
+  }
+  // chords of an ellipse at a given angle, ending exactly on its outline
+  function chords(cx,cy,rx,ry,ang,gap){
+    const dx=Math.cos(ang), dy=Math.sin(ang), nx=-dy, ny=dx; let d='';
+    for(let o=-400;o<=400;o+=gap){
+      const px=cx+nx*o, py=cy+ny*o;
+      const A=dx*dx/(rx*rx)+dy*dy/(ry*ry), B=2*((px-cx)*dx/(rx*rx)+(py-cy)*dy/(ry*ry)), C=(px-cx)**2/(rx*rx)+(py-cy)**2/(ry*ry)-1;
+      const disc=B*B-4*A*C; if(disc<=0||Math.sqrt(disc)/A<12) continue;
+      const t1=(-B-Math.sqrt(disc))/(2*A), t2=(-B+Math.sqrt(disc))/(2*A);
+      d+=`M${(px+dx*t1).toFixed(1)} ${(py+dy*t1).toFixed(1)} L${(px+dx*t2).toFixed(1)} ${(py+dy*t2).toFixed(1)} `;
+    }
+    return d;
+  }
+  const plate=x=>{const top=250-65*Math.sqrt(1-((x-200)/120)**2); return g([x-22,top+15,x,top-40,x+22,top+15]);};
+  const tentL=x=>p(`M${x} 200 Q${x-25} 280 ${x-5} 330 Q${x+5} 352 ${x+18} 335 Q${x} 285 ${x+28} 205 Z`);
+  const tentR=x=>p(`M${x} 200 Q${x+25} 280 ${x+5} 330 Q${x-5} 352 ${x-18} 335 Q${x} 285 ${x-28} 205 Z`);
+
+  const ART={
+    animal:[
+      {en:'Cat',ms:'Kucing',s:[
+        p('M285 300 Q370 290 352 205 Q348 188 333 196 Q345 268 280 272 Z'),
+        e(200,295,95,80), e(200,315,50,45),
+        g([135,120,140,48,190,92]), g([265,120,260,48,210,92]), g([146,104,149,68,175,92]), g([254,104,251,68,225,92]),
+        c(200,160,80), e(168,148,13,17), e(232,148,13,17), dot(170,152,6), dot(234,152,6),
+        g([190,178,210,178,200,190]), p('M200 190 Q194 206 180 200 M200 190 Q206 206 220 200','n'),
+        p('M150 180 L105 172 M150 190 L105 196 M250 180 L295 172 M250 190 L295 196','n3'),
+        e(160,365,30,16), e(240,365,30,16)]},
+      {en:'Dog',ms:'Anjing',s:[
+        p('M295 270 Q350 230 345 190 Q340 180 332 188 Q332 225 285 250 Z'),
+        r(140,310,34,70,14), r(250,310,34,70,14), e(215,290,100,65), e(255,275,30,22),
+        c(165,175,72), e(102,180,22,52), e(228,180,22,52), e(165,212,42,30),
+        p('M152 226 Q165 255 178 226 Z'), e(165,197,15,10,'d'),
+        p('M165 207 L165 222 M165 222 Q150 234 140 224 M165 222 Q180 234 190 224','n'),
+        c(140,160,10), c(190,160,10), dot(141,162,5), dot(191,162,5)]},
+      {en:'Lion',ms:'Singa',s:[
+        p('M285 335 Q345 345 340 290','n'), c(340,278,13),
+        e(200,325,85,55), r(140,340,30,45,12), r(230,340,30,45,12),
+        p(scallop(200,185,112,14,13)), c(150,120,20), c(250,120,20), c(150,120,9), c(250,120,9),
+        c(200,185,72), e(172,170,10,13), e(228,170,10,13), dot(173,173,5), dot(229,173,5),
+        e(182,215,22,16), e(218,215,22,16), g([186,193,214,193,200,207]),
+        p('M200 207 L200 220','n3')]},
+      {en:'Elephant',ms:'Gajah',s:[
+        p('M352 250 Q375 270 365 300','n'),
+        r(160,280,40,85,12), r(212,290,40,75,12), r(272,290,40,75,12), r(318,280,36,85,12),
+        e(250,250,110,80),
+        p('M95 225 Q70 300 95 345 Q110 360 122 345 Q100 300 125 245 Z'),
+        c(130,200,62), e(178,200,42,58), e(184,200,24,36),
+        c(108,185,9), dot(109,187,4), p('M116 252 Q104 285 132 278 Q128 265 132 255 Z')]},
+      {en:'Rabbit',ms:'Arnab',s:[
+        c(275,330,22), e(200,320,80,62), e(200,332,40,38), e(165,380,30,14), e(235,380,30,14),
+        e(170,95,22,65), e(230,95,22,65), e(170,100,10,46), e(230,100,10,46),
+        c(200,195,65), e(178,185,10,13), e(222,185,10,13), dot(179,188,5), dot(223,188,5),
+        e(200,210,9,7), p('M200 217 Q200 228 190 230 M200 217 Q200 228 210 230','n'),
+        r(193,229,14,14,3), e(165,215,12,8), e(235,215,12,8)]}
+    ],
+    fantasy:[
+      {en:'Unicorn',ms:'Unikorn',s:[
+        p('M300 230 Q360 220 365 290 Q345 270 330 300 Q320 260 295 260 Z'),
+        r(150,280,28,85,10), r(190,285,28,80,10), r(250,285,28,80,10), r(285,280,28,85,10),
+        r(150,350,28,16,5), r(190,350,28,16,5), r(250,350,28,16,5), r(285,350,28,16,5),
+        e(225,255,90,55), p('M150 245 L120 150 L175 140 L200 230 Z'),
+        p('M170 112 Q205 140 192 170 Q218 192 202 228 Q185 200 175 180 Q158 160 158 128 Z'),
+        g([140,122,150,88,164,124]), g([110,122,130,55,140,124]),
+        e(115,145,48,30), dot(105,138,5), dot(78,150,3), p('M72 160 Q82 166 92 162','n3'),
+        p('M117 105 L134 98 M121 88 L136 82','n3')]},
+      {en:'Castle',ms:'Istana',s:[
+        r(165,100,70,120), g([155,100,200,30,245,100]), c(200,150,14),
+        r(60,170,70,200), g([50,170,95,80,140,170]), p('M95 80 L95 50','n'), g([95,50,120,58,95,66]),
+        r(270,170,70,200), g([260,170,305,80,350,170]), p('M305 80 L305 50','n'), g([305,50,330,58,305,66]),
+        r(122,190,22,22), r(256,190,22,22), r(120,210,160,160),
+        p('M170 370 L170 300 Q200 265 230 300 L230 370 Z'), p('M200 283 L200 370','n3'),
+        p('M85 240 L85 215 Q95 200 105 215 L105 240 Z'), p('M295 240 L295 215 Q305 200 315 215 L315 240 Z'),
+        r(140,235,24,32,8), r(236,235,24,32,8), r(20,368,360,22,8)]},
+      {en:'Dragon',ms:'Naga',s:[
+        p('M250 320 Q330 360 345 300 Q355 290 360 305 Q350 380 240 350 Z'),
+        p('M240 200 Q320 120 350 160 Q330 170 335 190 Q310 190 310 215 Q285 210 270 240 Z'),
+        g([262,225,288,235,268,252]), g([272,262,298,272,276,290]),
+        e(200,280,75,85), e(190,295,45,60),
+        p('M150 270 Q190 280 230 270 M148 300 Q190 312 232 300 M156 330 Q190 340 224 330','n3'),
+        e(160,360,28,15), e(235,362,28,15),
+        g([160,112,150,70,182,105]), g([230,112,240,70,208,105]),
+        c(195,160,60), e(195,190,38,24), dot(183,185,4), dot(207,185,4),
+        c(172,145,11), c(218,145,11), dot(173,147,5), dot(219,147,5)]},
+      {en:'Rainbow',ms:'Pelangi',s:[
+        p('M40 300 A160 160 0 0 1 360 300 Z'), p('M65 300 A135 135 0 0 1 335 300 Z'),
+        p('M90 300 A110 110 0 0 1 310 300 Z'), p('M115 300 A85 85 0 0 1 285 300 Z'), p('M140 300 A60 60 0 0 1 260 300 Z'),
+        c(330,65,28), p('M330 22 L330 8 M372 65 L386 65 M360 35 L370 25 M300 35 L290 25 M360 95 L370 105','n'),
+        cloud(75,300), cloud(325,300), cloud(90,95), g(star(200,370,16,7,5)), g(star(60,190,12,5,5))]},
+      {en:'Mushroom House',ms:'Rumah Cendawan',s:[
+        r(20,360,360,24,10), p('M140 362 L150 220 L250 220 L260 362 Z'),
+        p('M180 362 L180 310 Q200 285 220 310 L220 362 Z'), dot(212,335,4),
+        c(200,255,16), p('M184 255 L216 255 M200 239 L200 271','n3'),
+        p('M80 230 Q90 100 200 90 Q310 100 320 230 Q200 250 80 230 Z'),
+        c(140,175,18), c(200,130,20), c(260,175,18), c(200,200,13), c(115,212,9), c(285,212,9),
+        ...flower(70,320), ...flower(330,320)]}
+    ],
+    dino:[
+      {en:'T-Rex',ms:'T-Rex',s:[
+        p('M150 260 Q60 270 30 330 Q90 300 160 300 Z'),
+        p('M150 300 L140 370 L180 370 L185 300 Z'), p('M220 300 L225 370 L265 370 L255 300 Z'),
+        e(195,265,75,60), e(215,282,40,36),
+        p('M215 225 Q210 120 250 100 Q330 85 350 130 Q355 165 320 172 L270 175 Q260 210 245 235 Z'),
+        p('M270 150 L346 150','n3'), g([285,150,292,161,299,150]), g([310,150,317,161,324,150]),
+        c(275,118,10), dot(277,120,5), dot(335,118,3),
+        p('M240 240 Q268 242 274 262 L262 262 Q255 252 238 255 Z')]},
+      {en:'Stegosaurus',ms:'Stegosaurus',s:[
+        plate(120), plate(160), plate(200), plate(240), plate(280),
+        p('M90 250 Q40 250 20 200 Q50 240 100 280 Z'), g([45,232,30,200,58,222]),
+        r(110,280,34,85,10), r(160,290,34,75,10), r(235,290,34,75,10), r(280,280,34,85,10),
+        e(200,250,120,65), e(335,275,38,25), dot(345,268,5), p('M345 285 Q355 288 365 282','n3')]},
+      {en:'Long Neck',ms:'Leher Panjang',s:[
+        p('M110 270 Q40 280 20 340 Q70 300 120 300 Z'),
+        r(120,280,36,90,12), r(165,290,36,80,12), r(225,290,36,80,12), r(270,280,36,90,12),
+        e(200,260,100,60), p('M255 230 Q280 120 300 80 L335 85 Q310 150 295 250 Z'),
+        e(320,75,40,24), dot(330,68,5), p('M335 85 Q348 88 356 80','n3'),
+        c(165,240,14), c(205,222,10), c(230,262,16), c(180,278,9)]},
+      {en:'Triceratops',ms:'Triceratops',s:[
+        p('M110 260 Q50 260 30 300 Q80 290 115 295 Z'),
+        r(120,280,36,85,12), r(165,290,36,75,12), r(225,290,36,75,12), r(260,280,36,85,12),
+        e(195,255,95,62), p(scallop(282,210,58,10,7)),
+        g([285,205,298,135,310,200]), g([318,200,336,138,340,205]), g([352,222,388,196,368,240]),
+        p('M260 205 Q300 180 340 200 Q380 220 370 255 Q345 280 300 270 Q260 260 260 205 Z'),
+        c(318,222,8), dot(319,223,4), p('M335 255 Q350 260 362 250','n3')]},
+      {en:'Baby Dino',ms:'Anak Dino',s:[
+        p('M70 330 Q200 395 330 330 Q310 378 200 382 Q90 378 70 330 Z'),
+        c(200,200,62),
+        p('M110 250 Q110 365 200 365 Q290 365 290 250 L265 272 L240 245 L215 272 L190 245 L165 272 L140 245 Z'),
+        p('M148 168 Q158 100 200 95 Q242 100 252 168 L232 150 L214 170 L196 148 L176 170 Z'),
+        c(178,205,11), c(222,205,11), dot(179,207,5), dot(223,207,5),
+        p('M182 232 Q200 248 218 232','n'), e(160,226,9,6), e(240,226,9,6),
+        e(150,255,16,12), e(250,255,16,12),
+        e(160,318,14,10), e(238,305,12,9), e(205,340,10,7)]}
+    ],
+    vehicle:[
+      {en:'Car',ms:'Kereta',s:[
+        p('M110 200 L150 130 L260 130 L300 200 Z'),
+        p('M130 196 L158 145 L200 145 L200 196 Z'), p('M215 196 L215 145 L252 145 L280 196 Z'),
+        r(50,195,300,90,25), p('M207 200 L207 282','n3'), r(220,220,22,7,3), r(160,220,22,7,3),
+        e(338,225,11,10), r(54,220,14,18,4),
+        c(120,290,40), c(120,290,16), c(285,290,40), c(285,290,16)]},
+      {en:'Bus',ms:'Bas',s:[
+        r(150,92,100,22,6), r(40,110,320,190,22),
+        r(60,135,55,55,8), r(130,135,55,55,8), r(200,135,55,55,8),
+        r(275,135,60,145,8), p('M305 135 L305 280','n3'), r(40,212,235,20),
+        e(348,258,7,10),
+        c(110,300,36), c(110,300,14), c(290,300,36), c(290,300,14)]},
+      {en:'Aeroplane',ms:'Kapal Terbang',s:[
+        cloud(90,330), cloud(310,70),
+        p('M80 200 L50 110 L95 110 L140 195 Z'),
+        p('M60 210 Q60 175 110 175 L310 175 Q360 180 370 210 Q360 240 310 245 L110 245 Q60 245 60 210 Z'),
+        p('M315 186 Q345 189 356 205 L315 205 Z'),
+        c(150,205,11), c(185,205,11), c(220,205,11), c(255,205,11),
+        p('M170 225 L240 225 L170 320 L135 320 Z'), p('M70 225 L120 225 L95 260 L65 260 Z')]},
+      {en:'Train',ms:'Kereta Api',s:[
+        r(20,345,360,10,3), c(115,70,18), c(142,48,14), c(168,32,10),
+        p('M95 152 L85 100 L135 100 L125 152 Z'),
+        r(60,150,170,110,20), r(220,100,130,160,12), r(210,90,150,20,8), r(245,125,80,60,8),
+        p('M120 150 L120 260 M170 150 L170 260','n3'),
+        g([60,262,30,322,92,322,92,262]), r(50,255,310,30,8), e(62,190,12,16),
+        c(110,310,35), c(110,310,12), c(200,310,35), c(200,310,12), c(300,310,35), c(300,310,12)]},
+      {en:'Rocket',ms:'Roket',s:[
+        p('M170 300 Q200 392 230 300 Z'), p('M185 300 Q200 355 215 300 Z'),
+        p('M150 230 L105 305 L150 292 Z'), p('M250 230 L295 305 L250 292 Z'),
+        p('M150 300 L150 150 Q150 80 200 40 Q250 80 250 150 L250 300 Z'),
+        p('M156 108 L244 108','n3'), c(200,170,26), c(200,170,16), r(150,260,100,40),
+        g(star(70,80,18,8,5)), g(star(330,120,14,6,5)), g(star(330,330,16,7,5)), g(star(70,260,12,5,5))]}
+    ],
+    princess:[
+      {en:'Princess',ms:'Puteri',s:[
+        p('M125 160 Q120 260 140 290 L260 290 Q280 260 275 160 Z'),
+        r(188,205,24,30,6),
+        p('M165 240 Q128 262 134 300 L150 300 Q150 272 172 256 Z'), p('M235 240 Q272 262 266 300 L250 300 Q250 272 228 256 Z'),
+        c(142,305,10), c(258,305,10),
+        p('M165 230 L235 230 L250 280 L310 380 L90 380 L150 280 Z'), r(150,270,100,16,8),
+        p('M118 345 Q140 362 160 345 Q180 362 200 345 Q220 362 240 345 Q260 362 282 345','n3'),
+        g(star(200,315,14,6,5)),
+        c(200,165,52),
+        p('M148 160 Q150 105 200 105 Q250 105 252 160 Q235 135 210 130 Q190 150 148 160 Z'),
+        g([165,118,170,80,185,100,200,72,215,100,230,80,235,118]), c(200,102,6),
+        dot(182,170,5), dot(218,170,5), e(172,186,8,5), e(228,186,8,5), p('M188 193 Q200 203 212 193','n3')]},
+      {en:'Crown',ms:'Mahkota',s:[
+        g([90,250,80,120,140,190,200,95,260,190,320,120,310,250]),
+        c(80,115,14), c(200,88,16), c(320,115,14),
+        r(90,250,220,50,10), c(140,275,12), e(200,275,16,14), c(260,275,12),
+        g([200,160,220,192,200,224,180,192]), c(130,222,10), c(270,222,10),
+        g(star(60,340,14,6,5)), g(star(340,340,14,6,5))]},
+      {en:'Ball Gown',ms:'Gaun Puteri',s:[
+        p('M150 192 Q100 300 60 370 Q200 395 340 370 Q300 300 250 192 Z'),
+        p('M150 192 Q122 270 100 332 Q200 352 300 332 Q278 270 250 192 Z'),
+        p('M165 122 L170 92 L182 92 L182 122 Z'), p('M235 122 L230 92 L218 92 L218 122 Z'),
+        p('M160 120 L240 120 L250 196 L150 196 Z'), p('M160 120 Q200 146 240 120','n3'),
+        e(178,196,20,12), e(222,196,20,12), c(200,196,10),
+        g(star(155,295,12,5,5)), g(star(245,295,12,5,5)), g(star(200,255,12,5,5))]},
+      {en:'Carriage',ms:'Kereta Kuda',s:[
+        r(20,362,360,18,8),
+        e(200,220,130,100), e(200,220,72,100),
+        p('M170 245 L170 192 Q200 160 230 192 L230 245 Z'),
+        p('M190 124 Q195 95 215 85 L222 95 Q205 105 210 122 Z'), p('M212 104 Q242 78 262 100 Q236 116 212 104 Z'),
+        c(110,320,45), p('M110 275 L110 365 M65 320 L155 320 M78 288 L142 352 M142 288 L78 352','n3'), c(110,320,12),
+        c(290,320,45), p('M290 275 L290 365 M245 320 L335 320 M258 288 L322 352 M322 288 L258 352','n3'), c(290,320,12)]},
+      {en:'Magic Mirror',ms:'Cermin Ajaib',s:[
+        r(185,280,30,92,12), e(200,374,24,12),
+        p('M200 300 C 60 210 60 80 140 80 C 175 80 195 105 200 120 C 205 105 225 80 260 80 C 340 80 340 210 200 300 Z'),
+        p('M200 265 C 95 195 95 105 145 105 C 172 105 190 125 200 145 C 210 125 228 105 255 105 C 305 105 305 195 200 265 Z'),
+        p('M140 145 L160 125 M146 170 L180 136','n3'),
+        c(108,150,9), c(292,150,9), c(200,283,7),
+        e(180,318,16,10), e(220,318,16,10), c(200,318,8)]}
+    ],
+    fruits:[
+      {en:'Apple',ms:'Epal',s:[
+        p('M205 97 Q240 60 282 75 Q252 112 205 97 Z'),
+        p('M200 115 Q198 85 210 65 L220 70 Q208 90 212 115 Z'),
+        p('M200 115 Q150 85 105 120 Q60 170 85 260 Q110 350 170 345 Q200 335 230 345 Q290 350 315 260 Q340 170 295 120 Q250 85 200 115 Z'),
+        p('M120 175 Q125 145 150 135','n'), dot(165,222,7), dot(235,222,7),
+        p('M180 252 Q200 270 220 252','n'), e(145,248,12,8), e(255,248,12,8)]},
+      {en:'Banana',ms:'Pisang',s:[
+        p('M70 110 Q70 320 270 345 Q340 350 360 305 Q320 315 280 305 Q130 270 120 105 Z'),
+        p('M70 110 L62 82 L92 78 L120 105 Z'), g([348,312,368,298,366,322],'d'),
+        p('M98 120 Q115 280 300 322','n3'),
+        dot(175,262,6), dot(212,282,6), p('M180 292 Q192 306 206 300','n3')]},
+      {en:'Strawberry',ms:'Strawberi',s:[
+        r(195,45,10,32,4),
+        p('M200 340 Q90 290 95 170 Q120 120 200 130 Q280 120 305 170 Q310 290 200 340 Z'),
+        p('M200 142 L150 117 L175 107 L160 82 L195 97 L200 67 L205 97 L240 82 L225 107 L250 117 Z'),
+        ...[[150,180],[200,175],[250,180],[130,228],[175,222],[225,222],[270,228],[155,272],[200,268],[245,272],[200,312]].map(([x,y])=>e(x,y,3,5,'d'))]},
+      {en:'Watermelon',ms:'Tembikai',s:[
+        p('M40 140 A160 160 0 0 0 360 140 Z'), p('M60 140 A140 140 0 0 0 340 140 Z'), p('M76 140 A124 124 0 0 0 324 140 Z'),
+        ...[[130,170],[175,185],[225,185],[270,170],[150,220],[200,230],[250,220],[200,180]].map(([x,y])=>e(x,y,5,8,'d')),
+        p('M60 340 L140 340 L100 270 Z'), p('M72 334 L128 334 L100 285 Z'),
+        p('M260 340 L340 340 L300 270 Z'), p('M272 334 L328 334 L300 285 Z')]},
+      {en:'Pineapple',ms:'Nanas',s:[
+        g([150,178,128,108,175,140,168,62,200,122,232,62,225,140,272,108,250,178]),
+        e(200,268,88,108), p(chords(200,268,88,108,Math.PI/4,40),'n3'), p(chords(200,268,88,108,-Math.PI/4,40),'n3')]}
+    ],
+    nature:[
+      {en:'Fish',ms:'Ikan',s:[
+        p('M300 392 Q280 352 300 322 Q320 292 300 262 L312 264 Q332 294 312 324 Q292 354 316 392 Z'),
+        p('M260 200 L340 140 Q320 200 340 260 Z'), p('M150 142 Q190 100 222 152 Z'), p('M160 252 Q190 290 210 250 Z'),
+        p('M80 200 Q160 100 270 200 Q160 300 80 200 Z'),
+        p('M150 165 Q166 200 150 235','n3'), c(118,190,12), dot(120,191,6), p('M90 216 Q100 223 110 219','n3'),
+        e(205,175,16,12), e(225,215,14,11), c(60,120,10), c(45,88,7), c(70,62,5)]},
+      {en:'Turtle',ms:'Penyu',s:[
+        e(130,285,25,18), e(270,285,25,18), g([92,240,58,256,96,262]), c(322,220,32),
+        p('M90 250 Q100 120 200 115 Q300 120 310 250 Z'),
+        g([200,145,235,165,235,205,200,225,165,205,165,165]),
+        p('M200 145 L200 117 M235 165 L268 136 M165 165 L132 136 M235 205 L292 240 M165 205 L108 240 M200 225 L200 242','n3'),
+        r(80,240,240,22,11), dot(332,212,5), p('M330 232 Q340 238 348 230','n3')]},
+      {en:'Octopus',ms:'Sotong Kurita',s:[
+        tentL(135), tentL(163), tentL(190), tentR(265), tentR(237), tentR(210),
+        e(200,150,85,90), c(170,150,16), c(230,150,16), dot(172,153,7), dot(232,153,7),
+        p('M180 190 Q200 208 220 190','n'), e(150,182,10,6), e(250,182,10,6),
+        c(330,90,12), c(352,60,8), c(64,110,9)]},
+      {en:'Flower',ms:'Bunga',s:[
+        r(20,375,360,20,8),
+        p('M195 230 Q190 300 198 378 L210 378 Q202 300 207 230 Z'),
+        p('M200 322 Q150 282 118 302 Q150 334 200 322 Z'), p('M205 292 Q250 252 286 272 Q250 304 205 292 Z'),
+        ...[0,1,2,3,4,5,6,7].map(k=>c(200+56*Math.cos(k*Math.PI/4),150+56*Math.sin(k*Math.PI/4),30)),
+        c(200,150,36), dot(188,145,5), dot(212,145,5), p('M188 160 Q200 172 212 160','n3'),
+        e(330,90,20,14), e(330,116,16,11), e(362,90,20,14), e(362,116,16,11), e(346,103,5,20)]},
+      {en:'Tree',ms:'Pokok',s:[
+        r(20,375,360,20,8), c(350,50,25),
+        p('M170 380 L180 250 L220 250 L230 380 Z'),
+        p(scallop(200,160,105,11,14)),
+        c(150,140,14), c(240,118,14), c(200,190,14), c(265,192,14), c(140,205,14), c(195,100,14),
+        e(200,322,10,14,'d')]}
+    ]
+  };
+  const THEMES=[
+    {id:'animal',en:'Animal',ms:'Haiwan',emoji:'🐾',col:'#F59E0B'},
+    {id:'fantasy',en:'Fantasy',ms:'Fantasi',emoji:'🦄',col:'#A855F7'},
+    {id:'dino',en:'Dino',ms:'Dino',emoji:'🦖',col:'#16A34A'},
+    {id:'vehicle',en:'Vehicle',ms:'Kenderaan',emoji:'🚗',col:'#2563EB'},
+    {id:'princess',en:'Princess',ms:'Puteri',emoji:'👑',col:'#EC4899'},
+    {id:'fruits',en:'Fruits',ms:'Buah-buahan',emoji:'🍓',col:'#EF4444'},
+    {id:'nature',en:'Nature & Sea',ms:'Alam & Laut',emoji:'🌊',col:'#0EA5E9'}
+  ];
+  const COLOURS=['#EF4444','#F97316','#FACC15','#FDE68A','#84CC16','#16A34A','#14B8A6','#38BDF8','#2563EB','#1E3A8A','#A855F7','#C4B5FD','#EC4899','#F9A8D4','#8B4513','#D2A679','#FFD7B5','#9CA3AF','#111827','#FFFFFF'];
+  const BRUSH=[9,17,30], ERASER=[14,28,46];
+  const N=800, SCALE=N/400;
+
+  /* ---------- renderer ---------- */
+  function drawArt(ctx,shapes,scale){
+    ctx.save(); ctx.setTransform(scale,0,0,scale,0,0);
+    ctx.lineJoin='round'; ctx.lineCap='round'; ctx.strokeStyle='#222';
+    shapes.forEach(s=>{
+      const t=s[0]; let path, f;
+      if(t==='e'){path=new Path2D();path.ellipse(s[1],s[2],s[3],s[4],0,0,Math.PI*2);f=s[5];}
+      else if(t==='r'){const [x,y,w,h,rad]=s.slice(1,6);path=new Path2D();const q=Math.min(rad,w/2,h/2);
+        path.moveTo(x+q,y);path.arcTo(x+w,y,x+w,y+h,q);path.arcTo(x+w,y+h,x,y+h,q);path.arcTo(x,y+h,x,y,q);path.arcTo(x,y,x+w,y,q);path.closePath();f=s[6];}
+      else if(t==='p'){path=new Path2D(s[1]);f=s[2];}
+      else if(t==='g'){const pts=s[1];path=new Path2D();path.moveTo(pts[0],pts[1]);for(let i=2;i<pts.length;i+=2)path.lineTo(pts[i],pts[i+1]);path.closePath();f=s[2];}
+      f=f||'w'; const mode=f[0], sw=parseFloat(f.slice(1))||4.5;
+      if(mode!=='n'){ctx.fillStyle=mode==='d'?'#222':'#fff';ctx.fill(path);}
+      ctx.lineWidth=sw; ctx.stroke(path);
+    });
+    ctx.restore();
+  }
+  function thumb(shapes,size){
+    const cv=document.createElement('canvas'); cv.width=cv.height=size;
+    const ctx=cv.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,size,size);
+    drawArt(ctx,shapes,size/400); return cv;
+  }
+
+  /* ---------- state ---------- */
+  const isMs=()=>typeof currentGlobalLang!=='undefined' && currentGlobalLang==='ms';
+  const nm=o=>isMs()?o.ms:o.en;
+  let theme=null, picIndex=0, tool='brush', size=1, colour=COLOURS[0];
+  let labels=null, order=null, offsets=null, paint=null, undo=[], drawing=null;
+  const saved=new Map();
+  let pctx, lctx, stage;
+
+  function el(id){return document.getElementById(id);}
+
+  /* ---------- screens ---------- */
+  function renderThemes(){
+    const grid=el('clr-theme-grid'); grid.innerHTML='';
+    THEMES.forEach(t=>{
+      const b=document.createElement('button'); b.type='button'; b.className='clr-card'; b.style.setProperty('--clr',t.col);
+      b.setAttribute('aria-label',nm(t));
+      b.appendChild(thumb(ART[t.id][0].s,240));
+      const em=document.createElement('span'); em.className='clr-emoji'; em.textContent=t.emoji; b.appendChild(em);
+      const lb=document.createElement('b'); lb.textContent=nm(t); b.appendChild(lb);
+      b.onclick=()=>{ if(typeof playClickSound==='function')playClickSound(); openTheme(t.id); };
+      grid.appendChild(b);
+    });
+  }
+  function renderPics(){
+    const t=THEMES.find(x=>x.id===theme), grid=el('clr-pic-grid'); grid.innerHTML='';
+    el('clr-pick-title').textContent=t.emoji+' '+nm(t);
+    ART[theme].forEach((pic,i)=>{
+      const b=document.createElement('button'); b.type='button'; b.className='clr-card'; b.style.setProperty('--clr',t.col);
+      b.setAttribute('aria-label',nm(pic));
+      const key=theme+'-'+i;
+      if(saved.has(key)){ // show the child's colouring progress on the thumbnail
+        const cv=document.createElement('canvas'); cv.width=cv.height=240; const cx=cv.getContext('2d');
+        const tmp=document.createElement('canvas'); tmp.width=tmp.height=N; tmp.getContext('2d').putImageData(saved.get(key),0,0);
+        cx.drawImage(tmp,0,0,240,240);
+        cx.drawImage(lineLayer(pic.s),0,0,240,240); b.appendChild(cv);
+      } else b.appendChild(thumb(pic.s,240));
+      const lb=document.createElement('b'); lb.textContent=nm(pic); b.appendChild(lb);
+      b.onclick=()=>{ if(typeof playClickSound==='function')playClickSound(); openPicture(i); };
+      grid.appendChild(b);
+    });
+  }
+  function openTheme(id){ storeCurrent(); theme=id; renderPics(); updateText(); showScreen('colouring-pick-screen'); }
+  window.openColouringMenu=function(){ storeCurrent(); renderThemes(); updateText(); showScreen('colouring-menu-screen'); };
+
+  /* ---------- line layer + regions ---------- */
+  const lineCache=new Map();
+  function lineLayer(shapes){
+    if(lineCache.has(shapes)) return lineCache.get(shapes).canvas;
+    const cv=document.createElement('canvas'); cv.width=cv.height=N; const ctx=cv.getContext('2d');
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,N,N); drawArt(ctx,shapes,SCALE);
+    const src=ctx.getImageData(0,0,N,N).data, lum=new Uint8Array(N*N);
+    for(let i=0;i<N*N;i++){const o=i*4; lum[i]=(src[o]*.299+src[o+1]*.587+src[o+2]*.114)|0;}
+    // transparent overlay: dark pixels become the visible outline
+    const out=ctx.createImageData(N,N), od=out.data;
+    for(let i=0;i<N*N;i++){const o=i*4, a=Math.min(255,(255-lum[i])*1.25)|0; od[o]=od[o+1]=od[o+2]=30; od[o+3]=a;}
+    ctx.clearRect(0,0,N,N); ctx.putImageData(out,0,0);
+    lineCache.set(shapes,{canvas:cv,lum});
+    return cv;
+  }
+  function buildRegions(lum){
+    const L=new Int32Array(N*N).fill(-1), T=165, stack=new Int32Array(N*N); let next=0;
+    for(let s=0;s<N*N;s++){
+      if(L[s]!==-1||lum[s]<T) continue;
+      let sp=0; stack[sp++]=s; L[s]=next;
+      while(sp){
+        const i=stack[--sp], x=i%N;
+        if(x>0&&L[i-1]===-1&&lum[i-1]>=T){L[i-1]=next;stack[sp++]=i-1;}
+        if(x<N-1&&L[i+1]===-1&&lum[i+1]>=T){L[i+1]=next;stack[sp++]=i+1;}
+        if(i>=N&&L[i-N]===-1&&lum[i-N]>=T){L[i-N]=next;stack[sp++]=i-N;}
+        if(i<N*N-N&&L[i+N]===-1&&lum[i+N]>=T){L[i+N]=next;stack[sp++]=i+N;}
+      }
+      next++;
+    }
+    // grow each region a few pixels under the outline so colour meets the line without white gaps
+    for(let pass=0;pass<3;pass++){
+      const prev=L.slice();
+      for(let i=0;i<N*N;i++){
+        if(prev[i]!==-1) continue; const x=i%N;
+        if(x>0&&prev[i-1]!==-1)L[i]=prev[i-1];
+        else if(x<N-1&&prev[i+1]!==-1)L[i]=prev[i+1];
+        else if(i>=N&&prev[i-N]!==-1)L[i]=prev[i-N];
+        else if(i<N*N-N&&prev[i+N]!==-1)L[i]=prev[i+N];
+      }
+    }
+    const count=new Int32Array(next+1);
+    for(let i=0;i<N*N;i++) if(L[i]>=0) count[L[i]+1]++;
+    for(let k=1;k<=next;k++) count[k]+=count[k-1];
+    const off=count.slice(), ord=new Int32Array(count[next]), pos=count.slice();
+    for(let i=0;i<N*N;i++) if(L[i]>=0) ord[pos[L[i]]++]=i;
+    labels=L; order=ord; offsets=off;
+  }
+
+  function openPicture(i){
+    storeCurrent();
+    picIndex=i; const pic=ART[theme][i];
+    lctx.clearRect(0,0,N,N); lctx.drawImage(lineLayer(pic.s),0,0);
+    buildRegions(lineCache.get(pic.s).lum);
+    const key=theme+'-'+i;
+    if(saved.has(key)) paint=saved.get(key);
+    else { paint=pctx.createImageData(N,N); paint.data.fill(255); }
+    pctx.putImageData(paint,0,0);
+    undo=[]; updateText(); showScreen('colouring-draw-screen');
+  }
+  function storeCurrent(){
+    if(!paint||!theme) return;
+    const key=theme+'-'+picIndex; saved.delete(key); saved.set(key,paint);
+    while(saved.size>8) saved.delete(saved.keys().next().value);
+  }
+
+  /* ---------- painting ---------- */
+  function hexRGB(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+  function pt(ev){const b=stage.getBoundingClientRect(); return {x:(ev.clientX-b.left)/b.width*N, y:(ev.clientY-b.top)/b.height*N};}
+  function regionAt(q){
+    const x0=Math.round(q.x), y0=Math.round(q.y);
+    for(let rad=0;rad<=14;rad++){
+      for(let dy=-rad;dy<=rad;dy++) for(let dx=-rad;dx<=rad;dx++){
+        if(Math.max(Math.abs(dx),Math.abs(dy))!==rad) continue;
+        const x=x0+dx,y=y0+dy; if(x<0||y<0||x>=N||y>=N) continue;
+        const l=labels[y*N+x]; if(l>=0) return l;
+      }
+    }
+    return -1;
+  }
+  let dirty=null, raf=0;
+  function markDirty(x0,y0,x1,y1){
+    if(!dirty) dirty=[x0,y0,x1,y1]; else {dirty[0]=Math.min(dirty[0],x0);dirty[1]=Math.min(dirty[1],y0);dirty[2]=Math.max(dirty[2],x1);dirty[3]=Math.max(dirty[3],y1);}
+    if(!raf) raf=requestAnimationFrame(flush);
+  }
+  function flush(){ raf=0; if(!dirty) return; const [x0,y0,x1,y1]=dirty; dirty=null; pctx.putImageData(paint,0,0,x0,y0,x1-x0+1,y1-y0+1); }
+  function stamp(q,rad,rgb,region){
+    const d=paint.data, r2=rad*rad;
+    const x0=Math.max(0,Math.floor(q.x-rad)), x1=Math.min(N-1,Math.ceil(q.x+rad));
+    const y0=Math.max(0,Math.floor(q.y-rad)), y1=Math.min(N-1,Math.ceil(q.y+rad));
+    for(let y=y0;y<=y1;y++){ const dy=y-q.y;
+      for(let x=x0;x<=x1;x++){ const dx=x-q.x; if(dx*dx+dy*dy>r2) continue;
+        const i=y*N+x; if(region!==null&&labels[i]!==region) continue;
+        const o=i*4; d[o]=rgb[0]; d[o+1]=rgb[1]; d[o+2]=rgb[2]; d[o+3]=255; } }
+    markDirty(x0,y0,x1,y1);
+  }
+  function strokeTo(q){
+    const a=drawing.last, dist=Math.hypot(q.x-a.x,q.y-a.y), step=Math.max(1,drawing.rad*.35), n=Math.ceil(dist/step);
+    for(let k=1;k<=n;k++) stamp({x:a.x+(q.x-a.x)*k/n, y:a.y+(q.y-a.y)*k/n},drawing.rad,drawing.rgb,drawing.region);
+    drawing.last=q;
+  }
+  function fillAt(q){
+    const reg=regionAt(q); if(reg<0) return false;
+    pushUndo();
+    const rgb=hexRGB(colour), d=paint.data;
+    for(let k=offsets[reg];k<offsets[reg+1];k++){const o=order[k]*4; d[o]=rgb[0]; d[o+1]=rgb[1]; d[o+2]=rgb[2]; d[o+3]=255;}
+    pctx.putImageData(paint,0,0); return true;
+  }
+  function pushUndo(){ undo.push(new Uint8ClampedArray(paint.data)); if(undo.length>12) undo.shift(); }
+
+  function onDown(ev){
+    if(!paint||(ev.pointerType==='mouse'&&ev.button!==0)) return;
+    ev.preventDefault(); const q=pt(ev);
+    if(tool==='fill'){ if(fillAt(q)&&typeof playClickSound==='function') playClickSound(); return; }
+    const region=tool==='brush'?regionAt(q):null;
+    if(tool==='brush'&&region<0) return;
+    try{stage.setPointerCapture(ev.pointerId);}catch(e){}
+    pushUndo();
+    drawing={id:ev.pointerId,last:q,region,rad:(tool==='eraser'?ERASER:BRUSH)[size],rgb:tool==='eraser'?[255,255,255]:hexRGB(colour)};
+    stamp(q,drawing.rad,drawing.rgb,drawing.region);
+  }
+  function onMove(ev){
+    if(!drawing||ev.pointerId!==drawing.id) return; ev.preventDefault();
+    const evs=ev.getCoalescedEvents?ev.getCoalescedEvents():[]; (evs.length?evs:[ev]).forEach(x=>strokeTo(pt(x)));
+  }
+  function onUp(ev){ if(drawing&&ev.pointerId===drawing.id){ drawing=null; flush(); } }
+
+  /* ---------- text (English / Melayu) ---------- */
+  function updateText(){
+    const ms=isMs(), set=(id,t)=>{const x=el(id); if(x) x.textContent=t;};
+    set('clr-menu-title',ms?'Mewarna 🖍️':'Colouring 🖍️');
+    set('clr-menu-desc',ms?'Pilih tema untuk diwarnakan!':'Choose a theme to colour!');
+    set('clr-pick-desc',ms?'Pilih gambar!':'Choose a picture!');
+    set('clr-t-brush',ms?'Berus':'Brush'); set('clr-t-fill',ms?'Isi Warna':'Tap-Fill'); set('clr-t-eraser',ms?'Pemadam':'Eraser');
+    set('clr-undo',ms?'↶ Buat Asal':'↶ Undo'); set('clr-clear',ms?'🗑️ Padam Semua':'🗑️ Clear');
+    if(theme&&ART[theme][picIndex]) set('clr-draw-title',ART[theme][picIndex][ms?'ms':'en']);
+    if(el('colouring-menu-screen').classList.contains('active')) renderThemes();
+    if(el('colouring-pick-screen').classList.contains('active')) renderPics();
+  }
+  window.updateColouringLanguage=updateText;
+
+  function init(){
+    pctx=el('clr-paint').getContext('2d',{willReadFrequently:true}); lctx=el('clr-lines').getContext('2d'); stage=el('clr-stage');
+    const pal=el('clr-palette');
+    COLOURS.forEach((col,i)=>{
+      const b=document.createElement('button'); b.type='button'; b.className='clr-swatch'+(i?'':' active'); b.style.background=col; b.setAttribute('aria-label','Colour '+col);
+      b.onclick=()=>{ colour=col; pal.querySelectorAll('.clr-swatch').forEach(s=>s.classList.toggle('active',s===b)); if(tool==='eraser') setTool('brush'); };
+      pal.appendChild(b);
+    });
+    document.querySelectorAll('.clr-tool').forEach(b=>b.onclick=()=>{ if(typeof playClickSound==='function')playClickSound(); setTool(b.dataset.tool); });
+    document.querySelectorAll('.clr-size').forEach(b=>b.onclick=()=>{ size=+b.dataset.size; document.querySelectorAll('.clr-size').forEach(s=>s.classList.toggle('active',s===b)); });
+    stage.addEventListener('pointerdown',onDown); stage.addEventListener('pointermove',onMove);
+    stage.addEventListener('pointerup',onUp); stage.addEventListener('pointercancel',onUp); stage.addEventListener('lostpointercapture',onUp);
+    el('clr-undo').onclick=()=>{ if(typeof playClickSound==='function')playClickSound(); const u=undo.pop(); if(u){paint.data.set(u); pctx.putImageData(paint,0,0);} };
+    el('clr-clear').onclick=()=>{ if(typeof playClickSound==='function')playClickSound(); pushUndo(); paint.data.fill(255); pctx.putImageData(paint,0,0); };
+    el('clr-draw-back').onclick=()=>{ if(typeof playClickSound==='function')playClickSound(); storeCurrent(); renderPics(); updateText(); showScreen('colouring-pick-screen'); };
+    // refresh labels when the app language changes (wraps, does not replace, the existing function)
+    const origLang=window.setGlobalLanguage;
+    if(typeof origLang==='function') window.setGlobalLanguage=function(){ const res=origLang.apply(this,arguments); try{updateText();}catch(e){} return res; };
+    updateText();
+  }
+  function setTool(t){
+    tool=t; document.querySelectorAll('.clr-tool').forEach(b=>b.classList.toggle('active',b.dataset.tool===t));
+    el('clr-sizes').classList.toggle('hidden',t==='fill');
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
+<!-- END COLOURING MODULE -->
 </body>
 </html>
 
