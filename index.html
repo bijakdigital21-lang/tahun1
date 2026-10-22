@@ -13424,7 +13424,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- state ---------- */
   const isMs=()=>typeof currentGlobalLang!=='undefined' && currentGlobalLang==='ms';
   const nm=o=>isMs()?o.ms:o.en;
-  let theme=null, picIndex=0, tool='brush', size=1, colour=COLOURS[0];
+  let theme=null, picIndex=0, paintKey=null, tool='brush', size=1, colour=COLOURS[0];
   let labels=null, order=null, offsets=null, paint=null, undo=[], drawing=null;
   const saved=new Map(), thumbCache=new Map();
   let pctx, lctx, stage;
@@ -13531,13 +13531,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const key=theme+'-'+i;
     if(saved.has(key)) paint=saved.get(key);
     else { paint=pctx.createImageData(N,N); paint.data.fill(255); }
+    paintKey=key;
     pctx.putImageData(paint,0,0);
     undo=[]; updateText(); showScreen('colouring-draw-screen');
     requestAnimationFrame(fitStage);
   }
   function storeCurrent(){
-    if(!paint||!theme) return;
-    const key=theme+'-'+picIndex; saved.delete(key); saved.set(key,paint);
+    if(!paint||!paintKey) return;
+    // Finish the outgoing picture before navigation changes the selected theme.
+    drawing=null;
+    if(raf) cancelAnimationFrame(raf);
+    flush();
+    saved.delete(paintKey); saved.set(paintKey,paint);
     while(saved.size>8) saved.delete(saved.keys().next().value);
   }
 
